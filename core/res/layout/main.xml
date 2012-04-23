@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/linearLayout"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/text_chooseProvider"
+            />
+    <Spinner
+            android:id="@+id/providerSpinner"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            >
+    </Spinner>
+    <CheckBox
+            android:id="@+id/defaultCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:text="@string/cb_default"
+            >
+    </CheckBox>
+    <Button android:id="@+id/nextButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_next"/>
+
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_send">Senden</string>
+    <string name="text_chooseProvider">Anbieter auswählen:</string>
+    <string name="text_changeProvider">Anbieter wechseln</string>
+    <string name="button_next">Weiter</string>
+    <string name="text_option">Optionen</string>
+    <string name="text_mainmenu">Hauptmenü</string>
+    <string name="text_exit">Beenden</string>
+    <string name="text_optionTitle">Optionen für</string>
+    <string name="text_username">Benutzername</string>
+    <string name="text_password">Passwort</string>
+    <string name="text_signature">Signatur</string>
+    <string name="button_save">Speichern</string>
+    <string name="hint_targetnumber">Zielnummer</string>
+    <string name="hint_smsText">Nachricht</string>
+    <string name="hint_sendernumber">Absender</string>
+    <string name="text_chooseType">Typ wählen</string>
+    <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
+    <string name="text_pickNumber">Nummer auswählen</string>
+    <string name="text_noNumber">Keine Nummer gefunden</string>
+    <string name="text_smscomitted">SMS wird gesendet</string>
+    <string name="text_ok">OK</string>
+    <string name="text_no">Abbrechen</string>
+    <string name="text_wantClear">Alle eingegebenen Daten werden gelöscht!</string>
+    <string name="text_error">Fehler</string>
+    <string name="text_success">Erfolg</string>
+    <string name="text_noNetwork">Netzwerkfehler</string>
+    <string name="text_unknown_error">Unbekannter Fehler</string>
+    <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
+    <string name="cb_default">Als Standard setzen</string>
+    <string name="description">Senden von SMS über Goodmails oder GMX</string>
+    <string name="text_pleaseWait">Bitte warten</string>
+    <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
+    <string name="text_noTextInput">Kein Text eingegeben!</string>
+    <string name="text_noNetworkAvailable">Netzwerk nicht aktiviert!</string>
+    <string name="text_smsSend_Success">SMS wurde übermittelt</string>
+    <string name="text_timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
+    <string name="text_sureQuit">SMSoIP beenden?</string>
+    <string name="text_saveChanges">Änderungen speichern?</string>
+    <string name="text_yesOption">Ja</string>
+    <string name="text_noOption">Nein</string>
+    <string name="text_inputsLost">Alle Eingaben gehen verloren. Wollen Sie wirklich fortfahren?</string>
+    <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
+    <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="button_activateWLAN">W-LAN aktivieren</string>
+    <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
+    <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!</string>
+</resources>

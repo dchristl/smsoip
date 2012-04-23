@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:id="@+id/nwdialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <Button android:id="@+id/openNetworkSettings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_openNetworkSettings"
+            />
+    <Button android:id="@+id/activateWLAN"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_activateWLAN"
+            android:layout_below="@id/openNetworkSettings"
+            />
+    <Button android:id="@+id/cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_cancel"
+            android:layout_below="@id/activateWLAN"
+            />
+</RelativeLayout>

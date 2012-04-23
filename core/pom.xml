@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.christl.SMSoIP</groupId>
+    <artifactId>core</artifactId>
+    <packaging>apk</packaging>
+    <name>SMSoIP-core</name>
+    <parent>
+        <groupId>de.christl</groupId>
+        <artifactId>SMSoIP</artifactId>
+        <version>1.1</version>
+    </parent>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.google.ads</groupId>
+            <artifactId>admob</artifactId>
+            <version>4.3.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/libs/GoogleAdMobAdsSdk-4.3.1.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+
+</project>
