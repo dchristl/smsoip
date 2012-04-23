@@ -7,11 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Danny
- * Date: 22.04.12
- * Time: 14:29
- * To change this template use File | Settings | File Templates.
+ * Simple class for
  */
 public class SMSoIPPlugin {
     private ApplicationInfo installedApplication;

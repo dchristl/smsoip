@@ -25,8 +25,6 @@ import com.google.ads.AdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
 
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 /**
@@ -164,7 +162,7 @@ public class AllActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 String APP_MARKET_URL = "market://search?q=pub:Danny Christl";
 
-                Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
                 AllActivity.this.startActivity(intent);
                 killAll();
             }
@@ -187,8 +185,6 @@ public class AllActivity extends Activity {
         // Initiate a generic request to load it with an ad
         AdRequest adRequest = new AdRequest();
         adRequest.addTestDevice("9405EE5055BF04AE898858A2515B3588");
-        Map<String, Object> extras = new TreeMap<String, Object>();
-        adRequest.setExtras(extras);
         adView.loadAd(adRequest);
     }
 }
