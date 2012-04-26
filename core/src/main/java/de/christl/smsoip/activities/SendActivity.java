@@ -14,6 +14,7 @@ import android.text.method.DigitsKeyListener;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
@@ -54,10 +55,12 @@ public class SendActivity extends DefaultActivity {
     };
     public Toast toast;
     private SMSSupplier smsSupplier;
-    private static final int OPTION_MENU = 3;
-    private static final int OPTION_SWITCH = 4;
-    private static final int DIALOG_SMILEYS = 5;
-    private static final int DIALOG_PROVIDER = 6;
+    private static final int OPTION_MENU = 30;
+    private static final int OPTION_SWITCH = 31;
+    private static final int DIALOG_SMILEYS = 32;
+    private static final int DIALOG_PROVIDER = 33;
+    private static final int GLOBAL_OPTION = 34;
+
     private CharSequence infoText;
     private Result result;
 
@@ -452,8 +455,10 @@ public class SendActivity extends DefaultActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        MenuItem item = menu.add(0, OPTION_MENU, 0, getString(R.string.text_option));
+        MenuItem item = menu.add(0, OPTION_MENU, 0, getString(R.string.text_provider_settings_short));
         item.setIcon(R.drawable.settingsbutton);
+        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
+        globalOption.setIcon(R.drawable.settingsbutton);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
             item = menu.add(0, OPTION_SWITCH, 0, getString(R.string.text_changeProvider));
             item.setIcon(R.drawable.changeprovider);
@@ -470,6 +475,10 @@ public class SendActivity extends DefaultActivity {
             case OPTION_SWITCH:
                 removeDialog(DIALOG_PROVIDER); //remove the dialog forces recreation
                 showDialog(DIALOG_PROVIDER);
+                return true;
+            case GLOBAL_OPTION:
+                Intent pref = new Intent(this, GlobalPreferences.class);
+                startActivity(pref);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

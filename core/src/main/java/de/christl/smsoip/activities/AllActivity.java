@@ -32,7 +32,7 @@ import java.util.Vector;
  */
 public class AllActivity extends Activity {
     public static final String PUBLISHER_ID = "a14f930decd44ce";
-    public static final int EXIT = 1;
+    public static final int EXIT = 0;
     static Vector<Activity> registeredActivities = new Vector<Activity>();
 
     static final int DIALOG_NO_NETWORK_ID = 0;

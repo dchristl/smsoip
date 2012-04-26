@@ -4,7 +4,10 @@
     <string name="text_chooseProvider">Anbieter auswählen:</string>
     <string name="text_changeProvider">Anbieter wechseln</string>
     <string name="button_next">Weiter</string>
-    <string name="text_option">Optionen</string>
+    <string name="text_provider_settings">Anbietereinstellungen</string>
+    <string name="text_program_settings">Programmeinstellungen</string>
+    <string name="text_provider_settings_short">Anbieter</string>
+    <string name="text_program_settings_short">Programm</string>
     <string name="text_mainmenu">Hauptmenü</string>
     <string name="text_exit">Beenden</string>
     <string name="text_optionTitle">Optionen für</string>
@@ -47,5 +50,11 @@
     <string name="button_cancel">Abbrechen</string>
     <string name="button_activateWLAN">W-LAN aktivieren</string>
     <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
-    <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!</string>
+    <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!
+    </string>
+    <string name="text_default_provider">Standardanbieter</string>
+    <string name="text_default_provider_description">Dein Standardprovider</string>
+    <string name="text_no_default_Provider">Keiner (jedsmal fragen)</string>
+    <string name="text_visit_project_page">Homepage besuchen</string>
+    <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
 </resources>

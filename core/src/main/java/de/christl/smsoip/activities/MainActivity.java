@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 
@@ -16,7 +17,8 @@ import java.util.List;
 
 public class MainActivity extends AllActivity {
 
-    private int OPTION_MENU = 2;
+    private final int PROVIDER_OPTION = 20;
+    private final int GLOBAL_OPTION = 21;
     private Spinner spinner;
     public static final String FILENAME = "option";
     public String[] array_spinner;
@@ -136,21 +138,32 @@ public class MainActivity extends AllActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        MenuItem item = menu.add(0, OPTION_MENU, 0, getString(R.string.text_option));
-        item.setIcon(R.drawable.settingsbutton);
+        MenuItem providerOption = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
+        providerOption.setIcon(R.drawable.settingsbutton);
+        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
+        globalOption.setIcon(R.drawable.settingsbutton);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == OPTION_MENU) {
-            Intent intent = new Intent(this, OptionActivity.class);
-            intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
-            startActivity(intent);
-            return true;
+        switch (item.getItemId()) {
+            case PROVIDER_OPTION:
+
+                    Intent intent = new Intent(this, OptionActivity.class);
+                    intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
+                    startActivity(intent);
+                    return true;
+            /*Intent intent = new Intent(this, ProviderPreferences.class);
+           intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
+           startActivity(intent);
+           return true;*/
+            case GLOBAL_OPTION:
+                Intent pref = new Intent(this, GlobalPreferences.class);
+                startActivity(pref);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
-
-
 }

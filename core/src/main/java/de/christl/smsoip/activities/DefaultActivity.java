@@ -10,7 +10,7 @@ import de.christl.smsoip.R;
  *
  */
 public class DefaultActivity extends AllActivity {
-    private static final int MAIN_MENU = 0;
+    private static final int MAIN_MENU = 10;
 
 
     @Override
@@ -21,8 +21,8 @@ public class DefaultActivity extends AllActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        MenuItem item = menu.add(0, MAIN_MENU, 0, getString(R.string.text_mainmenu));
-        item.setIcon(R.drawable.menubutton);
+        MenuItem mainMenu = menu.add(0, MAIN_MENU, 0, getString(R.string.text_mainmenu));
+        mainMenu.setIcon(R.drawable.menubutton);
         return true;
     }
 

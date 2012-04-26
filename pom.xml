@@ -12,10 +12,6 @@
         <module>core</module>
         <module>supplier</module>
     </modules>
-
-    <properties>
-        <platform.version>2.1.2</platform.version>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -23,7 +19,7 @@
                 <artifactId>maven-jarsigner-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>signing</id>
+                        <id>SIGNING</id>
                         <goals>
                             <goal>sign</goal>
                         </goals>
@@ -47,7 +43,7 @@
                 <artifactId>android-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>alignApk</id>
+                        <id>ALIGN APK</id>
                         <phase>install</phase>
                         <goals>
                             <goal>zipalign</goal>
@@ -61,14 +57,14 @@
                     <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
                     <assetsDirectory>${project.basedir}/assets</assetsDirectory>
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
-                    <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
-                        <path>D:\android-sdk-windows\</path>
+                        <path>${jayway.sdk.path}</path>
                         <platform>13</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
                 <extensions>true</extensions>
+
             </plugin>
 
             <plugin>
@@ -92,7 +88,7 @@
             <dependency>
                 <groupId>com.google.android</groupId>
                 <artifactId>android</artifactId>
-                <version>${platform.version}</version>
+                <version>2.1.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
