@@ -59,4 +59,11 @@
     <string name="text_no_default_Provider">None (ask everytime)</string>
     <string name="text_visit_project_page">Visit Homepage</string>
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
+    <string name="text_area_code">Default international area code</string>
+    <string name="text_area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
+        will be automatically prepended to receiver number if needed.
+    </string>
+    <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
+
+
 </resources>

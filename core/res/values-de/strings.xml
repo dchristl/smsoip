@@ -57,4 +57,9 @@
     <string name="text_no_default_Provider">Keiner (jedsmal fragen)</string>
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
+    <string name="text_area_code">Standardländercode</string>
+    <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
+        Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
+    </string>
+    <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
 </resources>

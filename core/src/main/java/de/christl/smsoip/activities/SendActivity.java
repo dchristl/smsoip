@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
 import android.text.method.DigitsKeyListener;
@@ -63,11 +64,13 @@ public class SendActivity extends DefaultActivity {
 
     private CharSequence infoText;
     private Result result;
+    private SharedPreferences settings;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         SIGNSCONSTANT = getText(R.string.text_smssigns);
         if (infoMsg != null) {
@@ -161,8 +164,8 @@ public class SendActivity extends DefaultActivity {
         ImageButton sigButton = (ImageButton) findViewById(R.id.insertSigButton);
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                textField.setText(textField.getText() + " " + smsSupplier.getProvider().getSignature());
+            public void onClick(View view) {                       //TODO change to more specific option
+                textField.setText(textField.getText() + " " + settings.getString(GlobalPreferences.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
                 int position = textField.length();
                 Editable etext = textField.getText();
                 Selection.setSelection(etext, position);
@@ -430,10 +433,17 @@ public class SendActivity extends DefaultActivity {
         }
     }
 
+
     private void setReceiverNumber(String rawNumber) {
+        String prefix = "";
+        if (!rawNumber.startsWith("+") && !rawNumber.startsWith("00")) {
+            String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
+            prefix = "00" + areaCode;
+        }
+        rawNumber = rawNumber.replaceFirst("^0", "");
         rawNumber = rawNumber.replaceFirst("\\+", "00");
         rawNumber = rawNumber.replaceAll("[^0-9]", "");
-        inputField.setText(rawNumber);
+        inputField.setText(prefix + rawNumber);
     }
 
     @Override
@@ -448,8 +458,7 @@ public class SendActivity extends DefaultActivity {
     }
 
     boolean isDefaultSet() {
-        SharedPreferences settings = getSharedPreferences(MainActivity.FILENAME, Context.MODE_PRIVATE);
-        return settings.getString(MainActivity.DEFAULT_SUPPLIER_CLASS, null) != null;
+        return !settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "").equals("");
     }
 
     @Override

@@ -1,9 +1,9 @@
 package de.christl.smsoip.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,14 +35,14 @@ public class MainActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        settings = getSharedPreferences(FILENAME, Context.MODE_PRIVATE);
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
         givenNumber = getIntent().getData() != null ? getIntent().getData().getSchemeSpecificPart() : null;
+        providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         setContentView(R.layout.main);
         Bundle extras = getIntent().getExtras();
+        String defaultSupplierClass = getDefaultSupplier();
         Boolean nonskip = extras == null ? null : (Boolean) extras.get(PARAMETER);
-        String defaultSupplierClass = readOutDefaultSupplier();
-        spinner = (Spinner) findViewById(R.id.providerSpinner);
-        providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+
         int providersSize = providerEntries.size();
         if (providersSize == 0) {
             return;
@@ -50,8 +50,34 @@ public class MainActivity extends AllActivity {
         if (providersSize == 1) {
             nonskip = nonskip == null ? false : nonskip;
             defaultSupplierClass = providerEntries.get(0).getSupplierClassName();
-            saveSetting(defaultSupplierClass);
+            saveDefaultProvider(defaultSupplierClass);
         }
+        addSpinner(defaultSupplierClass, nonskip, providersSize);
+        addNextButton();
+        insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+    }
+
+    private String getDefaultSupplier() {
+        String string = settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "");
+        //check if default provider is installed
+        if (!string.equals("")) {
+            boolean found = false;
+            for (ProviderEntry providerEntry : providerEntries) {
+                if (providerEntry.getSupplierClassName().equals(string)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                string = "";
+                saveDefaultProvider(string);
+            }
+        }
+
+        return string;
+    }
+
+    private void addSpinner(String defaultSupplierClass, Boolean nonskip, int providersSize) {
         array_spinner = new String[providersSize];
         for (int i = 0; i < providersSize; i++) {
             ProviderEntry providerEntry = providerEntries.get(i);
@@ -61,9 +87,10 @@ public class MainActivity extends AllActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, array_spinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner = (Spinner) findViewById(R.id.providerSpinner);
         spinner.setAdapter(adapter);
         if (nonskip != null && nonskip) {
-            if (defaultSupplierClass != null) {
+            if (!defaultSupplierClass.equals("")) {
                 ((CheckBox) findViewById(R.id.defaultCheckBox)).setChecked(true);
                 for (int i = 0; i < array_spinner.length; i++) {
                     if (array_spinner[i].equals(defaultSupplierClass)) {
@@ -74,7 +101,7 @@ public class MainActivity extends AllActivity {
             }
         } else {
 
-            if (defaultSupplierClass != null) {
+            if (!defaultSupplierClass.equals("")) {
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, defaultSupplierClass);
                 intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
@@ -96,6 +123,9 @@ public class MainActivity extends AllActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+    }
+
+    private void addNextButton() {
         Button next = (Button) findViewById(R.id.nextButton);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -103,9 +133,9 @@ public class MainActivity extends AllActivity {
                 String defaultSupplierClassName = readOutDefaultSupplier();
                 String supplierClassName = providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName();
                 if (cb.isChecked()) {
-                    saveSetting(MainActivity.this.providerEntries.get(MainActivity.this.spinner.getSelectedItemPosition()).getSupplierClassName());
+                    saveDefaultProvider(MainActivity.this.providerEntries.get(MainActivity.this.spinner.getSelectedItemPosition()).getSupplierClassName());
                 } else if (defaultSupplierClassName != null && defaultSupplierClassName.equals(supplierClassName)) {
-                    deleteSetting();
+                    saveDefaultProvider("");
                 }
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, supplierClassName);
@@ -114,26 +144,19 @@ public class MainActivity extends AllActivity {
                 startActivity(intent);
             }
         });
-        insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+    }
+
+    private void saveDefaultProvider(String defaultSupplierClass) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, defaultSupplierClass);
+        editor.commit();
     }
 
 
     private String readOutDefaultSupplier() {
-        return settings.getString(DEFAULT_SUPPLIER_CLASS, null);
+        return settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, null);
     }
 
-
-    private void saveSetting(String supplierClassName) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(DEFAULT_SUPPLIER_CLASS, supplierClassName);
-        editor.commit();
-    }
-
-    private void deleteSetting() {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.remove(DEFAULT_SUPPLIER_CLASS);
-        editor.commit();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -150,14 +173,10 @@ public class MainActivity extends AllActivity {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
 
-                    Intent intent = new Intent(this, OptionActivity.class);
-                    intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
-                    startActivity(intent);
-                    return true;
-            /*Intent intent = new Intent(this, ProviderPreferences.class);
-           intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
-           startActivity(intent);
-           return true;*/
+                Intent intent = new Intent(this, OptionActivity.class);
+                intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
+                startActivity(intent);
+                return true;
             case GLOBAL_OPTION:
                 Intent pref = new Intent(this, GlobalPreferences.class);
                 startActivity(pref);
