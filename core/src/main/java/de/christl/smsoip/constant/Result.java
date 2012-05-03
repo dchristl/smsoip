@@ -33,7 +33,11 @@ public enum Result {
         if (alternateText != null) {
             return alternateText;
         } else {
-            return SMSoIPApplication.getApp().getText(defaultText);
+            return getDefaultText();
         }
+    }
+
+    public CharSequence getDefaultText() {
+        return SMSoIPApplication.getApp().getText(defaultText);
     }
 }

@@ -101,7 +101,7 @@ public class ProviderPreferences extends PreferenceActivity {
         Spannable newPasswordTitle = new SpannableString(passwordPreference.getTitle());
         newPasswordTitle.setSpan(new ForegroundColorSpan(color), 0, newPasswordTitle.length(), 0);
         passwordPreference.setTitle(newPasswordTitle);
-        checkCredentials.setSummary(result.getUserText());
+        checkCredentials.setSummary(result.equals(Result.NO_ERROR) ? result.getDefaultText() : result.getUserText());
     }
 
     private void checkLogin() {
