@@ -15,6 +15,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 
 /**
@@ -23,8 +24,8 @@ import de.christl.smsoip.provider.SMSSupplier;
 public class ProviderPreferences extends PreferenceActivity {
     public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
     private SMSSupplier smsSupplier;
-    private static final String PROVIDER_USERNAME = "provider.username";
-    private static final String PROVIDER_PASS = "provider.password";
+    public static final String PROVIDER_USERNAME = "provider.username";
+    public static final String PROVIDER_PASS = "provider.password";
     private PreferenceManager preferenceManager;
     private Result result;
     final Handler updateUIHandler = new Handler();
@@ -43,10 +44,11 @@ public class ProviderPreferences extends PreferenceActivity {
         Bundle extras = getIntent().getExtras();
         String supplierClassName = (String) extras.get(SUPPLIER_CLASS_NAME);
         smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
-        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_provider_settings) + " (" + smsSupplier.getProvider().getProviderName() + ")");
+        OptionProvider provider = smsSupplier.getProvider();
+        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_provider_settings) + " (" + provider.getProviderName() + ")");
         preferenceManager = getPreferenceManager();
-        preferenceManager.setSharedPreferencesName(smsSupplier.getClass().getCanonicalName() + "_preferences");
-        preferenceManager.setSharedPreferencesMode(MODE_WORLD_READABLE);
+        preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
+        preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
         setPreferenceScreen(initPreferences());
     }
 

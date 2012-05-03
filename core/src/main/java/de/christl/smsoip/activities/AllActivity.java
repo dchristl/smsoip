@@ -74,7 +74,7 @@ public class AllActivity extends Activity {
             if (!wifiInfo.isConnected() && !mobileInfo.isConnected()) {
 
                 if (!nwSettingsAlreadyShown) {
-//                    showDialog(DIALOG_NO_NETWORK_ID); FIXME
+                    showDialog(DIALOG_NO_NETWORK_ID);
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), getText(R.string.text_noNetworkAvailable), Toast.LENGTH_SHORT);
                     toast.show();

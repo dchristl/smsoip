@@ -2,6 +2,7 @@ package de.christl.smsoip.option;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.provider.SMSSupplier;
 
@@ -11,23 +12,16 @@ import de.christl.smsoip.provider.SMSSupplier;
 public abstract class OptionProvider {
 
     String currProvider;
-    private SharedPreferences settings;
 
     public abstract Class<? extends SMSSupplier> getSupplier();
 
 
-    private interface OPTIONS {
-        String USERNAME = "username";
-        String PASSWORD = "password";
-        String SIGNATURE = "signature";
-    }
+
 
 
     String userName;
     String password;
-    String signature;
 
-    private static final String FILE_PREFIX = "options_";
 
     /**
      * default constructor, use the other one for give a name to the provider otherwise classname will be used
@@ -50,19 +44,11 @@ public abstract class OptionProvider {
         initOptions();
     }
 
-    public void save() {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(OPTIONS.USERNAME, userName);
-        editor.putString(OPTIONS.PASSWORD, password);
-        editor.putString(OPTIONS.SIGNATURE, signature);
-        editor.commit();
-    }
 
     public void initOptions() {
-        settings = SMSoIPApplication.getApp().getSharedPreferences(FILE_PREFIX + currProvider, Context.MODE_PRIVATE);
-        userName = settings.getString(OPTIONS.USERNAME, "");
-        password = settings.getString(OPTIONS.PASSWORD, "");
-        signature = settings.getString(OPTIONS.SIGNATURE, "Sent by SMSoIP");
+        SharedPreferences settings = SMSoIPApplication.getApp().getSharedPreferences(getClass().getCanonicalName() + "_preferences", Context.MODE_PRIVATE);
+        userName = settings.getString(ProviderPreferences.PROVIDER_USERNAME, "");
+        password = settings.getString(ProviderPreferences.PROVIDER_PASS, "");
     }
 
 
@@ -70,24 +56,9 @@ public abstract class OptionProvider {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
-
-    public String getSignature() {
-        return signature == null ? "" : signature;
     }
 
     public String getProviderName() {

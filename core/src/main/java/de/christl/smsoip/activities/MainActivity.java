@@ -21,13 +21,11 @@ public class MainActivity extends AllActivity {
     private final int PROVIDER_OPTION = 20;
     private final int GLOBAL_OPTION = 21;
     private Spinner spinner;
-    public static final String FILENAME = "option";
     public String[] array_spinner;
     public static final String PARAMETER = "nonskip";
     private String givenNumber;
     private List<ProviderEntry> providerEntries;
     private SharedPreferences settings;
-    static final String DEFAULT_SUPPLIER_CLASS = "defaultProvider";
 
 
     /**
@@ -174,7 +172,7 @@ public class MainActivity extends AllActivity {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
                 Intent intent = new Intent(this, ProviderPreferences.class);
-                intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
+                intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
                 startActivity(intent);
                 return true;
             case GLOBAL_OPTION:

@@ -24,7 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SendActivity" android:configChanges="orientation"/>
-        <activity android:name=".activities.OptionActivity" android:configChanges="orientation"/>
         <activity android:name=".activities.DefaultActivity" android:configChanges="orientation"/>
         <activity android:name=".activities.AllActivity" android:configChanges="orientation"/>
         <activity android:name=".activities.settings.GlobalPreferences" android:configChanges="orientation"/>

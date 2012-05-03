@@ -165,7 +165,7 @@ public class SendActivity extends DefaultActivity {
         ImageButton sigButton = (ImageButton) findViewById(R.id.insertSigButton);
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {                       //TODO change to more specific option
+            public void onClick(View view) {
                 textField.setText(textField.getText() + " " + settings.getString(GlobalPreferences.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
                 int position = textField.length();
                 Editable etext = textField.getText();
@@ -517,7 +517,7 @@ public class SendActivity extends DefaultActivity {
     private void startOptionActivity() {
         Intent intent =
                 new Intent(this, ProviderPreferences.class);
-        intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, smsSupplier.getClass().getCanonicalName());
+        intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, smsSupplier.getClass().getCanonicalName());
         startActivity(intent);
     }
 
