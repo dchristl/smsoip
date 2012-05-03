@@ -181,6 +181,7 @@ public class GMXSupplier implements SMSSupplier {
     public Result login(String userName, String password) {
         String tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + userName + "&password=" + password;
         HttpURLConnection con;
+        sessionId = null;
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setReadTimeout(TIMEOUT);

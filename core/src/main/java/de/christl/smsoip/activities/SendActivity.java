@@ -16,6 +16,7 @@ import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
@@ -56,7 +57,7 @@ public class SendActivity extends DefaultActivity {
     };
     public Toast toast;
     private SMSSupplier smsSupplier;
-    private static final int OPTION_MENU = 30;
+    private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH = 31;
     private static final int DIALOG_SMILEYS = 32;
     private static final int DIALOG_PROVIDER = 33;
@@ -464,7 +465,7 @@ public class SendActivity extends DefaultActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        MenuItem item = menu.add(0, OPTION_MENU, 0, getString(R.string.text_provider_settings_short));
+        MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
         item.setIcon(R.drawable.settingsbutton);
         MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
         globalOption.setIcon(R.drawable.settingsbutton);
@@ -478,7 +479,7 @@ public class SendActivity extends DefaultActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case OPTION_MENU:
+            case PROVIDER_OPTION:
                 inputCheckQuestion();
                 return true;
             case OPTION_SWITCH:
@@ -515,9 +516,8 @@ public class SendActivity extends DefaultActivity {
 
     private void startOptionActivity() {
         Intent intent =
-                new Intent(this, OptionActivity.class);
+                new Intent(this, ProviderPreferences.class);
         intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, smsSupplier.getClass().getCanonicalName());
-        intent.putExtra(OptionActivity.LASTACTIVITY, "sendactivity");
         startActivity(intent);
     }
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.*;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 
@@ -172,8 +173,7 @@ public class MainActivity extends AllActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
-
-                Intent intent = new Intent(this, OptionActivity.class);
+                Intent intent = new Intent(this, ProviderPreferences.class);
                 intent.putExtra(OptionActivity.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
                 startActivity(intent);
                 return true;

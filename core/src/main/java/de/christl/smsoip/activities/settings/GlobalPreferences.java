@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.preference.*;
 import android.widget.Toast;
 import de.christl.smsoip.R;
-import de.christl.smsoip.activities.AdPreference;
+import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 

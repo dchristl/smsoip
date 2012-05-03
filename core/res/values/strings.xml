@@ -64,6 +64,6 @@
         will be automatically prepended to receiver number if needed.
     </string>
     <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
-
+    <string name="text_checkLogin">Check credentials</string>
 
 </resources>

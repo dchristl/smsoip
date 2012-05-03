@@ -62,4 +62,5 @@
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
     </string>
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
+    <string name="text_checkLogin">Zugangsdaten überprüfen</string>
 </resources>

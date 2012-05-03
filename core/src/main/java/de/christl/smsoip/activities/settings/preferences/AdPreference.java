@@ -1,4 +1,4 @@
-package de.christl.smsoip.activities;
+package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
+import de.christl.smsoip.activities.AllActivity;
 
 public class AdPreference extends Preference {
 
