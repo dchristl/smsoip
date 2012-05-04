@@ -63,7 +63,7 @@ public abstract class OptionProvider {
     }
 
 
-    public List<Preference> getAdditionalPreferences() {
+    public List<Preference> getAdditionalPreferences(Context context) {
         return null;
     }
 

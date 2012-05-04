@@ -21,7 +21,6 @@ public class MainActivity extends AllActivity {
     private final int PROVIDER_OPTION = 20;
     private final int GLOBAL_OPTION = 21;
     private Spinner spinner;
-//    public String[] array_spinner;
     public static final String PARAMETER = "nonskip";
     private String givenNumber;
     private Map<String, ProviderEntry> providerEntries;
@@ -79,12 +78,6 @@ public class MainActivity extends AllActivity {
     }
 
     private void addSpinner(String defaultSupplierClass, Boolean nonskip) {
-//        array_spinner = new String[providersSize];
-//        int z = 0;
-//        for (ProviderEntry providerEntry : providerEntries.values()) {
-//            array_spinner[z] = providerEntry.getProviderName();
-//            z++;
-//        }
 
         final ProviderEntry[] arrayAdapter = providerEntries.values().toArray(new ProviderEntry[providerEntries.size()]);
         ArrayAdapter<ProviderEntry> adapter = new ArrayAdapter<ProviderEntry>(this,
@@ -92,18 +85,7 @@ public class MainActivity extends AllActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner = (Spinner) findViewById(R.id.providerSpinner);
         spinner.setAdapter(adapter);
-        if (nonskip != null && nonskip) {
-            if (!defaultSupplierClass.equals("")) {
-                ((CheckBox) findViewById(R.id.defaultCheckBox)).setChecked(true);
-//                for (int i = 0; i < array_spinner.length; i++) {
-//                    if (array_spinner[i].equals(defaultSupplierClass)) {
-//                        spinner.setSelection(i);
-//                        break;
-//                    }
-//                }
-            }
-        } else {
-
+        if ((nonskip == null) || !nonskip) {
             if (!defaultSupplierClass.equals("")) {
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, defaultSupplierClass);
@@ -136,7 +118,7 @@ public class MainActivity extends AllActivity {
                 String defaultSupplierClassName = readOutDefaultSupplier();
                 String supplierClassName = ((ProviderEntry) spinner.getSelectedItem()).getSupplierClassName();
                 if (cb.isChecked()) {
-                    saveDefaultProvider(MainActivity.this.providerEntries.get(MainActivity.this.spinner.getSelectedItemPosition()).getSupplierClassName());
+                    saveDefaultProvider(((ProviderEntry) spinner.getSelectedItem()).getSupplierClassName());
                 } else if (defaultSupplierClassName != null && defaultSupplierClassName.equals(supplierClassName)) {
                     saveDefaultProvider("");
                 }
@@ -176,7 +158,7 @@ public class MainActivity extends AllActivity {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
                 Intent intent = new Intent(this, ProviderPreferences.class);
-                intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName());
+                intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, ((ProviderEntry) spinner.getSelectedItem()).getSupplierClassName());
                 startActivity(intent);
                 return true;
             case GLOBAL_OPTION:

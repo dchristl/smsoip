@@ -99,7 +99,7 @@ public class ProviderPreferences extends PreferenceActivity {
             });
             root.addPreference(checkCredentials);
         }
-        List<Preference> additionalPreferences = provider.getAdditionalPreferences();
+        List<Preference> additionalPreferences = provider.getAdditionalPreferences(this);
         if (additionalPreferences != null) {
             for (Preference additionalPreference : additionalPreferences) {
                 root.addPreference(additionalPreference);

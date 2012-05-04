@@ -23,4 +23,9 @@ public class ProviderEntry {
     public String getSupplierClassName() {
         return supplier.getClass().getCanonicalName();
     }
+
+    @Override //this will be called by spinner for the entries
+    public String toString() {
+        return provider.getProviderName();
+    }
 }
