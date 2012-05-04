@@ -2,9 +2,11 @@ package de.christl.smsoip.option;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.Preference;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.provider.SMSSupplier;
+
+import java.util.List;
 
 /**
  * A provider for all options corresponding to a supplier
@@ -12,11 +14,6 @@ import de.christl.smsoip.provider.SMSSupplier;
 public abstract class OptionProvider {
 
     String currProvider;
-
-    public abstract Class<? extends SMSSupplier> getSupplier();
-
-
-
 
 
     String userName;
@@ -45,7 +42,7 @@ public abstract class OptionProvider {
     }
 
 
-    public void initOptions() {
+    private void initOptions() {
         SharedPreferences settings = SMSoIPApplication.getApp().getSharedPreferences(getClass().getCanonicalName() + "_preferences", Context.MODE_PRIVATE);
         userName = settings.getString(ProviderPreferences.PROVIDER_USERNAME, "");
         password = settings.getString(ProviderPreferences.PROVIDER_PASS, "");
@@ -65,5 +62,25 @@ public abstract class OptionProvider {
         return currProvider;
     }
 
+
+    public List<Preference> getAdditionalPreferences() {
+        return null;
+    }
+
+    public boolean isUsernameVisible() {
+        return true;
+    }
+
+    public boolean isPasswordVisible() {
+        return true;
+    }
+
+    public boolean isCheckLoginButtonVisible() {
+        return true;
+    }
+
+    public int getMaxReceiverCount() {
+        return Integer.MAX_VALUE;
+    }
 
 }

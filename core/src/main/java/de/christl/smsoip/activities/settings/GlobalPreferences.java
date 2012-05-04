@@ -12,7 +12,6 @@ import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -39,11 +38,11 @@ public class GlobalPreferences extends PreferenceActivity {
         editTextPref.setSummary(R.string.text_signature_description);
         root.addPreference(editTextPref);
         ListPreference listPref = new ListPreference(this);
-        List<ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.size() > 1) {
             Map<String, String> providersWithNames = new LinkedHashMap<String, String>();
             providersWithNames.put((String) getText(R.string.text_no_default_Provider), "");
-            for (ProviderEntry providerEntry : providerEntries) {
+            for (ProviderEntry providerEntry : providerEntries.values()) {
                 providersWithNames.put(providerEntry.getProviderName(), providerEntry.getSupplierClassName());
             }
             listPref.setEntries(providersWithNames.keySet().toArray(new CharSequence[providersWithNames.size()]));

@@ -63,4 +63,5 @@
     </string>
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
     <string name="text_checkLogin">Zugangsdaten überprüfen</string>
+    <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
 </resources>

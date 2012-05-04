@@ -5,18 +5,18 @@ import android.content.pm.ApplicationInfo;
 import android.util.Log;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
-import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.provider.SMSSupplier;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class SMSoIPApplication extends Application {
 
     private static SMSoIPApplication app;
-    public static final String PLUGIN_CLASSNAME = "de.christl.smsoip.supplier";
-    List<ProviderEntry> providers = new ArrayList<ProviderEntry>();
+    public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
+    Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
+    List<SMSSupplier> deprecatedPlugins = new ArrayList<SMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
 
     @Override
@@ -31,7 +31,7 @@ public class SMSoIPApplication extends Application {
             List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
             plugins = new ArrayList<SMSoIPPlugin>();
             for (ApplicationInfo installedApplication : installedApplications) {
-                if (installedApplication.processName.startsWith(PLUGIN_CLASSNAME)) {
+                if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
                     plugins.add(new SMSoIPPlugin(installedApplication));
                 }
             }
@@ -41,15 +41,34 @@ public class SMSoIPApplication extends Application {
                 PathClassLoader pathClassLoader = new PathClassLoader(sourceDir, getClassLoader());
                 plugin.setClassLoader(pathClassLoader);
                 Enumeration<String> classFileEntries = apkDir.entries();
+                Outer:
                 while (classFileEntries.hasMoreElements()) {
                     String s = classFileEntries.nextElement();
+                    if (!s.startsWith(PLUGIN_CLASS_PREFIX)) {
+                        continue;
+                    }
                     plugin.addAvailableClass(s);
                     try {
                         Class<?> aClass = Class.forName(s, false, pathClassLoader);
-                        Class<?> superclass = aClass.getSuperclass();
-                        if (superclass != null && superclass.equals(OptionProvider.class)) {
-                            OptionProvider optionProvider = (OptionProvider) aClass.newInstance();
-                            providers.add(new ProviderEntry(optionProvider));
+                        Class<?>[] aClassInterfaces = aClass.getInterfaces();
+                        if (aClassInterfaces != null) {
+                            for (Class<?> aClassInterface : aClassInterfaces) {
+                                if (aClassInterface.equals(SMSSupplier.class)) {
+                                    SMSSupplier smsSupplier = (SMSSupplier) aClass.newInstance();
+
+                                    List<Method> interfaceMethods = Arrays.asList(SMSSupplier.class.getDeclaredMethods());
+                                    for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
+                                        try {
+                                            aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+                                        } catch (NoSuchMethodException e) { //method does not exist, means old plugin
+                                            deprecatedPlugins.add(smsSupplier);
+                                            break Outer;
+                                        }
+                                    }
+                                    loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier));
+                                    break Outer;
+                                }
+                            }
                         }
                     } catch (ClassNotFoundException e) {
                         Log.e(this.getClass().getCanonicalName(), "", e);
@@ -70,8 +89,8 @@ public class SMSoIPApplication extends Application {
         return app;
     }
 
-    public List<ProviderEntry> getProviderEntries() {
-        return providers;
+    public Map<String, ProviderEntry> getProviderEntries() {
+        return loadedProviders;
     }
 
     @SuppressWarnings("unchecked")
@@ -97,5 +116,10 @@ public class SMSoIPApplication extends Application {
             }
         }
         return getClassLoader();
+    }
+
+
+    public List<SMSSupplier> getDeprecatedPlugins() {
+        return deprecatedPlugins;
     }
 }

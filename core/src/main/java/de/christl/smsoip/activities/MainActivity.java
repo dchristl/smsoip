@@ -14,17 +14,17 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 
-import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AllActivity {
 
     private final int PROVIDER_OPTION = 20;
     private final int GLOBAL_OPTION = 21;
     private Spinner spinner;
-    public String[] array_spinner;
+//    public String[] array_spinner;
     public static final String PARAMETER = "nonskip";
     private String givenNumber;
-    private List<ProviderEntry> providerEntries;
+    private Map<String, ProviderEntry> providerEntries;
     private SharedPreferences settings;
 
 
@@ -48,10 +48,12 @@ public class MainActivity extends AllActivity {
         }
         if (providersSize == 1) {
             nonskip = nonskip == null ? false : nonskip;
-            defaultSupplierClass = providerEntries.get(0).getSupplierClassName();
-            saveDefaultProvider(defaultSupplierClass);
+            for (ProviderEntry providerEntry : providerEntries.values()) {
+                defaultSupplierClass = providerEntry.getSupplierClassName();
+                saveDefaultProvider(defaultSupplierClass);
+            }
         }
-        addSpinner(defaultSupplierClass, nonskip, providersSize);
+        addSpinner(defaultSupplierClass, nonskip);
         addNextButton();
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
     }
@@ -61,7 +63,7 @@ public class MainActivity extends AllActivity {
         //check if default provider is installed
         if (!string.equals("")) {
             boolean found = false;
-            for (ProviderEntry providerEntry : providerEntries) {
+            for (ProviderEntry providerEntry : providerEntries.values()) {
                 if (providerEntry.getSupplierClassName().equals(string)) {
                     found = true;
                     break;
@@ -76,27 +78,29 @@ public class MainActivity extends AllActivity {
         return string;
     }
 
-    private void addSpinner(String defaultSupplierClass, Boolean nonskip, int providersSize) {
-        array_spinner = new String[providersSize];
-        for (int i = 0; i < providersSize; i++) {
-            ProviderEntry providerEntry = providerEntries.get(i);
-            array_spinner[i] = providerEntry.getProviderName();
-        }
+    private void addSpinner(String defaultSupplierClass, Boolean nonskip) {
+//        array_spinner = new String[providersSize];
+//        int z = 0;
+//        for (ProviderEntry providerEntry : providerEntries.values()) {
+//            array_spinner[z] = providerEntry.getProviderName();
+//            z++;
+//        }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, array_spinner);
+        final ProviderEntry[] arrayAdapter = providerEntries.values().toArray(new ProviderEntry[providerEntries.size()]);
+        ArrayAdapter<ProviderEntry> adapter = new ArrayAdapter<ProviderEntry>(this,
+                android.R.layout.simple_spinner_item, arrayAdapter);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner = (Spinner) findViewById(R.id.providerSpinner);
         spinner.setAdapter(adapter);
         if (nonskip != null && nonskip) {
             if (!defaultSupplierClass.equals("")) {
                 ((CheckBox) findViewById(R.id.defaultCheckBox)).setChecked(true);
-                for (int i = 0; i < array_spinner.length; i++) {
-                    if (array_spinner[i].equals(defaultSupplierClass)) {
-                        spinner.setSelection(i);
-                        break;
-                    }
-                }
+//                for (int i = 0; i < array_spinner.length; i++) {
+//                    if (array_spinner[i].equals(defaultSupplierClass)) {
+//                        spinner.setSelection(i);
+//                        break;
+//                    }
+//                }
             }
         } else {
 
@@ -112,7 +116,7 @@ public class MainActivity extends AllActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selection = providerEntries.get(i).getSupplierClassName();
+                String selection = arrayAdapter[i].getSupplierClassName();
                 String defaultSupplierClassName = readOutDefaultSupplier();
                 boolean checked = defaultSupplierClassName != null && defaultSupplierClassName.equals(selection);
                 ((CheckBox) findViewById(R.id.defaultCheckBox)).setChecked(checked);
@@ -130,7 +134,7 @@ public class MainActivity extends AllActivity {
             public void onClick(View view) {
                 CheckBox cb = (CheckBox) findViewById(R.id.defaultCheckBox);
                 String defaultSupplierClassName = readOutDefaultSupplier();
-                String supplierClassName = providerEntries.get(spinner.getSelectedItemPosition()).getSupplierClassName();
+                String supplierClassName = ((ProviderEntry) spinner.getSelectedItem()).getSupplierClassName();
                 if (cb.isChecked()) {
                     saveDefaultProvider(MainActivity.this.providerEntries.get(MainActivity.this.spinner.getSelectedItemPosition()).getSupplierClassName());
                 } else if (defaultSupplierClassName != null && defaultSupplierClassName.equals(supplierClassName)) {

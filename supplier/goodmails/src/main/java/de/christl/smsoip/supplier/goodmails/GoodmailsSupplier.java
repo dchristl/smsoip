@@ -58,7 +58,7 @@ public class GoodmailsSupplier implements SMSSupplier {
 //    type=standardsms&to=454564654&smsText=bla+bla+blubbsklyajdjkshdhsdhjksd%0D%0A%0D%0Asadasdsd%0D%0Af%0D%0Asdf
 
     @Override
-    public Result fireSMS(Editable smsText, Editable receiver, String spinnerText) {
+    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
         if (!result.equals(Result.NO_ERROR)) {
             return result;
@@ -75,7 +75,7 @@ public class GoodmailsSupplier implements SMSSupplier {
             urlConn.setRequestProperty("Cookie", sessionCookie);
             urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
             OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
-            String headerFields = "&to=" + receiver + "&smsText=" + URLEncoder.encode(smsText.toString(), encoding);
+            String headerFields = "&to=" + receivers.get(0) + "&smsText=" + URLEncoder.encode(smsText.toString(), encoding);
             if (spinnerText.equals(FREE)) {
                 headerFields += "&type=freesms";
                 lastSentType = "FREE";

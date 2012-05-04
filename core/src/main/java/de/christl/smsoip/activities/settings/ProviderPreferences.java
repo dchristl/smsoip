@@ -18,6 +18,8 @@ import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 
+import java.util.List;
+
 /**
  * Prefernces for one provider
  */
@@ -37,6 +39,7 @@ public class ProviderPreferences extends PreferenceActivity {
     private EditTextPreference passwordPreference;
     private EditTextPreference userNamePreference;
     private PreferenceScreen checkCredentials;
+    private OptionProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class ProviderPreferences extends PreferenceActivity {
         Bundle extras = getIntent().getExtras();
         String supplierClassName = (String) extras.get(SUPPLIER_CLASS_NAME);
         smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
-        OptionProvider provider = smsSupplier.getProvider();
+        provider = smsSupplier.getProvider();
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_provider_settings) + " (" + provider.getProviderName() + ")");
         preferenceManager = getPreferenceManager();
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
@@ -54,42 +57,54 @@ public class ProviderPreferences extends PreferenceActivity {
 
     private PreferenceScreen initPreferences() {
         PreferenceScreen root = preferenceManager.createPreferenceScreen(this);
-        userNamePreference = new EditTextPreference(this);
-        userNamePreference.setDialogTitle(R.string.text_username);
-        userNamePreference.setKey(PROVIDER_USERNAME);
-        userNamePreference.setTitle(R.string.text_username);
-        root.addPreference(userNamePreference);
-        passwordPreference = new EditTextPreference(this);
-        EditText passwordPreferenceEditText = passwordPreference.getEditText();
-        passwordPreferenceEditText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        passwordPreferenceEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        passwordPreference.setDialogTitle(R.string.text_password);
-        passwordPreference.setKey(PROVIDER_PASS);
-        passwordPreference.setTitle(R.string.text_password);
-        root.addPreference(passwordPreference);
+        if (provider.isUsernameVisible()) {
+            userNamePreference = new EditTextPreference(this);
+            userNamePreference.setDialogTitle(R.string.text_username);
+            userNamePreference.setKey(PROVIDER_USERNAME);
+            userNamePreference.setTitle(R.string.text_username);
+            root.addPreference(userNamePreference);
+        }
+        if (provider.isPasswordVisible()) {
+            passwordPreference = new EditTextPreference(this);
+            EditText passwordPreferenceEditText = passwordPreference.getEditText();
+            passwordPreferenceEditText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            passwordPreferenceEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            passwordPreference.setDialogTitle(R.string.text_password);
+            passwordPreference.setKey(PROVIDER_PASS);
+            passwordPreference.setTitle(R.string.text_password);
+            root.addPreference(passwordPreference);
+        }
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(true);
-        progressDialog.setMessage(getString(R.string.text_checkCredentials));
-        checkCredentials = getPreferenceManager().createPreferenceScreen(this);
-        checkCredentials.setTitle(R.string.text_checkLogin);
-        checkCredentials.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                progressDialog.show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        checkLogin();
-                        progressDialog.cancel();
-                        updateUIHandler.post(updateRunnable);
-                    }
-                }).start();
-                return false;
+        if (provider.isCheckLoginButtonVisible()) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(true);
+            progressDialog.setMessage(getString(R.string.text_checkCredentials));
+            checkCredentials = getPreferenceManager().createPreferenceScreen(this);
+            checkCredentials.setTitle(R.string.text_checkLogin);
+            checkCredentials.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    progressDialog.show();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkLogin();
+                            progressDialog.cancel();
+                            updateUIHandler.post(updateRunnable);
+                        }
+                    }).start();
+                    return false;
+                }
+            });
+            root.addPreference(checkCredentials);
+        }
+        List<Preference> additionalPreferences = provider.getAdditionalPreferences();
+        if (additionalPreferences != null) {
+            for (Preference additionalPreference : additionalPreferences) {
+                root.addPreference(additionalPreference);
             }
-        });
-        root.addPreference(checkCredentials);
+        }
         return root;
     }
 

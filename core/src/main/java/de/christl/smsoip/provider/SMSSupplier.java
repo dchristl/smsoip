@@ -4,6 +4,8 @@ import android.text.Editable;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 
+import java.util.List;
+
 /**
  * Interface representing a supplier for sending sms
  */
@@ -73,9 +75,8 @@ public interface SMSSupplier {
      * will be called on send SMS button
      *
      * @param smsText     - the message text
-     * @param receiver    - the receiver of the message
-     * @param spinnerText - the text of the spinner or null if not visible
-     * @return Result.NO_ERRORS on success or any other otherwise
+     * @param receivers
+     * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on success or any other otherwise
      */
-    Result fireSMS(Editable smsText, Editable receiver, String spinnerText);
+    Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText);
 }

@@ -24,6 +24,7 @@ import com.google.ads.AdSize;
 import com.google.ads.AdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.provider.SMSSupplier;
 
 import java.util.Vector;
 
@@ -63,7 +64,9 @@ public class AllActivity extends Activity {
     protected void onStart() {
         super.onStart();
         registeredActivities.add(this);
-        if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
+        if (SMSoIPApplication.getApp().getDeprecatedPlugins().size() > 0) {
+            showDeprecatedProvidersDialog();
+        } else if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
             showNoProvidersDialog();
         } else {
 
@@ -81,6 +84,25 @@ public class AllActivity extends Activity {
                 }
             }
         }
+    }
+
+    private void showDeprecatedProvidersDialog() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
+                    showNoProvidersDialog();
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String string = getString(R.string.text_deprecated_providers);
+        string += "\n";
+        for (SMSSupplier smsSupplier : SMSoIPApplication.getApp().getDeprecatedPlugins()) {
+            string += smsSupplier.getProvider().getProviderName() + "\n";
+        }
+        builder.setMessage(string).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+
     }
 
     public static void killAll() {

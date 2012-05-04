@@ -1,7 +1,6 @@
 package de.christl.smsoip.supplier.gmx;
 
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
 
 /**
  *
@@ -14,8 +13,4 @@ public class GMXOptionProvider extends OptionProvider {
         super(providerName);
     }
 
-    @Override
-    public Class<? extends SMSSupplier> getSupplier() {
-        return GMXSupplier.class;
-    }
 }

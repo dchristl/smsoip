@@ -347,7 +347,9 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void send() {
-        result = smsSupplier.fireSMS(textField.getText(), inputField.getText(), spinner != null ? spinner.getSelectedItem().toString() : null);
+        List<Editable> receiverList = new ArrayList<Editable>();
+        receiverList.add(inputField.getText());
+        result = smsSupplier.fireSMS(textField.getText(), receiverList, spinner != null ? spinner.getSelectedItem().toString() : null);
         if (result.equals(Result.NO_ERROR)) {
             refreshInformations(true);
         }
@@ -557,9 +559,9 @@ public class SendActivity extends DefaultActivity {
                 dialog = builder.create();
                 break;
             case DIALOG_PROVIDER:
-                List<ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+                Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
                 final List<ProviderEntry> filteredProviderEntries = new ArrayList<ProviderEntry>();
-                for (ProviderEntry providerEntry : providerEntries) {     //filter out cause current provider should not be shown
+                for (ProviderEntry providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
                     if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
                         filteredProviderEntries.add(providerEntry);
                     }

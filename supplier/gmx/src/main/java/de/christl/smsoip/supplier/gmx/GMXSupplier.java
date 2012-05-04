@@ -44,7 +44,7 @@ public class GMXSupplier implements SMSSupplier {
 
 
     @Override
-    public Result fireSMS(Editable smsText, Editable receiver, String spinnerText) {
+    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
         if (!result.equals(Result.NO_ERROR)) {
             return result;
@@ -55,7 +55,7 @@ public class GMXSupplier implements SMSSupplier {
         Map<String, String> parameterMap = new LinkedHashMap<String, String>();
         parameterMap.put("id8_hf_0", "");
         parameterMap.put("from", "0");
-        parameterMap.put("recipients", "{;;" + receiver + "}");
+        parameterMap.put("recipients", "{;;" + receivers.get(0) + "}");
         parameterMap.put("upload-panel:upload-form:file\"; filename=\"", "");
         parameterMap.put("subject", "");
         try {

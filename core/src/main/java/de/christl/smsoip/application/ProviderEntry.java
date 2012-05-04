@@ -8,25 +8,19 @@ import de.christl.smsoip.provider.SMSSupplier;
  */
 public class ProviderEntry {
 
-    private final String providerName;
-    private final Class<? extends SMSSupplier> supplier;
-    private String optionProviderClassName;
+    private final SMSSupplier supplier;
+    private OptionProvider provider;
 
-    public ProviderEntry(OptionProvider optionProviderClassName) {
-        this.optionProviderClassName = optionProviderClassName.getClass().getCanonicalName();
-        providerName = optionProviderClassName.getProviderName();
-        supplier = optionProviderClassName.getSupplier();
+    public ProviderEntry(SMSSupplier smsSupplier) {
+        supplier = smsSupplier;
+        provider = smsSupplier.getProvider();
     }
 
     public String getProviderName() {
-        return providerName;
+        return provider.getProviderName();
     }
 
     public String getSupplierClassName() {
-        return supplier.getCanonicalName();
-    }
-
-    public String getOptionProviderClassName() {
-        return optionProviderClassName;
+        return supplier.getClass().getCanonicalName();
     }
 }
