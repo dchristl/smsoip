@@ -50,4 +50,9 @@ public class GoodmailsOptionProvider extends OptionProvider {
             }
         });
     }
+
+    @Override
+    public int getMaxReceiverCount() {
+        return 1;
+    }
 }
