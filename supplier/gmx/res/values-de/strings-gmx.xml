@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="text_check_no_free_available">Bla</string>
-    <string name="text_check_no_free_available_long">Zeige eine Warnung, wenn keine kostenlosen SMS mehr verfügbar
+    <string name="text_check_no_free_available">Überprüfe auf kostenlose SMS</string>
+    <string name="text_check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
         sind.
     </string>
+    <string name="text_no_free_messages_available">Keine kostenlosen SMS verfügbar.</string>
 </resources>

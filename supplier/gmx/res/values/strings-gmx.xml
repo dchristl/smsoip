@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="text_check_no_free_available">Bla</string>
-    <string name="text_check_no_free_available_long">Show a warning, if no free texts are available anymore.</string>
+    <string name="text_check_no_free_available">Check for no free messages</string>
+    <string name="text_check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
+    <string name="text_no_free_messages_available">No free messages available.</string>
 </resources>

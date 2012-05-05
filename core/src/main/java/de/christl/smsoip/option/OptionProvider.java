@@ -18,6 +18,7 @@ public abstract class OptionProvider {
 
     String userName;
     String password;
+    private SharedPreferences settings;
 
 
     /**
@@ -43,7 +44,7 @@ public abstract class OptionProvider {
 
 
     private void initOptions() {
-        SharedPreferences settings = SMSoIPApplication.getApp().getSharedPreferences(getClass().getCanonicalName() + "_preferences", Context.MODE_PRIVATE);
+        settings = SMSoIPApplication.getApp().getSharedPreferences(getClass().getCanonicalName() + "_preferences", Context.MODE_PRIVATE);
         userName = settings.getString(ProviderPreferences.PROVIDER_USERNAME, "");
         password = settings.getString(ProviderPreferences.PROVIDER_PASS, "");
     }
@@ -85,5 +86,13 @@ public abstract class OptionProvider {
 
     public void refresh() {
         initOptions();
+    }
+
+    public SharedPreferences getSettings() {
+        return settings;
+    }
+
+    public final String getTextByResourceId(int resourceId) {
+        return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 }

@@ -1,6 +1,7 @@
 package de.christl.smsoip.application;
 
 import android.content.pm.ApplicationInfo;
+import android.content.res.Resources;
 import dalvik.system.PathClassLoader;
 
 import java.util.HashSet;
@@ -11,11 +12,13 @@ import java.util.Set;
  */
 public class SMSoIPPlugin {
     private ApplicationInfo installedApplication;
+    private Resources resources;
     private PathClassLoader classLoader;
     private Set<String> availableClasses = new HashSet<String>();
 
-    public SMSoIPPlugin(ApplicationInfo installedApplication) {
+    public SMSoIPPlugin(ApplicationInfo installedApplication, Resources resourcesForApplication) {
         this.installedApplication = installedApplication;
+        resources = resourcesForApplication;
     }
 
     public String getSourceDir() {
@@ -34,6 +37,7 @@ public class SMSoIPPlugin {
         return classLoader;
     }
 
+
     public boolean isClassAvailable(String className) {
         for (String availableClass : availableClasses) {
             if (availableClass.equals(className)) {
@@ -41,5 +45,9 @@ public class SMSoIPPlugin {
             }
         }
         return false;
+    }
+
+    public String resolveResource(int resourceId) {
+        return resources.getString(resourceId);
     }
 }

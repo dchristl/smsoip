@@ -48,6 +48,15 @@ public class GMXSupplier implements SMSSupplier {
         if (!result.equals(Result.NO_ERROR)) {
             return result;
         }
+        if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
+            Result tmpResult = refreshInformations(true);
+            if (tmpResult.equals(Result.NO_ERROR)) {
+                boolean noFreeAvailable = tmpResult.getUserText().toString().contains(" 0 ");
+                if (noFreeAvailable) {
+                    return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_no_free_messages_available));
+                }
+            }
+        }
         String tmpUrl = String.format(TARGET_URL, sessionId);
 
         String boundary = "--" + Long.toHexString(System.currentTimeMillis());
@@ -137,8 +146,8 @@ public class GMXSupplier implements SMSSupplier {
         return refreshInformations(true);
     }
 
-    private Result refreshInformations(boolean afterMessageSentSuccessful) {
-        if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
+    private Result refreshInformations(boolean noLoginBefore) {
+        if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
                 return result;

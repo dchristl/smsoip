@@ -2,9 +2,12 @@ package de.christl.smsoip.application;
 
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.util.Log;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 
 import java.io.IOException;
@@ -32,7 +35,8 @@ public class SMSoIPApplication extends Application {
             plugins = new ArrayList<SMSoIPPlugin>();
             for (ApplicationInfo installedApplication : installedApplications) {
                 if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
-                    plugins.add(new SMSoIPPlugin(installedApplication));
+                    Resources resourcesForApplication = getPackageManager().getResourcesForApplication(installedApplication);
+                    plugins.add(new SMSoIPPlugin(installedApplication, resourcesForApplication));
                 }
             }
             for (SMSoIPPlugin plugin : plugins) {
@@ -82,6 +86,8 @@ public class SMSoIPApplication extends Application {
             Log.e(this.getClass().getCanonicalName(), "", e);
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
         }
     }
 
@@ -97,8 +103,8 @@ public class SMSoIPApplication extends Application {
     public <TYPE> TYPE getInstance(String className) {
         try {
             ClassLoader pathClassLoader = getClassLoaderForClass(className);
-            Class supplierClass = Class.forName(className, false, pathClassLoader);
-            return (TYPE) supplierClass.newInstance();
+            Class clazz = Class.forName(className, false, pathClassLoader);
+            return (TYPE) clazz.newInstance();
         } catch (IllegalAccessException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         } catch (InstantiationException e) {
@@ -119,7 +125,24 @@ public class SMSoIPApplication extends Application {
     }
 
 
+    private SMSoIPPlugin getPluginForClass(String className) {
+        for (SMSoIPPlugin plugin : plugins) {
+            if (plugin.isClassAvailable(className)) {
+                return plugin;
+            }
+        }
+        return null;
+    }
+
     public List<SMSSupplier> getDeprecatedPlugins() {
         return deprecatedPlugins;
+    }
+
+    public String getTextByResourceId(OptionProvider optionProvider, int resourceId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveResource(resourceId);
+        }
+        return getText(resourceId).toString();
     }
 }
