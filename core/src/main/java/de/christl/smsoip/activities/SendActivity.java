@@ -316,12 +316,7 @@ public class SendActivity extends DefaultActivity {
             }
 
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                int smsCount = 0;
-                if (charSequence.length() != 0) {
-                    smsCount = Math.round((charSequence.length() / 160));
-                    smsCount = charSequence.length() % 160 == 0 ? smsCount : smsCount + 1;
-                }
-                smssigns.setText(String.format(SIGNSCONSTANT.toString(), charSequence.length(), smsCount));
+                updateSMScounter(charSequence);
             }
 
             public void afterTextChanged(Editable editable) {
@@ -329,6 +324,17 @@ public class SendActivity extends DefaultActivity {
             }
         });
 
+    }
+
+    private void updateSMScounter(CharSequence charSequence) {
+        int smsCount = 0;
+        int messageLength = smsSupplier.getProvider().getTextMessageLength();
+
+        if (charSequence.length() != 0) {
+            smsCount = Math.round((charSequence.length() / messageLength));
+            smsCount = charSequence.length() % messageLength == 0 ? smsCount : smsCount + 1;
+        }
+        smssigns.setText(String.format(SIGNSCONSTANT.toString(), charSequence.length(), smsCount));
     }
 
     private void setSearchButton() {
@@ -343,20 +349,9 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void setSpinner() {
-        String[] array_spinner = smsSupplier.getSpinnerItems();
-
-        boolean isVisible = array_spinner != null && array_spinner.length > 0;
-        int viewType = isVisible ? View.VISIBLE : View.INVISIBLE;
-        findViewById(R.id.typeText).setVisibility(viewType);
         spinner = (Spinner) findViewById(R.id.typeSpinner);
-        spinner.setVisibility(viewType);
-        if (isVisible) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_spinner_item, array_spinner);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-        }
-
+        smsSupplier.getProvider().createSpinner(this, spinner);
+        findViewById(de.christl.smsoip.R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
     private void send() {
@@ -594,10 +589,14 @@ public class SendActivity extends DefaultActivity {
         setTitle(smsSupplier.getProvider().getProviderName());
         //reset all not needed infoormations
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
+        updateSMScounter();
         infoText = null;
         result = null;
         setSpinner();
     }
 
 
+    public void updateSMScounter() {
+        updateSMScounter(textField.getText());
+    }
 }

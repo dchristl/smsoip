@@ -48,14 +48,6 @@ public interface SMSSupplier {
     String getProviderInfo();
 
     /**
-     * an array of all items for the optional spinner at sendactivity
-     * if null or empty no spinner will be visible
-     *
-     * @return an array of items or null
-     */
-    String[] getSpinnerItems();
-
-    /**
      * the corresponding provider of this supplier
      *
      * @return corresponding provider
@@ -75,7 +67,7 @@ public interface SMSSupplier {
      * will be called on send SMS button
      *
      * @param smsText     - the message text
-     * @param receivers
+     * @param receivers   - lis of all receivers
      * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on success or any other otherwise
      */
     Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText);

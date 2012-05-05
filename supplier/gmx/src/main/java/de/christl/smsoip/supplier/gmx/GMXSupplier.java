@@ -180,11 +180,6 @@ public class GMXSupplier implements SMSSupplier {
 
 
     @Override
-    public String[] getSpinnerItems() {
-        return null;
-    }
-
-    @Override
     public OptionProvider getProvider() {
         return provider;
     }

@@ -3,6 +3,9 @@ package de.christl.smsoip.option;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.Preference;
+import android.view.View;
+import android.widget.Spinner;
+import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 
@@ -94,5 +97,14 @@ public abstract class OptionProvider {
 
     public final String getTextByResourceId(int resourceId) {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
+    }
+
+    public int getTextMessageLength() {
+        return 160;
+    }
+
+
+    public void createSpinner(SendActivity sendActivity, Spinner spinner) {
+        spinner.setVisibility(View.INVISIBLE);
     }
 }

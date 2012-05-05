@@ -5,9 +5,13 @@ import android.util.Log;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.supplier.goodmails.constant.Constants;
 
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -27,10 +31,6 @@ public class GoodmailsSupplier implements SMSSupplier {
 
     private boolean found = false;
     OptionProvider provider;
-
-    private static final String FREE = "FREE (0 Credits)";
-    private static final String STANDARD = "STANDARD (10 Credits)";
-    private static final String FAKE = "FAKE (12 Credits)";
 
     static final String NOT_ALLOWED_YET = "NOT ALLOWED YET"; ///special case on resend
     static final String MESSAGE_SENT_SUCCESSFUL = "Die SMS wurde erfolgreich verschickt.";
@@ -76,13 +76,13 @@ public class GoodmailsSupplier implements SMSSupplier {
             urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
             OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
             String headerFields = "&to=" + receivers.get(0) + "&smsText=" + URLEncoder.encode(smsText.toString(), encoding);
-            if (spinnerText.equals(FREE)) {
+            if (spinnerText.equals(Constants.FREE)) {
                 headerFields += "&type=freesms";
                 lastSentType = "FREE";
-            } else if (spinnerText.equals(STANDARD)) {
+            } else if (spinnerText.equals(Constants.STANDARD)) {
                 headerFields += "&type=standardsms";
                 lastSentType = "STANDARD";
-            } else if (spinnerText.equals(FAKE)) {
+            } else if (spinnerText.equals(Constants.FAKE)) {
                 headerFields += "&type=aksms";
                 lastSentType = "FAKE";
             }
@@ -225,10 +225,6 @@ public class GoodmailsSupplier implements SMSSupplier {
         return "GM -> " + lastSentType;
     }
 
-    @Override
-    public String[] getSpinnerItems() {
-        return new String[]{GoodmailsSupplier.FREE, GoodmailsSupplier.STANDARD, GoodmailsSupplier.FAKE};
-    }
 
     @Override
     public OptionProvider getProvider() {
