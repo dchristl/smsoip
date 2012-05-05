@@ -117,10 +117,14 @@ public class GoodmailsSupplier implements SMSSupplier {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
             }
         }
+        String alternateText = builder.toString();
         if (messageSuccessful(builder)) {
-            return Result.UNKNOWN_ERROR.setAlternateText(builder.toString());
+            if (alternateText.equals("NOT ALLOWED YET")) {
+                alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
+            }
+            return Result.UNKNOWN_ERROR.setAlternateText(alternateText);
         }
-        return Result.NO_ERROR.setAlternateText(builder.toString());
+        return Result.NO_ERROR.setAlternateText(alternateText);
     }
 
     private boolean messageSuccessful(StringBuilder builder) {
