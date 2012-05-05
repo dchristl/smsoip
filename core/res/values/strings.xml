@@ -25,7 +25,7 @@
     <string name="text_noNumber">No number found</string>
     <string name="text_smscomitted">Message will be sent</string>
     <string name="text_ok">OK</string>
-    <string name="text_no">Cance</string>
+    <string name="text_no">Cancel</string>
     <string name="text_wantClear">All inputs will be deleted!</string>
     <string name="text_error">Error</string>
     <string name="text_success">Success</string>
