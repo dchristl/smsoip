@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.provider.SMSSupplier;
 
@@ -68,7 +70,7 @@ public class AllActivity extends Activity {
             showDeprecatedProvidersDialog();
         } else if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
             showNoProvidersDialog();
-        } else {
+        } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferences.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
 
             ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

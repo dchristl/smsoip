@@ -34,7 +34,7 @@
     <string name="text_loginFailed">Pass invalid!</string>
     <string name="text_notyetrefreshed">Not yet refreshed</string>
     <string name="cb_default">Set as default</string>
-    <string name="description">Sending SMS by Goodmails and GMX</string>
+    <string name="description">Sending SMS by several providers</string>
     <string name="text_pleaseWait">Please wait</string>
     <string name="text_noNumberInput">No number entered!</string>
     <string name="text_noTextInput">No message entered!</string>
@@ -65,5 +65,10 @@
     <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
     <string name="text_checkLogin">Check credentials</string>
     <string name="text_deprecated_providers">Following plugins could not be loaded. Please update:</string>
-
+    <string name="text_enable_network_check">Enable network check</string>
+    <string name="text_enable_network_check_description">Enable the check on startup if network is available and shows
+        you additional options, like enabling W-LAN
+    </string>
+    <string name="text_enable_provider_output">Enable output of provider after sending</string>
+    <string name="text_enable_provider_output_description">After successful sent message the message will go in normal message outbox of your mobile. This enables the advice in outbox (e.g. SMSoIP (GMX)) before your message.</string>
 </resources>

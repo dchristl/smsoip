@@ -298,7 +298,11 @@ public class SendActivity extends DefaultActivity {
     private void writeSMSInDatabase() {
         ContentValues values = new ContentValues();
         values.put("address", inputField.getText().toString());
-        values.put("body", "SMSoIP (" + smsSupplier.getProviderInfo() + "): " + textField.getText().toString());
+        String prefix = "";
+        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
+            prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
+        }
+        values.put("body", prefix + textField.getText().toString());
         getContentResolver().insert(Uri.parse("content://sms/sent"), values);
     }
 

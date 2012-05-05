@@ -33,7 +33,7 @@
     <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
     <string name="cb_default">Als Standard setzen</string>
-    <string name="description">Senden von SMS über Goodmails oder GMX</string>
+    <string name="description">Senden von SMS über diverse Anbieter</string>
     <string name="text_pleaseWait">Bitte warten</string>
     <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
     <string name="text_noTextInput">Kein Text eingegeben!</string>
@@ -63,4 +63,10 @@
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
     <string name="text_checkLogin">Zugangsdaten überprüfen</string>
     <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="text_enable_network_check">Aktiviere die Netzwerküberprüfung</string>
+    <string name="text_enable_network_check_description">Aktiviert beim Start der Applikation, ob ein Netzwerk verfügbar
+        ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
+    </string>
+    <string name="text_enable_provider_output">Aktiviere die Ausgabe des Anbieters nach dem Senden</string>
+    <string name="text_enable_provider_output_description">Nachdem eine SMS erfolgreich versendet wurde, wird diese in die normalen ausgehenden Nachrichten geschrieben. Dies aktiviert den Hinweis, dass diese Nachricht über SMSoIP versendet wurde durch z.B. SMSoIP (GMX) vor der Nachricht.</string>
 </resources>

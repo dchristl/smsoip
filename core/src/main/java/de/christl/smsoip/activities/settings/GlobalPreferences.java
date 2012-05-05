@@ -20,6 +20,8 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_SIGNATURE = "global.signature";
     public static final String GLOBAL_DEFAULT_PROVIDER = "global.default.provider";
     public static final String GLOBAL_AREA_CODE = "global.area.code";
+    public static final String GLOBAL_ENABLE_NETWORK_CHECK = "global.enable.network.check";
+    public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.propvider.output";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,19 @@ public class GlobalPreferences extends PreferenceActivity {
         defaultAreaCode.setSummary(R.string.text_area_code_description);
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
+
+        CheckBoxPreference enableNetworkCheck = new CheckBoxPreference(this);
+        enableNetworkCheck.setDefaultValue(true);
+        enableNetworkCheck.setKey(GLOBAL_ENABLE_NETWORK_CHECK);
+        enableNetworkCheck.setTitle(R.string.text_enable_network_check);
+        enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
+        root.addPreference(enableNetworkCheck);
+        CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
+        enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
+        enableProviderOutput.setDefaultValue(true);
+        enableProviderOutput.setTitle(R.string.text_enable_provider_output);
+        enableProviderOutput.setSummary(R.string.text_enable_provider_output_description);
+        root.addPreference(enableProviderOutput);
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
         String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "http://problemexterminator.blogspot.de/p/smsoip-de.html" : "http://problemexterminator.blogspot.de/p/smsoip.html";
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
