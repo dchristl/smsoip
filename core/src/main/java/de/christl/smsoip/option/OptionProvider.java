@@ -83,4 +83,7 @@ public abstract class OptionProvider {
         return Integer.MAX_VALUE;
     }
 
+    public void refresh() {
+        initOptions();
+    }
 }

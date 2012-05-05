@@ -10,7 +10,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -23,7 +22,6 @@ import java.util.Map;
 public class GMXSupplier implements SMSSupplier {
 
     OptionProvider provider;
-    StringBuffer returnFromServer;
     /**
      * this.getClass().getCanonicalName() for output.
      */
@@ -37,6 +35,7 @@ public class GMXSupplier implements SMSSupplier {
     private DataInputStream lastInputStream;
     private String genericRadioButtonId;
     private static final String CRLF = "\r\n";
+    private final static String ENCODING = "UTF-8";
 
     public GMXSupplier() {
         provider = new GMXOptionProvider();
@@ -50,7 +49,7 @@ public class GMXSupplier implements SMSSupplier {
             return result;
         }
         String tmpUrl = String.format(TARGET_URL, sessionId);
-        String encoding = "UTF-8";
+
         String boundary = "--" + Long.toHexString(System.currentTimeMillis());
         Map<String, String> parameterMap = new LinkedHashMap<String, String>();
         parameterMap.put("id8_hf_0", "");
@@ -58,12 +57,7 @@ public class GMXSupplier implements SMSSupplier {
         parameterMap.put("recipients", "{;;" + receivers.get(0) + "}");
         parameterMap.put("upload-panel:upload-form:file\"; filename=\"", "");
         parameterMap.put("subject", "");
-        try {
-            parameterMap.put("textMessage", URLEncoder.encode(smsText.toString(), encoding));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-        }
-
+        parameterMap.put("textMessage", smsText.toString());
         parameterMap.put("send-date-panel:send-date-form:send-options-rdgrp", genericRadioButtonId);
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         parameterMap.put("send-date-panel:send-date-form:send-date", sdf.format(new Date()));
@@ -82,7 +76,7 @@ public class GMXSupplier implements SMSSupplier {
             con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             con.setRequestProperty("Cookie", "dev=dsk");
             OutputStream output = con.getOutputStream();
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, encoding), true);
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
             for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
                 writer.append("--").append(boundary).append(CRLF);
                 writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
@@ -91,17 +85,9 @@ public class GMXSupplier implements SMSSupplier {
 
             }
             writer.append("--").append(boundary).append("--").append(CRLF).flush();
-            //            if (true) {
-            //                returnFromServer = new StringBuffer(errorHeader + " ");
-            //                returnFromServer.append("NOT YET IMPLEMENTED");
-            //                return; //TODO Check
-            //            }
-            InputStream is = con.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                processLine(line);
-            }
+            return processReturn(con.getInputStream());
+
+
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return Result.TIMEOUT_ERROR;
@@ -109,18 +95,35 @@ public class GMXSupplier implements SMSSupplier {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return Result.NETWORK_ERROR;
         }
-        return Result.NO_ERROR;
     }
 
-    private void processLine(String line) {  //<div id="confirmation_message_text">Ihre SMS wurde erfolgreich Ã¼bermittelt.</div>
-        if (line.contains("confirmation_message_text")) {
-            String tmp = line.replaceAll(".*<div id=\"confirmation_message_text\">", "");
-            returnFromServer.append(tmp.replaceAll("</div>.*", ""));
+    private Result processReturn(InputStream is) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
+
+
+        String line;
+        StringBuilder returnFromServer = new StringBuilder();
+        while ((line = reader.readLine()) != null) {
+            returnFromServer.append(line);
         }
+        String message = returnFromServer.toString();
+        if (message.contains("feedbackPanelERROR")) {
+            message = message.replaceAll(".*<span class=\"feedbackPanelERROR\">", "");
+            message = message.replaceAll("<.*", "");
+            //some additional clean up
+            message = message.replaceAll("[\\[\\]^]", "");
+            return Result.UNKNOWN_ERROR.setAlternateText(message);
+        } else if (message.contains("confirmation_message_text")) {
+            message = message.replaceAll(".*<div id=\"confirmation_message_text\">", "");
+            message = message.replaceAll("<.*", "");
+            return Result.NO_ERROR.setAlternateText(message);
+        }
+
+        return Result.UNKNOWN_ERROR.setAlternateText(message);
     }
 
     @Override
-    public Result refreshInformationOnRefreshButtonPresses() {
+    public Result refreshInformationOnRefreshButtonPressed() {
         Result result = refreshInformations(false);
         if (result.equals(Result.NO_ERROR) && result.getUserText().equals("")) {              //informations are not available at first try so do it twice
             result = refreshInformations(false);

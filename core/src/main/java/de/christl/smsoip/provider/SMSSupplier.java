@@ -28,10 +28,10 @@ public interface SMSSupplier {
      * @return Result.NO_ERRORS add additional info for the informations next to refresh button<br/>
      *         any other error if not successful
      */
-    Result refreshInformationOnRefreshButtonPresses();
+    Result refreshInformationOnRefreshButtonPressed();
 
     /**
-     * this will called after message is sent successful, is splitted by refreshInformationOnRefreshButtonPresses
+     * this will called after message is sent successful, is splitted by refreshInformationOnRefreshButtonPressed
      * for possibility to increase performance
      * (e.g. call login twice on message sent and on refresh)
      *

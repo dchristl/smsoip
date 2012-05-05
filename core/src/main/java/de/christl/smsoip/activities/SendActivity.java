@@ -3,7 +3,10 @@ package de.christl.smsoip.activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +70,12 @@ public class SendActivity extends DefaultActivity {
     private Result result;
     private SharedPreferences settings;
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        smsSupplier.getProvider().refresh();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -261,6 +270,7 @@ public class SendActivity extends DefaultActivity {
             dialog.setOwnerActivity(this);
             dialog.show();
             killDialogAfterAWhile(dialog);
+            writeSMSInDatabase();
             clearAllInputs();
         } else {
             Spanned msg = new SpannableString(result.getUserText());
@@ -268,8 +278,6 @@ public class SendActivity extends DefaultActivity {
             dialog.setOwnerActivity(this);
             dialog.show();
             killDialogAfterAWhile(dialog);
-            writeSMSInDatabase();
-
         }
     }
 
@@ -349,17 +357,19 @@ public class SendActivity extends DefaultActivity {
     private void send() {
         List<Editable> receiverList = new ArrayList<Editable>();
         receiverList.add(inputField.getText());
-        result = smsSupplier.fireSMS(textField.getText(), receiverList, spinner != null ? spinner.getSelectedItem().toString() : null);
+        result = smsSupplier.fireSMS(textField.getText(), receiverList, spinner.getVisibility() == View.INVISIBLE ? null : spinner.getSelectedItem().toString());
         if (result.equals(Result.NO_ERROR)) {
             refreshInformations(true);
         }
     }
 
     private void refreshInformations(boolean afterMessageSuccessfulSent) {
-        Result tmpResult = afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPresses();
+        Result tmpResult = afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
         infoText = tmpResult.getUserText();
         if (!tmpResult.equals(Result.NO_ERROR)) {
             result = tmpResult;
+        } else if (!afterMessageSuccessfulSent) {
+            result = null; //set it to null if only refresh button is pressed, return is not from interest
         }
     }
 
@@ -482,7 +492,7 @@ public class SendActivity extends DefaultActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
-                inputCheckQuestion();
+                startOptionActivity();
                 return true;
             case OPTION_SWITCH:
                 removeDialog(DIALOG_PROVIDER); //remove the dialog forces recreation
@@ -497,24 +507,6 @@ public class SendActivity extends DefaultActivity {
         }
     }
 
-    private void inputCheckQuestion() {
-
-        if (inputField.getText().toString().trim().length() != 0 || textField.getText().toString().trim().length() != 0) {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        startOptionActivity();
-                    }
-                }
-            };
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.text_inputsLost)).setPositiveButton(getString(R.string.text_yesOption), dialogClickListener)
-                    .setNegativeButton(getString(R.string.text_noOption), dialogClickListener).show();
-        } else {
-            startOptionActivity();
-        }
-    }
 
     private void startOptionActivity() {
         Intent intent =
@@ -543,7 +535,7 @@ public class SendActivity extends DefaultActivity {
                 final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setIcon(R.drawable.checkloginbutton);
+                builder.setIcon(de.christl.smsoip.R.drawable.checkloginbutton);
                 builder.setItems(smileyItems, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         CharSequence smiley = smileyItems[item];

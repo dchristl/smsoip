@@ -129,7 +129,7 @@ public class GoodmailsSupplier implements SMSSupplier {
 
 
     @Override
-    public Result refreshInformationOnRefreshButtonPresses() {
+    public Result refreshInformationOnRefreshButtonPressed() {
         return refreshInformations(false);
     }
 

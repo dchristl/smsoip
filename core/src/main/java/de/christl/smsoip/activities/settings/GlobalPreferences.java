@@ -64,9 +64,7 @@ public class GlobalPreferences extends PreferenceActivity {
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
-        //TODO correct this when website ready
-        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "http://problemexterminator.blogspot.de" :
-                "http://problemexterminator.blogspot.de/p/smsoip.html";
+        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "http://problemexterminator.blogspot.de/p/smsoip-de.html" : "http://problemexterminator.blogspot.de/p/smsoip.html";
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
                 .setData(Uri.parse(uriString)));
         intentPref.setTitle(R.string.text_visit_project_page);

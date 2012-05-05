@@ -44,7 +44,6 @@
     <string name="text_saveChanges">Änderungen speichern?</string>
     <string name="text_yesOption">Ja</string>
     <string name="text_noOption">Nein</string>
-    <string name="text_inputsLost">Alle Eingaben gehen verloren. Wollen Sie wirklich fortfahren?</string>
     <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
     <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
     <string name="button_cancel">Abbrechen</string>
