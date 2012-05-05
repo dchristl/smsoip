@@ -75,6 +75,7 @@ public class SendActivity extends DefaultActivity {
     protected void onResume() {
         super.onResume();
         smsSupplier.getProvider().refresh();
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
