@@ -2,8 +2,11 @@ package de.christl.smsoip.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +28,8 @@ public class MainActivity extends AllActivity {
     private String givenNumber;
     private Map<String, ProviderEntry> providerEntries;
     private SharedPreferences settings;
+    private String name;
+    private String id = "-1";
 
 
     /**
@@ -34,7 +39,30 @@ public class MainActivity extends AllActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
-        givenNumber = getIntent().getData() != null ? getIntent().getData().getSchemeSpecificPart() : null;
+        Uri data = getIntent().getData();
+        if (data != null) {
+            name = (String) getText(R.string.text_unknown);
+            givenNumber = data.getSchemeSpecificPart();
+            String[] projection = new String[]{
+                    ContactsContract.PhoneLookup.DISPLAY_NAME,
+                    ContactsContract.PhoneLookup._ID};
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(givenNumber));
+            Cursor query = getContentResolver().query(uri, projection, null, null, null);
+            while (query.moveToNext()) {
+                name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                if (name == null || name.equals("")) {
+                    name = (String) getText(R.string.text_unknown);
+                }
+                id = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                if (id == null || id.equals("")) {
+                    id = "-1";
+                }
+            }
+            query.close();
+        } else {
+            givenNumber = null;
+        }
+
         providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         setContentView(R.layout.main);
         Bundle extras = getIntent().getExtras();
@@ -90,6 +118,8 @@ public class MainActivity extends AllActivity {
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, defaultSupplierClass);
                 intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
+                intent.putExtra(SendActivity.GIVEN_NAME, name);
+                intent.putExtra(SendActivity.GIVEN_ID, id);
                 SendActivity.infoMsg = null;
                 startActivity(intent);
             }
@@ -125,6 +155,8 @@ public class MainActivity extends AllActivity {
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, supplierClassName);
                 intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
+                intent.putExtra(SendActivity.GIVEN_NAME, name);
+                intent.putExtra(SendActivity.GIVEN_ID, id);
                 SendActivity.infoMsg = null;
                 startActivity(intent);
             }

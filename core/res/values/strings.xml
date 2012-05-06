@@ -16,7 +16,7 @@
     <string name="text_signature">Signature</string>
     <string name="text_signature_description">Signature, that can be appended to message.</string>
     <string name="button_save">Save</string>
-    <string name="hint_targetnumber">Target number</string>
+    <string name="hint_targetnumber">Receivers</string>
     <string name="hint_smsText">Message</string>
     <string name="hint_sendernumber">Sender</string>
     <string name="text_chooseType">Choose type</string>
@@ -70,5 +70,10 @@
         you additional options, like enabling W-LAN.
     </string>
     <string name="text_enable_provider_output">Enable output of provider</string>
-    <string name="text_enable_provider_output_description">After successful sent message the message will go in normal message outbox of your mobile. This enables an indication for texts sent by SMSoIP</string>
+    <string name="text_enable_provider_output_description">After successful sent message the message will go in normal
+        message outbox of your mobile. This enables an indication for texts sent by SMSoIP
+    </string>
+    <string name="name_heading">name</string>
+    <string name="number_heading">number</string>
+    <string name="text_unknown">Unknown</string>
 </resources>

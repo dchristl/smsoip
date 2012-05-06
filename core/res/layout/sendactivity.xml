@@ -24,13 +24,24 @@
                     >
                 <EditText
                         android:id="@+id/numberInput"
+                        android:lines="1"
+                        android:scrollbars="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:phoneNumber="true"
                         android:hint="@string/hint_targetnumber"
                         android:minEms="7"
+                        android:maxLength="25"
                         >
                 </EditText>
+                <ImageButton
+                        android:id="@+id/showChosenContacts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/showchosencontactsdialog"
+                        android:visibility="gone"
+                        >
+                </ImageButton>
                 <ImageButton
                         android:id="@+id/searchButton"
                         android:layout_width="wrap_content"
@@ -38,6 +49,9 @@
                         android:src="@drawable/searchbutton"
                         >
                 </ImageButton>
+
+                <!--<de.christl.smsoip.ui.SmallCheckBox android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"></de.christl.smsoip.ui.SmallCheckBox>-->
 
             </LinearLayout>
             <TextView

@@ -11,7 +11,7 @@
 
     <application android:icon="@drawable/icon" android:label="@string/applicationName" android:description="@string/description"
                  android:name=".application.SMSoIPApplication">
-        <activity android:name=".activities.MainActivity" android:configChanges="orientation">
+        <activity android:name=".activities.MainActivity" android:configChanges="orientation" android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

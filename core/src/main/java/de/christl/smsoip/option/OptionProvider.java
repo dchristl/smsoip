@@ -105,6 +105,6 @@ public abstract class OptionProvider {
 
 
     public void createSpinner(SendActivity sendActivity, Spinner spinner) {
-        spinner.setVisibility(View.INVISIBLE);
+        spinner.setVisibility(View.GONE);
     }
 }

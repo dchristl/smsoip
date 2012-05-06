@@ -16,7 +16,7 @@
     <string name="text_signature">Signatur</string>
     <string name="text_signature_description">Die Signatur, die zur Nachricht per Klick hinzugefügt werden kann.</string>
     <string name="button_save">Speichern</string>
-    <string name="hint_targetnumber">Zielnummer</string>
+    <string name="hint_targetnumber">Empfänger</string>
     <string name="hint_smsText">Nachricht</string>
     <string name="hint_sendernumber">Absender</string>
     <string name="text_chooseType">Typ wählen</string>
@@ -70,4 +70,7 @@
     </string>
     <string name="text_enable_provider_output">Providerausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachdem eine SMS erfolgreich versendet wurde, wird diese in die normalen ausgehenden Nachrichten geschrieben und mit einem Indikator versehen.</string>
+    <string name="name_heading">Name</string>
+    <string name="number_heading">Nummer</string>
+    <string name="text_unknown">Unbekannt</string>
 </resources>

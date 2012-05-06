@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
-import android.text.method.DigitsKeyListener;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
@@ -24,12 +23,10 @@ import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.ImageDialog;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,15 +41,16 @@ public class SendActivity extends DefaultActivity {
 
     public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
     public static final String GIVEN_NUMBER = "givenNumber";
-    public CharSequence SIGNSCONSTANT;
+    public static final String GIVEN_NAME = "givenName";
+    public static String GIVEN_ID = "givenId";
 
+
+    public CharSequence SIGNSCONSTANT;
     private ProgressDialog progressDialog;
 
 
     public static String infoMsg = null;
     final Handler updateUIHandler = new Handler();
-
-
     final Runnable updateRunnable = new Runnable() {
         public void run() {
             showReturnMessage();
@@ -63,13 +61,14 @@ public class SendActivity extends DefaultActivity {
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH = 31;
     private static final int DIALOG_SMILEYS = 32;
+
     private static final int DIALOG_PROVIDER = 33;
     private static final int GLOBAL_OPTION = 34;
-
     private CharSequence infoText;
+
     private Result result;
     private SharedPreferences settings;
-
+    List<Receiver> receiverList = new ArrayList<Receiver>();
 
     @Override
     protected void onResume() {
@@ -121,17 +120,37 @@ public class SendActivity extends DefaultActivity {
         });
 
         if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
-            setReceiverNumber(String.valueOf(currProvider.get(GIVEN_NUMBER)));
+            receiverList.add(new Receiver(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER))));
+            updateViewOnChangedReceivers();
         }
         setNumberListener();
         setSearchButton();
         setClearButton();
         setRefreshButton();
         setSigButton();
+        setShowChosenContactsDialog();
         setShortTextButton();
         setSmileyButton();
         setTextArea();
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+    }
+
+    private void setShowChosenContactsDialog() {
+        ImageButton smileyButton = (ImageButton) findViewById(R.id.showChosenContacts);
+        smileyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ChosenContactsDialog dialog = new ChosenContactsDialog(SendActivity.this, receiverList);
+                dialog.setOwnerActivity(SendActivity.this);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        updateViewOnChangedReceivers();
+                    }
+                });
+                dialog.show();
+            }
+        });
     }
 
     private void setSmileyButton() {
@@ -185,16 +204,12 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void setNumberListener() {
-        DigitsKeyListener numberListener =
-                new DigitsKeyListener(false, false); // first true : is signed, second one : is decimal
-        inputField.setKeyListener(numberListener);
-
-
+        inputField.setKeyListener(null);
     }
 
     private boolean precheck() {
         String toastMessage = "";
-        if (inputField.getText().toString().trim().length() == 0) {
+        if (receiverList.size() == 0) {
             toastMessage += getString(R.string.text_noNumberInput);
         }
         if (textField.getText().toString().trim().length() == 0) {
@@ -254,8 +269,9 @@ public class SendActivity extends DefaultActivity {
 
 
     private void clearAllInputs() {
-        inputField.setText("");
+        receiverList.clear();
         textField.setText("");
+        updateViewOnChangedReceivers();
     }
 
     private void showReturnMessage() {
@@ -297,14 +313,16 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void writeSMSInDatabase() {
-        ContentValues values = new ContentValues();
-        values.put("address", inputField.getText().toString());
-        String prefix = "";
-        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
-            prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
+        for (Receiver receiver : receiverList) {
+            ContentValues values = new ContentValues();
+            values.put("address", receiver.getReceiverNumber());    //TODO check for multiple sender
+            String prefix = "";
+            if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
+                prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
+            }
+            values.put("body", prefix + textField.getText().toString());
+            getContentResolver().insert(Uri.parse("content://sms/sent"), values);
         }
-        values.put("body", prefix + textField.getText().toString());
-        getContentResolver().insert(Uri.parse("content://sms/sent"), values);
     }
 
 
@@ -355,9 +373,11 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void send() {
-        List<Editable> receiverList = new ArrayList<Editable>();
-        receiverList.add(inputField.getText());
-        result = smsSupplier.fireSMS(textField.getText(), receiverList, spinner.getVisibility() == View.INVISIBLE ? null : spinner.getSelectedItem().toString());
+        List<Editable> numberList = new ArrayList<Editable>(receiverList.size());
+        for (Receiver receiver : receiverList) {
+            numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
+        }
+        result = smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
         if (result.equals(Result.NO_ERROR)) {
             refreshInformations(true);
         }
@@ -380,10 +400,12 @@ public class SendActivity extends DefaultActivity {
             if (resultCode == RESULT_OK) {
                 String pickedId = null;
                 boolean hasPhone = false;
+                String name = null;
                 Uri contactData = data.getData();
                 Cursor contactCur = managedQuery(contactData, null, null, null, null);
                 if (contactCur.moveToFirst()) {
                     pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                    name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                     hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
                 }
                 if (pickedId != null && hasPhone) {
@@ -406,13 +428,17 @@ public class SendActivity extends DefaultActivity {
                     }
                     if (presentationLayer.size() == 1) {
                         for (String s : presentationLayer.keySet()) {
-                            setReceiverNumber(s);
+                            String receiverNumber = fixNumber(s);
+                            receiverList.add(new Receiver(pickedId, name, receiverNumber));
+                            updateViewOnChangedReceivers();
                         }
                         return;
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     final String[] items = presentationLayer.values().toArray(new String[presentationLayer.size()]);
                     builder.setTitle(getText(R.string.text_pickNumber));
+                    final String finalName = name;
+                    final String finalPickedId = pickedId;
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
                             String key = null;
@@ -422,7 +448,9 @@ public class SendActivity extends DefaultActivity {
                                     break;
                                 }
                             }
-                            setReceiverNumber(presentationLayer.get(key));
+                            String fixedNumber = fixNumber(presentationLayer.get(key));
+                            receiverList.add(new Receiver(finalPickedId, finalName, fixedNumber));
+                            updateViewOnChangedReceivers();
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -447,7 +475,28 @@ public class SendActivity extends DefaultActivity {
     }
 
 
-    private void setReceiverNumber(String rawNumber) {
+    private void updateViewOnChangedReceivers() {
+        StringBuilder builder = new StringBuilder();
+        //remove all disabled providers
+        for (Iterator<Receiver> iterator = receiverList.iterator(); iterator.hasNext(); ) {
+            Receiver next = iterator.next();
+            if (!next.isEnabled()) {
+                iterator.remove();
+            }
+        }
+        for (int i = 0, receiverListSize = receiverList.size(); i < receiverListSize; i++) {
+            Receiver receiver = receiverList.get(i);
+            builder.append(receiver.getName()).append(" (");
+            builder.append(receiver.getReceiverNumber());
+            builder.append(")");
+            builder.append(i + 1 == receiverListSize ? "" : "\n");
+        }
+        inputField.setText(builder.toString());
+        View viewById = findViewById(R.id.showChosenContacts);
+        viewById.setVisibility(receiverList.size() > 0 ? View.VISIBLE : View.GONE);
+    }
+
+    private String fixNumber(String rawNumber) {
         String prefix = "";
         if (!rawNumber.startsWith("+") && !rawNumber.startsWith("00")) {
             String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
@@ -456,7 +505,7 @@ public class SendActivity extends DefaultActivity {
         rawNumber = rawNumber.replaceFirst("^0", "");
         rawNumber = rawNumber.replaceFirst("\\+", "00");
         rawNumber = rawNumber.replaceAll("[^0-9]", "");
-        inputField.setText(prefix + rawNumber);
+        return prefix + rawNumber;
     }
 
     @Override
