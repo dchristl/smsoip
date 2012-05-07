@@ -23,7 +23,7 @@ public class ContactsTextView extends TextView {
         setBackgroundResource(R.drawable.tablecellcontent);
         setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.FILL_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT));
+                TableRow.LayoutParams.FILL_PARENT));
         setWidth(getWidthBySize());
         setLines(1);
         setFocusable(true);

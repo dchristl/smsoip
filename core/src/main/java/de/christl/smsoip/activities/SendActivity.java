@@ -101,7 +101,7 @@ public class SendActivity extends DefaultActivity {
         final CharSequence progressText = getText(R.string.text_smscomitted);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if (!precheck() || progressDialog == null) {
+                if (!preSendCheck() || progressDialog == null) {
                     return;
                 }
                 progressDialog.setMessage(progressText);
@@ -123,7 +123,7 @@ public class SendActivity extends DefaultActivity {
             receiverList.add(new Receiver(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER))));
             updateViewOnChangedReceivers();
         }
-        setNumberListener();
+        setNumberFieldListener();
         setSearchButton();
         setClearButton();
         setRefreshButton();
@@ -136,21 +136,25 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void setShowChosenContactsDialog() {
-        ImageButton smileyButton = (ImageButton) findViewById(R.id.showChosenContacts);
-        smileyButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton chosenContactsdialogButton = (ImageButton) findViewById(R.id.showChosenContacts);
+        chosenContactsdialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ChosenContactsDialog dialog = new ChosenContactsDialog(SendActivity.this, receiverList);
-                dialog.setOwnerActivity(SendActivity.this);
-                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        updateViewOnChangedReceivers();
-                    }
-                });
-                dialog.show();
+                showChosenContactsDialog();
             }
         });
+    }
+
+    private void showChosenContactsDialog() {
+        final ChosenContactsDialog dialog = new ChosenContactsDialog(this, receiverList);
+        dialog.setOwnerActivity(this);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                updateViewOnChangedReceivers();
+            }
+        });
+        dialog.show();
     }
 
     private void setSmileyButton() {
@@ -203,11 +207,12 @@ public class SendActivity extends DefaultActivity {
         });
     }
 
-    private void setNumberListener() {
+    private void setNumberFieldListener() {
         inputField.setKeyListener(null);
+
     }
 
-    private boolean precheck() {
+    private boolean preSendCheck() {
         String toastMessage = "";
         if (receiverList.size() == 0) {
             toastMessage += getString(R.string.text_noNumberInput);
@@ -486,14 +491,24 @@ public class SendActivity extends DefaultActivity {
         }
         for (int i = 0, receiverListSize = receiverList.size(); i < receiverListSize; i++) {
             Receiver receiver = receiverList.get(i);
-            builder.append(receiver.getName()).append(" (");
-            builder.append(receiver.getReceiverNumber());
-            builder.append(")");
+            builder.append(receiver.getName());
             builder.append(i + 1 == receiverListSize ? "" : "\n");
         }
         inputField.setText(builder.toString());
         View viewById = findViewById(R.id.showChosenContacts);
-        viewById.setVisibility(receiverList.size() > 0 ? View.VISIBLE : View.GONE);
+        inputField.setOnLongClickListener(null);
+        if (receiverList.size() > 0) {
+            viewById.setVisibility(View.VISIBLE);
+            inputField.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showChosenContactsDialog();
+                    return true;
+                }
+            });
+        } else {
+            viewById.setVisibility(View.GONE);
+        }
     }
 
     private String fixNumber(String rawNumber) {
