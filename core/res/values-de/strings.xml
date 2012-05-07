@@ -14,7 +14,8 @@
     <string name="text_username">Benutzername</string>
     <string name="text_password">Passwort</string>
     <string name="text_signature">Signatur</string>
-    <string name="text_signature_description">Die Signatur, die zur Nachricht per Klick hinzugefügt werden kann.</string>
+    <string name="text_signature_description">Die Signatur, die zur Nachricht per Klick hinzugefügt werden kann.
+    </string>
     <string name="button_save">Speichern</string>
     <string name="hint_targetnumber">Empfänger</string>
     <string name="hint_smsText">Nachricht</string>
@@ -69,8 +70,14 @@
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
     <string name="text_enable_provider_output">Providerausgabe aktivieren</string>
-    <string name="text_enable_provider_output_description">Nachdem eine SMS erfolgreich versendet wurde, wird diese in die normalen ausgehenden Nachrichten geschrieben und mit einem Indikator versehen.</string>
+    <string name="text_enable_provider_output_description">Nachdem eine SMS erfolgreich versendet wurde, wird diese in
+        die normalen ausgehenden Nachrichten geschrieben und mit einem Indikator versehen.
+    </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
     <string name="text_unknown">Unbekannt</string>
+    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger für diesen Anbieter erreicht. Empfänger
+        konnte nicht hinzugefügt werden.
+    </string>
+    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger für diesen Anbieter ist %1$s. Überschüssige Empfänger wurden entfernt!</string>
 </resources>

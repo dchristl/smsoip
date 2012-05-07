@@ -120,8 +120,7 @@ public class SendActivity extends DefaultActivity {
         });
 
         if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
-            receiverList.add(new Receiver(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER))));
-            updateViewOnChangedReceivers();
+            addToReceiverList(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER)));
         }
         setNumberFieldListener();
         setSearchButton();
@@ -434,8 +433,7 @@ public class SendActivity extends DefaultActivity {
                     if (presentationLayer.size() == 1) {
                         for (String s : presentationLayer.keySet()) {
                             String receiverNumber = fixNumber(s);
-                            receiverList.add(new Receiver(pickedId, name, receiverNumber));
-                            updateViewOnChangedReceivers();
+                            addToReceiverList(pickedId, name, receiverNumber);
                         }
                         return;
                     }
@@ -454,8 +452,7 @@ public class SendActivity extends DefaultActivity {
                                 }
                             }
                             String fixedNumber = fixNumber(presentationLayer.get(key));
-                            receiverList.add(new Receiver(finalPickedId, finalName, fixedNumber));
-                            updateViewOnChangedReceivers();
+                            addToReceiverList(finalPickedId, finalName, fixedNumber);
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -477,6 +474,19 @@ public class SendActivity extends DefaultActivity {
 
             }
         }
+    }
+
+    private void addToReceiverList(String pickedId, String name, String receiverNumber) {
+        int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
+        if (receiverList.size() < maxReceiverCount) {
+            receiverList.add(new Receiver(pickedId, name, receiverNumber));
+            updateViewOnChangedReceivers();
+        } else {
+            toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(),maxReceiverCount));
+            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+
     }
 
 
@@ -651,12 +661,25 @@ public class SendActivity extends DefaultActivity {
     private void changeSupplier(String supplierClassName) {
         smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
         setTitle(smsSupplier.getProvider().getProviderName());
-        //reset all not needed infoormations
+        //reset all not needed informations
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
         updateSMScounter();
         infoText = null;
         result = null;
         setSpinner();
+        int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
+        if (receiverList.size() > maxReceiverCount) {
+            List<Receiver> newReceiverList = new ArrayList<Receiver>();
+            for (int i = 0; i < maxReceiverCount; i++) {
+                newReceiverList.add(receiverList.get(i));
+
+            }
+            receiverList = newReceiverList;
+            updateViewOnChangedReceivers();
+            toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(),maxReceiverCount));
+            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 
 
