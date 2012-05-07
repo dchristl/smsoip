@@ -20,6 +20,7 @@
                     android:layout_height="fill_parent"
                     android:orientation="horizontal"
                     android:gravity="center"
+                    android:weightSum="1.0"
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     >
                 <EditText
@@ -28,10 +29,8 @@
                         android:scrollbars="vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:phoneNumber="true"
                         android:hint="@string/hint_targetnumber"
-                        android:minEms="7"
-                        android:maxLength="25"
+                        android:layout_weight="0.9"
                         >
                 </EditText>
                 <ImageButton

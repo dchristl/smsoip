@@ -1,8 +1,11 @@
 package de.christl.smsoip.ui;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -20,7 +23,11 @@ public class ContactsTextView extends TextView {
         setBackgroundResource(R.drawable.tablecellcontent);
         setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.FILL_PARENT,
-                TableRow.LayoutParams.FILL_PARENT));
+                TableRow.LayoutParams.WRAP_CONTENT));
+        setWidth(getWidthBySize());
+        setLines(1);
+        setFocusable(true);
+        setEllipsize(TextUtils.TruncateAt.END);
         View.OnClickListener checkBoxChangeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -28,7 +35,14 @@ public class ContactsTextView extends TextView {
             }
         };
         setClickable(true);
-//             setFocusable(true);
         setOnClickListener(checkBoxChangeListener);
+
+
+    }
+
+    public int getWidthBySize() {
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        return (int) (0.4 * display.getWidth());
     }
 }
