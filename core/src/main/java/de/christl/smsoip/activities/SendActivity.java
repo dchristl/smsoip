@@ -482,7 +482,7 @@ public class SendActivity extends DefaultActivity {
             receiverList.add(new Receiver(pickedId, name, receiverNumber));
             updateViewOnChangedReceivers();
         } else {
-            toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(),maxReceiverCount));
+            toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
@@ -501,8 +501,8 @@ public class SendActivity extends DefaultActivity {
         }
         for (int i = 0, receiverListSize = receiverList.size(); i < receiverListSize; i++) {
             Receiver receiver = receiverList.get(i);
-            builder.append(receiver.getName());
-            builder.append(i + 1 == receiverListSize ? "" : "\n");
+            builder.append("[").append(receiver.getName());
+            builder.append(i + 1 == receiverListSize ? "]" : " ]; ");
         }
         inputField.setText(builder.toString());
         View viewById = findViewById(R.id.showChosenContacts);
@@ -609,7 +609,6 @@ public class SendActivity extends DefaultActivity {
                 final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setIcon(de.christl.smsoip.R.drawable.checkloginbutton);
                 builder.setItems(smileyItems, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         CharSequence smiley = smileyItems[item];
@@ -676,7 +675,7 @@ public class SendActivity extends DefaultActivity {
             }
             receiverList = newReceiverList;
             updateViewOnChangedReceivers();
-            toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(),maxReceiverCount));
+            toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }

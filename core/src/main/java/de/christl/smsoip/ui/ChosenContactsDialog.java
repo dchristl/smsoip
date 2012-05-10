@@ -27,36 +27,37 @@ public class ChosenContactsDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chosencontactsdialog);
-        TableLayout tl = (TableLayout) findViewById(R.id.chosencontactstable);
+        TableLayout tableLayout = (TableLayout) findViewById(R.id.chosencontactstable);
         /* Create a new row to be added. */
         for (final Receiver receiver : receiverList) {
 
-            final CheckBox cb = new CheckBox(this.getContext());
-            cb.setChecked(receiver.isEnabled());
-            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            final CheckBox receiverActivatedCheckbox = new CheckBox(this.getContext());
+            receiverActivatedCheckbox.setChecked(receiver.isEnabled());
+            receiverActivatedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     receiver.setEnabled(isChecked);
                 }
             });
-            TableRow tr = new TableRow(this.getContext());
-            tr.setLayoutParams(new LayoutParams(
+            TableRow tableRow = new TableRow(this.getContext());
+            tableRow.setLayoutParams(new LayoutParams(
                     LayoutParams.FILL_PARENT,
                     LayoutParams.WRAP_CONTENT));
 
             /* Add Button to row. */
-            TextView name = new ContactsTextView(this.getContext(), cb);
+            TextView name = new ContactsTextView(this.getContext(), receiverActivatedCheckbox);
             name.setText(receiver.getName());
-            tr.addView(name);
-            TextView number = new ContactsTextView(this.getContext(), cb);
+            tableRow.addView(name);
+            TextView number = new ContactsTextView(this.getContext(), receiverActivatedCheckbox);
             number.setText(receiver.getReceiverNumber());
-            tr.addView(number);
-            tr.addView(cb);
+            tableRow.addView(number);
+            tableRow.addView(receiverActivatedCheckbox);
             /* Add row to TableLayout. */
-            tl.addView(tr, new TableLayout.LayoutParams(
+            tableLayout.addView(tableRow, new TableLayout.LayoutParams(
                     LayoutParams.FILL_PARENT,
                     LayoutParams.WRAP_CONTENT));
         }
+
     }
 
 
