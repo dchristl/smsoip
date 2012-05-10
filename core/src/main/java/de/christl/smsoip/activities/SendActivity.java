@@ -707,6 +707,7 @@ public class SendActivity extends DefaultActivity {
         result = null;
         setSpinner();
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
+
         if (receiverList.size() > maxReceiverCount) {
             List<Receiver> newReceiverList = new ArrayList<Receiver>();
             for (int i = 0; i < maxReceiverCount; i++) {
@@ -718,6 +719,11 @@ public class SendActivity extends DefaultActivity {
             toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
+            addContactbyNumber.setVisibility(View.GONE);
+            searchButton.setVisibility(View.GONE);
+        } else {
+            addContactbyNumber.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
         }
     }
 
