@@ -78,4 +78,5 @@
     <string name="text_unknown">Unknown</string>
     <string name="text_max_receivers_reached">Maximum of %1$s receivers for this provider reached. Receiver could not be appended.</string>
     <string name="text_too_much_receivers">Maximum of receivers for this provider is %1$s. Surplus receivers are removed!</string>
+    <string name="text_add_contact_by_number_dialog">Add phone number</string>
 </resources>

@@ -69,6 +69,8 @@ public class SendActivity extends DefaultActivity {
     private Result result;
     private SharedPreferences settings;
     List<Receiver> receiverList = new ArrayList<Receiver>();
+    private View addContactbyNumber;
+    private ImageButton searchButton;
 
     @Override
     protected void onResume() {
@@ -131,7 +133,37 @@ public class SendActivity extends DefaultActivity {
         setShortTextButton();
         setSmileyButton();
         setTextArea();
+        setContactsByNumberInput();
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+    }
+
+    private void setContactsByNumberInput() {
+        addContactbyNumber = findViewById(R.id.addcontactbynumber);
+        addContactbyNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this);
+
+                alert.setMessage(R.string.text_add_contact_by_number_dialog);
+//                 alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                // Set an EditText view to get user input
+                final EditText input = new EditText(SendActivity.this);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setSingleLine();
+                alert.setView(input);
+                alert.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String rawNumber = input.getText().toString();
+                        if (!rawNumber.equals("")) {
+                            addToReceiverList("-1", (String) getText(R.string.text_unknown), fixNumber(rawNumber));
+                        }
+                    }
+                });
+                alert.show();
+            }
+        });
+
     }
 
     private void setShowChosenContactsDialog() {
@@ -360,7 +392,7 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void setSearchButton() {
-        ImageButton searchButton = (ImageButton) findViewById(R.id.searchButton);
+        searchButton = (ImageButton) findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -518,6 +550,14 @@ public class SendActivity extends DefaultActivity {
             });
         } else {
             viewById.setVisibility(View.GONE);
+        }
+        smsSupplier.getProvider().getMaxReceiverCount();
+        if (receiverList.size() >= smsSupplier.getProvider().getMaxReceiverCount()) {
+            addContactbyNumber.setVisibility(View.GONE);
+            searchButton.setVisibility(View.GONE);
+        } else {
+            addContactbyNumber.setVisibility(View.VISIBLE);
+            searchButton.setVisibility(View.VISIBLE);
         }
     }
 

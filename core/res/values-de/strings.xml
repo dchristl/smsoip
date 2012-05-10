@@ -79,5 +79,8 @@
     <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger für diesen Anbieter erreicht. Empfänger
         konnte nicht hinzugefügt werden.
     </string>
-    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger für diesen Anbieter ist %1$s. Überschüssige Empfänger wurden entfernt!</string>
+    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger für diesen Anbieter ist %1$s. Überschüssige
+        Empfänger wurden entfernt!
+    </string>
+    <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
 </resources>
