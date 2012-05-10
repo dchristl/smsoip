@@ -145,11 +145,11 @@ public class SendActivity extends DefaultActivity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this);
 
                 alert.setMessage(R.string.text_add_contact_by_number_dialog);
-//                 alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 // Set an EditText view to get user input
                 final EditText input = new EditText(SendActivity.this);
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 input.setSingleLine();
+                input.requestFocus();
                 alert.setView(input);
                 alert.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -538,14 +538,13 @@ public class SendActivity extends DefaultActivity {
         }
         inputField.setText(builder.toString());
         View viewById = findViewById(R.id.showChosenContacts);
-        inputField.setOnLongClickListener(null);
+        inputField.setOnClickListener(null);
         if (receiverList.size() > 0) {
             viewById.setVisibility(View.VISIBLE);
-            inputField.setOnLongClickListener(new View.OnLongClickListener() {
+            inputField.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
+                public void onClick(View v) {
                     showChosenContactsDialog();
-                    return true;
                 }
             });
         } else {
