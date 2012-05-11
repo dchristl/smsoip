@@ -29,7 +29,7 @@ public class SMSoIPApplication extends Application {
         initProviders();
     }
 
-    private void initProviders() {
+    public void initProviders() {
         try {
             List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
             plugins = new ArrayList<SMSoIPPlugin>();

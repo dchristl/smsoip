@@ -139,17 +139,31 @@ public class SendActivity extends DefaultActivity {
 
     private void setContactsByNumberInput() {
         addContactbyNumber = findViewById(R.id.addcontactbynumber);
+        // Set an EditText view to get user input
+        final EditText input = new EditText(SendActivity.this);
         addContactbyNumber.setOnClickListener(new View.OnClickListener() {
+            private boolean isVisible = false;
+
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this);
+                if (isVisible) {
+                    return;
+                }
+                isVisible = true;
+                final AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this) {
+                    @Override
+                    public AlertDialog show() {
+                        AlertDialog show = super.show();
+                        input.requestFocus();
+                        show.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                        return show;
+                    }
 
-                alert.setMessage(R.string.text_add_contact_by_number_dialog);
-                // Set an EditText view to get user input
-                final EditText input = new EditText(SendActivity.this);
+                };
+                alert.setMessage(getText(R.string.text_add_contact_by_number_dialog));
+
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 input.setSingleLine();
-                input.requestFocus();
                 alert.setView(input);
                 alert.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -158,9 +172,11 @@ public class SendActivity extends DefaultActivity {
                         if (!rawNumber.equals("")) {
                             addToReceiverList("-1", (String) getText(R.string.text_unknown), fixNumber(rawNumber));
                         }
+                        isVisible = false;
                     }
                 });
                 alert.show();
+
             }
         });
 
@@ -533,8 +549,8 @@ public class SendActivity extends DefaultActivity {
         }
         for (int i = 0, receiverListSize = receiverList.size(); i < receiverListSize; i++) {
             Receiver receiver = receiverList.get(i);
-            builder.append("[").append(receiver.getName());
-            builder.append(i + 1 == receiverListSize ? "]" : " ]; ");
+            builder.append(receiver.getName());
+            builder.append(i + 1 == receiverListSize ? "" : " ; ");
         }
         inputField.setText(builder.toString());
         View viewById = findViewById(R.id.showChosenContacts);

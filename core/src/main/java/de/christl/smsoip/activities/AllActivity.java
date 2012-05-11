@@ -40,6 +40,7 @@ public class AllActivity extends Activity {
 
     static final int DIALOG_NO_NETWORK_ID = 0;
     private static boolean nwSettingsAlreadyShown = false;
+    private boolean reloadProviders = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,10 @@ public class AllActivity extends Activity {
     protected void onStart() {
         super.onStart();
         registeredActivities.add(this);
+        if (reloadProviders) {
+            SMSoIPApplication.getApp().initProviders();
+            reloadProviders = false;
+        }
         if (SMSoIPApplication.getApp().getDeprecatedPlugins().size() > 0) {
             showDeprecatedProvidersDialog();
         } else if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
@@ -193,6 +198,7 @@ public class AllActivity extends Activity {
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.text_no_providers)).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+        reloadProviders = true;
     }
 
     public static void insertAds(LinearLayout layout, Activity activity) {
@@ -211,4 +217,5 @@ public class AllActivity extends Activity {
         adRequest.addTestDevice("9405EE5055BF04AE898858A2515B3588");
         adView.loadAd(adRequest);
     }
+
 }
