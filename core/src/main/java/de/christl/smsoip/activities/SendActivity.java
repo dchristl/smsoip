@@ -61,9 +61,10 @@ public class SendActivity extends DefaultActivity {
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH = 31;
     private static final int DIALOG_SMILEYS = 32;
-
     private static final int DIALOG_PROVIDER = 33;
+
     private static final int GLOBAL_OPTION = 34;
+    private static final int DIALOG_NUMBER_INPUT = 35;
     private CharSequence infoText;
 
     private Result result;
@@ -139,36 +140,11 @@ public class SendActivity extends DefaultActivity {
 
     private void setContactsByNumberInput() {
         addContactbyNumber = findViewById(R.id.addcontactbynumber);
-        // Set an EditText view to get user input
-        final EditText input = new EditText(SendActivity.this);
+
         addContactbyNumber.setOnClickListener(new View.OnClickListener() {
-            private boolean isVisible = false;
-
             @Override
-            public void onClick(View v) {
-                if (isVisible) {
-                    return;
-                }
-                isVisible = true;
-                final AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this);
-                alert.setMessage(getText(R.string.text_add_contact_by_number_dialog));
-
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                input.setSingleLine();
-                alert.setView(input);
-                alert.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String rawNumber = input.getText().toString();
-                        if (!rawNumber.equals("")) {
-                            addToReceiverList("-1", (String) getText(R.string.text_unknown), fixNumber(rawNumber));
-                        }
-                        isVisible = false;
-                    }
-                });
-                alert.show();
-                input.requestFocus();
-
+            public void onClick(View view) {
+                showDialog(DIALOG_NUMBER_INPUT);
             }
         });
 
@@ -697,6 +673,35 @@ public class SendActivity extends DefaultActivity {
                 } else {  //have to be a min of 1 here, else button will not be available
                     changeSupplier(filteredProviderEntries.get(0).getSupplierClassName());
                 }
+                break;
+            case DIALOG_NUMBER_INPUT:
+                final EditText input = new EditText(this);
+                builder = new AlertDialog.Builder(this) {
+
+                    @Override
+                    public AlertDialog create() {
+                        AlertDialog dialog = super.create();
+                        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                        return dialog;
+                    }
+                };
+                builder.setMessage(getText(R.string.text_add_contact_by_number_dialog));
+
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setSingleLine();
+                builder.setView(input);
+                builder.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String rawNumber = input.getText().toString();
+                        if (!rawNumber.equals("")) {
+                            addToReceiverList("-1", (String) getText(R.string.text_unknown), fixNumber(rawNumber));
+                        }
+                        input.setText("");
+                        dialog.dismiss();
+                    }
+                });
+                dialog = builder.create();
                 break;
             default:
                 dialog = super.onCreateDialog(id);
