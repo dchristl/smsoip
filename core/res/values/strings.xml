@@ -54,7 +54,7 @@
     </string>
     <string name="applicationName">SMSoIP</string>
     <string name="text_default_provider">Default provider</string>
-    <string name="text_default_provider_description">Choose your default provider or none</string>
+    <string name="text_default_provider_description">Choose your default provider when app is starting</string>
     <string name="text_no_default_Provider">None (ask everytime)</string>
     <string name="text_visit_project_page">Visit Homepage</string>
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>

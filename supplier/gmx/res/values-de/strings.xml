@@ -4,5 +4,6 @@
     <string name="text_check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
         sind.
     </string>
-    <string name="text_no_free_messages_available">Keine kostenlosen SMS verfügbar.</string>
+    <string name="text_no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
+    <string name="text_free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden. Senden abgebrochen!</string>
 </resources>

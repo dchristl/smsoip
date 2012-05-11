@@ -51,7 +51,20 @@ public class GMXSupplier implements SMSSupplier {
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             Result tmpResult = refreshInformations(true);
             if (tmpResult.equals(Result.NO_ERROR)) {
-                boolean noFreeAvailable = tmpResult.getUserText().toString().contains(" 0 ");
+                String userText = tmpResult.getUserText().toString();
+                String[] split = userText.split(" ");
+                boolean noFreeAvailable;
+                if (split.length > 1) {
+                    int freeSMS;
+                    try {
+                        freeSMS = Integer.parseInt(split[1]);
+                    } catch (NumberFormatException e) {
+                        return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
+                    }
+                    noFreeAvailable = freeSMS < receivers.size();
+                } else {
+                    return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
+                }
                 if (noFreeAvailable) {
                     return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_no_free_messages_available));
                 }
@@ -81,7 +94,6 @@ public class GMXSupplier implements SMSSupplier {
         parameterMap.put("send-date-panel:send-date-form:send-date-hour", "0");
         parameterMap.put("send-date-panel:send-date-form:send-date-minute", "0");
         parameterMap.put("sendMessage", "1");
-
         HttpURLConnection con;
 
         try {
@@ -176,6 +188,9 @@ public class GMXSupplier implements SMSSupplier {
             }
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
+        }
+        if (infoText.equals("")) {
+            return refreshInformations(false);
         }
         return Result.NO_ERROR.setAlternateText(infoText);
     }
