@@ -1,3 +1,5 @@
 <resources>
     <string name="text_alternate_not_allowed_yet">Noch nicht verfügbar</string>
+    <string name="text_default_type">Standard Absendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
 </resources>

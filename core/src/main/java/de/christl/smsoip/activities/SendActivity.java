@@ -150,16 +150,7 @@ public class SendActivity extends DefaultActivity {
                     return;
                 }
                 isVisible = true;
-                final AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this) {
-                    @Override
-                    public AlertDialog show() {
-                        AlertDialog show = super.show();
-                        input.requestFocus();
-                        show.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                        return show;
-                    }
-
-                };
+                final AlertDialog.Builder alert = new AlertDialog.Builder(SendActivity.this);
                 alert.setMessage(getText(R.string.text_add_contact_by_number_dialog));
 
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -176,6 +167,7 @@ public class SendActivity extends DefaultActivity {
                     }
                 });
                 alert.show();
+                input.requestFocus();
 
             }
         });

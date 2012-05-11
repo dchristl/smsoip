@@ -1,5 +1,8 @@
 package de.christl.smsoip.supplier.goodmails;
 
+import android.content.Context;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -8,12 +11,17 @@ import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.supplier.goodmails.constant.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
 public class GoodmailsOptionProvider extends OptionProvider {
     private static final String providerName = "Goodmails";
     private int messageLength = 153;
+
+    public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
 
     public GoodmailsOptionProvider() {
         super(providerName);
@@ -49,6 +57,24 @@ public class GoodmailsOptionProvider extends OptionProvider {
                 //do nothing
             }
         });
+        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, Constants.FREE));
+        spinner.setSelection(defaultPosition);
+    }
+
+    @Override
+    public List<Preference> getAdditionalPreferences(Context context) {
+        List<Preference> out = new ArrayList<Preference>();
+
+        ListPreference listPref = new ListPreference(context);
+        listPref.setEntries(new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE});
+        listPref.setEntryValues(new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE});
+        listPref.setDialogTitle(R.string.text_default_type);
+        listPref.setKey(PROVIDER_DEFAULT_TYPE);
+        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setDefaultValue(Constants.FREE);
+        out.add(listPref);
+        return out;
     }
 
     @Override
