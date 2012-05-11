@@ -335,7 +335,7 @@ public class SendActivity extends DefaultActivity {
     private void writeSMSInDatabase() {
         for (Receiver receiver : receiverList) {
             ContentValues values = new ContentValues();
-            values.put("address", receiver.getReceiverNumber());    //TODO check for multiple sender
+            values.put("address", receiver.getRawNumber());
             String prefix = "";
             if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
                 prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
@@ -443,13 +443,12 @@ public class SendActivity extends DefaultActivity {
                     phones.close();
                     final HashMap<String, String> presentationLayer = new HashMap<String, String>();
                     for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
-                        String description = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(this.getResources(), currEntry.getValue(), "other");
+                        String description = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(this.getResources(), currEntry.getValue(), getText(R.string.text_no_phone_type_label));
                         presentationLayer.put(currEntry.getKey(), currEntry.getKey() + " (" + description + ")");
                     }
                     if (presentationLayer.size() == 1) {
                         for (String s : presentationLayer.keySet()) {
-                            String receiverNumber = fixNumber(s);
-                            addToReceiverList(pickedId, name, receiverNumber);
+                            addToReceiverList(pickedId, name, s);
                         }
                         return;
                     }
@@ -467,8 +466,7 @@ public class SendActivity extends DefaultActivity {
                                     break;
                                 }
                             }
-                            String fixedNumber = fixNumber(presentationLayer.get(key));
-                            addToReceiverList(finalPickedId, finalName, fixedNumber);
+                            addToReceiverList(finalPickedId, finalName, key);
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -544,17 +542,6 @@ public class SendActivity extends DefaultActivity {
         }
     }
 
-    private String fixNumber(String rawNumber) {
-        String prefix = "";
-        if (!rawNumber.startsWith("+") && !rawNumber.startsWith("00")) {
-            String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
-            prefix = "00" + areaCode;
-        }
-        rawNumber = rawNumber.replaceFirst("^0", "");
-        rawNumber = rawNumber.replaceFirst("\\+", "00");
-        rawNumber = rawNumber.replaceAll("[^0-9]", "");
-        return prefix + rawNumber;
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -695,7 +682,7 @@ public class SendActivity extends DefaultActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String rawNumber = input.getText().toString();
                         if (!rawNumber.equals("")) {
-                            addToReceiverList("-1", (String) getText(R.string.text_unknown), fixNumber(rawNumber));
+                            addToReceiverList("-1", (String) getText(R.string.text_unknown), rawNumber);
                         }
                         input.setText("");
                         dialog.dismiss();

@@ -63,7 +63,15 @@ public class GMXSupplier implements SMSSupplier {
         Map<String, String> parameterMap = new LinkedHashMap<String, String>();
         parameterMap.put("id8_hf_0", "");
         parameterMap.put("from", "0");
-        parameterMap.put("recipients", "{;;" + receivers.get(0) + "}");
+        StringBuilder receiverListBuilder = new StringBuilder();
+        for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
+            Editable receiver = receivers.get(i);
+            receiverListBuilder.append(String.format("{;;%s}", receiver));
+            if (i + 1 != receivers.size()) {
+                receiverListBuilder.append(",");
+            }
+        }
+        parameterMap.put("recipients", receiverListBuilder.toString());
         parameterMap.put("upload-panel:upload-form:file\"; filename=\"", "");
         parameterMap.put("subject", "");
         parameterMap.put("textMessage", smsText.toString());

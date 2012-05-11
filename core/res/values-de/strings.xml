@@ -83,4 +83,5 @@
         Empfänger wurden entfernt!
     </string>
     <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
+    <string name="text_no_phone_type_label">Andere</string>
 </resources>
