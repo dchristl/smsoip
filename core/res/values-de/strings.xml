@@ -71,9 +71,8 @@
     <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
-    <string name="text_enable_provider_output">Providerausgabe aktivieren</string>
-    <string name="text_enable_provider_output_description">Nachdem eine SMS erfolgreich versendet wurde, wird diese in
-        die normalen ausgehenden Nachrichten geschrieben und mit einem Indikator versehen.
+    <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
+    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator versehen (z.B. \'SMSoIP -> GMX\')
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
@@ -86,4 +85,8 @@
     </string>
     <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
     <string name="text_no_phone_type_label">Andere</string>
+    <string name="text_write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
+    <string name="text_write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes
+    </string>
+    <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
 </resources>

@@ -70,8 +70,7 @@
         you additional options, like enabling W-LAN.
     </string>
     <string name="text_enable_provider_output">Enable output of provider</string>
-    <string name="text_enable_provider_output_description">After successful sent message the message will go in normal
-        message outbox of your mobile. This enables an indication for texts sent by SMSoIP
+    <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP -> GMX\')
     </string>
     <string name="name_heading">name</string>
     <string name="number_heading">number</string>
@@ -80,4 +79,7 @@
     <string name="text_too_much_receivers">Maximum of receivers for this provider is %1$s. Surplus receivers are removed!</string>
     <string name="text_add_contact_by_number_dialog">Add phone number</string>
     <string name="text_no_phone_type_label">other</string>
+    <string name="text_write_to_database">Write to internal messages outbox</string>
+    <string name="text_write_to_database_description">Write successful messages to your in-device message outbox</string>
+    <string name="text_not_supported_on_device">Not supported on this device</string>
 </resources>

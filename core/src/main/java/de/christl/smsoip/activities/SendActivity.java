@@ -307,7 +307,9 @@ public class SendActivity extends DefaultActivity {
             dialog.setOwnerActivity(this);
             dialog.show();
             killDialogAfterAWhile(dialog);
-            writeSMSInDatabase();
+            if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+                writeSMSInDatabase();
+            }
             clearAllInputs();
         } else {
             Spanned msg = new SpannableString(result.getUserText());

@@ -22,6 +22,7 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_AREA_CODE = "global.area.code";
     public static final String GLOBAL_ENABLE_NETWORK_CHECK = "global.enable.network.check";
     public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.propvider.output";
+    public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +73,20 @@ public class GlobalPreferences extends PreferenceActivity {
         enableNetworkCheck.setTitle(R.string.text_enable_network_check);
         enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
         root.addPreference(enableNetworkCheck);
+        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
+        writeToDataBase.setKey(GLOBAL_WRITE_TO_DATABASE);
+        writeToDataBase.setDefaultValue(writeToDatabaseAvailable);
+        writeToDataBase.setEnabled(writeToDatabaseAvailable);
+        writeToDataBase.setTitle(R.string.text_write_to_database);
+        writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.text_write_to_database_description : R.string.text_not_supported_on_device);
+        root.addPreference(writeToDataBase);
         CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
         enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
         enableProviderOutput.setDefaultValue(true);
+        enableProviderOutput.setEnabled(writeToDatabaseAvailable);
         enableProviderOutput.setTitle(R.string.text_enable_provider_output);
-        enableProviderOutput.setSummary(R.string.text_enable_provider_output_description);
+        enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
         root.addPreference(enableProviderOutput);
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
         String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "http://problemexterminator.blogspot.de/p/smsoip-de.html" : "http://problemexterminator.blogspot.de/p/smsoip.html";

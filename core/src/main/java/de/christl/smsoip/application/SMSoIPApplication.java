@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.Log;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
@@ -21,12 +22,26 @@ public class SMSoIPApplication extends Application {
     Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
     List<SMSSupplier> deprecatedPlugins = new ArrayList<SMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
+    private boolean writeToDatabaseAvailable = false;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         app = this;
         initProviders();
+        setWriteToDBAvailable();
+    }
+
+    private void setWriteToDBAvailable() {
+        try {
+            String type = getContentResolver().getType(Uri.parse("content://sms/sent"));
+            if (type != null) {
+                writeToDatabaseAvailable = true;
+            }
+        } catch (IllegalArgumentException e) {
+            writeToDatabaseAvailable = false;
+        }
     }
 
     public void initProviders() {
@@ -144,5 +159,9 @@ public class SMSoIPApplication extends Application {
             return plugin.resolveResource(resourceId);
         }
         return getText(resourceId).toString();
+    }
+
+    public boolean isWriteToDatabaseAvailable() {
+        return writeToDatabaseAvailable;
     }
 }
