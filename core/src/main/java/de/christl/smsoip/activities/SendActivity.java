@@ -96,7 +96,7 @@ public class SendActivity extends DefaultActivity {
         smssigns.setText(String.format(SIGNSCONSTANT.toString(), 0, 0));
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         Bundle currProvider = this.getIntent().getExtras();
-        smsSupplier = SMSoIPApplication.getApp().getInstance((String) currProvider.get(SUPPLIER_CLASS_NAME));
+        smsSupplier = SMSoIPApplication.getApp().getInstance((String) currProvider.get(SUPPLIER_CLASS_NAME), this);
         setTitle(smsSupplier.getProvider().getProviderName());
         setSpinner();
 
@@ -699,7 +699,7 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void changeSupplier(String supplierClassName) {
-        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
+        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName, this);
         setTitle(smsSupplier.getProvider().getProviderName());
         //reset all not needed informations
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);

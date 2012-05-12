@@ -1,5 +1,6 @@
 package de.christl.smsoip.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ public class SMSoIPApplication extends Application {
     List<SMSSupplier> deprecatedPlugins = new ArrayList<SMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
+    private Activity lastUsedActivity;
 
 
     @Override
@@ -115,7 +117,8 @@ public class SMSoIPApplication extends Application {
     }
 
     @SuppressWarnings("unchecked")
-    public <TYPE> TYPE getInstance(String className) {
+    public <TYPE> TYPE getInstance(String className, Activity referenceActivity) {
+        this.lastUsedActivity = referenceActivity;
         try {
             ClassLoader pathClassLoader = getClassLoaderForClass(className);
             Class clazz = Class.forName(className, false, pathClassLoader);
@@ -163,5 +166,9 @@ public class SMSoIPApplication extends Application {
 
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
+    }
+
+    public Activity getLastUsedActivity() {
+        return lastUsedActivity;
     }
 }
