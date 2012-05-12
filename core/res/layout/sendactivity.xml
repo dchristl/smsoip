@@ -30,7 +30,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_targetnumber"
-                        android:layout_weight="0.9"
+                        android:layout_weight="1"
                         >
                 </EditText>
                 <ImageButton
