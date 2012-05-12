@@ -68,7 +68,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
         ListPreference listPref = new ListPreference(context);
         listPref.setEntries(new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE});
         listPref.setEntryValues(new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE});
-        listPref.setDialogTitle(R.string.text_default_type);
+        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
         listPref.setTitle(getTextByResourceId(R.string.text_default_type));
         listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
