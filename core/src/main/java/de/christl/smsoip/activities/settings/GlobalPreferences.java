@@ -81,13 +81,20 @@ public class GlobalPreferences extends PreferenceActivity {
         writeToDataBase.setTitle(R.string.text_write_to_database);
         writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.text_write_to_database_description : R.string.text_not_supported_on_device);
         root.addPreference(writeToDataBase);
-        CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
+        final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
         enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
         enableProviderOutput.setDefaultValue(true);
         enableProviderOutput.setEnabled(writeToDatabaseAvailable);
         enableProviderOutput.setTitle(R.string.text_enable_provider_output);
         enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
         root.addPreference(enableProviderOutput);
+        writeToDataBase.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                enableProviderOutput.setEnabled(((Boolean) newValue));
+                return true;
+            }
+        });
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
         String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "http://problemexterminator.blogspot.de/p/smsoip-de.html" : "http://problemexterminator.blogspot.de/p/smsoip.html";
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
