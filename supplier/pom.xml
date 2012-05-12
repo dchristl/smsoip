@@ -18,6 +18,7 @@
     <modules>
         <module>gmx</module>
         <module>goodmails</module>
+        <module>freenet</module>
     </modules>
 
     <dependencies>
