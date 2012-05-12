@@ -1,0 +1,113 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_send">Send</string>
+    <string name="text_chooseProvider">Choose Provider:</string>
+    <string name="text_changeProvider">Change Provider</string>
+    <string name="button_next">Next</string>
+    <string name="text_provider_settings">Provider settings</string>
+    <string name="text_program_settings">Program settings</string>
+    <string name="text_provider_settings_short">Provider</string>
+    <string name="text_program_settings_short">Program</string>
+    <string name="text_mainmenu">Main menu</string>
+    <string name="text_exit">Quit</string>
+    <string name="text_optionTitle">Options for</string>
+    <string name="text_username">Username</string>
+    <string name="text_password">Password</string>
+    <string name="text_signature">Signature</string>
+    <string name="text_signature_description">Signature, that can be appended to message.</string>
+    <string name="button_save">Save</string>
+    <string name="hint_targetnumber">Receivers</string>
+    <string name="hint_smsText">Message</string>
+    <string name="hint_sendernumber">Sender</string>
+    <string name="text_chooseType">Choose type</string>
+    <string name="text_smssigns">%1$s characters (%2$s SMS)</string>
+    <string name="text_pickNumber">Choose number</string>
+    <string name="text_noNumber">No number found</string>
+    <string name="text_smscomitted">Message will be sent</string>
+    <string name="text_ok">OK</string>
+    <string name="text_no">Cancel</string>
+    <string name="text_wantClear">All inputs will be deleted!</string>
+    <string name="text_error">Error</string>
+    <string name="text_success">Success</string>
+    <string name="text_noNetwork">Networkerror</string>
+    <string name="text_unknown_error">Unknown error</string>
+    <string name="text_loginFailed">Pass invalid!</string>
+    <string name="text_notyetrefreshed">Not yet refreshed</string>
+    <string name="cb_default">Set as default</string>
+    <string name="description">Sending SMS by several providers</string>
+    <string name="text_pleaseWait">Please wait</string>
+    <string name="text_noNumberInput">No number entered!</string>
+    <string name="text_noTextInput">No message entered!</string>
+    <string name="text_noNetworkAvailable">Network not activated!</string>
+    <string name="text_smsSend_Success">Message transmitted</string>
+    <string name="text_timeOutReached">Timeout reached! Please try again later</string>
+    <string name="text_sureQuit">Quit SMSoIP?</string>
+    <string name="text_saveChanges">Save changes?</string>
+    <string name="text_yesOption">Yes</string>
+    <string name="text_noOption">No</string>
+    <string name="text_checkCredentials">Pass will be checked.</string>
+    <string name="button_openNetworkSettings">Networksettings</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_activateWLAN">Activate Wireless LAN</string>
+    <string name="text_not_yet_allowed">Not yet allowed</string>
+    <string name="text_no_providers">No providers for sending SMS available.\nPlease add one.\nProgram will exit!
+    </string>
+    <string name="applicationName">SMSoIP</string>
+    <string name="text_default_provider">Default provider</string>
+    <string name="text_default_provider_description">Choose your default provider when app is starting</string>
+    <string name="text_no_default_Provider">None (ask everytime)</string>
+    <string name="text_visit_project_page">Visit Homepage</string>
+    <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
+    <string name="text_area_code">Default international area code</string>
+    <string name="text_area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
+        will be automatically prepended to receiver number if needed.
+    </string>
+    <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
+    <string name="text_checkLogin">Check credentials</string>
+    <string name="text_deprecated_providers">Following plugins could not be loaded. Please update:</string>
+    <string name="text_enable_network_check">Enable network check</string>
+    <string name="text_enable_network_check_description">Enable the check on startup if network is available and shows
+        you additional options, like enabling W-LAN.
+    </string>
+    <string name="text_enable_provider_output">Enable output of provider</string>
+    <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP -> GMX\')
+    </string>
+    <string name="name_heading">name</string>
+    <string name="number_heading">number</string>
+    <string name="text_unknown">Unknown</string>
+    <string name="text_max_receivers_reached">Maximum of %1$s receivers for this provider reached. Receiver could not be appended.</string>
+    <string name="text_too_much_receivers">Maximum of receivers for this provider is %1$s. Surplus receivers are removed!</string>
+    <string name="text_add_contact_by_number_dialog">Add phone number</string>
+    <string name="text_no_phone_type_label">other</string>
+    <string name="text_write_to_database">Write to internal messages outbox</string>
+    <string name="text_write_to_database_description">Write successful messages to your in-device message outbox</string>
+    <string name="text_not_supported_on_device">Not supported on this device</string>
+</resources>
+
+<!--String resources for:
+project: gmx
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_check_no_free_available">Check for no free messages</string>
+    <string name="text_check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
+    <string name="text_no_free_messages_available">Not enough free messages available.</string>
+    <string name="text_free_messages_could_not_resolved">Count of free messages couldn\'t be obtained. Sending canceled!</string>
+</resources>
+<!--String resources for:
+project: goodmails
+values folder: values
+fileName: strings.xml
+-->
+<resources>
+    <string name="text_alternate_not_allowed_yet">not yet allowed</string>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+</resources>

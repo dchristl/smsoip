@@ -1,0 +1,122 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_send">Senden</string>
+    <string name="text_chooseProvider">Anbieter auswählen:</string>
+    <string name="text_changeProvider">Anbieter wechseln</string>
+    <string name="button_next">Weiter</string>
+    <string name="text_provider_settings">Anbietereinstellungen</string>
+    <string name="text_program_settings">Programmeinstellungen</string>
+    <string name="text_provider_settings_short">Anbieter</string>
+    <string name="text_program_settings_short">Programm</string>
+    <string name="text_mainmenu">Hauptmenü</string>
+    <string name="text_exit">Beenden</string>
+    <string name="text_optionTitle">Optionen für</string>
+    <string name="text_username">Benutzername</string>
+    <string name="text_password">Passwort</string>
+    <string name="text_signature">Signatur</string>
+    <string name="text_signature_description">Die Signatur, die zur Nachricht hinzugefügt werden kann.
+    </string>
+    <string name="button_save">Speichern</string>
+    <string name="hint_targetnumber">Empfänger</string>
+    <string name="hint_smsText">Nachricht</string>
+    <string name="hint_sendernumber">Absender</string>
+    <string name="text_chooseType">Typ wählen</string>
+    <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
+    <string name="text_pickNumber">Nummer auswählen</string>
+    <string name="text_noNumber">Keine Nummer gefunden</string>
+    <string name="text_smscomitted">SMS wird gesendet</string>
+    <string name="text_ok">OK</string>
+    <string name="text_no">Abbrechen</string>
+    <string name="text_wantClear">Alle eingegebenen Daten werden gelöscht!</string>
+    <string name="text_error">Fehler</string>
+    <string name="text_success">Erfolg</string>
+    <string name="text_noNetwork">Netzwerkfehler</string>
+    <string name="text_unknown_error">Unbekannter Fehler</string>
+    <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
+    <string name="cb_default">Als Standard setzen</string>
+    <string name="description">Senden von SMS über diverse Anbieter</string>
+    <string name="text_pleaseWait">Bitte warten</string>
+    <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
+    <string name="text_noTextInput">Kein Text eingegeben!</string>
+    <string name="text_noNetworkAvailable">Netzwerk nicht aktiviert!</string>
+    <string name="text_smsSend_Success">SMS wurde übermittelt</string>
+    <string name="text_timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
+    <string name="text_sureQuit">SMSoIP beenden?</string>
+    <string name="text_saveChanges">Änderungen speichern?</string>
+    <string name="text_yesOption">Ja</string>
+    <string name="text_noOption">Nein</string>
+    <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
+    <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="button_activateWLAN">W-LAN aktivieren</string>
+    <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
+    <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!
+    </string>
+    <string name="text_default_provider">Standardanbieter</string>
+    <string name="text_default_provider_description">Der Standardanbieter der automatisch beim Starten der App
+        ausgewählt ist
+    </string>
+    <string name="text_no_default_Provider">Keiner (jedsmal fragen)</string>
+    <string name="text_visit_project_page">Homepage besuchen</string>
+    <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
+    <string name="text_area_code">Standardländercode</string>
+    <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
+        Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
+    </string>
+    <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
+    <string name="text_checkLogin">Zugangsdaten überprüfen</string>
+    <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="text_enable_network_check">Netzwerküberprüfung aktivieren</string>
+    <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
+        ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
+    </string>
+    <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
+    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator versehen (z.B. \'SMSoIP -> GMX\')
+    </string>
+    <string name="name_heading">Name</string>
+    <string name="number_heading">Nummer</string>
+    <string name="text_unknown">Unbekannt</string>
+    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger für diesen Anbieter erreicht. Empfänger
+        konnte nicht hinzugefügt werden.
+    </string>
+    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger für diesen Anbieter ist %1$s. Überschüssige
+        Empfänger wurden entfernt!
+    </string>
+    <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
+    <string name="text_no_phone_type_label">Andere</string>
+    <string name="text_write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
+    <string name="text_write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes
+    </string>
+    <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
+</resources>
+
+<!--String resources for:
+project: gmx
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_check_no_free_available">Überprüfe auf kostenlose SMS</string>
+    <string name="text_check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
+        sind.
+    </string>
+    <string name="text_no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
+    <string name="text_free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden. Senden abgebrochen!</string>
+</resources>
+<!--String resources for:
+project: goodmails
+values folder: values-de
+fileName: strings.xml
+-->
+<resources>
+    <string name="text_alternate_not_allowed_yet">Noch nicht verfügbar</string>
+    <string name="text_default_type">Standard Absendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+</resources>
