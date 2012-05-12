@@ -12,4 +12,14 @@ public class FreenetOptionProvider extends OptionProvider {
     public FreenetOptionProvider() {
         super(providerName);
     }
+
+    @Override
+    public int getMaxReceiverCount() {
+        return 1;
+    }
+
+    @Override
+    public String getProviderName() {
+        return providerName;
+    }
 }
