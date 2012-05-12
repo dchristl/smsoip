@@ -49,7 +49,7 @@ public class GMXSupplier implements SMSSupplier {
             return result;
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
-            Result tmpResult = refreshInformations(true);
+            Result tmpResult = refreshInformations(true, 0);
             if (tmpResult.equals(Result.NO_ERROR)) {
                 String userText = tmpResult.getUserText().toString();
                 String[] split = userText.split(" ");
@@ -61,7 +61,10 @@ public class GMXSupplier implements SMSSupplier {
                     } catch (NumberFormatException e) {
                         return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
                     }
-                    noFreeAvailable = freeSMS < receivers.size();
+                    int messageLength = getProvider().getTextMessageLength();
+                    int smsCount = Math.round((smsText.toString().length() / messageLength));
+                    smsCount = smsText.toString().length() % messageLength == 0 ? smsCount : smsCount + 1;
+                    noFreeAvailable = !((receivers.size() * smsCount) <= freeSMS);
                 } else {
                     return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
                 }
@@ -153,9 +156,9 @@ public class GMXSupplier implements SMSSupplier {
 
     @Override
     public Result refreshInformationOnRefreshButtonPressed() {
-        Result result = refreshInformations(false);
+        Result result = refreshInformations(false, 0);
         if (result.equals(Result.NO_ERROR) && result.getUserText().equals("")) {              //informations are not available at first try so do it twice
-            result = refreshInformations(false);
+            result = refreshInformations(false, 0);
         }
         return result;
 
@@ -163,10 +166,10 @@ public class GMXSupplier implements SMSSupplier {
 
     @Override
     public Result refreshInformationAfterMessageSuccessfulSent() {
-        return refreshInformations(true);
+        return refreshInformations(true, 0);
     }
 
-    private Result refreshInformations(boolean noLoginBefore) {
+    private Result refreshInformations(boolean noLoginBefore, int tryNr) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
@@ -189,8 +192,8 @@ public class GMXSupplier implements SMSSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
-        if (infoText.equals("")) {
-            return refreshInformations(false);
+        if (infoText.equals("") && tryNr < 5) {
+            return refreshInformations(false, ++tryNr);
         }
         return Result.NO_ERROR.setAlternateText(infoText);
     }
