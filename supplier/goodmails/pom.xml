@@ -7,11 +7,12 @@
     <parent>
         <groupId>de.christl.SMSoIP</groupId>
         <artifactId>supplier</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.2</version>
     </parent>
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>goodmails</artifactId>
     <packaging>apk</packaging>
+    <version>1.1.2</version>
 
 </project>
