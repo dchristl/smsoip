@@ -720,16 +720,21 @@ public class SendActivity extends DefaultActivity {
             toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
-            addContactbyNumber.setVisibility(View.GONE);
-            searchButton.setVisibility(View.GONE);
-        } else {
-            addContactbyNumber.setVisibility(View.VISIBLE);
-            searchButton.setVisibility(View.VISIBLE);
         }
+        updateViewOnChangedReceivers();
     }
 
 
     public void updateSMScounter() {
         updateSMScounter(textField.getText());
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        if (searchButton.getVisibility() == View.VISIBLE) {
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, PICK_CONTACT_REQUEST);
+        }
+        return false;
     }
 }
