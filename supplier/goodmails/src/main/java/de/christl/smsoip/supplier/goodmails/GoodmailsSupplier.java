@@ -149,7 +149,7 @@ public class GoodmailsSupplier implements SMSSupplier {
                 return result;
             }
         }
-        String tmpText = "Credits: %s";
+        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
         HttpURLConnection urlConn;
         InputStream is = null;
         String credits = null;

@@ -8,10 +8,15 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class for handling sms by freenet
@@ -20,21 +25,16 @@ public class FreenetSupplier implements SMSSupplier {
 
     private FreenetOptionProvider provider;
 
-    private final String LOGIN_URL = "https://auth.freenet.de/portal/login.php";
-    private final String HOME_URL = "http://webmail.freenet.de/login/index.html";
-    private final String TARGET_URL = "http://webmail.freenet.de/Sms/View/Send";
-    private final String SEND_URL = "http://webmail.freenet.de/Sms/Action/Send?myAction=send&";
+    private static final String LOGIN_URL = "https://auth.freenet.de/portal/login.php";
+    private static final String HOME_URL = "http://webmail.freenet.de/login/index.html";
+    private static final String REFRESH_URL = "http://webmail.freenet.de/Global/Action/StatusBarGet";
+    private static final String SEND_URL = "http://webmail.freenet.de/Sms/Action/Send?myAction=send&";
     private List<String> sessionCookies;
-    private String ENCODING = "ISO-8859-1";
+    private static final String ENCODING = "ISO-8859-1";
 
     public FreenetSupplier() {
         provider = new FreenetOptionProvider();
     }
-
-    FreenetSupplier(FreenetOptionProvider provider) {
-        this.provider = provider;
-    }
-
     @Override
     public Result refreshInformationOnRefreshButtonPressed() {
         return refreshInformations(false);
@@ -52,22 +52,19 @@ public class FreenetSupplier implements SMSSupplier {
                 return result;
             }
         }
-        String tmpUrl = TARGET_URL;
+        String tmpUrl = REFRESH_URL;
         HttpURLConnection con;
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setReadTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-            con.setRequestProperty("Accept-Language", "de-de,de;q=0.8,en-us;q=0.5,en;q=0.3");
-            con.setRequestProperty("Accept-Encoding", "gzip, deflate");
             con.setRequestMethod("GET");
             StringBuilder cookieBuilder = new StringBuilder();
             for (String sessionCookie : sessionCookies) {
                 cookieBuilder.append(sessionCookie).append(";");
             }
             con.setRequestProperty("Cookie", cookieBuilder.toString());
-            return processReturn(con.getInputStream());
+            return processRefreshReturn(con.getInputStream());
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return Result.TIMEOUT_ERROR;
@@ -77,16 +74,44 @@ public class FreenetSupplier implements SMSSupplier {
         }
     }
 
-    private Result processReturn(InputStream is) throws IOException {
+    private Result processRefreshReturn(InputStream is) throws IOException {
+        String message = inputStream2String(is);
+        String out = provider.getTextByResourceId(R.string.text_refresh_informations);
+        Pattern p = Pattern.compile("SMS.*?\\}"); //get the SMS JSON object
+        Matcher m = p.matcher(message);
+        while (m.find()) {
+            String messageJSONObject = message.substring(m.start(), m.end());
+            p = Pattern.compile("[0-9]+");
+            m = p.matcher(messageJSONObject);
+            Integer allSMS = null;
+            Integer paidSMS = null;
+            while (m.find()) {
+                if (allSMS == null) {
+                    allSMS = Integer.parseInt(messageJSONObject.substring(m.start(), m.end()));
+                } else if (paidSMS == null) {
+                    paidSMS = Integer.parseInt(messageJSONObject.substring(m.start(), m.end()));
+                } else {
+                    break;
+                }
+            }
+            if (allSMS != null && paidSMS != null) {
+                return Result.NO_ERROR.setAlternateText(String.format(out, allSMS, paidSMS));
+            }
+
+        }
+        return Result.UNKNOWN_ERROR;
+    }
+
+    private Result processFireSMSReturn(InputStream is) throws IOException {
         String message = inputStream2String(is);
         message = message.replaceAll(".*SMSnotify\" value=\"", "");
         message = message.replaceAll("\">.*", "");
         message = Html.fromHtml(message).toString();
         if (message.contains("erfolgreich")) {
             return Result.NO_ERROR.setAlternateText(message);
+        } else {
+            return Result.UNKNOWN_ERROR.setAlternateText(message);
         }
-
-        return Result.UNKNOWN_ERROR.setAlternateText(message);
     }
 
     private String inputStream2String(InputStream is) throws IOException {
@@ -110,18 +135,6 @@ public class FreenetSupplier implements SMSSupplier {
     }
 
     @Override
-//    POST /portal/login.php HTTP/1.1
-//    Host: auth.freenet.de
-//    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0
-//    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-//    Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
-//    Accept-Encoding: gzip, deflate
-//    Connection: keep-alive
-//    Referer: http://www.freenet.de/index.html?status=log1&cbi=logMail
-//    Content-Type: application/x-www-form-urlencoded
-//    Content-Length: 216
-//
-//    cbi=logMail&callback=http%3A%2F%2Ftools.freenet.de%2Fmod_perl%2Flinker%2Ffreenet_startseite_loginkasten_mail%2Fwebmail.freenet.de%2Flogin%2Findex.html&username=USERNAME&passtext=Passwort&password=PASSWORD&x=0&y=0
     public Result login(String userName, String password) {
         sessionCookies = new ArrayList<String>();
         String tmpUrl = LOGIN_URL + "?username=" + userName + "&password=" + password;
@@ -195,7 +208,6 @@ public class FreenetSupplier implements SMSSupplier {
         return fireSMS(smsText.toString(), receivers.get(0).toString());
     }
 
-    //    myAction=send&from=b<USERNAME>&senderName=service%40freenet.de&defaultEmailSender=&to=<NUMBER>&smsText=Test+123+%F6+%FC+%E4+%DF
     public Result fireSMS(String smsText, String receiver) {
         Result result = login(provider.getUserName(), provider.getPassword());
         if (!result.equals(Result.NO_ERROR)) {
@@ -206,6 +218,7 @@ public class FreenetSupplier implements SMSSupplier {
         } catch (UnsupportedEncodingException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
+        //currently only free sms supported, for paid accounts change will be here
         String tmpUrl = SEND_URL + "&senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver + "&smsText=" + smsText;
         HttpURLConnection con;
         try {
@@ -218,7 +231,7 @@ public class FreenetSupplier implements SMSSupplier {
                 cookieBuilder.append(sessionCookie).append(";");
             }
             con.setRequestProperty("Cookie", cookieBuilder.toString());
-            return processReturn(con.getInputStream());
+            return processFireSMSReturn(con.getInputStream());
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return Result.TIMEOUT_ERROR;
