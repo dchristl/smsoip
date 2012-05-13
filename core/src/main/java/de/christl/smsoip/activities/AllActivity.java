@@ -13,10 +13,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -52,6 +49,13 @@ public class AllActivity extends Activity {
         MenuItem item = menu.add(0, EXIT, 0, getString(R.string.text_exit));
         item.setIcon(R.drawable.closebutton);
         return true;
+    }
+
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        View view = ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
+        view.getRootView().setBackgroundDrawable(getResources().getDrawable(R.drawable.icon));
     }
 
     @Override
