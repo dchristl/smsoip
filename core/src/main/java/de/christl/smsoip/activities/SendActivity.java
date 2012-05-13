@@ -121,10 +121,6 @@ public class SendActivity extends DefaultActivity {
 
             }
         });
-
-        if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
-            addToReceiverList(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER)));
-        }
         setNumberFieldListener();
         setSearchButton();
         setClearButton();
@@ -135,6 +131,9 @@ public class SendActivity extends DefaultActivity {
         setSmileyButton();
         setTextArea();
         setContactsByNumberInput();
+        if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
+            addToReceiverList(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER)));
+        }
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
     }
 

@@ -57,7 +57,7 @@
     <string name="text_default_provider_description">Der Standardanbieter der automatisch beim Starten der App
         ausgewählt ist
     </string>
-    <string name="text_no_default_Provider">Keiner (jedsmal fragen)</string>
+    <string name="text_no_default_Provider">Keiner (jedesmal fragen)</string>
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
     <string name="text_area_code">Standardländercode</string>
