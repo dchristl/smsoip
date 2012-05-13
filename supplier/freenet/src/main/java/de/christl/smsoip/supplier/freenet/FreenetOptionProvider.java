@@ -13,6 +13,7 @@ public class FreenetOptionProvider extends OptionProvider {
         super(providerName);
     }
 
+
     @Override
     public int getMaxReceiverCount() {
         return 1;
