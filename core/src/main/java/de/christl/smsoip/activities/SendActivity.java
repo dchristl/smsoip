@@ -53,7 +53,7 @@ public class SendActivity extends DefaultActivity {
     final Handler updateUIHandler = new Handler();
     final Runnable updateRunnable = new Runnable() {
         public void run() {
-//            showReturnMessage();
+            showReturnMessage();
         }
     };
     public Toast toast;
