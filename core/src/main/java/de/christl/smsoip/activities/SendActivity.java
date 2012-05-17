@@ -61,9 +61,6 @@ public class SendActivity extends DefaultActivity {
 
     private static final int GLOBAL_OPTION = 34;
     private static final int DIALOG_NUMBER_INPUT = 35;
-//    private CharSequence infoText;
-
-    //    private CharSequence resultMessage;
     private SharedPreferences settings;
     List<Receiver> receiverList = new ArrayList<Receiver>();
     private View addContactbyNumber;
@@ -72,6 +69,7 @@ public class SendActivity extends DefaultActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        refresh all settings, cause it can be changed
         smsSupplier.getProvider().refresh();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
     }
@@ -127,7 +125,8 @@ public class SendActivity extends DefaultActivity {
         if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
             addToReceiverList(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER)));
         }
-        setNumberFieldListener();
+        //disable inputs on field
+        inputField.setKeyListener(null);
         setSearchButton();
         setClearButton();
         setRefreshButton();
@@ -224,10 +223,6 @@ public class SendActivity extends DefaultActivity {
         });
     }
 
-    private void setNumberFieldListener() {
-        inputField.setKeyListener(null);
-
-    }
 
     private boolean preSendCheck() {
         String toastMessage = "";
