@@ -16,7 +16,7 @@ public class Receiver {
     private final String name;
     private String receiverNumber = null;
     private boolean enabled;
-    private String rawNumber;
+    Map<String, String> fixedRawNumberMapping = new HashMap<String, String>();
     private Map<String, String> numberTypeMap = new HashMap<String, String>();
 
     public Receiver(String pickedId, String name) {
@@ -48,12 +48,10 @@ public class Receiver {
         this.enabled = enabled;
     }
 
-    public String getPickedId() {
-        return pickedId;
-    }
-
     public void addNumber(String rawNumber, String type) {
-        numberTypeMap.put(fixNumber(rawNumber), type);
+        String fixedNumber = fixNumber(rawNumber);
+        fixedRawNumberMapping.put(fixedNumber, rawNumber);
+        numberTypeMap.put(fixedNumber, type);
     }
 
     public Map<String, String> getNumberTypeMap() {
@@ -75,6 +73,6 @@ public class Receiver {
 
 
     public String getRawNumber() {
-        return pickedId.equals("-1") ? receiverNumber : rawNumber;
+        return fixedRawNumberMapping.get(receiverNumber);
     }
 }
