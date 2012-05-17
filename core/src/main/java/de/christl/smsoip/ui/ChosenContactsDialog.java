@@ -61,4 +61,7 @@ public class ChosenContactsDialog extends Dialog {
     }
 
 
+    public void redraw() {
+        this.onCreate(null);
+    }
 }

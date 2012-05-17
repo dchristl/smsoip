@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -55,6 +56,7 @@ public class SendActivity extends AllActivity {
     List<Receiver> receiverList = new ArrayList<Receiver>();
     private View addContactbyNumber;
     private ImageButton searchButton;
+    private ChosenContactsDialog chosenContactsDialog;
 
     @Override
     protected void onResume() {
@@ -176,15 +178,23 @@ public class SendActivity extends AllActivity {
     }
 
     private void showChosenContactsDialog() {
-        final ChosenContactsDialog dialog = new ChosenContactsDialog(this, receiverList);
-        dialog.setOwnerActivity(this);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        chosenContactsDialog = new ChosenContactsDialog(this, receiverList);
+        chosenContactsDialog.setOwnerActivity(this);
+        chosenContactsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 updateViewOnChangedReceivers();
             }
         });
-        dialog.show();
+        chosenContactsDialog.show();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (chosenContactsDialog != null && chosenContactsDialog.isShowing()) {
+            chosenContactsDialog.redraw();
+        }
     }
 
     private void setSmileyButton() {
@@ -553,7 +563,7 @@ public class SendActivity extends AllActivity {
                 startOptionActivity();
                 return true;
             case OPTION_SWITCH:
-                removeDialog(DIALOG_PROVIDER); //remove the dialog forces recreation
+                removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
                 showDialog(DIALOG_PROVIDER);
                 return true;
             case GLOBAL_OPTION:
