@@ -39,9 +39,8 @@ public class SendActivity extends DefaultActivity {
     private static final int PICK_CONTACT_REQUEST = 0;
 
     public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
-    public static final String GIVEN_NUMBER = "givenNumber";
-    public static final String GIVEN_NAME = "givenName";
-    public static String GIVEN_ID = "givenId";
+    public static String GIVEN_RECEIVER = "givenReceiver";
+    public static String GIVEN_NUMBER = "givenNumber";
 
 
     public CharSequence SIGNSCONSTANT;
@@ -101,9 +100,6 @@ public class SendActivity extends DefaultActivity {
             }
         });
 
-        if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
-            addToReceiverList(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER)));
-        }
         //disable inputs on field
         inputField.setKeyListener(null);
         setSearchButton();
@@ -115,6 +111,10 @@ public class SendActivity extends DefaultActivity {
         setSmileyButton();
         setTextArea();
         setContactsByNumberInput();
+        Object currReceiver = currProvider.get(GIVEN_RECEIVER);
+        if (currReceiver != null) {
+            addToReceiverList(((Receiver) currReceiver), currProvider.getString(GIVEN_NUMBER));
+        }
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
     }
 

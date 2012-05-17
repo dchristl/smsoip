@@ -2,11 +2,9 @@ package de.christl.smsoip.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +14,7 @@ import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.database.DatabaseHandler;
 
 import java.util.Map;
 
@@ -25,11 +24,10 @@ public class MainActivity extends AllActivity {
     private final int GLOBAL_OPTION = 21;
     private Spinner spinner;
     public static final String PARAMETER = "nonskip";
-    private String givenNumber;
     private Map<String, ProviderEntry> providerEntries;
     private SharedPreferences settings;
-    private String name;
-    private String id = "-1";
+    private Receiver contactByNumber;
+    private String number;
 
 
     /**
@@ -41,26 +39,11 @@ public class MainActivity extends AllActivity {
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         Uri data = getIntent().getData();
         if (data != null) {
-            name = (String) getText(R.string.text_unknown);
-            givenNumber = data.getSchemeSpecificPart();
-            String[] projection = new String[]{
-                    ContactsContract.PhoneLookup.DISPLAY_NAME,
-                    ContactsContract.PhoneLookup._ID};
-            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(givenNumber));
-            Cursor query = getContentResolver().query(uri, projection, null, null, null);
-            while (query.moveToNext()) {
-                name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-                if (name == null || name.equals("")) {
-                    name = (String) getText(R.string.text_unknown);
-                }
-                id = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup._ID));
-                if (id == null || id.equals("")) {
-                    id = "-1";
-                }
-            }
-            query.close();
+            DatabaseHandler dbHandler = new DatabaseHandler(this);
+            contactByNumber = dbHandler.findContactByNumber(data);
+            number = contactByNumber.getFixedNumberByRawNumber(data.getSchemeSpecificPart());
         } else {
-            givenNumber = null;
+            number = null;
         }
 
         providerEntries = SMSoIPApplication.getApp().getProviderEntries();
@@ -117,9 +100,8 @@ public class MainActivity extends AllActivity {
             if (!defaultSupplierClass.equals("")) {
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, defaultSupplierClass);
-                intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
-                intent.putExtra(SendActivity.GIVEN_NAME, name);
-                intent.putExtra(SendActivity.GIVEN_ID, id);
+                intent.putExtra(SendActivity.GIVEN_RECEIVER, contactByNumber);
+                intent.putExtra(SendActivity.GIVEN_NUMBER, number);
                 startActivity(intent);
             }
         }
@@ -153,9 +135,8 @@ public class MainActivity extends AllActivity {
                 }
                 Intent intent = new Intent(MainActivity.this, SendActivity.class);
                 intent.putExtra(SendActivity.SUPPLIER_CLASS_NAME, supplierClassName);
-                intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
-                intent.putExtra(SendActivity.GIVEN_NAME, name);
-                intent.putExtra(SendActivity.GIVEN_ID, id);
+                intent.putExtra(SendActivity.GIVEN_RECEIVER, contactByNumber);
+                intent.putExtra(SendActivity.GIVEN_NUMBER, number);
                 startActivity(intent);
             }
         });

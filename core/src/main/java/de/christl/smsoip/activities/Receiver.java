@@ -5,13 +5,14 @@ import android.preference.PreferenceManager;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Class for one receiver
  */
-public class Receiver {
+public class Receiver implements Serializable{
     private final String pickedId;
     private final String name;
     private String receiverNumber = null;
@@ -27,6 +28,10 @@ public class Receiver {
 
     public String getName() {
         return name;
+    }
+
+    public String getPickedId() {
+        return pickedId;
     }
 
     public void setReceiverNumber(String receiverNumber) {
@@ -74,5 +79,14 @@ public class Receiver {
 
     public String getRawNumber() {
         return fixedRawNumberMapping.get(receiverNumber);
+    }
+
+    public String getFixedNumberByRawNumber(String rawNumber){
+        for (Map.Entry<String, String> stringStringEntry : fixedRawNumberMapping.entrySet()) {
+            if (stringStringEntry.getValue().equals(rawNumber)){
+                return stringStringEntry.getKey();
+            }
+        }
+        return null;
     }
 }
