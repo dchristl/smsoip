@@ -46,7 +46,7 @@ public class ProviderPreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         String supplierClassName = (String) extras.get(SUPPLIER_CLASS_NAME);
-        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName, this);
+        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
         provider = smsSupplier.getProvider();
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_provider_settings) + " (" + provider.getProviderName() + ")");
         preferenceManager = getPreferenceManager();

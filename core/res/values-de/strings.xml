@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_send">Senden</string>
-    <string name="text_chooseProvider">Anbieter auswählen:</string>
     <string name="text_changeProvider">Anbieter wechseln</string>
-    <string name="button_next">Weiter</string>
+    <string name="text_chooseProvider">Anbieter auswählen</string>
     <string name="text_provider_settings">Anbietereinstellungen</string>
     <string name="text_program_settings">Programmeinstellungen</string>
     <string name="text_provider_settings_short">Anbieter</string>
@@ -22,8 +21,8 @@
     <string name="hint_sendernumber">Absender</string>
     <string name="text_chooseType">Typ wählen</string>
     <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
-    <string name="text_pickNumber">Nummer auswählen</string>
-    <string name="text_noNumber">Keine Nummer gefunden</string>
+    <string name="text_pickNumber">Nummer für %1$s auswählen:</string>
+    <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
     <string name="text_smscomitted">SMS wird gesendet</string>
     <string name="text_ok">OK</string>
     <string name="text_no">Abbrechen</string>
@@ -34,7 +33,6 @@
     <string name="text_unknown_error">Unbekannter Fehler</string>
     <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
-    <string name="cb_default">Als Standard setzen</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
     <string name="text_pleaseWait">Bitte warten</string>
     <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
@@ -72,7 +70,8 @@
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
-    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator versehen (z.B. \'SMSoIP -> GMX\')
+    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
+        versehen (z.B. \'SMSoIP -> GMX\')
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>

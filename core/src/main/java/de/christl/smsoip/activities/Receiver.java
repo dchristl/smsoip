@@ -5,27 +5,40 @@ import android.preference.PreferenceManager;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class for one receiver
  */
-public class Receiver {
+public class Receiver implements Serializable{
     private final String pickedId;
     private final String name;
-    private final String receiverNumber;
+    private String receiverNumber = null;
     private boolean enabled;
-    private String rawNumber;
+    Map<String, String> fixedRawNumberMapping = new HashMap<String, String>();
+    private Map<String, String> numberTypeMap = new HashMap<String, String>();
 
-    public Receiver(String pickedId, String name, String rawNumber) {
-        //To change body of created methods use File | Settings | File Templates.
+    public Receiver(String pickedId, String name) {
         this.pickedId = pickedId;
         this.name = name;
-        this.rawNumber = rawNumber;
-        this.receiverNumber = fixNumber(rawNumber);
         this.enabled = true;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getPickedId() {
+        return pickedId;
+    }
+
+    public void setReceiverNumber(String receiverNumber) {
+        if (!numberTypeMap.containsKey(receiverNumber)) {
+            throw new IllegalArgumentException(); //for insurance
+        }
+        this.receiverNumber = receiverNumber;
     }
 
     public String getReceiverNumber() {
@@ -40,24 +53,40 @@ public class Receiver {
         this.enabled = enabled;
     }
 
-    public String getPickedId() {
-        return pickedId;
+    public void addNumber(String rawNumber, String type) {
+        String fixedNumber = fixNumber(rawNumber);
+        fixedRawNumberMapping.put(fixedNumber, rawNumber);
+        numberTypeMap.put(fixedNumber, type);
+    }
+
+    public Map<String, String> getNumberTypeMap() {
+        return numberTypeMap;
     }
 
     private String fixNumber(String rawNumber) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
-        String prefix = "";
-        if (!rawNumber.startsWith("+") && !rawNumber.startsWith("00")) {
+        if (!rawNumber.startsWith("+") && !rawNumber.startsWith("00")) {   //area code not already added
+            rawNumber = rawNumber.replaceFirst("^0", "");        //replace leading zero
             String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
-            prefix = "00" + areaCode;
+            String prefix = "00" + areaCode;
+            rawNumber = prefix + rawNumber;
+        } else {
+            rawNumber = rawNumber.replaceFirst("\\+", "00");  //replace plus if there
         }
-        rawNumber = rawNumber.replaceFirst("^0", "");
-        rawNumber = rawNumber.replaceFirst("\\+", "00");
-        rawNumber = rawNumber.replaceAll("[^0-9]", "");
-        return prefix + rawNumber;
+        return rawNumber.replaceAll("[^0-9]", "");   //clean up not numbervalues
     }
 
+
     public String getRawNumber() {
-        return pickedId.equals("-1") ? receiverNumber : rawNumber;
+        return fixedRawNumberMapping.get(receiverNumber);
+    }
+
+    public String getFixedNumberByRawNumber(String rawNumber){
+        for (Map.Entry<String, String> stringStringEntry : fixedRawNumberMapping.entrySet()) {
+            if (stringStringEntry.getValue().equals(rawNumber)){
+                return stringStringEntry.getKey();
+            }
+        }
+        return null;
     }
 }

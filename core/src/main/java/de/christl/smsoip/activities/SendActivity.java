@@ -7,10 +7,9 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
@@ -22,6 +21,7 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.ImageDialog;
@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class SendActivity extends DefaultActivity {
+public class SendActivity extends AllActivity {
 
     private EditText inputField, textField;
     TextView smssigns;
@@ -39,18 +39,9 @@ public class SendActivity extends DefaultActivity {
 
     private static final int PICK_CONTACT_REQUEST = 0;
 
-    public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
-    public static final String GIVEN_NUMBER = "givenNumber";
-    public static final String GIVEN_NAME = "givenName";
-    public static String GIVEN_ID = "givenId";
-
-
     public CharSequence SIGNSCONSTANT;
     private ProgressDialog progressDialog;
 
-
-    public static String infoMsg = null;
-    final Handler updateUIHandler = new Handler();
 
     public Toast toast;
     private SMSSupplier smsSupplier;
@@ -61,41 +52,76 @@ public class SendActivity extends DefaultActivity {
 
     private static final int GLOBAL_OPTION = 34;
     private static final int DIALOG_NUMBER_INPUT = 35;
-//    private CharSequence infoText;
-
-    //    private CharSequence resultMessage;
     private SharedPreferences settings;
     List<Receiver> receiverList = new ArrayList<Receiver>();
     private View addContactbyNumber;
     private ImageButton searchButton;
+    private ChosenContactsDialog chosenContactsDialog;
 
     @Override
     protected void onResume() {
         super.onResume();
-        smsSupplier.getProvider().refresh();
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
+//        refresh all settings, cause it can be changed
+        if (smsSupplier != null) {
+            smsSupplier.getProvider().refresh();
+            settings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SMSoIPApplication.getApp().initProviders(); //calll this every time, a new plugin will be installed or removed
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         SIGNSCONSTANT = getText(R.string.text_smssigns);
-        if (infoMsg != null) {
-            ((TextView) findViewById(R.id.infoText)).setText(infoMsg);
-        }
         inputField = (EditText) findViewById(R.id.numberInput);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         smssigns = (TextView) findViewById(R.id.smssigns);
         smssigns.setText(String.format(SIGNSCONSTANT.toString(), 0, 0));
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
-        Bundle currProvider = this.getIntent().getExtras();
-        smsSupplier = SMSoIPApplication.getApp().getInstance((String) currProvider.get(SUPPLIER_CLASS_NAME), this);
-        setTitle(smsSupplier.getProvider().getProviderName());
-        setSpinner();
+        //disable inputs on field
+        inputField.setKeyListener(null);
+        setSearchButton();
+        setClearButton();
+        setRefreshButton();
+        setSigButton();
+        setShowChosenContactsDialog();
+        setShortTextButton();
+        setSmileyButton();
+        setTextArea();
+        setSendButton();
+        setContactsByNumberInput();
+        Uri data = getIntent().getData();
+        String defaultSupplier = getDefaultSupplier();
+        if (data != null) {
+            DatabaseHandler dbHandler = new DatabaseHandler(this);
+            String givenNumber = data.getSchemeSpecificPart();
+            Receiver contactByNumber = dbHandler.findContactByNumber(givenNumber);
+            if (contactByNumber == null) {
+                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
+            }
+            String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
+            contactByNumber.setReceiverNumber(number);
+            receiverList.add(contactByNumber);
+        }
+        if (defaultSupplier != null) {
+            smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
+            setTitle(smsSupplier.getProvider().getProviderName());
+            setSpinner();
 
+
+            updateViewOnChangedReceivers(); //call it if a a receiver is appended
+        } else {
+            showDialog(DIALOG_PROVIDER);
+        }
+        insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+
+    }
+
+    private void setSendButton() {
         Button sendButton = (Button) findViewById(R.id.sendButton);
         final CharSequence progressText = getText(R.string.text_smscomitted);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -105,38 +131,33 @@ public class SendActivity extends DefaultActivity {
                 }
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                new Thread(new Runnable() {
-                    public void run() {
-                        Result result = send();
-                        CharSequence resultMessage = result.getUserText();
-                        CharSequence infoText = getText(R.string.text_notyetrefreshed);
-                        boolean successfulSent = result.equals(Result.NO_ERROR);
-                        if (successfulSent) {
-                            infoText = refreshInformations(true);
-                        }
-                        updateUIHandler.post(UpdateUIRunnableFactory.getRunnable(SendActivity.this, resultMessage, infoText, successfulSent));
-                        progressDialog.cancel();
-                    }
-
-
-                }).start();
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
 
             }
         });
-        setNumberFieldListener();
-        setSearchButton();
-        setClearButton();
-        setRefreshButton();
-        setSigButton();
-        setShowChosenContactsDialog();
-        setShortTextButton();
-        setSmileyButton();
-        setTextArea();
-        setContactsByNumberInput();
-        if (currProvider.get(GIVEN_NUMBER) != null && !String.valueOf(currProvider.get(GIVEN_NUMBER)).equals("")) {
-            addToReceiverList(((String) currProvider.get(GIVEN_ID)), ((String) currProvider.get(GIVEN_NAME)), ((String) currProvider.get(GIVEN_NUMBER)));
+    }
+
+    private String getDefaultSupplier() {
+        String string = settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "");
+        //check if default provider is installed
+        if (!string.equals("")) {
+            boolean found = false;
+            for (ProviderEntry providerEntry : SMSoIPApplication.getApp().getProviderEntries().values()) {
+                if (providerEntry.getSupplierClassName().equals(string)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) { //set back to default (always ask) if none found
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, null);
+                editor.commit();
+            }
+        } else {
+            string = null;
         }
-        insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+
+        return string;
     }
 
     private void setContactsByNumberInput() {
@@ -162,15 +183,23 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void showChosenContactsDialog() {
-        final ChosenContactsDialog dialog = new ChosenContactsDialog(this, receiverList);
-        dialog.setOwnerActivity(this);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        chosenContactsDialog = new ChosenContactsDialog(this, receiverList);
+        chosenContactsDialog.setOwnerActivity(this);
+        chosenContactsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 updateViewOnChangedReceivers();
             }
         });
-        dialog.show();
+        chosenContactsDialog.show();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (chosenContactsDialog != null && chosenContactsDialog.isShowing()) {
+            chosenContactsDialog.redraw();
+        }
     }
 
     private void setSmileyButton() {
@@ -223,10 +252,6 @@ public class SendActivity extends DefaultActivity {
         });
     }
 
-    private void setNumberFieldListener() {
-        inputField.setKeyListener(null);
-
-    }
 
     private boolean preSendCheck() {
         String toastMessage = "";
@@ -253,13 +278,7 @@ public class SendActivity extends DefaultActivity {
             public void onClick(View view) {
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                new Thread(new Runnable() {
-                    public void run() {
-                        CharSequence infoText = refreshInformations(false);
-                        updateUIHandler.post(UpdateUIRunnableFactory.getRunnable(SendActivity.this, null, infoText, false));
-                        progressDialog.cancel();
-                    }
-                }).start();
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshInfosAndUpdateUIRunnable()).start();
             }
         });
 
@@ -295,23 +314,27 @@ public class SendActivity extends DefaultActivity {
         updateViewOnChangedReceivers();
     }
 
-    void showReturnMessage(CharSequence resultMessage, CharSequence infoText, boolean successfulSent) {
+    /**
+     * updates the toast and the refresh informations after sending and/or refreshing
+     *
+     * @param resultMessage - the resultMessage to show in the Toast or null if only refresh was pressed
+     * @param infoText      - the infoText on the screen or null if refresh was not successful
+     */
+    void showReturnMessage(CharSequence resultMessage, CharSequence infoText) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
-        if (resultMessage == null) {  //break if only refresh is pressed and all is valid
+        if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
             infoView.setText(infoText);
-            return;
-        }
-        if (successfulSent) {
-            infoView.setText(infoText);
-            Spanned msg = new SpannableString(resultMessage);
-            final ImageDialog dialog = new ImageDialog(this, true, msg);
-            dialog.setOwnerActivity(this);
-            dialog.show();
-            killDialogAfterAWhile(dialog);
-            if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-                writeSMSInDatabase();
+            if (resultMessage != null) {  //previous operation was a refresh only, so no return message will be shown
+                Spanned msg = new SpannableString(resultMessage);
+                final ImageDialog dialog = new ImageDialog(this, true, msg);
+                dialog.setOwnerActivity(this);
+                dialog.show();
+                killDialogAfterAWhile(dialog);
+                if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+                    writeSMSInDatabase();
+                }
+                clearAllInputs();
             }
-            clearAllInputs();
         } else {
             Spanned msg = new SpannableString(resultMessage);
             final ImageDialog dialog = new ImageDialog(this, false, msg);
@@ -395,7 +418,7 @@ public class SendActivity extends DefaultActivity {
         findViewById(de.christl.smsoip.R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
-    private Result send() {
+    Result send() {
         List<Editable> numberList = new ArrayList<Editable>(receiverList.size());
         for (Receiver receiver : receiverList) {
             numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
@@ -404,9 +427,8 @@ public class SendActivity extends DefaultActivity {
 
     }
 
-    private CharSequence refreshInformations(boolean afterMessageSuccessfulSent) {
-        Result tmpResult = afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
-        return tmpResult.getUserText();
+    Result refreshInformations(boolean afterMessageSuccessfulSent) {
+        return afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
     }
 
 
@@ -414,62 +436,46 @@ public class SendActivity extends DefaultActivity {
                                     Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String pickedId = null;
-                boolean hasPhone = false;
-                String name = null;
                 Uri contactData = data.getData();
-                Cursor contactCur = managedQuery(contactData, null, null, null, null);
-                if (contactCur.moveToFirst()) {
-                    pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                    name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                    hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
-                }
-                if (pickedId != null && hasPhone) {
-                    Cursor phones = getContentResolver().query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{pickedId}, null);
-                    HashMap<String, Integer> phoneNumber = new HashMap<String, Integer>();
-                    while (phones.moveToNext()) {
-                        phoneNumber.put(phones.getString(
-                                phones.getColumnIndex(
-                                        ContactsContract.CommonDataKinds.Phone.NUMBER)), phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2)));
-                    }
-                    phones.close();
-                    final HashMap<String, String> presentationLayer = new HashMap<String, String>();
-                    for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
-                        String description = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(this.getResources(), currEntry.getValue(), getText(R.string.text_no_phone_type_label));
-                        presentationLayer.put(currEntry.getKey(), currEntry.getKey() + " (" + description + ")");
-                    }
-                    if (presentationLayer.size() == 1) {
-                        for (String s : presentationLayer.keySet()) {
-                            addToReceiverList(pickedId, name, s);
+                final Receiver pickedReceiver = new DatabaseHandler(this).getPickedContactData(contactData);
+
+                if (!pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
+                    //always one contact, so it will be filled always
+
+                    final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
+                    if (numberTypeMap.size() == 1) { //only one number, so choose this
+                        addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0]);
+
+                    } else { //more than one number for contact
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                        builder.setTitle(String.format(getText(R.string.text_pickNumber).toString(), pickedReceiver.getName()));
+                        //build a map of string on screen with corresponding number for layout
+                        final Map<String, String> presentationMap = new HashMap<String, String>();
+                        for (Map.Entry<String, String> numberTypes : numberTypeMap.entrySet()) {
+                            presentationMap.put(numberTypes.getKey() + " (" + numberTypes.getValue() + ")", numberTypes.getKey());
                         }
-                        return;
-                    }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    final String[] items = presentationLayer.values().toArray(new String[presentationLayer.size()]);
-                    builder.setTitle(getText(R.string.text_pickNumber));
-                    final String finalName = name;
-                    final String finalPickedId = pickedId;
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            String key = null;
-                            for (Map.Entry<String, String> entry : presentationLayer.entrySet()) {
-                                if (entry.getValue().equals(items[item])) {
-                                    key = entry.getKey();
-                                    break;
+                        final String[] items = presentationMap.keySet().toArray(new String[presentationMap.size()]);
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                String key = null;//get the picked number back from origin map
+                                for (Map.Entry<String, String> entry : presentationMap.entrySet()) {
+                                    if (entry.getKey().equals(items[item])) {
+                                        key = entry.getValue();
+                                        break;
+                                    }
                                 }
+                                addToReceiverList(pickedReceiver, key);
                             }
-                            addToReceiverList(finalPickedId, finalName, key);
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(R.string.text_noNumber)
+
+
+                    builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedReceiver.getName()))
                             .setCancelable(false)
                             .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
@@ -484,19 +490,21 @@ public class SendActivity extends DefaultActivity {
 
             }
         }
+
     }
 
-    private void addToReceiverList(String pickedId, String name, String receiverNumber) {
+
+    private void addToReceiverList(Receiver receiver, String receiverNumber) {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
-            receiverList.add(new Receiver(pickedId, name, receiverNumber));
+            receiver.setReceiverNumber(receiverNumber);
+            receiverList.add(receiver);
             updateViewOnChangedReceivers();
         } else {
             toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
-
     }
 
 
@@ -540,21 +548,6 @@ public class SendActivity extends DefaultActivity {
 
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && !isDefaultSet()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    boolean isDefaultSet() {
-        return !settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "").equals("");
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
@@ -575,7 +568,7 @@ public class SendActivity extends DefaultActivity {
                 startOptionActivity();
                 return true;
             case OPTION_SWITCH:
-                removeDialog(DIALOG_PROVIDER); //remove the dialog forces recreation
+                removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
                 showDialog(DIALOG_PROVIDER);
                 return true;
             case GLOBAL_OPTION:
@@ -602,7 +595,6 @@ public class SendActivity extends DefaultActivity {
             progressDialog.cancel();
             progressDialog = null;
         }
-        infoMsg = ((TextView) findViewById(R.id.infoText)).getText().toString();
         super.onStop();
     }
 
@@ -631,10 +623,17 @@ public class SendActivity extends DefaultActivity {
                 break;
             case DIALOG_PROVIDER:
                 Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+                if (providerEntries.size() == 0) { //skip if no provider available
+                    break;
+                }
                 final List<ProviderEntry> filteredProviderEntries = new ArrayList<ProviderEntry>();
-                for (ProviderEntry providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
-                    if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
-                        filteredProviderEntries.add(providerEntry);
+                if (smsSupplier == null) {   //add all if current provider not set
+                    filteredProviderEntries.addAll(providerEntries.values());
+                } else {
+                    for (ProviderEntry providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
+                        if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
+                            filteredProviderEntries.add(providerEntry);
+                        }
                     }
                 }
                 int filteredProvidersSize = filteredProviderEntries.size();
@@ -652,6 +651,7 @@ public class SendActivity extends DefaultActivity {
                             changeSupplier(supplierClassName);
                         }
                     });
+                    builder.setTitle(R.string.text_chooseProvider);
                     dialog = builder.create();
                 } else {  //have to be a min of 1 here, else button will not be available
                     changeSupplier(filteredProviderEntries.get(0).getSupplierClassName());
@@ -678,7 +678,14 @@ public class SendActivity extends DefaultActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String rawNumber = input.getText().toString();
                         if (!rawNumber.equals("")) {
-                            addToReceiverList("-1", (String) getText(R.string.text_unknown), rawNumber);
+                            DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
+                            Receiver contactByNumber = dbHandler.findContactByNumber(rawNumber);
+                            if (contactByNumber == null) {
+                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                                contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());
+                            }
+                            String number = contactByNumber.getFixedNumberByRawNumber(rawNumber);
+                            addToReceiverList(contactByNumber, number);
                         }
                         input.setText("");
                         dialog.dismiss();
@@ -693,7 +700,7 @@ public class SendActivity extends DefaultActivity {
     }
 
     private void changeSupplier(String supplierClassName) {
-        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName, this);
+        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
         setTitle(smsSupplier.getProvider().getProviderName());
         //reset all not needed informations
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
