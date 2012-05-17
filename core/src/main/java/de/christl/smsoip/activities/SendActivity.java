@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
@@ -49,9 +48,6 @@ public class SendActivity extends DefaultActivity {
     private ProgressDialog progressDialog;
 
 
-    public static String infoMsg = null;
-    final Handler updateUIHandler = new Handler();
-
     public Toast toast;
     private SMSSupplier smsSupplier;
     private static final int PROVIDER_OPTION = 30;
@@ -80,9 +76,6 @@ public class SendActivity extends DefaultActivity {
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         SIGNSCONSTANT = getText(R.string.text_smssigns);
-        if (infoMsg != null) {
-            ((TextView) findViewById(R.id.infoText)).setText(infoMsg);
-        }
         inputField = (EditText) findViewById(R.id.numberInput);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -103,21 +96,7 @@ public class SendActivity extends DefaultActivity {
                 }
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                new Thread(new Runnable() {
-                    public void run() {
-                        Result result = send();
-                        CharSequence resultMessage = result.getUserText();
-                        CharSequence infoText = getText(R.string.text_notyetrefreshed);
-                        boolean successfulSent = result.equals(Result.NO_ERROR);
-                        if (successfulSent) {
-                            infoText = refreshInformations(true);
-                        }
-                        updateUIHandler.post(UpdateUIRunnableFactory.getRunnable(SendActivity.this, resultMessage, infoText, successfulSent));
-                        progressDialog.cancel();
-                    }
-
-
-                }).start();
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
 
             }
         });
@@ -249,13 +228,7 @@ public class SendActivity extends DefaultActivity {
             public void onClick(View view) {
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                new Thread(new Runnable() {
-                    public void run() {
-                        CharSequence infoText = refreshInformations(false);
-                        updateUIHandler.post(UpdateUIRunnableFactory.getRunnable(SendActivity.this, null, infoText, false));
-                        progressDialog.cancel();
-                    }
-                }).start();
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshInfosAndUpdateUIRunnable()).start();
             }
         });
 
@@ -291,23 +264,27 @@ public class SendActivity extends DefaultActivity {
         updateViewOnChangedReceivers();
     }
 
-    void showReturnMessage(CharSequence resultMessage, CharSequence infoText, boolean successfulSent) {
+    /**
+     * updates the toast and the refresh informations after sending and/or refreshing
+     *
+     * @param resultMessage - the resultMessage to show in the Toast or null if only refresh was pressed
+     * @param infoText      - the infoText on the screen or null if refresh was not successful
+     */
+    void showReturnMessage(CharSequence resultMessage, CharSequence infoText) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
-        if (resultMessage == null) {  //break if only refresh is pressed and all is valid
+        if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
             infoView.setText(infoText);
-            return;
-        }
-        if (successfulSent) {
-            infoView.setText(infoText);
-            Spanned msg = new SpannableString(resultMessage);
-            final ImageDialog dialog = new ImageDialog(this, true, msg);
-            dialog.setOwnerActivity(this);
-            dialog.show();
-            killDialogAfterAWhile(dialog);
-            if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-                writeSMSInDatabase();
+            if (resultMessage != null) {  //previous operation was a refresh only, so no return message will be shown
+                Spanned msg = new SpannableString(resultMessage);
+                final ImageDialog dialog = new ImageDialog(this, true, msg);
+                dialog.setOwnerActivity(this);
+                dialog.show();
+                killDialogAfterAWhile(dialog);
+                if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+                    writeSMSInDatabase();
+                }
+                clearAllInputs();
             }
-            clearAllInputs();
         } else {
             Spanned msg = new SpannableString(resultMessage);
             final ImageDialog dialog = new ImageDialog(this, false, msg);
@@ -391,7 +368,7 @@ public class SendActivity extends DefaultActivity {
         findViewById(de.christl.smsoip.R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
-    private Result send() {
+    Result send() {
         List<Editable> numberList = new ArrayList<Editable>(receiverList.size());
         for (Receiver receiver : receiverList) {
             numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
@@ -400,9 +377,8 @@ public class SendActivity extends DefaultActivity {
 
     }
 
-    private CharSequence refreshInformations(boolean afterMessageSuccessfulSent) {
-        Result tmpResult = afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
-        return tmpResult.getUserText();
+    Result refreshInformations(boolean afterMessageSuccessfulSent) {
+        return afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
     }
 
 
@@ -598,7 +574,6 @@ public class SendActivity extends DefaultActivity {
             progressDialog.cancel();
             progressDialog = null;
         }
-        infoMsg = ((TextView) findViewById(R.id.infoText)).getText().toString();
         super.onStop();
     }
 
