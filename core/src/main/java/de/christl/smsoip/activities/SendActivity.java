@@ -91,6 +91,7 @@ public class SendActivity extends AllActivity {
         setShortTextButton();
         setSmileyButton();
         setTextArea();
+        setSendButton();
         setContactsByNumberInput();
         Uri data = getIntent().getData();
         String defaultSupplier = getDefaultSupplier();
@@ -111,25 +112,29 @@ public class SendActivity extends AllActivity {
             setTitle(smsSupplier.getProvider().getProviderName());
             setSpinner();
 
-            Button sendButton = (Button) findViewById(R.id.sendButton);
-            final CharSequence progressText = getText(R.string.text_smscomitted);
-            sendButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    if (!preSendCheck() || progressDialog == null) {
-                        return;
-                    }
-                    progressDialog.setMessage(progressText);
-                    progressDialog.show();
-                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
 
-                }
-            });
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {
             showDialog(DIALOG_PROVIDER);
         }
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
 
+    }
+
+    private void setSendButton() {
+        Button sendButton = (Button) findViewById(R.id.sendButton);
+        final CharSequence progressText = getText(R.string.text_smscomitted);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                if (!preSendCheck() || progressDialog == null) {
+                    return;
+                }
+                progressDialog.setMessage(progressText);
+                progressDialog.show();
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
+
+            }
+        });
     }
 
     private String getDefaultSupplier() {
@@ -618,6 +623,9 @@ public class SendActivity extends AllActivity {
                 break;
             case DIALOG_PROVIDER:
                 Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+                if (providerEntries.size() == 0) { //skip if no provider available
+                    break;
+                }
                 final List<ProviderEntry> filteredProviderEntries = new ArrayList<ProviderEntry>();
                 if (smsSupplier == null) {   //add all if current provider not set
                     filteredProviderEntries.addAll(providerEntries.values());
