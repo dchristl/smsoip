@@ -22,8 +22,8 @@
     <string name="hint_sendernumber">Absender</string>
     <string name="text_chooseType">Typ wählen</string>
     <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
-    <string name="text_pickNumber">Nummer auswählen</string>
-    <string name="text_noNumber">Keine Nummer gefunden</string>
+    <string name="text_pickNumber">Nummer für %1$s auswählen:</string>
+    <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
     <string name="text_smscomitted">SMS wird gesendet</string>
     <string name="text_ok">OK</string>
     <string name="text_no">Abbrechen</string>
@@ -72,7 +72,8 @@
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
-    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator versehen (z.B. \'SMSoIP -> GMX\')
+    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
+        versehen (z.B. \'SMSoIP -> GMX\')
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>

@@ -389,7 +389,7 @@ public class SendActivity extends DefaultActivity {
                 Uri contactData = data.getData();
                 final Receiver pickedReceiver = new DatabaseHandler(this).getPickedContactData(contactData);
 
-                if (pickedReceiver != null && !pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
+                if (!pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
                     //always one contact, so it will be filled always
 
                     final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
@@ -399,7 +399,7 @@ public class SendActivity extends DefaultActivity {
                     } else { //more than one number for contact
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                        builder.setTitle(getText(R.string.text_pickNumber) + pickedReceiver.getName());
+                        builder.setTitle(String.format(getText(R.string.text_pickNumber).toString(), pickedReceiver.getName()));
                         //build a map of string on screen with corresponding number for layout
                         final Map<String, String> presentationMap = new HashMap<String, String>();
                         for (Map.Entry<String, String> numberTypes : numberTypeMap.entrySet()) {
@@ -423,7 +423,9 @@ public class SendActivity extends DefaultActivity {
                     }
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(R.string.text_noNumber)
+
+
+                    builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedReceiver.getName()))
                             .setCancelable(false)
                             .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
