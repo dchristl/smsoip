@@ -120,7 +120,6 @@ public class MainActivity extends AllActivity {
                 intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
                 intent.putExtra(SendActivity.GIVEN_NAME, name);
                 intent.putExtra(SendActivity.GIVEN_ID, id);
-                SendActivity.infoMsg = null;
                 startActivity(intent);
             }
         }
@@ -157,7 +156,6 @@ public class MainActivity extends AllActivity {
                 intent.putExtra(SendActivity.GIVEN_NUMBER, givenNumber);
                 intent.putExtra(SendActivity.GIVEN_NAME, name);
                 intent.putExtra(SendActivity.GIVEN_ID, id);
-                SendActivity.infoMsg = null;
                 startActivity(intent);
             }
         });

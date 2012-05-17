@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +20,7 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.ImageDialog;
@@ -386,59 +386,41 @@ public class SendActivity extends DefaultActivity {
                                     Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String pickedId = null;
-                boolean hasPhone = false;
-                String name = null;
                 Uri contactData = data.getData();
-                Cursor contactCur = managedQuery(contactData, null, null, null, null);
-                if (contactCur.moveToFirst()) {
-                    pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                    name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                    hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
-                }
-                if (pickedId != null && hasPhone) {
-                    Cursor phones = getContentResolver().query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{pickedId}, null);
-                    HashMap<String, Integer> phoneNumber = new HashMap<String, Integer>();
-                    while (phones.moveToNext()) {
-                        phoneNumber.put(phones.getString(
-                                phones.getColumnIndex(
-                                        ContactsContract.CommonDataKinds.Phone.NUMBER)), phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2)));
-                    }
-                    phones.close();
-                    final HashMap<String, String> presentationLayer = new HashMap<String, String>();
-                    for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
-                        String description = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(this.getResources(), currEntry.getValue(), getText(R.string.text_no_phone_type_label));
-                        presentationLayer.put(currEntry.getKey(), currEntry.getKey() + " (" + description + ")");
-                    }
-                    if (presentationLayer.size() == 1) {
-                        for (String s : presentationLayer.keySet()) {
-                            addToReceiverList(pickedId, name, s);
+                final Receiver pickedReceiver = new DatabaseHandler(this).getPickedContactData(contactData);
+
+                if (pickedReceiver != null && !pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
+                    //always one contact, so it will be filled always
+
+                    final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
+                    if (numberTypeMap.size() == 1) { //only one number, so choose this
+                        addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0]);
+
+                    } else { //more than one number for contact
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                        builder.setTitle(getText(R.string.text_pickNumber) + pickedReceiver.getName());
+                        //build a map of string on screen with corresponding number for layout
+                        final Map<String, String> presentationMap = new HashMap<String, String>();
+                        for (Map.Entry<String, String> numberTypes : numberTypeMap.entrySet()) {
+                            presentationMap.put(numberTypes.getKey() + " (" + numberTypes.getValue() + ")", numberTypes.getKey());
                         }
-                        return;
-                    }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    final String[] items = presentationLayer.values().toArray(new String[presentationLayer.size()]);
-                    builder.setTitle(getText(R.string.text_pickNumber));
-                    final String finalName = name;
-                    final String finalPickedId = pickedId;
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            String key = null;
-                            for (Map.Entry<String, String> entry : presentationLayer.entrySet()) {
-                                if (entry.getValue().equals(items[item])) {
-                                    key = entry.getKey();
-                                    break;
+                        final String[] items = presentationMap.keySet().toArray(new String[presentationMap.size()]);
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                String key = null;//get the picked number back from origin map
+                                for (Map.Entry<String, String> entry : presentationMap.entrySet()) {
+                                    if (entry.getKey().equals(items[item])) {
+                                        key = entry.getValue();
+                                        break;
+                                    }
                                 }
+                                addToReceiverList(pickedReceiver, key);
                             }
-                            addToReceiverList(finalPickedId, finalName, key);
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setMessage(R.string.text_noNumber)
@@ -456,19 +438,26 @@ public class SendActivity extends DefaultActivity {
 
             }
         }
+
     }
 
     private void addToReceiverList(String pickedId, String name, String receiverNumber) {
+        addToReceiverList(new Receiver(pickedId, name), receiverNumber);
+
+    }
+
+
+    private void addToReceiverList(Receiver receiver, String receiverNumber) {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
-            receiverList.add(new Receiver(pickedId, name, receiverNumber));
+            receiver.setReceiverNumber(receiverNumber);
+            receiverList.add(receiver);
             updateViewOnChangedReceivers();
         } else {
             toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
-
     }
 
 
