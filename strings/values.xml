@@ -7,6 +7,7 @@ fileName: strings.xml
 <resources>
     <string name="button_send">Send</string>
     <string name="text_changeProvider">Change Provider</string>
+    <string name="text_chooseProvider">Choose Provider</string>
     <string name="text_provider_settings">Provider settings</string>
     <string name="text_program_settings">Program settings</string>
     <string name="text_provider_settings_short">Provider</string>

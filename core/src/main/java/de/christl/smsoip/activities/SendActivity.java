@@ -69,6 +69,7 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SMSoIPApplication.getApp().initProviders(); //calll this every time, a new plugin will be installed or removed
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         SIGNSCONSTANT = getText(R.string.text_smssigns);
@@ -89,9 +90,22 @@ public class SendActivity extends AllActivity {
         setSmileyButton();
         setTextArea();
         setContactsByNumberInput();
+        Uri data = getIntent().getData();
         String defaultSupplier = getDefaultSupplier();
+        if (data != null) {
+            DatabaseHandler dbHandler = new DatabaseHandler(this);
+            String givenNumber = data.getSchemeSpecificPart();
+            Receiver contactByNumber = dbHandler.findContactByNumber(givenNumber);
+            if (contactByNumber == null) {
+                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
+            }
+            String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
+            contactByNumber.setReceiverNumber(number);
+            receiverList.add(contactByNumber);
+        }
         if (defaultSupplier != null) {
-            smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier, this);
+            smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
             setTitle(smsSupplier.getProvider().getProviderName());
             setSpinner();
 
@@ -108,19 +122,12 @@ public class SendActivity extends AllActivity {
 
                 }
             });
-
-
-            Uri data = getIntent().getData();
-            if (data != null) {
-                DatabaseHandler dbHandler = new DatabaseHandler(this);
-                Receiver contactByNumber = dbHandler.findContactByNumber(data);
-                String number = contactByNumber.getFixedNumberByRawNumber(data.getSchemeSpecificPart());
-                addToReceiverList((contactByNumber), number);
-            }
-            insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+            updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {
             showDialog(DIALOG_PROVIDER);
         }
+        insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+
     }
 
     private String getDefaultSupplier() {
@@ -471,11 +478,6 @@ public class SendActivity extends AllActivity {
 
     }
 
-    private void addToReceiverList(String pickedId, String name, String receiverNumber) {
-        addToReceiverList(new Receiver(pickedId, name), receiverNumber);
-
-    }
-
 
     private void addToReceiverList(Receiver receiver, String receiverNumber) {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
@@ -631,6 +633,7 @@ public class SendActivity extends AllActivity {
                             changeSupplier(supplierClassName);
                         }
                     });
+                    builder.setTitle(R.string.text_chooseProvider);
                     dialog = builder.create();
                 } else {  //have to be a min of 1 here, else button will not be available
                     changeSupplier(filteredProviderEntries.get(0).getSupplierClassName());
@@ -657,7 +660,14 @@ public class SendActivity extends AllActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String rawNumber = input.getText().toString();
                         if (!rawNumber.equals("")) {
-                            addToReceiverList("-1", (String) getText(R.string.text_unknown), rawNumber);
+                            DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
+                            Receiver contactByNumber = dbHandler.findContactByNumber(rawNumber);
+                            if (contactByNumber == null) {
+                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                                contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());
+                            }
+                            String number = contactByNumber.getFixedNumberByRawNumber(rawNumber);
+                            addToReceiverList(contactByNumber, number);
                         }
                         input.setText("");
                         dialog.dismiss();
@@ -672,7 +682,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void changeSupplier(String supplierClassName) {
-        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName, this);
+        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
         setTitle(smsSupplier.getProvider().getProviderName());
         //reset all not needed informations
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);

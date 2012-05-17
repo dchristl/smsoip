@@ -54,13 +54,13 @@ public class DatabaseHandler {
         return out;
     }
 
-    public Receiver findContactByNumber(Uri data) {
+    public Receiver findContactByNumber(String givenNumber) {
         Receiver out = null;
         String name;
-        String givenNumber = data.getSchemeSpecificPart();
         String[] projection = new String[]{
                 ContactsContract.PhoneLookup.DISPLAY_NAME,
                 ContactsContract.PhoneLookup._ID};
+
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(givenNumber));
         Cursor query = parentActivity.getContentResolver().query(uri, projection, null, null, null);
         while (query.moveToNext()) {
@@ -74,6 +74,7 @@ public class DatabaseHandler {
             }
             out = new Receiver(id, name);
             out.addNumber(givenNumber, "");
+            break; //no need to loop, just pick the foirst one found
         }
         query.close();
         return out;
