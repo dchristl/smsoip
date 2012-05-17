@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_send">Senden</string>
-    <string name="text_chooseProvider">Anbieter auswählen:</string>
     <string name="text_changeProvider">Anbieter wechseln</string>
-    <string name="button_next">Weiter</string>
     <string name="text_provider_settings">Anbietereinstellungen</string>
     <string name="text_program_settings">Programmeinstellungen</string>
     <string name="text_provider_settings_short">Anbieter</string>
@@ -34,7 +32,6 @@
     <string name="text_unknown_error">Unbekannter Fehler</string>
     <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
-    <string name="cb_default">Als Standard setzen</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
     <string name="text_pleaseWait">Bitte warten</string>
     <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
@@ -57,7 +54,7 @@
     <string name="text_default_provider_description">Der Standardanbieter der automatisch beim Starten der App
         ausgewählt ist
     </string>
-    <string name="text_no_default_Provider">Keiner (jedsmal fragen)</string>
+    <string name="text_no_default_Provider">Keiner (jedesmal fragen)</string>
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
     <string name="text_area_code">Standardländercode</string>

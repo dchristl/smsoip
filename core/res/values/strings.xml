@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_send">Send</string>
-    <string name="text_chooseProvider">Choose Provider:</string>
     <string name="text_changeProvider">Change Provider</string>
-    <string name="button_next">Next</string>
     <string name="text_provider_settings">Provider settings</string>
     <string name="text_program_settings">Program settings</string>
     <string name="text_provider_settings_short">Provider</string>
@@ -33,7 +31,6 @@
     <string name="text_unknown_error">Unknown error</string>
     <string name="text_loginFailed">Pass invalid!</string>
     <string name="text_notyetrefreshed">Not yet refreshed</string>
-    <string name="cb_default">Set as default</string>
     <string name="description">Sending SMS by several providers</string>
     <string name="text_pleaseWait">Please wait</string>
     <string name="text_noNumberInput">No number entered!</string>

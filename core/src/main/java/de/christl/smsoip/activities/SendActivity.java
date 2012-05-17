@@ -30,18 +30,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class SendActivity extends DefaultActivity {
+public class SendActivity extends AllActivity {
 
     private EditText inputField, textField;
     TextView smssigns;
     private Spinner spinner;
 
     private static final int PICK_CONTACT_REQUEST = 0;
-
-    public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
-    public static String GIVEN_RECEIVER = "givenReceiver";
-    public static String GIVEN_NUMBER = "givenNumber";
-
 
     public CharSequence SIGNSCONSTANT;
     private ProgressDialog progressDialog;
@@ -65,8 +60,10 @@ public class SendActivity extends DefaultActivity {
     protected void onResume() {
         super.onResume();
 //        refresh all settings, cause it can be changed
-        smsSupplier.getProvider().refresh();
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
+        if (smsSupplier != null) {
+            smsSupplier.getProvider().refresh();
+            settings = PreferenceManager.getDefaultSharedPreferences(this);
+        }
     }
 
     @Override
@@ -81,25 +78,6 @@ public class SendActivity extends DefaultActivity {
         smssigns = (TextView) findViewById(R.id.smssigns);
         smssigns.setText(String.format(SIGNSCONSTANT.toString(), 0, 0));
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
-        Bundle currProvider = this.getIntent().getExtras();
-        smsSupplier = SMSoIPApplication.getApp().getInstance((String) currProvider.get(SUPPLIER_CLASS_NAME), this);
-        setTitle(smsSupplier.getProvider().getProviderName());
-        setSpinner();
-
-        Button sendButton = (Button) findViewById(R.id.sendButton);
-        final CharSequence progressText = getText(R.string.text_smscomitted);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (!preSendCheck() || progressDialog == null) {
-                    return;
-                }
-                progressDialog.setMessage(progressText);
-                progressDialog.show();
-                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
-
-            }
-        });
-
         //disable inputs on field
         inputField.setKeyListener(null);
         setSearchButton();
@@ -111,11 +89,61 @@ public class SendActivity extends DefaultActivity {
         setSmileyButton();
         setTextArea();
         setContactsByNumberInput();
-        Object currReceiver = currProvider.get(GIVEN_RECEIVER);
-        if (currReceiver != null) {
-            addToReceiverList(((Receiver) currReceiver), currProvider.getString(GIVEN_NUMBER));
+        String defaultSupplier = getDefaultSupplier();
+        if (defaultSupplier != null) {
+            smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier, this);
+            setTitle(smsSupplier.getProvider().getProviderName());
+            setSpinner();
+
+            Button sendButton = (Button) findViewById(R.id.sendButton);
+            final CharSequence progressText = getText(R.string.text_smscomitted);
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    if (!preSendCheck() || progressDialog == null) {
+                        return;
+                    }
+                    progressDialog.setMessage(progressText);
+                    progressDialog.show();
+                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
+
+                }
+            });
+
+
+            Uri data = getIntent().getData();
+            if (data != null) {
+                DatabaseHandler dbHandler = new DatabaseHandler(this);
+                Receiver contactByNumber = dbHandler.findContactByNumber(data);
+                String number = contactByNumber.getFixedNumberByRawNumber(data.getSchemeSpecificPart());
+                addToReceiverList((contactByNumber), number);
+            }
+            insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+        } else {
+            showDialog(DIALOG_PROVIDER);
         }
-        insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+    }
+
+    private String getDefaultSupplier() {
+        String string = settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "");
+        //check if default provider is installed
+        if (!string.equals("")) {
+            boolean found = false;
+            for (ProviderEntry providerEntry : SMSoIPApplication.getApp().getProviderEntries().values()) {
+                if (providerEntry.getSupplierClassName().equals(string)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) { //set back to default (always ask) if none found
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, null);
+                editor.commit();
+            }
+        } else {
+            string = null;
+        }
+
+        return string;
     }
 
     private void setContactsByNumberInput() {
@@ -503,21 +531,6 @@ public class SendActivity extends DefaultActivity {
 
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && !isDefaultSet()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    boolean isDefaultSet() {
-        return !settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "").equals("");
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
@@ -594,9 +607,13 @@ public class SendActivity extends DefaultActivity {
             case DIALOG_PROVIDER:
                 Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
                 final List<ProviderEntry> filteredProviderEntries = new ArrayList<ProviderEntry>();
-                for (ProviderEntry providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
-                    if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
-                        filteredProviderEntries.add(providerEntry);
+                if (smsSupplier == null) {   //add all if current provider not set
+                    filteredProviderEntries.addAll(providerEntries.values());
+                } else {
+                    for (ProviderEntry providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
+                        if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
+                            filteredProviderEntries.add(providerEntry);
+                        }
                     }
                 }
                 int filteredProvidersSize = filteredProviderEntries.size();
