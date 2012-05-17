@@ -1,6 +1,8 @@
 package de.christl.smsoip.activities;
 
 import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
@@ -12,18 +14,26 @@ import java.util.Map;
 /**
  * Class for one receiver
  */
-public class Receiver implements Serializable{
+public class Receiver implements Serializable, Parcelable {
     private final String pickedId;
     private final String name;
     private String receiverNumber = null;
     private boolean enabled;
-    Map<String, String> fixedRawNumberMapping = new HashMap<String, String>();
-    private Map<String, String> numberTypeMap = new HashMap<String, String>();
+    private HashMap<String, String> fixedRawNumberMapping = new HashMap<String, String>();
+    private HashMap<String, String> numberTypeMap = new HashMap<String, String>();
 
     public Receiver(String pickedId, String name) {
         this.pickedId = pickedId;
         this.name = name;
         this.enabled = true;
+    }
+
+    public void setNumberTypeMap(HashMap<String, String> numberTypeMap) {
+        this.numberTypeMap = numberTypeMap;
+    }
+
+    public void setFixedRawNumberMapping(HashMap<String, String> fixedRawNumberMapping) {
+        this.fixedRawNumberMapping = fixedRawNumberMapping;
     }
 
     public String getName() {
@@ -81,12 +91,56 @@ public class Receiver implements Serializable{
         return fixedRawNumberMapping.get(receiverNumber);
     }
 
-    public String getFixedNumberByRawNumber(String rawNumber){
+    public String getFixedNumberByRawNumber(String rawNumber) {
         for (Map.Entry<String, String> stringStringEntry : fixedRawNumberMapping.entrySet()) {
-            if (stringStringEntry.getValue().equals(rawNumber)){
+            if (stringStringEntry.getValue().equals(rawNumber)) {
                 return stringStringEntry.getKey();
             }
         }
         return null;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(pickedId);
+        dest.writeString(name);
+        dest.writeSerializable(fixedRawNumberMapping);
+        dest.writeSerializable(numberTypeMap);
+        dest.writeString(receiverNumber);
+        dest.writeByte((byte) (enabled ? 1 : 0));
+
+    }
+
+    public static final Parcelable.Creator<Receiver> CREATOR = new Parcelable.Creator<Receiver>() {
+
+
+        @Override
+        public Receiver createFromParcel(Parcel source) {
+            String pickedId = source.readString();
+            String name = source.readString();
+            Receiver out = new Receiver(pickedId, name);
+
+            HashMap<String, String> fixedRawNumberMapping = (HashMap<String, String>) source.readSerializable();
+            HashMap<String, String> numberTypeMap = (HashMap<String, String>) source.readSerializable();
+            out.setFixedRawNumberMapping(fixedRawNumberMapping);
+            out.setNumberTypeMap(numberTypeMap);
+            String receiverNumber = source.readString();
+            out.setReceiverNumber(receiverNumber);
+            boolean enabled = source.readByte() == 1;
+            out.setEnabled(enabled);
+            return out;
+        }
+
+        @Override
+        public Receiver[] newArray(int size) {
+            return new Receiver[size];
+        }
+    };
+
 }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
@@ -53,10 +54,13 @@ public class SendActivity extends AllActivity {
     private static final int GLOBAL_OPTION = 34;
     private static final int DIALOG_NUMBER_INPUT = 35;
     private SharedPreferences settings;
-    List<Receiver> receiverList = new ArrayList<Receiver>();
+    ArrayList<Receiver> receiverList = new ArrayList<Receiver>();
     private View addContactbyNumber;
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
+    private static final String SAVED_INSTANCE_SUPPLIER = "supplier";
+    private static final String SAVED_INSTANCE_INPUTFIELD = "inputfield";
+    private static final String SAVED_INSTANCE_RECEIVERS = "receivers";
 
     @Override
     protected void onResume() {
@@ -111,8 +115,6 @@ public class SendActivity extends AllActivity {
             smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
             setTitle(smsSupplier.getProvider().getProviderName());
             setSpinner();
-
-
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {
             showDialog(DIALOG_PROVIDER);
@@ -569,6 +571,7 @@ public class SendActivity extends AllActivity {
                 return true;
             case OPTION_SWITCH:
                 removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
+                Log.e(this.getClass().getCanonicalName(), "diag1");
                 showDialog(DIALOG_PROVIDER);
                 return true;
             case GLOBAL_OPTION:
@@ -652,6 +655,7 @@ public class SendActivity extends AllActivity {
                         }
                     });
                     builder.setTitle(R.string.text_chooseProvider);
+                    builder.setCancelable(providerEntries.size() != filteredProvidersSize); //only cancelable on switch providers
                     dialog = builder.create();
                 } else {  //have to be a min of 1 here, else button will not be available
                     changeSupplier(filteredProviderEntries.get(0).getSupplierClassName());
@@ -709,7 +713,7 @@ public class SendActivity extends AllActivity {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
 
         if (receiverList.size() > maxReceiverCount) {
-            List<Receiver> newReceiverList = new ArrayList<Receiver>();
+            ArrayList<Receiver> newReceiverList = new ArrayList<Receiver>();
             for (int i = 0; i < maxReceiverCount; i++) {
                 newReceiverList.add(receiverList.get(i));
 
@@ -735,5 +739,22 @@ public class SendActivity extends AllActivity {
             startActivityForResult(intent, PICK_CONTACT_REQUEST);
         }
         return false;
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
+        outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
+        outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
+        inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
+        receiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }
