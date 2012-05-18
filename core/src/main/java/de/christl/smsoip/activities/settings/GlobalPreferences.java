@@ -29,6 +29,7 @@ public class GlobalPreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
         setPreferenceScreen(initPreferences());
+        getWindow().setBackgroundDrawableResource(R.drawable.background_holo_dark);
     }
 
     private PreferenceScreen initPreferences() {
