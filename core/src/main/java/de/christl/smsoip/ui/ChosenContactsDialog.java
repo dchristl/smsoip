@@ -53,7 +53,7 @@ public class ChosenContactsDialog extends Dialog {
             Bitmap bmp;
             if (bytes == null) { //no contact picture
                 bmp = BitmapFactory.decodeResource(getContext().getResources(),
-                        R.drawable.emo_im_happy);
+                        R.drawable.no_photo);
             } else {
                 bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             }
