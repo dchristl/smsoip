@@ -2,12 +2,15 @@ package de.christl.smsoip.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Window;
+import android.view.View;
 import android.widget.*;
 import android.widget.TableRow.LayoutParams;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.database.DatabaseHandler;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class ChosenContactsDialog extends Dialog {
     public ChosenContactsDialog(Context context, List<Receiver> receiverList) {
         super(context);
         this.receiverList = receiverList;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setTitle(R.string.text_pick_for_disabling);
     }
 
     @Override
@@ -42,8 +45,29 @@ public class ChosenContactsDialog extends Dialog {
             TableRow tableRow = new TableRow(this.getContext());
             tableRow.setLayoutParams(new LayoutParams(
                     LayoutParams.FILL_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-
+                    LayoutParams.FILL_PARENT));
+            ImageView imageView = new ImageView(this.getContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            DatabaseHandler dbHandler = new DatabaseHandler(this.getOwnerActivity());
+            byte[] bytes = dbHandler.loadLocalContactPhotoBytes(receiver.getPhotoId());
+            Bitmap bmp;
+            if (bytes == null) { //no contact picture
+                bmp = BitmapFactory.decodeResource(getContext().getResources(),
+                        R.drawable.emo_im_happy);
+            } else {
+                bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            }
+            imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, 70, 70, true));
+            imageView.setFocusable(true);
+            View.OnClickListener checkBoxChangeListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    receiverActivatedCheckbox.setChecked(!receiverActivatedCheckbox.isChecked());
+                }
+            };
+            imageView.setClickable(true);
+            imageView.setOnClickListener(checkBoxChangeListener);
+            tableRow.addView(imageView);
             /* Add Button to row. */
             TextView name = new ContactsTextView(this.getContext(), receiverActivatedCheckbox);
             name.setText(receiver.getName());
@@ -51,6 +75,7 @@ public class ChosenContactsDialog extends Dialog {
             TextView number = new ContactsTextView(this.getContext(), receiverActivatedCheckbox);
             number.setText(receiver.getReceiverNumber());
             tableRow.addView(number);
+
             tableRow.addView(receiverActivatedCheckbox);
             /* Add row to TableLayout. */
             tableLayout.addView(tableRow, new TableLayout.LayoutParams(
@@ -63,5 +88,6 @@ public class ChosenContactsDialog extends Dialog {
 
     public void redraw() {
         this.onCreate(null);
+        this.onWindowFocusChanged(true);
     }
 }

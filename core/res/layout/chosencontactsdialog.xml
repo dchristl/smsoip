@@ -10,29 +10,37 @@
     <TableLayout android:id="@+id/chosencontactstable"
                  android:layout_height="wrap_content"
                  android:layout_width="fill_parent"
+                 android:shrinkColumns="*"
             >
 
         <TableRow android:id="@+id/heading" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:padding="5dp"
+                      android:layout_width="fill_parent" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text=""
+                      android:background="@android:color/darker_gray">
+
+            </TextView>
             <TextView android:padding="5dp" android:layout_width="fill_parent" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium"
                       android:text="@string/name_heading" android:gravity="center"
-                      android:background="@android:color/darker_gray" android:width="130dp"
+                      android:background="@android:color/darker_gray"
                     >
 
             </TextView>
             <TextView android:padding="5dp" android:layout_width="fill_parent" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium"
                       android:text="@string/number_heading"
-                      android:gravity="center" android:width="130dp"
+                      android:gravity="center"
                       android:background="@android:color/darker_gray">
 
             </TextView>
             <TextView android:padding="5dp"
                       android:layout_width="fill_parent" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium" android:text=""
-                      android:background="@android:color/darker_gray" >
+                      android:background="@android:color/darker_gray">
 
             </TextView>
+
         </TableRow>
 
     </TableLayout>

@@ -2,10 +2,7 @@ package de.christl.smsoip.ui;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.View;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.CheckBox;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,13 +33,13 @@ public class ContactsTextView extends TextView {
         };
         setClickable(true);
         setOnClickListener(checkBoxChangeListener);
-
-
     }
+
+
 
     public int getWidthBySize() {
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        return (int) (0.4 * display.getWidth());
+        return (int) (0.35 * display.getWidth());
     }
 }
