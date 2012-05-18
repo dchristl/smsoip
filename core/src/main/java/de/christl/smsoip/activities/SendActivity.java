@@ -104,7 +104,7 @@ public class SendActivity extends AllActivity {
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = dbHandler.findContactByNumber(givenNumber);
             if (contactByNumber == null) {
-                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                 contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
             }
             String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
@@ -117,6 +117,7 @@ public class SendActivity extends AllActivity {
             setSpinner();
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {
+            Log.e("christl", getCallingActivity() != null ? getCallingActivity().toString() :getIntent().toString());
             showDialog(DIALOG_PROVIDER);
         }
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
@@ -685,7 +686,7 @@ public class SendActivity extends AllActivity {
                             DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
                             Receiver contactByNumber = dbHandler.findContactByNumber(rawNumber);
                             if (contactByNumber == null) {
-                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                                 contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());
                             }
                             String number = contactByNumber.getFixedNumberByRawNumber(rawNumber);

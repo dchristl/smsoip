@@ -1,6 +1,8 @@
 package de.christl.smsoip.database;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -27,12 +29,14 @@ public class DatabaseHandler {
         String name = null;
         Receiver out;
         Cursor contactCur = parentActivity.managedQuery(contactData, null, null, null, null);
+        int photoId = 0;
         if (contactCur.moveToFirst()) {
             pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
             name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
+            photoId = contactCur.getInt(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_ID));
         }
-        out = new Receiver(pickedId, name);
+        out = new Receiver(pickedId, name, photoId);
         if (pickedId != null && hasPhone) {
             Cursor phones = parentActivity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
@@ -59,7 +63,7 @@ public class DatabaseHandler {
         String name;
         String[] projection = new String[]{
                 ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup._ID};
+                ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
 
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(givenNumber));
         Cursor query = parentActivity.getContentResolver().query(uri, projection, null, null, null);
@@ -72,11 +76,24 @@ public class DatabaseHandler {
             if (id == null || id.equals("")) {
                 id = "-1";
             }
-            out = new Receiver(id, name);
+            int photoId = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+            out = new Receiver(id, name, photoId);
             out.addNumber(givenNumber, "");
-            break; //no need to loop, just pick the foirst one found
+            break; //no need to loop, just pick the first one found
         }
         query.close();
         return out;
     }
+
+
+    public byte[] loadLocalContactPhotoBytes(int photoId) {
+        ContentResolver cr = parentActivity.getContentResolver();
+        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId);
+        Cursor c = cr.query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
+        if (c.moveToFirst()) {
+            return c.getBlob(0);
+        }
+        return null;
+    }
+
 }
