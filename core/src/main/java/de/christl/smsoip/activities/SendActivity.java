@@ -745,9 +745,11 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
-        outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
-        outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+        if (smsSupplier != null) { //only save instance if provider is already chosen
+            outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
+            outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
+            outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+        }
     }
 
     @Override
