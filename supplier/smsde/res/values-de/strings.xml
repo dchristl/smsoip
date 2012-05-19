@@ -7,4 +7,6 @@
         <item>Power-SMS 300 (0 Credits) (20 Credits)</item>
         <item>Power-SMS 300 mit AK (30 Credits)</item>
     </array>
+    <string name="text_default_type">Standard Absendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
 </resources>

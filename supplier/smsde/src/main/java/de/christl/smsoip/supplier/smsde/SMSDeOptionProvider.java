@@ -1,5 +1,8 @@
 package de.christl.smsoip.supplier.smsde;
 
+import android.content.Context;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -7,9 +10,13 @@ import android.widget.Spinner;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SMSDeOptionProvider extends OptionProvider {
 
     private static final String providerName = "SMS.de";
+    public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private int messageLength = 142;
 
     public SMSDeOptionProvider() {
@@ -38,14 +45,14 @@ public class SMSDeOptionProvider extends OptionProvider {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        messageLength = 142;
+                        messageLength = 151;
                         break;
                     case 1:
                     case 2:
-                        messageLength = 151;
+                        messageLength = 160;
                         break;
                     default:
-                        messageLength = 291;
+                        messageLength = 300;
                         break;
                 }
                 sendActivity.updateSMScounter();
@@ -56,8 +63,25 @@ public class SMSDeOptionProvider extends OptionProvider {
                 //do nothing
             }
         });
-//        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, Constants.FREE));
-//        spinner.setSelection(defaultPosition);
+        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
+        spinner.setSelection(defaultPosition);
+    }
+
+    @Override
+    public List<Preference> getAdditionalPreferences(Context context) {
+        List<Preference> out = new ArrayList<Preference>();
+
+        ListPreference listPref = new ListPreference(context);
+        String[] prefArray = getArrayByResourceId(R.array.array_spinner);
+        listPref.setEntries(prefArray);
+        listPref.setEntryValues(prefArray);
+        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setKey(PROVIDER_DEFAULT_TYPE);
+        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setDefaultValue(prefArray[0]);
+        out.add(listPref);
+        return out;
     }
 
 
