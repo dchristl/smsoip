@@ -19,6 +19,7 @@
         <module>gmx</module>
         <module>goodmails</module>
         <module>freenet</module>
+        <module>smsde</module>
     </modules>
 
     <dependencies>

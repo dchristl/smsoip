@@ -126,3 +126,18 @@ fileName: strings.xml
 <resources>
     <string name="text_refresh_informations">All: %1$d Paid: %2$d</string>
 </resources>
+<!--String resources for:
+project: smsde
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_spinner">
+        <item>Free-SMS (0 Credits)</item>
+        <item>Power-SMS 160 (10 Credits)</item>
+        <item>Power-SMS 160 with SI (15 Credits)</item>
+        <item>Power-SMS 300 (0 Credits) (20 Credits)</item>
+        <item>Power-SMS 300 with SI (30 Credits)</item>
+    </string-array>
+</resources>

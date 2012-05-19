@@ -152,16 +152,31 @@ public class SMSoIPApplication extends Application {
         return deprecatedPlugins;
     }
 
-    public String getTextByResourceId(OptionProvider optionProvider, int resourceId) {
-        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
-        if (plugin != null) {
-            return plugin.resolveResource(resourceId);
-        }
-        return getText(resourceId).toString();
-    }
-
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
     }
 
+    public String getTextByResourceId(OptionProvider optionProvider, int resourceId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveStringResource(resourceId);
+        }
+        return getString(resourceId);
+    }
+
+    public String[] getArrayByResourceId(OptionProvider optionProvider, int resourceId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveArrayStringResource(resourceId);
+        }
+        return new String[]{"Resource not found"};
+    }
+
+    public String getTextByResourceId(OptionProvider optionProvider, int resourceId, int quantity) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveStringResource(resourceId, quantity);
+        }
+        return getString(resourceId);
+    }
 }
