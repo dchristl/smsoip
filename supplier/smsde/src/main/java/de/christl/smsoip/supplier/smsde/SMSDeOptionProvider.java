@@ -18,6 +18,7 @@ public class SMSDeOptionProvider extends OptionProvider {
     private static final String providerName = "SMS.de";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private int messageLength = 142;
+    private int maxReceivers = 1;
 
     public SMSDeOptionProvider() {
         super(providerName);
@@ -25,7 +26,7 @@ public class SMSDeOptionProvider extends OptionProvider {
 
     @Override
     public int getMaxReceiverCount() {
-        return 1;
+        return maxReceivers;
     }
 
     @Override
@@ -44,18 +45,22 @@ public class SMSDeOptionProvider extends OptionProvider {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
-                    case 0:
+                    case 0:        //free
                         messageLength = 151;
+                        maxReceivers = 1;
                         break;
-                    case 1:
+                    case 1:    //power sms 160
                     case 2:
                         messageLength = 160;
+                        maxReceivers = Integer.MAX_VALUE;
                         break;
-                    default:
+                    default:                  //power sms 300
                         messageLength = 300;
+                        maxReceivers = Integer.MAX_VALUE;
                         break;
                 }
                 sendActivity.updateSMScounter();
+                sendActivity.updateAfterReceiverCountChanged();
             }
 
             @Override

@@ -711,6 +711,10 @@ public class SendActivity extends AllActivity {
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
         updateSMScounter();
         setSpinner();
+        updateAfterReceiverCountChanged();
+    }
+
+    public void updateAfterReceiverCountChanged() {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
 
         if (receiverList.size() > maxReceiverCount) {

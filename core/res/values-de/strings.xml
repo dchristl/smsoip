@@ -76,10 +76,10 @@
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
     <string name="text_unknown">Unbekannt</string>
-    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger für diesen Anbieter erreicht. Empfänger
+    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger erreicht. Empfänger
         konnte nicht hinzugefügt werden.
     </string>
-    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger für diesen Anbieter ist %1$s. Überschüssige
+    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger ist %1$s. Überschüssige
         Empfänger wurden entfernt!
     </string>
     <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
