@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="de.christl.smsoip.supplier.smsde" android:versionCode="1" android:versionName="1.0.0"
           android:installLocation="auto">
-    <uses-sdk android:minSdkVersion="5" android:targetSdkVersion="5"/>
+    <uses-sdk android:minSdkVersion="5" android:targetSdkVersion="11"/>
 
     <application android:label="SMSoIP SMS.de Plugin" android:icon="@drawable/icon">
     </application>
