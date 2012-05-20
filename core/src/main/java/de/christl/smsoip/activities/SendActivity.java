@@ -24,6 +24,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.ColoredEditText;
 import de.christl.smsoip.ui.ImageDialog;
@@ -56,7 +57,7 @@ public class SendActivity extends AllActivity {
     private static final int GLOBAL_OPTION = 34;
     private static final int DIALOG_NUMBER_INPUT = 35;
     private SharedPreferences settings;
-    ArrayList<Receiver> receiverList = new ArrayList<Receiver>();
+    CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
     private View addContactbyNumber;
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
@@ -111,7 +112,11 @@ public class SendActivity extends AllActivity {
             }
             String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
             contactByNumber.setReceiverNumber(number);
-            receiverList.add(contactByNumber);
+            if (receiverList.addWithAlreadyInsertedCheck(contactByNumber)) {
+                toast.setText(R.string.text_receiver_added_twice);
+                toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                toast.show();
+            }
         }
         if (defaultSupplier != null) {
             smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
@@ -488,7 +493,11 @@ public class SendActivity extends AllActivity {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
             receiver.setReceiverNumber(receiverNumber);
-            receiverList.add(receiver);
+            if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
+                toast.setText(R.string.text_receiver_added_twice);
+                toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                toast.show();
+            }
             updateViewOnChangedReceivers();
         } else {
             toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
@@ -707,7 +716,7 @@ public class SendActivity extends AllActivity {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
 
         if (receiverList.size() > maxReceiverCount) {
-            ArrayList<Receiver> newReceiverList = new ArrayList<Receiver>();
+            CheckForDuplicatesArrayList newReceiverList = new CheckForDuplicatesArrayList();
             for (int i = 0; i < maxReceiverCount; i++) {
                 newReceiverList.add(receiverList.get(i));
 
@@ -751,7 +760,11 @@ public class SendActivity extends AllActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
         inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
-        receiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
+
+        ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
+        receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
+        receiverList.addAll(tmpReceiverList);
+
         super.onRestoreInstanceState(savedInstanceState);
     }
 }

@@ -87,4 +87,5 @@
     </string>
     <string name="text_not_supported_on_device">Not supported on this device</string>
     <string name="text_pick_for_disabling">Tap for removing</string>
+    <string name="text_receiver_added_twice">Receiver number added twice!</string>
 </resources>

@@ -48,7 +48,7 @@ public class FreenetSupplier implements SMSSupplier {
     private Result refreshInformations(boolean noLoginBefore) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            if (!result.equals(Result.NO_ERROR())) {
                 return result;
             }
         }
@@ -67,10 +67,10 @@ public class FreenetSupplier implements SMSSupplier {
             return processRefreshReturn(con.getInputStream());
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
     }
 
@@ -95,11 +95,11 @@ public class FreenetSupplier implements SMSSupplier {
                 }
             }
             if (allSMS != null && paidSMS != null) {
-                return Result.NO_ERROR.setAlternateText(String.format(out, allSMS, paidSMS));
+                return Result.NO_ERROR().setAlternateText(String.format(out, allSMS, paidSMS));
             }
 
         }
-        return Result.UNKNOWN_ERROR;
+        return Result.UNKNOWN_ERROR();
     }
 
     private Result processFireSMSReturn(InputStream is) throws IOException {
@@ -108,9 +108,9 @@ public class FreenetSupplier implements SMSSupplier {
         message = message.replaceAll("\">.*", "");
         message = Html.fromHtml(message).toString();
         if (message.contains("erfolgreich")) {
-            return Result.NO_ERROR.setAlternateText(message);
+            return Result.NO_ERROR().setAlternateText(message);
         } else {
-            return Result.UNKNOWN_ERROR.setAlternateText(message);
+            return Result.UNKNOWN_ERROR().setAlternateText(message);
         }
     }
 
@@ -147,7 +147,7 @@ public class FreenetSupplier implements SMSSupplier {
             con.setRequestMethod("POST");
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.LOGIN_FAILED_ERROR;
+                return Result.LOGIN_FAILED_ERROR();
             }
             String sidCookie = null;
             Outer:
@@ -164,7 +164,7 @@ public class FreenetSupplier implements SMSSupplier {
                 }
             }
             if (sidCookie == null) {
-                return Result.LOGIN_FAILED_ERROR;
+                return Result.LOGIN_FAILED_ERROR();
             }
             //now get the freenetMail4Prev cookie, that is also needed
             con = (HttpURLConnection) new URL(HOME_URL).openConnection();
@@ -174,7 +174,7 @@ public class FreenetSupplier implements SMSSupplier {
             con.setRequestProperty("Cookie", sidCookie);
             headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.LOGIN_FAILED_ERROR;
+                return Result.LOGIN_FAILED_ERROR();
             }
             Outer:
             for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
@@ -189,15 +189,15 @@ public class FreenetSupplier implements SMSSupplier {
                 }
             }
             if (sessionCookies.size() != 2) {
-                return Result.LOGIN_FAILED_ERROR;
+                return Result.LOGIN_FAILED_ERROR();
             }
-            return Result.NO_ERROR;
+            return Result.NO_ERROR();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
 
 
@@ -210,7 +210,7 @@ public class FreenetSupplier implements SMSSupplier {
 
     public Result fireSMS(String smsText, String receiver) {
         Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR)) {
+        if (!result.equals(Result.NO_ERROR())) {
             return result;
         }
         try {
@@ -234,10 +234,10 @@ public class FreenetSupplier implements SMSSupplier {
             return processFireSMSReturn(con.getInputStream());
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
     }
 }

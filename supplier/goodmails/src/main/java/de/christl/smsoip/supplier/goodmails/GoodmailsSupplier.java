@@ -60,7 +60,7 @@ public class GoodmailsSupplier implements SMSSupplier {
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR)) {
+        if (!result.equals(Result.NO_ERROR())) {
             return result;
         }
         HttpURLConnection urlConn;
@@ -109,7 +109,7 @@ public class GoodmailsSupplier implements SMSSupplier {
             }
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         } finally {
             try {
                 is.close();
@@ -122,9 +122,9 @@ public class GoodmailsSupplier implements SMSSupplier {
             if (alternateText.equals("NOT ALLOWED YET")) {
                 alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
             }
-            return Result.UNKNOWN_ERROR.setAlternateText(alternateText);
+            return Result.UNKNOWN_ERROR().setAlternateText(alternateText);
         }
-        return Result.NO_ERROR.setAlternateText(alternateText);
+        return Result.NO_ERROR().setAlternateText(alternateText);
     }
 
     private boolean messageSuccessful(StringBuilder builder) {
@@ -145,7 +145,7 @@ public class GoodmailsSupplier implements SMSSupplier {
     private Result refreshInformations(boolean afterMessageSentSuccessful) {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            if (!result.equals(Result.NO_ERROR())) {
                 return result;
             }
         }
@@ -177,10 +177,10 @@ public class GoodmailsSupplier implements SMSSupplier {
             }
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
 
         } finally {
             try {
@@ -192,7 +192,7 @@ public class GoodmailsSupplier implements SMSSupplier {
             }
         }
 
-        return Result.NO_ERROR.setAlternateText(String.format(tmpText, credits));
+        return Result.NO_ERROR().setAlternateText(String.format(tmpText, credits));
     }
 
     private String getSIDParamater() {
@@ -248,7 +248,7 @@ public class GoodmailsSupplier implements SMSSupplier {
             con.setInstanceFollowRedirects(false);
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null || headerFields.size() == 0) {
-                return Result.NETWORK_ERROR;
+                return Result.NETWORK_ERROR();
             }
             for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
                 String cookie = stringListEntry.getKey();
@@ -256,19 +256,19 @@ public class GoodmailsSupplier implements SMSSupplier {
                     for (String s : stringListEntry.getValue()) {
                         if (s.startsWith("sessionSecret")) {
                             sessionCookie = s;
-                            return Result.NO_ERROR;
+                            return Result.NO_ERROR();
                         }
                     }
                 }
             }
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
 
-        return Result.LOGIN_FAILED_ERROR;
+        return Result.LOGIN_FAILED_ERROR();
     }
 }

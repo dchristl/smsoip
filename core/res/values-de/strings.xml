@@ -89,4 +89,5 @@
     </string>
     <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
+    <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
 </resources>
