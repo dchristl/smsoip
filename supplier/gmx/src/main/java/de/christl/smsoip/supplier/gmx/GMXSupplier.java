@@ -45,12 +45,12 @@ public class GMXSupplier implements SMSSupplier {
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR)) {
+        if (!result.equals(Result.NO_ERROR())) {
             return result;
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             Result tmpResult = refreshInformations(true, 0);
-            if (tmpResult.equals(Result.NO_ERROR)) {
+            if (tmpResult.equals(Result.NO_ERROR())) {
                 String userText = tmpResult.getUserText().toString();
                 String[] split = userText.split(" ");
                 boolean noFreeAvailable;
@@ -59,17 +59,17 @@ public class GMXSupplier implements SMSSupplier {
                     try {
                         freeSMS = Integer.parseInt(split[1]);
                     } catch (NumberFormatException e) {
-                        return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
+                        return Result.UNKNOWN_ERROR().setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
                     }
                     int messageLength = getProvider().getTextMessageLength();
                     int smsCount = Math.round((smsText.toString().length() / messageLength));
                     smsCount = smsText.toString().length() % messageLength == 0 ? smsCount : smsCount + 1;
                     noFreeAvailable = !((receivers.size() * smsCount) <= freeSMS);
                 } else {
-                    return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
+                    return Result.UNKNOWN_ERROR().setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
                 }
                 if (noFreeAvailable) {
-                    return Result.UNKNOWN_ERROR.setAlternateText(provider.getTextByResourceId(R.string.text_no_free_messages_available));
+                    return Result.UNKNOWN_ERROR().setAlternateText(provider.getTextByResourceId(R.string.text_no_free_messages_available));
                 }
             }
         }
@@ -106,7 +106,7 @@ public class GMXSupplier implements SMSSupplier {
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            con.setRequestProperty("Cookie", "dev=dsk");
+            con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
             OutputStream output = con.getOutputStream();
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
             for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
@@ -122,10 +122,10 @@ public class GMXSupplier implements SMSSupplier {
 
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
     }
 
@@ -144,20 +144,20 @@ public class GMXSupplier implements SMSSupplier {
             message = message.replaceAll("<.*", "");
             //some additional clean up
             message = message.replaceAll("[\\[\\]^]", "");
-            return Result.UNKNOWN_ERROR.setAlternateText(message);
+            return Result.UNKNOWN_ERROR().setAlternateText(message);
         } else if (message.contains("confirmation_message_text")) {
             message = message.replaceAll(".*<div id=\"confirmation_message_text\">", "");
             message = message.replaceAll("<.*", "");
-            return Result.NO_ERROR.setAlternateText(message);
+            return Result.NO_ERROR().setAlternateText(message);
         }
 
-        return Result.UNKNOWN_ERROR.setAlternateText(message);
+        return Result.UNKNOWN_ERROR().setAlternateText(message);
     }
 
     @Override
     public Result refreshInformationOnRefreshButtonPressed() {
         Result result = refreshInformations(false, 0);
-        if (result.equals(Result.NO_ERROR) && result.getUserText().equals("")) {              //informations are not available at first try so do it twice
+        if (result.equals(Result.NO_ERROR()) && result.getUserText().equals("")) {              //informations are not available at first try so do it twice
             result = refreshInformations(false, 0);
         }
         return result;
@@ -172,13 +172,13 @@ public class GMXSupplier implements SMSSupplier {
     private Result refreshInformations(boolean noLoginBefore, int tryNr) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            if (!result.equals(Result.NO_ERROR())) {
                 return result;
             }
         }
         String infoText = "";
         if (lastInputStream == null) {
-            return Result.UNKNOWN_ERROR;
+            return Result.UNKNOWN_ERROR();
         }
         String inputLine;
         try {
@@ -195,7 +195,7 @@ public class GMXSupplier implements SMSSupplier {
         if (infoText.equals("") && tryNr < 5) {
             return refreshInformations(false, ++tryNr);
         }
-        return Result.NO_ERROR.setAlternateText(infoText);
+        return Result.NO_ERROR().setAlternateText(infoText);
     }
 
 
@@ -222,15 +222,15 @@ public class GMXSupplier implements SMSSupplier {
             con.setRequestMethod("POST");
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
         //no network
         Map<String, List<String>> headerFields = con.getHeaderFields();
         if (headerFields == null) {
-            return Result.LOGIN_FAILED_ERROR;
+            return Result.LOGIN_FAILED_ERROR();
         }
         try {
             lastInputStream = new DataInputStream(con.getInputStream());
@@ -253,8 +253,8 @@ public class GMXSupplier implements SMSSupplier {
         }
 
         if (!(sessionId == null || sessionId.length() == 0)) {
-            return Result.NO_ERROR;
+            return Result.NO_ERROR();
         }
-        return Result.LOGIN_FAILED_ERROR;
+        return Result.LOGIN_FAILED_ERROR();
     }
 }

@@ -18,6 +18,8 @@ public class UrlConnectionFactory {
 
     public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
+
+    private static final String CRLF = "\r\n";
     /**
      * the prefered targetAgent
      */
@@ -158,4 +160,31 @@ public class UrlConnectionFactory {
         writer.flush();
         return con;
     }
+
+    public HttpURLConnection getConnnection() throws IOException {
+        if (con == null) {
+            create();
+        }
+        return con;
+    }
+
+    private void writeMultipartBody(Map<String, String> parameterMap, String ENCODING) throws IOException {
+        if (con == null) {
+            create();
+        }
+        con.setDoOutput(true);
+        String boundary = "--" + Long.toHexString(System.currentTimeMillis());
+        OutputStream output = con.getOutputStream();
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
+        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
+            writer.append("--").append(boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
+            writer.append(CRLF);
+            writer.append(stringStringEntry.getValue()).append(CRLF).flush();
+
+        }
+        writer.append("--").append(boundary).append("--").append(CRLF).flush();
+    }
+
 }
