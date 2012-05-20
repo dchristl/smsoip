@@ -3,14 +3,17 @@ package de.christl.smsoip.supplier.smsde;
 
 import android.text.Editable;
 import android.util.Log;
+import connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,16 +56,9 @@ public class SMSDeSupplier implements SMSSupplier {
         }
         try {
             //first get the login cookie
-            HttpURLConnection con = (HttpURLConnection) new URL(HOME_PAGE).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("GET");
-            StringBuilder cookieBuilder = new StringBuilder();
-            for (int i = 0, sessionCookiesSize = sessionCookies.size(); i < sessionCookiesSize; i++) {
-                String sessionCookie = sessionCookies.get(i);
-                cookieBuilder.append(sessionCookie).append(i + 1 < sessionCookiesSize ? "; " : "");
-            }
-            con.setRequestProperty("Cookie", cookieBuilder.toString());
+            UrlConnectionFactory factory = new UrlConnectionFactory(HOME_PAGE, UrlConnectionFactory.METHOD_GET);
+            factory.setCookies(sessionCookies);
+            HttpURLConnection con = factory.create();
             return processRefreshInformations(con.getInputStream());
         } catch (SocketTimeoutException stoe)
 
@@ -108,16 +104,6 @@ public class SMSDeSupplier implements SMSSupplier {
     }
 
 
-    private String inputStream2String(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
-        String line;
-        StringBuilder returnFromServer = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            returnFromServer.append(line);
-        }
-        return returnFromServer.toString();
-    }
-
     @Override
     public String getProviderInfo() {
         return provider.getProviderName();
@@ -151,47 +137,26 @@ public class SMSDeSupplier implements SMSSupplier {
         //FIRST STEP
         sessionCookies = new ArrayList<String>();
         try {
+            UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_FIRST_STEP_URL, UrlConnectionFactory.METHOD_GET);
             //first get the login cookie
-            HttpURLConnection con = (HttpURLConnection) new URL(LOGIN_FIRST_STEP_URL).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("GET");
+            HttpURLConnection con = factory.create();
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null) {
                 return Result.NETWORK_ERROR();
             }
             String FIRST_COOKIE = "C_SMSDE_ID";
-            Outer:
-            for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
-                String cookieList = stringListEntry.getKey();
-                if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
-                    for (String cookie : stringListEntry.getValue()) {
-                        if (cookie.toUpperCase().startsWith(FIRST_COOKIE)) {
-                            sessionCookies.add(cookie.replaceAll(";.*", ""));
-                            break Outer;
-                        }
-                    }
-                }
-            }
-            if (sessionCookies.size() != 1) {
+            String firstCookiePattern = FIRST_COOKIE + ".*=.*";
+            String smsDeCookie = UrlConnectionFactory.findCookieByPattern(headerFields, firstCookiePattern);
+            if (smsDeCookie == null) {
                 return Result.NETWORK_ERROR(); //not possible if network available
             }
+            sessionCookies.add(smsDeCookie.replaceAll(";.*", ""));
             //now we have the login idependent id cookie
-            con = (HttpURLConnection) new URL(LOGIN_SECOND_STEP_URL).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
-            StringBuilder cookieBuilder = new StringBuilder();
-            for (String sessionCookie : sessionCookies) {
-                cookieBuilder.append(sessionCookie);
-            }
-            con.setRequestProperty("Cookie", cookieBuilder.toString());
-            con.setDoOutput(true);
-            con.setInstanceFollowRedirects(false);
-            OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
+            factory = new UrlConnectionFactory(LOGIN_SECOND_STEP_URL);
+            factory.setCookies(sessionCookies);
+            factory.setFollowRedirects(false);
             String userNamePasswordBody = "username=" + userName + "&passwd=" + password;
-            writer.write(userNamePasswordBody);
-            writer.flush();
+            con = factory.writeBody(userNamePasswordBody);
             headerFields = con.getHeaderFields();
             if (headerFields == null) {
                 return Result.LOGIN_FAILED_ERROR();
@@ -200,19 +165,11 @@ public class SMSDeSupplier implements SMSSupplier {
             String tmpSessionCookie = sessionCookies.get(0);
             tmpSessionCookie = tmpSessionCookie.replaceAll("=.*", "");
             sessionCookies = new ArrayList<String>();
-            for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
-                String cookieList = stringListEntry.getKey();
-                if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
-                    for (String cookie : stringListEntry.getValue()) {
-                        String c_smsde_uid = "C_SMSDE_UID=";
-                        if (cookie.toUpperCase().startsWith(c_smsde_uid)) {  //the old cokie will be replaced by new one if succesfull
-                            sessionCookies.add(cookie.replaceAll(";.*", "").replaceAll(c_smsde_uid, tmpSessionCookie + "="));
-                        } else if (cookie.toUpperCase().startsWith("C_SMSDE_UID1")) {
-                            sessionCookies.add(cookie.replaceAll(";.*", ""));
-                        }
-                    }
-                }
-            }
+            String C_SMSDE_UID = "C_SMSDE_UID";
+            String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, C_SMSDE_UID);
+            sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(C_SMSDE_UID, tmpSessionCookie));
+            String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
+            sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));
             if (sessionCookies.size() != 2) {
                 return Result.LOGIN_FAILED_ERROR();
             }
@@ -225,6 +182,7 @@ public class SMSDeSupplier implements SMSSupplier {
             return Result.NETWORK_ERROR();
         }
     }
+
 
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
