@@ -47,7 +47,7 @@ public class SMSDeSupplier implements SMSSupplier {
     private Result refreshInformations(boolean afterMessageSentSuccessful) {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            if (!result.equals(Result.NO_ERROR())) {
                 return result;
             }
         }
@@ -68,10 +68,10 @@ public class SMSDeSupplier implements SMSSupplier {
 
         {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
 
         } /*finally
 
@@ -101,9 +101,9 @@ public class SMSDeSupplier implements SMSSupplier {
             }
         }
         if (credits != null) {
-            return Result.NO_ERROR.setAlternateText(credits);
+            return Result.NO_ERROR().setAlternateText(credits);
         } else {
-            return Result.UNKNOWN_ERROR;
+            return Result.UNKNOWN_ERROR();
         }
     }
 
@@ -158,7 +158,7 @@ public class SMSDeSupplier implements SMSSupplier {
             con.setRequestMethod("GET");
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.NETWORK_ERROR;
+                return Result.NETWORK_ERROR();
             }
             String FIRST_COOKIE = "C_SMSDE_ID";
             Outer:
@@ -174,7 +174,7 @@ public class SMSDeSupplier implements SMSSupplier {
                 }
             }
             if (sessionCookies.size() != 1) {
-                return Result.NETWORK_ERROR; //not possible if network available
+                return Result.NETWORK_ERROR(); //not possible if network available
             }
             //now we have the login idependent id cookie
             con = (HttpURLConnection) new URL(LOGIN_SECOND_STEP_URL).openConnection();
@@ -194,7 +194,7 @@ public class SMSDeSupplier implements SMSSupplier {
             writer.flush();
             headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.LOGIN_FAILED_ERROR;
+                return Result.LOGIN_FAILED_ERROR();
             }
             //get the login cookie
             String tmpSessionCookie = sessionCookies.get(0);
@@ -214,20 +214,20 @@ public class SMSDeSupplier implements SMSSupplier {
                 }
             }
             if (sessionCookies.size() != 2) {
-                return Result.LOGIN_FAILED_ERROR;
+                return Result.LOGIN_FAILED_ERROR();
             }
-            return Result.NO_ERROR;
+            return Result.NO_ERROR();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR;
+            return Result.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR;
+            return Result.NETWORK_ERROR();
         }
     }
 
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        return Result.NO_ERROR;
+        return Result.NO_ERROR();
     }
 }
