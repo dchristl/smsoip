@@ -25,6 +25,7 @@ import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.ui.ChosenContactsDialog;
+import de.christl.smsoip.ui.ColoredEditText;
 import de.christl.smsoip.ui.ImageDialog;
 
 import java.util.*;
@@ -34,7 +35,8 @@ import java.util.regex.Pattern;
 
 public class SendActivity extends AllActivity {
 
-    private EditText inputField, textField;
+    private EditText inputField;
+    private ColoredEditText textField;
     TextView smssigns;
     private Spinner spinner;
 
@@ -117,7 +119,6 @@ public class SendActivity extends AllActivity {
             setSpinner();
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {
-            Log.e("christl", getCallingActivity() != null ? getCallingActivity().toString() :getIntent().toString());
             showDialog(DIALOG_PROVIDER);
         }
         insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
@@ -376,24 +377,10 @@ public class SendActivity extends AllActivity {
 
 
     private void setTextArea() {
-        textField = (EditText) findViewById(R.id.textInput);
-        textField.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                updateSMScounter(charSequence);
-            }
-
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
+        textField = (ColoredEditText) findViewById(R.id.textInput);
     }
 
-    private void updateSMScounter(CharSequence charSequence) {
+    public void updateSMScounter(CharSequence charSequence) {
         int smsCount = 0;
         int messageLength = smsSupplier.getProvider().getTextMessageLength();
 
@@ -526,6 +513,8 @@ public class SendActivity extends AllActivity {
             builder.append(i + 1 == receiverListSize ? "" : " ; ");
         }
         inputField.setText(builder.toString());
+        //update the marking of textfield
+        textField.setMessageLength(smsSupplier.getProvider().getTextMessageLength());
         View viewById = findViewById(R.id.showChosenContacts);
         inputField.setOnClickListener(null);
         if (receiverList.size() > 0) {
@@ -734,6 +723,7 @@ public class SendActivity extends AllActivity {
 
 
     public void updateSMScounter() {
+        textField.setMessageLength(smsSupplier.getProvider().getTextMessageLength());
         updateSMScounter(textField.getText());
     }
 
