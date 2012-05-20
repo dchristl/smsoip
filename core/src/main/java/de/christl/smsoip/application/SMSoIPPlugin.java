@@ -47,7 +47,15 @@ public class SMSoIPPlugin {
         return false;
     }
 
-    public String resolveResource(int resourceId) {
+    public String resolveStringResource(int resourceId) {
         return resources.getString(resourceId);
+    }
+
+    public String resolveStringResource(int resourceId, int quantity) {
+        return resources.getQuantityString(resourceId, quantity);
+    }
+
+    public String[] resolveArrayStringResource(int resourceId) {
+        return resources.getStringArray(resourceId);
     }
 }

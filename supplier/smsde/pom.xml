@@ -11,8 +11,8 @@
     </parent>
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
-    <artifactId>goodmails</artifactId>
+    <artifactId>smsde</artifactId>
+    <version>1.0.0</version>
     <packaging>apk</packaging>
-    <version>1.1.3</version>
 
 </project>

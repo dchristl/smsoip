@@ -210,13 +210,9 @@ public class AllActivity extends Activity {
         // Create the adView
         AdView adView = new AdView(activity, AdSize.BANNER, PUBLISHER_ID);
 
-        // Lookup your LinearLayout assuming it’s been given
-        // the attribute android:id="@+id/mainLayout"
-
         // Add the adView to it
         layout.addView(adView);
 
-        // Initiate a generic request to load it with an ad
         AdRequest adRequest = new AdRequest();
         adRequest.addTestDevice("9405EE5055BF04AE898858A2515B3588");
         adView.loadAd(adRequest);

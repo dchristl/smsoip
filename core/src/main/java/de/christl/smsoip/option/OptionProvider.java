@@ -99,12 +99,22 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 
+    public final String getTextByResourceId(int resourceId, int quantity) {
+        return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId, quantity);
+    }
+
+
+    public String[] getArrayByResourceId(int resourceId) {
+        return SMSoIPApplication.getApp().getArrayByResourceId(this, resourceId);
+    }
+
+
     public int getTextMessageLength() {
         return 160;
     }
 
-
     public void createSpinner(SendActivity sendActivity, Spinner spinner) {
         spinner.setVisibility(View.GONE);
     }
+
 }

@@ -79,10 +79,10 @@ fileName: strings.xml
     <string name="name_heading">name</string>
     <string name="number_heading">number</string>
     <string name="text_unknown">Unknown</string>
-    <string name="text_max_receivers_reached">Maximum of %1$s receivers for this provider reached. Receiver could not be
+    <string name="text_max_receivers_reached">Maximum of %1$s receivers reached. Receiver could not be
         appended.
     </string>
-    <string name="text_too_much_receivers">Maximum of receivers for this provider is %1$s. Surplus receivers are
+    <string name="text_too_much_receivers">Maximum of receivers is %1$s. Surplus receivers are
         removed!
     </string>
     <string name="text_add_contact_by_number_dialog">Add phone number</string>
@@ -91,6 +91,8 @@ fileName: strings.xml
     <string name="text_write_to_database_description">Write successful messages to your in-device message outbox
     </string>
     <string name="text_not_supported_on_device">Not supported on this device</string>
+    <string name="text_pick_for_disabling">Tap for removing</string>
+    <string name="text_receiver_added_twice">Receiver number added twice!</string>
 </resources>
 
 <!--String resources for:
@@ -124,4 +126,21 @@ fileName: strings.xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="text_refresh_informations">All: %1$d Paid: %2$d</string>
+</resources>
+<!--String resources for:
+project: smsde
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_spinner">
+        <item>Free-SMS (0 Credits)</item>
+        <item>Power-SMS 160 (10 Credits)</item>
+        <item>Power-SMS 160 with SI (15 Credits)</item>
+        <item>Power-SMS 300 (0 Credits) (20 Credits)</item>
+        <item>Power-SMS 300 with SI (30 Credits)</item>
+    </string-array>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
 </resources>

@@ -53,6 +53,7 @@ public class ProviderPreferences extends PreferenceActivity {
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
         preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
         setPreferenceScreen(initPreferences());
+        getWindow().setBackgroundDrawableResource(R.drawable.background_holo_dark);
     }
 
     private PreferenceScreen initPreferences() {

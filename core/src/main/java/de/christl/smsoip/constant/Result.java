@@ -10,11 +10,31 @@ public enum Result {
     /**
      * all OK, add additional info for refresh ionformations
      */
-    NO_ERROR(R.string.text_ok),
-    NETWORK_ERROR(R.string.text_noNetwork),
-    LOGIN_FAILED_ERROR(R.string.text_loginFailed),
-    TIMEOUT_ERROR(R.string.text_timeOutReached),
-    UNKNOWN_ERROR(R.string.text_unknown_error);
+    @Deprecated
+    /**
+     * @deprecated use factory method instead
+     */
+            NO_ERROR(R.string.text_ok),
+    @Deprecated
+    /**
+     * @deprecated use factory method instead
+     */
+            NETWORK_ERROR(R.string.text_noNetwork),
+    @Deprecated
+    /**
+     * @deprecated use factory method instead
+     */
+            LOGIN_FAILED_ERROR(R.string.text_loginFailed),
+    @Deprecated
+    /**
+     * @deprecated use factory method instead
+     */
+            TIMEOUT_ERROR(R.string.text_timeOutReached),
+    @Deprecated
+    /**
+     * @deprecated use factory method instead
+     */
+            UNKNOWN_ERROR(R.string.text_unknown_error);
 
 
     private final int defaultText;
@@ -40,4 +60,28 @@ public enum Result {
     public CharSequence getDefaultText() {
         return SMSoIPApplication.getApp().getText(defaultText);
     }
+
+    public static Result NO_ERROR() {
+        return Result.NO_ERROR.setAlternateText(null);
+    }
+
+    public static Result NETWORK_ERROR() {
+        return Result.NETWORK_ERROR.setAlternateText(null);
+
+    }
+
+    public static Result LOGIN_FAILED_ERROR() {
+        return Result.LOGIN_FAILED_ERROR.setAlternateText(null);
+    }
+
+    public static Result TIMEOUT_ERROR() {
+        return Result.TIMEOUT_ERROR.setAlternateText(null);
+    }
+
+
+    public static Result UNKNOWN_ERROR() {
+        return Result.UNKNOWN_ERROR.setAlternateText(null);
+    }
+
+
 }

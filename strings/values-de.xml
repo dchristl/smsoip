@@ -81,10 +81,10 @@ fileName: strings.xml
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
     <string name="text_unknown">Unbekannt</string>
-    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger für diesen Anbieter erreicht. Empfänger
+    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger erreicht. Empfänger
         konnte nicht hinzugefügt werden.
     </string>
-    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger für diesen Anbieter ist %1$s. Überschüssige
+    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger ist %1$s. Überschüssige
         Empfänger wurden entfernt!
     </string>
     <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
@@ -93,6 +93,8 @@ fileName: strings.xml
     <string name="text_write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes
     </string>
     <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
+    <string name="text_pick_for_disabling">Klick zum Entfernen</string>
+    <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
 </resources>
 
 <!--String resources for:
@@ -128,4 +130,21 @@ fileName: strings.xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="text_refresh_informations">Alle: %1$d Bezahlte: %2$d</string>
+</resources>
+<!--String resources for:
+project: smsde
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="array_spinner">
+        <item>Free-SMS (0 Credits)</item>
+        <item>Power-SMS 160 (10 Credits)</item>
+        <item>Power-SMS 160 mit AK (15 Credits)</item>
+        <item>Power-SMS 300 (0 Credits) (20 Credits)</item>
+        <item>Power-SMS 300 mit AK (30 Credits)</item>
+    </array>
+    <string name="text_default_type">Standard Absendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
 </resources>

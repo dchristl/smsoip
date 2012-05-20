@@ -5,6 +5,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@drawable/background_holo_dark"
         xmlns:android="http://schemas.android.com/apk/res/android"
         >
     <ScrollView
@@ -64,13 +65,13 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     />
-            <EditText
+            <de.christl.smsoip.ui.ColoredEditText
                     android:id="@+id/textInput"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_smsText"
                     >
-            </EditText>
+            </de.christl.smsoip.ui.ColoredEditText>
             <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"

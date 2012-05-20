@@ -17,14 +17,16 @@ import java.util.Map;
 public class Receiver implements Serializable, Parcelable {
     private final String pickedId;
     private final String name;
+    private int photoId;
     private String receiverNumber = null;
     private boolean enabled;
     private HashMap<String, String> fixedRawNumberMapping = new HashMap<String, String>();
     private HashMap<String, String> numberTypeMap = new HashMap<String, String>();
 
-    public Receiver(String pickedId, String name) {
+    public Receiver(String pickedId, String name, int photoId) {
         this.pickedId = pickedId;
         this.name = name;
+        this.photoId = photoId;
         this.enabled = true;
     }
 
@@ -100,6 +102,10 @@ public class Receiver implements Serializable, Parcelable {
         return null;
     }
 
+    public int getPhotoId() {
+        return photoId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -110,6 +116,7 @@ public class Receiver implements Serializable, Parcelable {
 
         dest.writeString(pickedId);
         dest.writeString(name);
+        dest.writeInt(photoId);
         dest.writeSerializable(fixedRawNumberMapping);
         dest.writeSerializable(numberTypeMap);
         dest.writeString(receiverNumber);
@@ -124,7 +131,8 @@ public class Receiver implements Serializable, Parcelable {
         public Receiver createFromParcel(Parcel source) {
             String pickedId = source.readString();
             String name = source.readString();
-            Receiver out = new Receiver(pickedId, name);
+            int photoId = source.readInt();
+            Receiver out = new Receiver(pickedId, name, photoId);
 
             HashMap<String, String> fixedRawNumberMapping = (HashMap<String, String>) source.readSerializable();
             HashMap<String, String> numberTypeMap = (HashMap<String, String>) source.readSerializable();

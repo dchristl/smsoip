@@ -24,7 +24,9 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
+import de.christl.smsoip.ui.ColoredEditText;
 import de.christl.smsoip.ui.ImageDialog;
 
 import java.util.*;
@@ -34,7 +36,8 @@ import java.util.regex.Pattern;
 
 public class SendActivity extends AllActivity {
 
-    private EditText inputField, textField;
+    private EditText inputField;
+    private ColoredEditText textField;
     TextView smssigns;
     private Spinner spinner;
 
@@ -54,7 +57,7 @@ public class SendActivity extends AllActivity {
     private static final int GLOBAL_OPTION = 34;
     private static final int DIALOG_NUMBER_INPUT = 35;
     private SharedPreferences settings;
-    ArrayList<Receiver> receiverList = new ArrayList<Receiver>();
+    CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
     private View addContactbyNumber;
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
@@ -104,12 +107,16 @@ public class SendActivity extends AllActivity {
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = dbHandler.findContactByNumber(givenNumber);
             if (contactByNumber == null) {
-                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                 contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
             }
             String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
             contactByNumber.setReceiverNumber(number);
-            receiverList.add(contactByNumber);
+            if (receiverList.addWithAlreadyInsertedCheck(contactByNumber)) {
+                toast.setText(R.string.text_receiver_added_twice);
+                toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                toast.show();
+            }
         }
         if (defaultSupplier != null) {
             smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
@@ -375,24 +382,10 @@ public class SendActivity extends AllActivity {
 
 
     private void setTextArea() {
-        textField = (EditText) findViewById(R.id.textInput);
-        textField.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                updateSMScounter(charSequence);
-            }
-
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
+        textField = (ColoredEditText) findViewById(R.id.textInput);
     }
 
-    private void updateSMScounter(CharSequence charSequence) {
+    public void updateSMScounter(CharSequence charSequence) {
         int smsCount = 0;
         int messageLength = smsSupplier.getProvider().getTextMessageLength();
 
@@ -500,7 +493,11 @@ public class SendActivity extends AllActivity {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
             receiver.setReceiverNumber(receiverNumber);
-            receiverList.add(receiver);
+            if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
+                toast.setText(R.string.text_receiver_added_twice);
+                toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                toast.show();
+            }
             updateViewOnChangedReceivers();
         } else {
             toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
@@ -525,6 +522,8 @@ public class SendActivity extends AllActivity {
             builder.append(i + 1 == receiverListSize ? "" : " ; ");
         }
         inputField.setText(builder.toString());
+        //update the marking of textfield
+        textField.setMessageLength(smsSupplier.getProvider().getTextMessageLength());
         View viewById = findViewById(R.id.showChosenContacts);
         inputField.setOnClickListener(null);
         if (receiverList.size() > 0) {
@@ -685,7 +684,7 @@ public class SendActivity extends AllActivity {
                             DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
                             Receiver contactByNumber = dbHandler.findContactByNumber(rawNumber);
                             if (contactByNumber == null) {
-                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString());
+                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                                 contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());
                             }
                             String number = contactByNumber.getFixedNumberByRawNumber(rawNumber);
@@ -710,10 +709,14 @@ public class SendActivity extends AllActivity {
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
         updateSMScounter();
         setSpinner();
+        updateAfterReceiverCountChanged();
+    }
+
+    public void updateAfterReceiverCountChanged() {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
 
         if (receiverList.size() > maxReceiverCount) {
-            ArrayList<Receiver> newReceiverList = new ArrayList<Receiver>();
+            CheckForDuplicatesArrayList newReceiverList = new CheckForDuplicatesArrayList();
             for (int i = 0; i < maxReceiverCount; i++) {
                 newReceiverList.add(receiverList.get(i));
 
@@ -729,6 +732,7 @@ public class SendActivity extends AllActivity {
 
 
     public void updateSMScounter() {
+        textField.setMessageLength(smsSupplier.getProvider().getTextMessageLength());
         updateSMScounter(textField.getText());
     }
 
@@ -745,16 +749,22 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
-        outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
-        outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+        if (smsSupplier != null) { //only save instance if provider is already chosen
+            outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
+            outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
+            outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
         inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
-        receiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
+
+        ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
+        receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
+        receiverList.addAll(tmpReceiverList);
+
         super.onRestoreInstanceState(savedInstanceState);
     }
 }
