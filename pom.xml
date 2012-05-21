@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>supplier</module>
+        <module>adfree</module>
     </modules>
     <build>
         <plugins>

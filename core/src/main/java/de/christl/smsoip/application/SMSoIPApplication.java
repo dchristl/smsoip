@@ -19,11 +19,12 @@ public class SMSoIPApplication extends Application {
 
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
+    public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
     List<SMSSupplier> deprecatedPlugins = new ArrayList<SMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
-
+    private boolean adsEnabled = true;
 
     @Override
     public void onCreate() {
@@ -51,6 +52,8 @@ public class SMSoIPApplication extends Application {
                 if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
                     Resources resourcesForApplication = getPackageManager().getResourcesForApplication(installedApplication);
                     plugins.add(new SMSoIPPlugin(installedApplication, resourcesForApplication));
+                } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
+                    adsEnabled = false;
                 }
             }
             for (SMSoIPPlugin plugin : plugins) {
@@ -178,5 +181,9 @@ public class SMSoIPApplication extends Application {
             return plugin.resolveStringResource(resourceId, quantity);
         }
         return getString(resourceId);
+    }
+
+    public boolean isAdsEnabled() {
+        return adsEnabled;
     }
 }

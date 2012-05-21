@@ -75,8 +75,10 @@ public class ProviderPreferences extends PreferenceActivity {
             passwordPreference.setTitle(R.string.text_password);
             root.addPreference(passwordPreference);
         }
-        AdPreference adPreference = new AdPreference(this);
-        root.addPreference(adPreference);
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            AdPreference adPreference = new AdPreference(this);
+            root.addPreference(adPreference);
+        }
         if (provider.isCheckLoginButtonVisible()) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(true);

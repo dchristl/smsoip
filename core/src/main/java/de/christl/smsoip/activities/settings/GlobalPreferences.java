@@ -57,8 +57,10 @@ public class GlobalPreferences extends PreferenceActivity {
             listPref.setSummary(R.string.text_default_provider_description);
             root.addPreference(listPref);
         }
-        AdPreference adPreference = new AdPreference(this);
-        root.addPreference(adPreference);
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            AdPreference adPreference = new AdPreference(this);
+            root.addPreference(adPreference);
+        }
         EditTextPreference defaultAreaCode = new EditTextPreference(this);
         defaultAreaCode.setDialogTitle(R.string.text_area_code);
         defaultAreaCode.setKey(GLOBAL_AREA_CODE);
