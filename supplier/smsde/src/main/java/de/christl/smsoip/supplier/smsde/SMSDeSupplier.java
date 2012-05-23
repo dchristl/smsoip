@@ -167,6 +167,9 @@ public class SMSDeSupplier implements SMSSupplier {
             sessionCookies = new ArrayList<String>();
             String C_SMSDE_UID = "C_SMSDE_UID";
             String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, C_SMSDE_UID);
+            if (c_smsde_uid_cookie == null) {
+                return Result.LOGIN_FAILED_ERROR();
+            }
             sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(C_SMSDE_UID, tmpSessionCookie));
             String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
             sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));

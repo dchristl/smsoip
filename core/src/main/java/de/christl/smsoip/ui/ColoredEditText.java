@@ -3,7 +3,6 @@ package de.christl.smsoip.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,7 +20,6 @@ public class ColoredEditText extends EditText {
     public ColoredEditText(Context context) {
         this((SendActivity) context, null, 0);
     }
-
     public ColoredEditText(Context context, AttributeSet attrs) {
         this((SendActivity) context, attrs, 0);
     }
@@ -34,13 +32,13 @@ public class ColoredEditText extends EditText {
             }
 
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().equals(lastText)) {
-                    updateColorsAndSMSCounter(charSequence);
-                }
+
             }
 
             public void afterTextChanged(Editable editable) {
-
+                if (!editable.toString().equals(lastText)) {
+                    updateColorsAndSMSCounter(editable);
+                }
             }
         });
     }
@@ -57,7 +55,6 @@ public class ColoredEditText extends EditText {
             newText = uncolored + "<font color=\"" + Color.BLUE + "\">" + colored
                     + "</font>";
         }
-        this.setText(Html.fromHtml(newText));
 
         try {
             this.setSelection(selectStart, selectEnd);
