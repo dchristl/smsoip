@@ -65,6 +65,7 @@ public class ColoredEditText extends EditText {
 
     public void setMessageLength(int messageLength) {
         this.messageLength = messageLength;
+        ((SendActivity) getContext()).updateSMScounter(getText());
 //        updateColorsAndSMSCounter(getText());
     }
 }
