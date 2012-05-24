@@ -3,6 +3,7 @@ package de.christl.smsoip.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,11 +16,11 @@ import de.christl.smsoip.activities.SendActivity;
 public class ColoredEditText extends EditText {
 
     private int messageLength;
-    private String lastText = "";
 
     public ColoredEditText(Context context) {
         this((SendActivity) context, null, 0);
     }
+
     public ColoredEditText(Context context, AttributeSet attrs) {
         this((SendActivity) context, attrs, 0);
     }
@@ -32,19 +33,17 @@ public class ColoredEditText extends EditText {
             }
 
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                ((SendActivity) getContext()).updateSMScounter(charSequence);
             }
 
             public void afterTextChanged(Editable editable) {
-                if (!editable.toString().equals(lastText)) {
-                    updateColorsAndSMSCounter(editable);
-                }
+
             }
         });
     }
 
-    private void updateColorsAndSMSCounter(CharSequence charSequence) {
-        lastText = charSequence.toString();
+    private void updateColorsAndSMSCounter() {
+        String lastText = getText().toString();
 
         String newText = lastText;
         int selectStart = this.getSelectionStart();
@@ -55,17 +54,17 @@ public class ColoredEditText extends EditText {
             newText = uncolored + "<font color=\"" + Color.BLUE + "\">" + colored
                     + "</font>";
         }
+        this.setText(Html.fromHtml(newText));
 
         try {
             this.setSelection(selectStart, selectEnd);
         } catch (IndexOutOfBoundsException e) {  //if the users is veeery fast, only for insurance
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
-        ((SendActivity) getContext()).updateSMScounter(charSequence);
     }
 
     public void setMessageLength(int messageLength) {
         this.messageLength = messageLength;
-        updateColorsAndSMSCounter(getText());
+//        updateColorsAndSMSCounter(getText());
     }
 }
