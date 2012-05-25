@@ -33,7 +33,7 @@ fileName: strings.xml
     <string name="text_wantClear">All inputs will be deleted!</string>
     <string name="text_error">Error</string>
     <string name="text_success">Success</string>
-    <string name="text_noNetwork">Networkerror</string>
+    <string name="text_noNetwork">Network error</string>
     <string name="text_unknown_error">Unknown error</string>
     <string name="text_loginFailed">Pass invalid!</string>
     <string name="text_notyetrefreshed">Not yet refreshed</string>
