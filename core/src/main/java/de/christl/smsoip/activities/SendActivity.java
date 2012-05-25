@@ -26,7 +26,6 @@ import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
-import de.christl.smsoip.ui.ColoredEditText;
 import de.christl.smsoip.ui.ImageDialog;
 
 import java.util.*;
@@ -37,7 +36,7 @@ import java.util.regex.Pattern;
 public class SendActivity extends AllActivity {
 
     private EditText inputField;
-    private ColoredEditText textField;
+    private EditText textField;
     TextView smssigns;
     private Spinner spinner;
 
@@ -384,7 +383,23 @@ public class SendActivity extends AllActivity {
 
 
     private void setTextArea() {
-        textField = (ColoredEditText) findViewById(R.id.textInput);
+        textField = (EditText) findViewById(R.id.textInput);
+        textField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateSMScounter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //do nothing
+            }
+        });
     }
 
     public void updateSMScounter(CharSequence charSequence) {
@@ -525,7 +540,6 @@ public class SendActivity extends AllActivity {
         }
         inputField.setText(builder.toString());
         //update the marking of textfield
-        textField.setMessageLength(smsSupplier.getProvider().getTextMessageLength());
         View viewById = findViewById(R.id.showChosenContacts);
         inputField.setOnClickListener(null);
         if (receiverList.size() > 0) {
@@ -734,7 +748,6 @@ public class SendActivity extends AllActivity {
 
 
     public void updateSMScounter() {
-        textField.setMessageLength(smsSupplier.getProvider().getTextMessageLength());
         updateSMScounter(textField.getText());
     }
 
