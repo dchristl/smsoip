@@ -554,12 +554,12 @@ public class SendActivity extends AllActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
-        item.setIcon(R.drawable.settingsbutton);
+        item.setIcon(R.drawable.ic_menu_manage);
         MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
-        globalOption.setIcon(R.drawable.settingsbutton);
+        globalOption.setIcon(R.drawable.ic_menu_manage);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
             item = menu.add(0, OPTION_SWITCH, 0, getString(R.string.text_changeProvider));
-            item.setIcon(R.drawable.changeprovider);
+            item.setIcon(R.drawable.ic_menu_rotate);
         }
         return true;
     }

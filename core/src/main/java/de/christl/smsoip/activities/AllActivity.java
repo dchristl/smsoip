@@ -50,7 +50,7 @@ public class AllActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item = menu.add(0, EXIT, 0, getString(R.string.text_exit));
-        item.setIcon(R.drawable.closebutton);
+        item.setIcon(R.drawable.ic_menu_close_clear_cancel);
         return true;
     }
 

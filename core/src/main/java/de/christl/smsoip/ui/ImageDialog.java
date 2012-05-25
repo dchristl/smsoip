@@ -29,10 +29,10 @@ public class ImageDialog extends Dialog {
         setContentView(R.layout.imagedialog);
         ImageView image = (ImageView) findViewById(R.id.image);
         if (success) {
-            image.setImageResource(R.drawable.success);
+            image.setImageResource(R.drawable.ic_menu_happy);
             setTitle(getContext().getString(R.string.text_success));
         } else {
-            image.setImageResource(R.drawable.failed);
+            image.setImageResource(R.drawable.ic_menu_sad);
             setTitle(getContext().getString(R.string.text_error));
         }
         TextView text = (TextView) findViewById(R.id.text);

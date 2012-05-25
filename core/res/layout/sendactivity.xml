@@ -38,7 +38,7 @@
                         android:id="@+id/showChosenContacts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/showchosencontactsdialog"
+                        android:src="@drawable/btn_showchosencontactsdialog"
                         android:visibility="gone"
                         >
                 </ImageButton>
@@ -46,14 +46,14 @@
                         android:id="@+id/searchButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/addcontactbysearch"
+                        android:src="@drawable/btn_addcontactbysearch"
                         >
                 </ImageButton>
                 <ImageButton
                         android:id="@+id/addcontactbynumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/addcontactbynumber"
+                        android:src="@drawable/btn_addcontactbynumber"
                         >
                 </ImageButton>
 
@@ -83,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:src="@drawable/shorttextbutton"
+                        android:src="@drawable/btn_shorttext"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
                         >
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:src="@drawable/smileybutton"
+                        android:src="@drawable/btn_emoticons"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
                         >
@@ -106,7 +106,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom"
-                            android:src="@drawable/insertsigbutton"
+                            android:src="@drawable/btn_insertsig"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentRight="true"
 
@@ -127,7 +127,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
-                        android:src="@drawable/clearbutton"
+                        android:src="@drawable/btn_clear"
                         >
                 </ImageButton>
                 <ImageButton
@@ -135,7 +135,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:src="@drawable/refreshbutton"
+                        android:src="@drawable/btn_refresh"
                         >
                 </ImageButton>
                 <TextView

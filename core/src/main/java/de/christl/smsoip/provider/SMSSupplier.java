@@ -68,7 +68,7 @@ public interface SMSSupplier {
      *
      * @param smsText     - the message text
      * @param receivers   - lis of all receivers
-     * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on success or any other otherwise
+     * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on ic_menu_success or any other otherwise
      */
     Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText);
 }
