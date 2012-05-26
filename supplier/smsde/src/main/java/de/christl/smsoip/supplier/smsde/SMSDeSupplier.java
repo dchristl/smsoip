@@ -104,24 +104,6 @@ public class SMSDeSupplier implements SMSSupplier {
         return provider;
     }
 
-//FIRST STEP
-//    HTTP/1.1 200 OKDate: Sat, 19 May 2012 10:08:55 GMTServer: Apache/2.2.3 (Debian) PHP/5.2.0-8+etch15X-Powered-By: PHP/5.2.0-8+etch15Set-Cookie: C_SMSDE_IDd620b85590=4a6dcfe622c6a43caa8506b495164ab6; path=/; domain=.sms.deSet-Cookie: sms=4a6dcfe622c6a43caa8506b495164ab6; path=/Expires: Thu, 19 Nov 1981 08:52:00 GMTCache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0Pragma: no-cacheContent-Type: text/html; charset=iso-8859-1Content-Length: 44798
-
-    //SECOND STEP
-//    POST /login/refused.php HTTP/1.1
-//    Host: www.sms.de
-//    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0
-//    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-//    Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
-//    Accept-Encoding: gzip, deflate
-//    DNT: 1
-//    Proxy-Connection: keep-alive
-//    Referer: http://www.sms.de/
-//    Cookie: C_SMSDE_IDd620b85590=90ac43bcf4525095d2e3daec6c854750
-//    Content-Type: application/x-www-form-urlencoded
-//    Content-Length: 34
-//
-//    username=<USERNAME>&passwd=<PASSWORD>
     @Override
     public Result login(String userName, String password) {
         //FIRST STEP
@@ -176,18 +158,6 @@ public class SMSDeSupplier implements SMSSupplier {
         }
     }
 
-    //    POST /sms/sms_send.php HTTP/1.1
-//    Host: sms.de
-//    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0
-//    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-//    Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
-//    Accept-Encoding: gzip, deflate
-//    DNT: 1
-//    Proxy-Connection: keep-alive
-//    Referer: http://sms.de/sms/sms_free.php
-//    Content-Type: application/x-www-form-urlencoded
-//    Content-Length: 173
-//
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
@@ -210,8 +180,7 @@ public class SMSDeSupplier implements SMSSupplier {
             String body = String.format("prefix=%s&target_phone=%s&msg=%s&smslength=151", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
             HttpURLConnection con = factory.writeBody(body);
 
-            String s = UrlConnectionFactory.inputStream2DebugString(con.getInputStream());
-            System.out.println(s);
+            return processSendReturn(con.getInputStream());
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return Result.TIMEOUT_ERROR();
@@ -220,7 +189,27 @@ public class SMSDeSupplier implements SMSSupplier {
             return Result.NETWORK_ERROR();
 
         }
-        return Result.NO_ERROR();
+    }
+
+    private Result processSendReturn(InputStream is) throws IOException {
+        String s = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
+        System.out.println(s);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
+        String line;
+        String returnMessage = null;
+        while ((line = reader.readLine()) != null) {
+            if (line.contains("fbrb") && line.contains("/images/")) {
+                returnMessage = line.replaceAll(".*\">", "");
+                returnMessage = returnMessage.replaceAll("<.*", "");
+                returnMessage = returnMessage.replaceAll("[[^0-9]&&[^A-z]&&[^ ]].*", "");
+                break;
+            }
+        }
+        if (returnMessage != null) {
+            return Result.NO_ERROR().setAlternateText(returnMessage);
+        } else {
+            return Result.UNKNOWN_ERROR();
+        }
     }
 
 }
