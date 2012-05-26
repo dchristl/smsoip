@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,9 @@ public class SMSDeSupplier implements SMSSupplier {
     private static final String LOGIN_FIRST_STEP_URL = "http://www.sms.de";
     private static final String LOGIN_SECOND_STEP_URL = "http://www.sms.de/login/refused.php";
     private static final String HOME_PAGE = "http://www.sms.de/index.php";
+    private static final String SEND_PAGE = "http://www.sms.de/sms/sms_send.php";
     private List<String> sessionCookies;
-    private static final String ENCODING = "UTF-8";
+    private static final String ENCODING = "ISO-8859-1";
 
     public SMSDeSupplier() {
         provider = new SMSDeOptionProvider();
@@ -69,19 +71,7 @@ public class SMSDeSupplier implements SMSSupplier {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return Result.NETWORK_ERROR();
 
-        } /*finally
-
-            {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            }
-        }*/
-
-//        return Result.NO_ERROR/*.setAlternateText(String.format(tmpText, credits))*/;
+        }
     }
 
     private Result processRefreshInformations(InputStream inputStream) throws IOException {
@@ -186,9 +176,72 @@ public class SMSDeSupplier implements SMSSupplier {
         }
     }
 
-
+    //    POST /sms/sms_send.php HTTP/1.1
+//    Host: sms.de
+//    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0
+//    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+//    Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
+//    Accept-Encoding: gzip, deflate
+//    DNT: 1
+//    Proxy-Connection: keep-alive
+//    Referer: http://sms.de/sms/sms_free.php
+//    Cookie: C_SMSDE_IDd620b85590=78e68706fd53a0f1bc10d7aa45fbc927; sms=78e68706fd53a0f1bc10d7aa45fbc927; C_LID1=dG9tbXlib3k2Ng%3D%3D; C_SMSDE_UID1=SW90MGhlQ0RjWmtYQXJ0UU5TcDVqUT09; LGTUID=213900306; C_SMSDE_UID=78e68706fd53a0f1bc10d7aa45fbc927; C_BAL=30; __utma=165822524.1911918444.1338013744.1338013744.1338013744.1; __utmb=165822524.1.10.1338013744; __utmc=165822524; __utmz=165822524.1338013744.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
+//    Content-Type: application/x-www-form-urlencoded
+//    Content-Length: 173
+//
+//    prefix=%2B49174&target_phone=2383886&headeridx=0&msg=Hallo+Welt+%DF+%FC+%F6+%DF&footerlenght=133&oadc=0&schedule=now&submitfooter=&hidejsmp=1&tstamp=1338013690&smslength=151
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
+        Result result = login(provider.getUserName(), provider.getPassword());
+        if (!result.equals(Result.NO_ERROR())) {
+            return result;
+        }
+        String onlyOneReceiver = receivers.get(0).toString();
+        String prefix;
+        String number;
+        if (onlyOneReceiver.length() > 7) {
+            prefix = onlyOneReceiver.substring(0, 7);
+            number = onlyOneReceiver.substring(7);
+        } else {
+            return Result.UNKNOWN_ERROR().setAlternateText(getProvider().getTextByResourceId(R.string.text_wrong_number));
+        }
+        try {
+            UrlConnectionFactory factory = new UrlConnectionFactory(SEND_PAGE);
+            factory.setCookies(sessionCookies);
+
+            String body = String.format("prefix=%s&target_phone=%s&msg=%s&smslength=151", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
+            HttpURLConnection con = factory.writeBody(body);
+
+            String s = UrlConnectionFactory.inputStream2DebugString(con.getInputStream());
+            System.out.println(s);
+        } catch (SocketTimeoutException stoe) {
+            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+            return Result.TIMEOUT_ERROR();
+        } catch (IOException e) {
+            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+            return Result.NETWORK_ERROR();
+
+        }
+        return Result.NO_ERROR();
+    }
+
+    public Result fireSMSByText(String ha, ArrayList<String> strings, String asas) {
+        try {
+            UrlConnectionFactory factory = new UrlConnectionFactory(SEND_PAGE);
+            factory.setCookies(sessionCookies);
+            String body = String.format("prefix=%s&target_phone=%s&msg=%s&smslength=151", URLEncoder.encode("004917", ENCODING), "42383886", URLEncoder.encode("  Test wwrong number  ", ENCODING));
+            HttpURLConnection con = factory.writeBody(body);
+
+            String s = UrlConnectionFactory.inputStream2DebugString(con.getInputStream());
+            System.out.println(s);
+        } catch (SocketTimeoutException stoe) {
+            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+            return Result.TIMEOUT_ERROR();
+        } catch (IOException e) {
+            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+            return Result.NETWORK_ERROR();
+
+        }
         return Result.NO_ERROR();
     }
 }

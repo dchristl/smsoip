@@ -33,11 +33,11 @@ public class RunnableFactory {
                 Result sendResult = RunnableFactory.this.sendActivity.send();
                 CharSequence resultMessage = sendResult.getUserText();
                 CharSequence infoText = null;
-                boolean successfulSent = sendResult.equals(Result.NO_ERROR);
+                boolean successfulSent = sendResult.equals(Result.NO_ERROR());
                 boolean successfulRefreshed;
                 if (successfulSent) {
                     Result refreshResult = RunnableFactory.this.sendActivity.refreshInformations(true);
-                    successfulRefreshed = refreshResult.equals(Result.NO_ERROR);
+                    successfulRefreshed = refreshResult.equals(Result.NO_ERROR());
                     if (successfulRefreshed) {
                         infoText = refreshResult.getUserText();
                     }
@@ -54,7 +54,7 @@ public class RunnableFactory {
                 Result result = RunnableFactory.this.sendActivity.refreshInformations(false);
                 CharSequence infoText = null;
                 CharSequence messageText = null;
-                if (result.equals(Result.NO_ERROR)) {
+                if (result.equals(Result.NO_ERROR())) {
                     infoText = result.getUserText();
                 } else {
                     messageText = result.getUserText();

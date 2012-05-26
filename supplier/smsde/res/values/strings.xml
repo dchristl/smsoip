@@ -9,4 +9,5 @@
     </string-array>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_wrong_number">Wrong number</string>
 </resources>
