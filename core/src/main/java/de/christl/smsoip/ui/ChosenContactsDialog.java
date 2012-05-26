@@ -36,11 +36,11 @@ public class ChosenContactsDialog extends Dialog {
             case DisplayMetrics.DENSITY_MEDIUM:        //160
                 factor = 0.75;
                 break;
-            case DisplayMetrics.DENSITY_HIGH:     //240
-                break;
-            default:
             case DisplayMetrics.DENSITY_LOW: //120
                 factor = 0.5;
+                break;
+            default:
+            case DisplayMetrics.DENSITY_HIGH:     //240
                 break;
         }
         bmpResolution = (int) (72.0 * factor);
