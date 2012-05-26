@@ -185,7 +185,6 @@ public class SMSDeSupplier implements SMSSupplier {
 //    DNT: 1
 //    Proxy-Connection: keep-alive
 //    Referer: http://sms.de/sms/sms_free.php
-//    Cookie: C_SMSDE_IDd620b85590=78e68706fd53a0f1bc10d7aa45fbc927; sms=78e68706fd53a0f1bc10d7aa45fbc927; C_LID1=dG9tbXlib3k2Ng%3D%3D; C_SMSDE_UID1=SW90MGhlQ0RjWmtYQXJ0UU5TcDVqUT09; LGTUID=213900306; C_SMSDE_UID=78e68706fd53a0f1bc10d7aa45fbc927; C_BAL=30; __utma=165822524.1911918444.1338013744.1338013744.1338013744.1; __utmb=165822524.1.10.1338013744; __utmc=165822524; __utmz=165822524.1338013744.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
 //    Content-Type: application/x-www-form-urlencoded
 //    Content-Length: 173
 //
