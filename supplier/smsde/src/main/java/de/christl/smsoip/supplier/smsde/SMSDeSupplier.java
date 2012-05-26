@@ -189,7 +189,6 @@ public class SMSDeSupplier implements SMSSupplier {
 //    Content-Type: application/x-www-form-urlencoded
 //    Content-Length: 173
 //
-//    prefix=%2B49174&target_phone=2383886&headeridx=0&msg=Hallo+Welt+%DF+%FC+%F6+%DF&footerlenght=133&oadc=0&schedule=now&submitfooter=&hidejsmp=1&tstamp=1338013690&smslength=151
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
