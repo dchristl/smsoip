@@ -223,23 +223,4 @@ public class SMSDeSupplier implements SMSSupplier {
         return Result.NO_ERROR();
     }
 
-    public Result fireSMSByText(String ha, ArrayList<String> strings, String asas) {
-        try {
-            UrlConnectionFactory factory = new UrlConnectionFactory(SEND_PAGE);
-            factory.setCookies(sessionCookies);
-            String body = String.format("prefix=%s&target_phone=%s&msg=%s&smslength=151", URLEncoder.encode("004917", ENCODING), "42383886", URLEncoder.encode("  Test wwrong number  ", ENCODING));
-            HttpURLConnection con = factory.writeBody(body);
-
-            String s = UrlConnectionFactory.inputStream2DebugString(con.getInputStream());
-            System.out.println(s);
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
-
-        }
-        return Result.NO_ERROR();
-    }
 }
