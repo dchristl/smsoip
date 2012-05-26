@@ -10,31 +10,16 @@ public enum Result {
     /**
      * all OK, add additional info for refresh ionformations
      */
-    @Deprecated
-    /**
-     * @deprecated use factory method instead
-     */
-            NO_ERROR(R.string.text_ok),
-    @Deprecated
-    /**
-     * @deprecated use factory method instead
-     */
-            NETWORK_ERROR(R.string.text_noNetwork),
-    @Deprecated
-    /**
-     * @deprecated use factory method instead
-     */
-            LOGIN_FAILED_ERROR(R.string.text_loginFailed),
-    @Deprecated
-    /**
-     * @deprecated use factory method instead
-     */
-            TIMEOUT_ERROR(R.string.text_timeOutReached),
-    @Deprecated
-    /**
-     * @deprecated use factory method instead
-     */
-            UNKNOWN_ERROR(R.string.text_unknown_error);
+
+    NO_ERROR(R.string.text_ok),
+
+    NETWORK_ERROR(R.string.text_noNetwork),
+
+    LOGIN_FAILED_ERROR(R.string.text_loginFailed),
+
+    TIMEOUT_ERROR(R.string.text_timeOutReached),
+
+    UNKNOWN_ERROR(R.string.text_unknown_error);
 
 
     private final int defaultText;

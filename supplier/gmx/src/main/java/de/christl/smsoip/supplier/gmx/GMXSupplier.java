@@ -45,12 +45,12 @@ public class GMXSupplier implements SMSSupplier {
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR())) {
+        if (!result.equals(Result.NO_ERROR)) {
             return result;
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             Result tmpResult = refreshInformations(true, 0);
-            if (tmpResult.equals(Result.NO_ERROR())) {
+            if (tmpResult.equals(Result.NO_ERROR)) {
                 String userText = tmpResult.getUserText().toString();
                 String[] split = userText.split(" ");
                 boolean noFreeAvailable;
@@ -157,7 +157,7 @@ public class GMXSupplier implements SMSSupplier {
     @Override
     public Result refreshInformationOnRefreshButtonPressed() {
         Result result = refreshInformations(false, 0);
-        if (result.equals(Result.NO_ERROR()) && result.getUserText().equals("")) {              //informations are not available at first try so do it twice
+        if (result.equals(Result.NO_ERROR) && result.getUserText().equals("")) {              //informations are not available at first try so do it twice
             result = refreshInformations(false, 0);
         }
         return result;
@@ -172,7 +172,7 @@ public class GMXSupplier implements SMSSupplier {
     private Result refreshInformations(boolean noLoginBefore, int tryNr) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR())) {
+            if (!result.equals(Result.NO_ERROR)) {
                 return result;
             }
         }

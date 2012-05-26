@@ -112,7 +112,7 @@ public class ProviderPreferences extends PreferenceActivity {
     }
 
     private void updateButtons() {
-        int color = result.equals(Result.NO_ERROR()) ? Color.GREEN : Color.RED;
+        int color = result.equals(Result.NO_ERROR) ? Color.GREEN : Color.RED;
         Spannable newUserNameTitle = new SpannableString(userNamePreference.getTitle());
         newUserNameTitle.setSpan(new ForegroundColorSpan(color), 0, newUserNameTitle.length(), 0);
         userNamePreference.setTitle(newUserNameTitle);

@@ -52,7 +52,7 @@ public class SMSDeSupplier implements SMSSupplier {
     private Result refreshInformations(boolean afterMessageSentSuccessful) {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR())) {
+            if (!result.equals(Result.NO_ERROR)) {
                 return result;
             }
         }
@@ -193,7 +193,7 @@ public class SMSDeSupplier implements SMSSupplier {
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
         Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR())) {
+        if (!result.equals(Result.NO_ERROR)) {
             return result;
         }
         String onlyOneReceiver = receivers.get(0).toString();

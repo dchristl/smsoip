@@ -48,7 +48,7 @@ public class FreenetSupplier implements SMSSupplier {
     private Result refreshInformations(boolean noLoginBefore) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR())) {
+            if (!result.equals(Result.NO_ERROR)) {
                 return result;
             }
         }
@@ -210,7 +210,7 @@ public class FreenetSupplier implements SMSSupplier {
 
     public Result fireSMS(String smsText, String receiver) {
         Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR())) {
+        if (!result.equals(Result.NO_ERROR)) {
             return result;
         }
         try {
