@@ -180,15 +180,8 @@ public class GMXSupplier implements SMSSupplier {
         if (lastInputStream == null) {
             return Result.UNKNOWN_ERROR();
         }
-        String inputLine;
         try {
-            while ((inputLine = lastInputStream.readLine()) != null) {
-                if (inputLine.contains("<div class=\"SMMS_tab_content_info_text_small\">")) {
-                    String tmp = inputLine.replaceAll(".*<div class=\"SMMS_tab_content_info_text_small\">", "");
-                    infoText = tmp.replaceAll("</div>.*", "");
-                    break;
-                }
-            }
+            infoText = findInfoText();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
@@ -196,6 +189,56 @@ public class GMXSupplier implements SMSSupplier {
             return refreshInformations(false, ++tryNr);
         }
         return Result.NO_ERROR().setAlternateText(infoText);
+    }
+
+    /**
+     * <div id="SMMS_tab_content_info">
+     * <div id="SMMS_tab_content_info_status">8. Juni 2012
+     * </div>
+     * <div id="SMMS_tab_content_info_free">
+     * <div class="SMMS_tab_content_info_text">Frei<span>SMS</span>
+     * </div>
+     * <div class="SMMS_tab_content_info_text_small">noch 3
+     * von 10
+     * </div>
+     * </div>
+     * <div id="SMMS_tab_content_info_pay">
+     * <div class="SMMS_tab_content_info_text">
+     * Pay<span>SMS</span></div>
+     * <div class="SMMS_tab_content_info_text_small">0
+     * versendet
+     * </div>
+     * </div>
+     * </div>
+     *
+     * @return found info string or empty if not found
+     * @throws IOException
+     */
+    private String findInfoText() throws IOException {
+        String inputLine;
+        StringBuilder out = new StringBuilder("");
+        boolean found = false;
+        int loop = 1;
+        while ((inputLine = lastInputStream.readLine()) != null) {
+            if (!found && inputLine.contains("SMMS_tab_content_info_free")) { //starting point of free sms
+                found = true;
+            }
+            if (found) {
+                if (inputLine.contains("SMMS_tab_content_info_text_small")) { //loop 2 and 4
+                    out.append(inputLine.replaceAll("<.*?>", "").trim()); //replace all html tags
+                    if (loop == 2) {
+                        out.append(CRLF);
+                    } else {
+                        break;
+                    }
+                    loop++;
+                } else if (inputLine.contains("SMMS_tab_content_info_text")) { //loop 1 and 3
+                    out.append(inputLine.replaceAll("<.*?>", " ").trim()).append(" : ");
+                    loop++;
+                }
+            }
+        }
+        return out.toString();
     }
 
 

@@ -3,7 +3,7 @@ package de.christl.smsoip.supplier.smsde;
 
 import android.text.Editable;
 import android.util.Log;
-import connection.UrlConnectionFactory;
+import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
