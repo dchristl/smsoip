@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
@@ -63,6 +62,9 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_SUPPLIER = "supplier";
     private static final String SAVED_INSTANCE_INPUTFIELD = "inputfield";
     private static final String SAVED_INSTANCE_RECEIVERS = "receivers";
+    private static final String SAVED_INSTANCE_SPINNER = "spinner";
+
+    private Dialog lastDialog;
 
     @Override
     protected void onResume() {
@@ -77,7 +79,7 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SMSoIPApplication.getApp().initProviders(); //calll this every time, a new plugin will be installed or removed
+        SMSoIPApplication.getApp().initProviders(); //call this every time, a new plugin will be installed or removed
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         SIGNSCONSTANT = getText(R.string.text_smssigns);
@@ -99,8 +101,40 @@ public class SendActivity extends AllActivity {
         setTextArea();
         setSendButton();
         setContactsByNumberInput();
+        setPreselectedContact();
+        if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
+            smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
+            setTitle(smsSupplier.getProvider().getProviderName());
+            setSpinner();
+            if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
+                spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0));
+            }
+            inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
+            ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
+            receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
+            receiverList.addAll(tmpReceiverList);
+            updateViewOnChangedReceivers(); //call it if a a receiver is appended
+        } else {     // fresh create call on activity so do the default behaviour
+            String defaultSupplier = getDefaultSupplier();
+            if (defaultSupplier != null) {
+                smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
+                setTitle(smsSupplier.getProvider().getProviderName());
+                setSpinner();
+                updateViewOnChangedReceivers();
+            } else {
+                removeDialog(DIALOG_PROVIDER);
+                showDialog(DIALOG_PROVIDER);
+            }
+        }
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
+        }
+
+    }
+
+    private void setPreselectedContact() {
         Uri data = getIntent().getData();
-        String defaultSupplier = getDefaultSupplier();
+
         if (data != null) {
             DatabaseHandler dbHandler = new DatabaseHandler(this);
             String givenNumber = data.getSchemeSpecificPart();
@@ -117,18 +151,6 @@ public class SendActivity extends AllActivity {
                 toast.show();
             }
         }
-        if (defaultSupplier != null) {
-            smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
-            setTitle(smsSupplier.getProvider().getProviderName());
-            setSpinner();
-            updateViewOnChangedReceivers(); //call it if a a receiver is appended
-        } else {
-            showDialog(DIALOG_PROVIDER);
-        }
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
-        }
-
     }
 
     private void setSendButton() {
@@ -392,7 +414,9 @@ public class SendActivity extends AllActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateSMScounter(s);
+                if (smsSupplier != null) { //activity was resumed
+                    updateSMScounter(s);
+                }
             }
 
             @Override
@@ -427,7 +451,7 @@ public class SendActivity extends AllActivity {
     private void setSpinner() {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
         smsSupplier.getProvider().createSpinner(this, spinner);
-        findViewById(de.christl.smsoip.R.id.typeText).setVisibility(spinner.getVisibility());
+        findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
     Result send() {
@@ -586,7 +610,6 @@ public class SendActivity extends AllActivity {
                 return true;
             case OPTION_SWITCH:
                 removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
-                Log.e(this.getClass().getCanonicalName(), "diag1");
                 showDialog(DIALOG_PROVIDER);
                 return true;
             case GLOBAL_OPTION:
@@ -715,6 +738,7 @@ public class SendActivity extends AllActivity {
             default:
                 dialog = super.onCreateDialog(id);
         }
+        lastDialog = dialog;
         return dialog;
     }
 
@@ -764,22 +788,17 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        //cloase open dialog if any
+        if (lastDialog != null) {
+            lastDialog.dismiss();
+        }
         if (smsSupplier != null) { //only save instance if provider is already chosen
             outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
             outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+            if (spinner.getVisibility() == View.VISIBLE) {
+                outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
+            }
         }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
-        inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
-
-        ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
-        receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
-        receiverList.addAll(tmpReceiverList);
-
-        super.onRestoreInstanceState(savedInstanceState);
     }
 }
