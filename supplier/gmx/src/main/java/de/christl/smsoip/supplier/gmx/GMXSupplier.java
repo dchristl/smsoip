@@ -54,10 +54,10 @@ public class GMXSupplier implements SMSSupplier {
                 String userText = tmpResult.getUserText().toString();
                 String[] split = userText.split(" ");
                 boolean noFreeAvailable;
-                if (split.length > 1) {
+                if (split.length > 4) {
                     int freeSMS;
                     try {
-                        freeSMS = Integer.parseInt(split[1]);
+                        freeSMS = Integer.parseInt(split[4]);
                     } catch (NumberFormatException e) {
                         return Result.UNKNOWN_ERROR().setAlternateText(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved));
                     }
