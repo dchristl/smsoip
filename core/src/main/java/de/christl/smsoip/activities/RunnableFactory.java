@@ -19,10 +19,10 @@ public class RunnableFactory {
         updateUIHandler = new Handler();
     }
 
-    private Runnable getUpdateUIRunnable(final CharSequence resultMessage, final CharSequence infoText) {
+    private Runnable getUpdateUIRunnable(final CharSequence resultMessage, final CharSequence infoText, final boolean succesfulSent) {
         return new Runnable() {
             public void run() {
-                RunnableFactory.this.sendActivity.showReturnMessage(resultMessage, infoText);
+                RunnableFactory.this.sendActivity.showReturnMessage(resultMessage, infoText, succesfulSent);
             }
         };
     }
@@ -42,7 +42,7 @@ public class RunnableFactory {
                         infoText = refreshResult.getUserText();
                     }
                 }
-                updateUIHandler.post(getUpdateUIRunnable(resultMessage, infoText));
+                updateUIHandler.post(getUpdateUIRunnable(resultMessage, infoText, successfulSent));
                 RunnableFactory.this.progressDialog.cancel();
             }
         };
@@ -59,7 +59,7 @@ public class RunnableFactory {
                 } else {
                     messageText = result.getUserText();
                 }
-                updateUIHandler.post(getUpdateUIRunnable(messageText, infoText));
+                updateUIHandler.post(getUpdateUIRunnable(messageText, infoText, false));
                 progressDialog.cancel();
             }
         };

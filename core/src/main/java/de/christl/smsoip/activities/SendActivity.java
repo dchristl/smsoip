@@ -351,29 +351,27 @@ public class SendActivity extends AllActivity {
      *
      * @param resultMessage - the resultMessage to show in the Toast or null if only refresh was pressed
      * @param infoText      - the infoText on the screen or null if refresh was not successful
+     * @param succesfulSent - was sending succesful
      */
-    void showReturnMessage(CharSequence resultMessage, CharSequence infoText) {
+    void showReturnMessage(CharSequence resultMessage, CharSequence infoText, boolean succesfulSent) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
         if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
             infoView.setText(infoText);
-            if (resultMessage != null) {  //previous operation was a refresh only, so no return message will be shown
-                Spanned msg = new SpannableString(resultMessage);
-                final ImageDialog dialog = new ImageDialog(this, true, msg);
-                dialog.setOwnerActivity(this);
-                dialog.show();
-                killDialogAfterAWhile(dialog);
+        }
+        if (resultMessage != null) {  //previous operation was a succesful refresh only, so no return message will be shown
+            Spanned msg = new SpannableString(resultMessage);
+            final ImageDialog dialog = new ImageDialog(this, succesfulSent, msg);
+            dialog.setOwnerActivity(this);
+            dialog.show();
+            killDialogAfterAWhile(dialog);
+            if (succesfulSent) {
                 if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
                     writeSMSInDatabase();
                 }
                 clearAllInputs();
             }
-        } else {
-            Spanned msg = new SpannableString(resultMessage);
-            final ImageDialog dialog = new ImageDialog(this, false, msg);
-            dialog.setOwnerActivity(this);
-            dialog.show();
-            killDialogAfterAWhile(dialog);
         }
+
     }
 
     private void killDialogAfterAWhile(final ImageDialog dialog) {
