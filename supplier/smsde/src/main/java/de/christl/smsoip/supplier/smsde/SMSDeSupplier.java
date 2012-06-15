@@ -7,6 +7,10 @@ import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -191,24 +195,29 @@ public class SMSDeSupplier implements SMSSupplier {
         }
     }
 
-    private Result processSendReturn(InputStream is) throws IOException {
-        String s = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
-        System.out.println(s);
+    Result processSendReturn(InputStream is) throws IOException {
+/*        String s = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
+        System.out.println(s);*/
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
-        String line;
+        Document parse = Jsoup.parse(is, ENCODING, "");
+//        Elements fbrbTableElements = parse.select("td.fbrb");
+        Elements tables = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
+
         String returnMessage = null;
-        while ((line = reader.readLine()) != null) {
-            if (line.contains("fbrb") && line.contains("/images/")) {
-                returnMessage = line.replaceAll(".*\">", "");
-                returnMessage = returnMessage.replaceAll("<.*", "");
-                returnMessage = returnMessage.replaceAll("[[^0-9]&&[^A-z]&&[^ ]].*", "");
+        for (Element next : tables) {
+            Elements select = next.select(">img");
+            if (select.size() > 0) {
+                returnMessage = next.text();
+                returnMessage = returnMessage.replaceAll(next.select("p").text(), "");
+                returnMessage = returnMessage.replaceAll("[^\\p{Print}]", "").trim();
                 break;
             }
         }
+
         if (returnMessage != null) {
             return Result.NO_ERROR().setAlternateText(returnMessage);
         } else {
-            return Result.UNKNOWN_ERROR();
+            return Result.UNKNOWN_ERROR().setAlternateText(returnMessage);
         }
     }
 

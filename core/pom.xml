@@ -21,6 +21,10 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/libs/GoogleAdMobAdsSdk-6.0.0.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
