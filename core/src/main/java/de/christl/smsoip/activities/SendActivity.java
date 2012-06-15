@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
@@ -63,6 +64,7 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_INPUTFIELD = "inputfield";
     private static final String SAVED_INSTANCE_RECEIVERS = "receivers";
     private static final String SAVED_INSTANCE_SPINNER = "spinner";
+    private static final String SAVED_INSTANCE_INFO = "info";
 
     private Dialog lastDialog;
 
@@ -113,6 +115,7 @@ public class SendActivity extends AllActivity {
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
             receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
             receiverList.addAll(tmpReceiverList);
+            ((TextView) findViewById(R.id.infoText)).setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INFO));
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
@@ -794,6 +797,9 @@ public class SendActivity extends AllActivity {
             outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
             outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+            CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
+            outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
+            Log.e("christl", infoText.toString());
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
             }
