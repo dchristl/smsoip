@@ -196,27 +196,26 @@ public class SMSDeSupplier implements SMSSupplier {
     }
 
     Result processSendReturn(InputStream is) throws IOException {
-/*        String s = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
-        System.out.println(s);*/
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
         Document parse = Jsoup.parse(is, ENCODING, "");
 //        Elements fbrbTableElements = parse.select("td.fbrb");
-        Elements tables = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
-
+        Elements tDsWithImages = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
+        boolean success = false;
         String returnMessage = null;
-        for (Element next : tables) {
-            Elements select = next.select(">img");
-            if (select.size() > 0) {
-                returnMessage = next.text();
-                returnMessage = returnMessage.replaceAll(next.select("p").text(), "");
+        for (Element nextTD : tDsWithImages) {
+            Elements imageTag = nextTD.select(">img");
+            if (imageTag.size() > 0) { //now its the correct tag
+                if (imageTag.outerHtml().contains("gruen")) {
+                    success = true;
+                }
+                returnMessage = nextTD.text();
+                returnMessage = returnMessage.replaceAll(nextTD.select("p").text(), "");
                 returnMessage = returnMessage.replaceAll("[^\\p{Print}]", "").trim();
                 break;
             }
         }
-
-        if (returnMessage != null) {
+        if (success) {
             return Result.NO_ERROR().setAlternateText(returnMessage);
-        } else {
+        } else { //nobody cares if return Message is null
             return Result.UNKNOWN_ERROR().setAlternateText(returnMessage);
         }
     }
