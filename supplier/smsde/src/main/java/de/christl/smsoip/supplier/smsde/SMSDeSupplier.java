@@ -31,9 +31,17 @@ public class SMSDeSupplier implements SMSSupplier {
     private static final String LOGIN_FIRST_STEP_URL = "http://www.sms.de";
     private static final String LOGIN_SECOND_STEP_URL = "http://www.sms.de/login/refused.php";
     private static final String HOME_PAGE = "http://www.sms.de/index.php";
-    private static final String SEND_PAGE = "http://www.sms.de/sms/sms_send.php";
+    private static final String SEND_FREE_PAGE = "http://www.sms.de/sms/sms_send.php";
+    private static final String SEND_POWER_PAGE = "http://www.sms.de/sms/sms_send_power.php";
     private List<String> sessionCookies;
     private static final String ENCODING = "ISO-8859-1";
+
+
+    private static final int TYPE_FREE = 0;
+    private static final int TYPE_POWER_160 = 1;
+    private static final int TYPE_POWER_160_SI = 2;
+    private static final int TYPE_POWER_300 = 3;
+    private static final int TYPE_POWER_300_SI = 4;
 
     public SMSDeSupplier() {
         provider = new SMSDeOptionProvider();
@@ -177,11 +185,45 @@ public class SMSDeSupplier implements SMSSupplier {
         } else {
             return Result.UNKNOWN_ERROR().setAlternateText(getProvider().getTextByResourceId(R.string.text_wrong_number));
         }
+
+        int sendIndex = findSendMethod(spinnerText);
+
         try {
-            UrlConnectionFactory factory = new UrlConnectionFactory(SEND_PAGE);
+            UrlConnectionFactory factory;
+            String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
+            switch (sendIndex) {
+                case TYPE_POWER_160:
+                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                    body += "&empfcount=1";
+                    body += "&oadc=0";
+                    body += "&smslength=160";
+                    break;
+                case TYPE_POWER_160_SI:
+                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                    body += "&empfcount=1";
+                    body += "&oadc=1";
+                    body += "&smslength=160";
+                    break;
+                case TYPE_POWER_300:
+                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                    body += "&empfcount=1";
+                    body += "&oadc=0";
+                    body += "&smslength=300";
+                    break;
+                case TYPE_POWER_300_SI:
+                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                    body += "&empfcount=1";
+                    body += "&oadc=1";
+                    body += "&smslength=300";
+                    break;
+                default:
+                    factory = new UrlConnectionFactory(SEND_FREE_PAGE);
+                    body += "&smslength=151";
+                    break;
+            }
             factory.setCookies(sessionCookies);
 
-            String body = String.format("prefix=%s&target_phone=%s&msg=%s&smslength=151", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
+
             HttpURLConnection con = factory.writeBody(body);
 
             return processSendReturn(con.getInputStream());
@@ -193,6 +235,17 @@ public class SMSDeSupplier implements SMSSupplier {
             return Result.NETWORK_ERROR();
 
         }
+    }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     Result processSendReturn(InputStream is) throws IOException {

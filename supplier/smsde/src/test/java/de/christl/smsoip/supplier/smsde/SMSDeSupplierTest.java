@@ -44,4 +44,5 @@ public class SMSDeSupplierTest {
         Result result = supplier.processSendReturn(getClass().getResourceAsStream("good.html"));
         assertEquals("OK! Ihre Free-SMS wurde erfolgreich versendet!", result.getUserText());
     }
+
 }
