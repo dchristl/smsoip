@@ -43,6 +43,7 @@ public class SMSDeSupplier implements SMSSupplier {
     private static final int TYPE_POWER_300 = 3;
     private static final int TYPE_POWER_300_SI = 4;
 
+
     public SMSDeSupplier() {
         provider = new SMSDeOptionProvider();
     }
@@ -172,69 +173,93 @@ public class SMSDeSupplier implements SMSSupplier {
 
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR)) {
-            return result;
+        String errorText = preCheckNumber(receivers);
+        if (!errorText.equals("")) {
+            return Result.UNKNOWN_ERROR().setAlternateText(errorText);
         }
-        String onlyOneReceiver = receivers.get(0).toString();
-        String prefix;
-        String number;
-        if (onlyOneReceiver.length() > 7) {
-            prefix = onlyOneReceiver.substring(0, 7);
-            number = onlyOneReceiver.substring(7);
-        } else {
-            return Result.UNKNOWN_ERROR().setAlternateText(getProvider().getTextByResourceId(R.string.text_wrong_number));
-        }
-
         int sendIndex = findSendMethod(spinnerText);
-
-        try {
-            UrlConnectionFactory factory;
-            String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
-            switch (sendIndex) {
-                case TYPE_POWER_160:
-                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                    body += "&empfcount=1";
-                    body += "&oadc=0";
-                    body += "&smslength=160";
-                    break;
-                case TYPE_POWER_160_SI:
-                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                    body += "&empfcount=1";
-                    body += "&oadc=1";
-                    body += "&smslength=160";
-                    break;
-                case TYPE_POWER_300:
-                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                    body += "&empfcount=1";
-                    body += "&oadc=0";
-                    body += "&smslength=300";
-                    break;
-                case TYPE_POWER_300_SI:
-                    factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                    body += "&empfcount=1";
-                    body += "&oadc=1";
-                    body += "&smslength=300";
-                    break;
-                default:
-                    factory = new UrlConnectionFactory(SEND_FREE_PAGE);
-                    body += "&smslength=151";
-                    break;
+        boolean succesful = true;
+        List<SendResult> sendResults = new ArrayList<SendResult>(receivers.size());
+        for (Editable receiverEditable : receivers) {
+            Result result = login(provider.getUserName(), provider.getPassword());
+            if (!result.equals(Result.NO_ERROR)) {
+                return result;
             }
-            factory.setCookies(sessionCookies);
+            String receiverNumber = receiverEditable.toString();
+            String prefix = receiverNumber.substring(0, 7);
+            String number = receiverNumber.substring(7);
+            try {
+                UrlConnectionFactory factory;
+                String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
+                switch (sendIndex) {
+                    case TYPE_POWER_160:
+                        factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                        body += "&empfcount=1";
+                        body += "&oadc=0";
+                        body += "&smslength=160";
+                        break;
+                    case TYPE_POWER_160_SI:
+                        factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                        body += "&empfcount=1";
+                        body += "&oadc=1";
+                        body += "&smslength=160";
+                        break;
+                    case TYPE_POWER_300:
+                        factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                        body += "&empfcount=1";
+                        body += "&oadc=0";
+                        body += "&smslength=300";
+                        break;
+                    case TYPE_POWER_300_SI:
+                        factory = new UrlConnectionFactory(SEND_POWER_PAGE);
+                        body += "&empfcount=1";
+                        body += "&oadc=1";
+                        body += "&smslength=300";
+                        break;
+                    case TYPE_FREE:
+                    default:
+                        factory = new UrlConnectionFactory(SEND_FREE_PAGE);
+                        body += "&smslength=151";
+                        break;
+                }
+                factory.setCookies(sessionCookies);
+                HttpURLConnection con = factory.writeBody(body);
+                SendResult sendResult = processSendReturn(con.getInputStream(), receiverNumber);
+                succesful &= sendResult.isSuccess();
+                sendResults.add(sendResult);
+            } catch (SocketTimeoutException stoe) {
+                Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+                return Result.TIMEOUT_ERROR().setAlternateText(buildMessageText(sendResults));
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                return Result.NETWORK_ERROR().setAlternateText(buildMessageText(sendResults));
 
-
-            HttpURLConnection con = factory.writeBody(body);
-
-            return processSendReturn(con.getInputStream());
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
-
+            }
         }
+        String messageText = buildMessageText(sendResults);
+        if (succesful) {
+            return Result.NO_ERROR().setAlternateText(messageText);
+        }
+        return Result.UNKNOWN_ERROR().setAlternateText(messageText);
+    }
+
+    private String buildMessageText(List<SendResult> sendResults) {
+        StringBuilder out = new StringBuilder();
+        for (SendResult sendResult : sendResults) {
+            out.append(sendResult.getNumber()).append("->").append(sendResult.getReturnMessage()).append("\n");
+        }
+        return out.toString();
+    }
+
+    private String preCheckNumber(List<Editable> receivers) {
+        StringBuilder out = new StringBuilder("");
+        for (Editable receiverEditable : receivers) {
+            String receiver = receiverEditable.toString();
+            if (receiver.length() <= 7) {
+                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver).append("\n");
+            }
+        }
+        return out.toString();
     }
 
     private int findSendMethod(String spinnerText) {
@@ -245,10 +270,10 @@ public class SMSDeSupplier implements SMSSupplier {
                 return i;
             }
         }
-        return 0;
+        return TYPE_FREE;
     }
 
-    Result processSendReturn(InputStream is) throws IOException {
+    SendResult processSendReturn(InputStream is, String number) throws IOException {
         Document parse = Jsoup.parse(is, ENCODING, "");
 //        Elements fbrbTableElements = parse.select("td.fbrb");
         Elements tDsWithImages = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
@@ -266,11 +291,7 @@ public class SMSDeSupplier implements SMSSupplier {
                 break;
             }
         }
-        if (success) {
-            return Result.NO_ERROR().setAlternateText(returnMessage);
-        } else { //nobody cares if return Message is null
-            return Result.UNKNOWN_ERROR().setAlternateText(returnMessage);
-        }
+        return new SendResult(number, success, returnMessage);
     }
 
 }
