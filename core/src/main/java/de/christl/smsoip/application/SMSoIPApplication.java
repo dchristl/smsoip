@@ -2,12 +2,14 @@ package de.christl.smsoip.application;
 
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
+import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 
@@ -21,10 +23,12 @@ public class SMSoIPApplication extends Application {
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
-    List<SMSSupplier> deprecatedPlugins = new ArrayList<SMSSupplier>();
+    List<SMSSupplier> pluginsToOld = new ArrayList<SMSSupplier>();
+    List<SMSSupplier> pluginsToNew = new ArrayList<SMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
     private boolean adsEnabled = true;
+    private int versionNumber;
 
     @Override
     public void onCreate() {
@@ -32,6 +36,7 @@ public class SMSoIPApplication extends Application {
         app = this;
         setWriteToDBAvailable();
     }
+
 
     private void setWriteToDBAvailable() {
         try {
@@ -47,6 +52,8 @@ public class SMSoIPApplication extends Application {
     public void initProviders() {
         try {
             List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
+            PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionNumber = pinfo.versionCode;
             plugins = new ArrayList<SMSoIPPlugin>();
             for (ApplicationInfo installedApplication : installedApplications) {
                 if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
@@ -73,22 +80,28 @@ public class SMSoIPApplication extends Application {
                         Class<?> aClass = Class.forName(s, false, pathClassLoader);
                         Class<?>[] aClassInterfaces = aClass.getInterfaces();
                         if (aClassInterfaces != null) {
-                            for (Class<?> aClassInterface : aClassInterfaces) {
-                                if (aClassInterface.equals(SMSSupplier.class)) {
-                                    SMSSupplier smsSupplier = (SMSSupplier) aClass.newInstance();
+                            if (SMSSupplier.class.isAssignableFrom(aClass)) {
 
+                                APIVersion annotation = aClass.getAnnotation(APIVersion.class);
+                                int minVersion = annotation == null ? 13 : annotation.minVersion();
+                                SMSSupplier smsSupplier = (SMSSupplier) aClass.newInstance();
+                                if (versionNumber > minVersion) {
                                     List<Method> interfaceMethods = Arrays.asList(SMSSupplier.class.getDeclaredMethods());
                                     for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
                                         try {
                                             aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
                                         } catch (NoSuchMethodException e) { //method does not exist, means old plugin
-                                            deprecatedPlugins.add(smsSupplier);
+                                            pluginsToOld.add(smsSupplier);
                                             break Outer;
                                         }
                                     }
-                                    loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier));
-                                    break Outer;
+                                } else if (minVersion > versionNumber) {
+                                    pluginsToNew.add(smsSupplier);
+                                    break;
+
                                 }
+                                loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier, minVersion));
+                                break;
                             }
                         }
                     } catch (ClassNotFoundException e) {
@@ -151,8 +164,8 @@ public class SMSoIPApplication extends Application {
         return null;
     }
 
-    public List<SMSSupplier> getDeprecatedPlugins() {
-        return deprecatedPlugins;
+    public List<SMSSupplier> getPluginsToOld() {
+        return pluginsToOld;
     }
 
     public boolean isWriteToDatabaseAvailable() {

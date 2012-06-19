@@ -1,6 +1,7 @@
 package de.christl.smsoip.provider;
 
 import android.text.Editable;
+import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Interface representing a supplier for sending sms
  */
+@APIVersion
 public interface SMSSupplier {
 
     /**
@@ -69,6 +71,9 @@ public interface SMSSupplier {
      * @param smsText     - the message text
      * @param receivers   - lis of all receivers
      * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on ic_menu_success or any other otherwise
+     * @deprecated use more convenient method in SMSSupplierv14 (this eill be removed in future release)
+     *             no need to implement if use of SMSSupplierv14 interface
      */
+    @Deprecated
     Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText);
 }

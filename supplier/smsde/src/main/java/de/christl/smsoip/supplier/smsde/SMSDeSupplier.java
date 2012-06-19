@@ -3,10 +3,11 @@ package de.christl.smsoip.supplier.smsde;
 
 import android.text.Editable;
 import android.util.Log;
+import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.SMSSupplierv14;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SMSDeSupplier implements SMSSupplier {
-
+@APIVersion(minVersion = 14)
+public class SMSDeSupplier implements SMSSupplierv14 {
 
     private SMSDeOptionProvider provider;
 
@@ -294,4 +295,8 @@ public class SMSDeSupplier implements SMSSupplier {
         return new SendResult(number, success, returnMessage);
     }
 
+    @Override
+    public Result fireSMS(String smsText, List<String> receivers, String spinnerText) {
+        return Result.NO_ERROR();
+    }
 }

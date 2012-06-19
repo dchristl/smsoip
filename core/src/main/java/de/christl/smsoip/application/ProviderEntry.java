@@ -9,10 +9,12 @@ import de.christl.smsoip.provider.SMSSupplier;
 public class ProviderEntry {
 
     private final SMSSupplier supplier;
+    private int minAPIVersion;
     private OptionProvider provider;
 
-    public ProviderEntry(SMSSupplier smsSupplier) {
+    public ProviderEntry(SMSSupplier smsSupplier, int minAPIVersion) {
         supplier = smsSupplier;
+        this.minAPIVersion = minAPIVersion;
         provider = smsSupplier.getProvider();
     }
 
@@ -27,5 +29,9 @@ public class ProviderEntry {
     @Override //this will be called by spinner for the entries
     public String toString() {
         return provider.getProviderName();
+    }
+
+    public int getMinAPIVersion() {
+        return minAPIVersion;
     }
 }

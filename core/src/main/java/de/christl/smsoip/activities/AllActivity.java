@@ -71,7 +71,7 @@ public class AllActivity extends Activity {
             SMSoIPApplication.getApp().initProviders();
             reloadProviders = false;
         }
-        if (SMSoIPApplication.getApp().getDeprecatedPlugins().size() > 0) {
+        if (SMSoIPApplication.getApp().getPluginsToOld().size() > 0) {
             showDeprecatedProvidersDialog();
         } else if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
             showNoProvidersDialog();
@@ -105,7 +105,7 @@ public class AllActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String string = getString(R.string.text_deprecated_providers);
         string += "\n";
-        for (SMSSupplier smsSupplier : SMSoIPApplication.getApp().getDeprecatedPlugins()) {
+        for (SMSSupplier smsSupplier : SMSoIPApplication.getApp().getPluginsToOld()) {
             string += smsSupplier.getProvider().getProviderName() + "\n";
         }
         builder.setMessage(string).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();

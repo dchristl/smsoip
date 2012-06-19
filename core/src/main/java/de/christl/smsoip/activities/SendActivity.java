@@ -24,6 +24,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.SMSSupplierv14;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.ImageDialog;
@@ -460,7 +461,12 @@ public class SendActivity extends AllActivity {
         for (Receiver receiver : receiverList) {
             numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
         }
-        return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        if (providerEntries.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion() >= 14) {
+            return ((SMSSupplierv14) smsSupplier).fireSMS("", new ArrayList<String>(), "Bla");
+        } else {
+            return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        }
 
     }
 
@@ -799,7 +805,6 @@ public class SendActivity extends AllActivity {
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
-            Log.e("christl", infoText.toString());
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
             }
