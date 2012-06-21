@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
