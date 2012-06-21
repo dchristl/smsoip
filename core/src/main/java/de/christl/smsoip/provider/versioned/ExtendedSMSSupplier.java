@@ -7,7 +7,7 @@ import de.christl.smsoip.provider.SMSSupplier;
 import java.util.List;
 
 @APIVersion(minVersion = 14)
-public interface SMSSupplierv14 extends SMSSupplier {
+public interface ExtendedSMSSupplier extends SMSSupplier {
 
     /**
      * will be called on send SMS button
