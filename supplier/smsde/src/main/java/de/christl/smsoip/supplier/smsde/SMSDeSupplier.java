@@ -3,7 +3,6 @@ package de.christl.smsoip.supplier.smsde;
 
 import android.text.Editable;
 import android.util.Log;
-import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
@@ -24,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@APIVersion(minVersion = 14)
-public class ExtendedSMSDeSupplier implements ExtendedSMSSupplier {
+public class SMSDeSupplier implements ExtendedSMSSupplier {
 
     private SMSDeOptionProvider provider;
 
@@ -45,11 +43,11 @@ public class ExtendedSMSDeSupplier implements ExtendedSMSSupplier {
     private static final int TYPE_POWER_300_SI = 4;
 
 
-    public ExtendedSMSDeSupplier() {
+    public SMSDeSupplier() {
         provider = new SMSDeOptionProvider();
     }
 
-    public ExtendedSMSDeSupplier(SMSDeOptionProvider provider) {
+    public SMSDeSupplier(SMSDeOptionProvider provider) {
         this.provider = provider;
     }
 
@@ -174,6 +172,60 @@ public class ExtendedSMSDeSupplier implements ExtendedSMSSupplier {
 
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
+        return Result.UNKNOWN_ERROR().setAlternateText("Deprecated API");
+    }
+
+    private String buildMessageText(List<SendResult> sendResults) {
+        StringBuilder out = new StringBuilder();
+        for (SendResult sendResult : sendResults) {
+            out.append(sendResult.getNumber()).append("->").append(sendResult.getReturnMessage()).append("\n");
+        }
+        return out.toString();
+    }
+
+    private String preCheckNumber(List<String> receivers) {
+        StringBuilder out = new StringBuilder("");
+        for (String receiver : receivers) {
+            if (receiver.length() <= 7) {
+                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver).append("\n");
+            }
+        }
+        return out.toString();
+    }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                return i;
+            }
+        }
+        return TYPE_FREE;
+    }
+
+    SendResult processSendReturn(InputStream is, String number) throws IOException {
+        Document parse = Jsoup.parse(is, ENCODING, "");
+        Elements tDsWithImages = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
+        boolean success = false;
+        String returnMessage = null;
+        for (Element nextTD : tDsWithImages) {
+            Elements imageTag = nextTD.select(">img");
+            if (imageTag.size() > 0) { //now its the correct tag
+                if (imageTag.outerHtml().contains("gruen")) {
+                    success = true;
+                }
+                returnMessage = nextTD.text();
+                returnMessage = returnMessage.replaceAll(nextTD.select("p").text(), "");
+                returnMessage = returnMessage.replaceAll("[^\\p{Print}]", "").trim();
+                break;
+            }
+        }
+        return new SendResult(number, success, returnMessage);
+    }
+
+    @Override
+    public Result fireSMS(String smsText, List<String> receivers, String spinnerText) {
         String errorText = preCheckNumber(receivers);
         if (!errorText.equals("")) {
             return Result.UNKNOWN_ERROR().setAlternateText(errorText);
@@ -181,17 +233,16 @@ public class ExtendedSMSDeSupplier implements ExtendedSMSSupplier {
         int sendIndex = findSendMethod(spinnerText);
         boolean succesful = true;
         List<SendResult> sendResults = new ArrayList<SendResult>(receivers.size());
-        for (Editable receiverEditable : receivers) {
+        for (String receiverNumber : receivers) {
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
                 return result;
             }
-            String receiverNumber = receiverEditable.toString();
             String prefix = receiverNumber.substring(0, 7);
             String number = receiverNumber.substring(7);
             try {
                 UrlConnectionFactory factory;
-                String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText.toString(), ENCODING));
+                String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING));
                 switch (sendIndex) {
                     case TYPE_POWER_160:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
@@ -242,61 +293,5 @@ public class ExtendedSMSDeSupplier implements ExtendedSMSSupplier {
             return Result.NO_ERROR().setAlternateText(messageText);
         }
         return Result.UNKNOWN_ERROR().setAlternateText(messageText);
-    }
-
-    private String buildMessageText(List<SendResult> sendResults) {
-        StringBuilder out = new StringBuilder();
-        for (SendResult sendResult : sendResults) {
-            out.append(sendResult.getNumber()).append("->").append(sendResult.getReturnMessage()).append("\n");
-        }
-        return out.toString();
-    }
-
-    private String preCheckNumber(List<Editable> receivers) {
-        StringBuilder out = new StringBuilder("");
-        for (Editable receiverEditable : receivers) {
-            String receiver = receiverEditable.toString();
-            if (receiver.length() <= 7) {
-                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver).append("\n");
-            }
-        }
-        return out.toString();
-    }
-
-    private int findSendMethod(String spinnerText) {
-        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
-        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
-            String sendOption = arrayByResourceId[i];
-            if (sendOption.equals(spinnerText)) {
-                return i;
-            }
-        }
-        return TYPE_FREE;
-    }
-
-    SendResult processSendReturn(InputStream is, String number) throws IOException {
-        Document parse = Jsoup.parse(is, ENCODING, "");
-//        Elements fbrbTableElements = parse.select("td.fbrb");
-        Elements tDsWithImages = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
-        boolean success = false;
-        String returnMessage = null;
-        for (Element nextTD : tDsWithImages) {
-            Elements imageTag = nextTD.select(">img");
-            if (imageTag.size() > 0) { //now its the correct tag
-                if (imageTag.outerHtml().contains("gruen")) {
-                    success = true;
-                }
-                returnMessage = nextTD.text();
-                returnMessage = returnMessage.replaceAll(nextTD.select("p").text(), "");
-                returnMessage = returnMessage.replaceAll("[^\\p{Print}]", "").trim();
-                break;
-            }
-        }
-        return new SendResult(number, success, returnMessage);
-    }
-
-    @Override
-    public Result fireSMS(String smsText, List<String> receivers, String spinnerText) {
-        return Result.NO_ERROR();
     }
 }

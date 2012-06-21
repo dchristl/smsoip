@@ -462,7 +462,7 @@ public class SendActivity extends AllActivity {
         }
         Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion() >= 14) {
-            return ((ExtendedSMSSupplier) smsSupplier).fireSMS("", new ArrayList<String>(), "Bla");
+            return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList.getStringList(), spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
         } else {
             return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
         }

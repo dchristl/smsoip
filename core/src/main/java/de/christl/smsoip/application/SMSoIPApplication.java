@@ -63,54 +63,7 @@ public class SMSoIPApplication extends Application {
                     adsEnabled = false;
                 }
             }
-            for (SMSoIPPlugin plugin : plugins) {
-                String sourceDir = plugin.getSourceDir();
-                DexFile apkDir = new DexFile(sourceDir);
-                PathClassLoader pathClassLoader = new PathClassLoader(sourceDir, getClassLoader());
-                plugin.setClassLoader(pathClassLoader);
-                Enumeration<String> classFileEntries = apkDir.entries();
-                Outer:
-                while (classFileEntries.hasMoreElements()) {
-                    String s = classFileEntries.nextElement();
-                    if (!s.startsWith(PLUGIN_CLASS_PREFIX)) {
-                        continue;
-                    }
-                    plugin.addAvailableClass(s);
-                    try {
-                        Class<?> aClass = Class.forName(s, false, pathClassLoader);
-                        Class<?>[] aClassInterfaces = aClass.getInterfaces();
-                        if (aClassInterfaces != null) {
-                            if (SMSSupplier.class.isAssignableFrom(aClass)) {
-
-                                APIVersion annotation = aClass.getAnnotation(APIVersion.class);
-                                int minVersion = annotation == null ? 13 : annotation.minVersion();
-                                SMSSupplier smsSupplier = (SMSSupplier) aClass.newInstance();
-                                if (versionNumber > minVersion) {
-                                    List<Method> interfaceMethods = Arrays.asList(SMSSupplier.class.getDeclaredMethods());
-                                    for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
-                                        try {
-                                            aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
-                                        } catch (NoSuchMethodException e) { //method does not exist, means old plugin
-                                            pluginsToOld.add(smsSupplier);
-                                            break Outer;
-                                        }
-                                    }
-                                } else if (minVersion > versionNumber) {
-                                    pluginsToNew.add(smsSupplier);
-                                    break;
-
-                                }
-                                loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier, minVersion));
-                                break;
-                            }
-                        }
-                    } catch (ClassNotFoundException e) {
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                    } catch (InstantiationException e) {
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                    }
-                }
-            }
+            readOutPlugins();
 
         } catch (IllegalAccessException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
@@ -119,6 +72,90 @@ public class SMSoIPApplication extends Application {
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
+    }
+
+    private void readOutPlugins() throws IOException, IllegalAccessException {
+        for (SMSoIPPlugin plugin : plugins) {
+            String sourceDir = plugin.getSourceDir();
+            DexFile apkDir = new DexFile(sourceDir);
+            PathClassLoader pathClassLoader = new PathClassLoader(sourceDir, getClassLoader());
+            plugin.setClassLoader(pathClassLoader);
+            Enumeration<String> classFileEntries = apkDir.entries();
+            Outer:
+            while (classFileEntries.hasMoreElements()) {
+                String s = classFileEntries.nextElement();
+                if (!s.startsWith(PLUGIN_CLASS_PREFIX)) {
+                    continue;
+                }
+                plugin.addAvailableClass(s);
+                try {
+                    Class<?> aClass = Class.forName(s, false, pathClassLoader);
+                    Class<?>[] aClassInterfaces = aClass.getInterfaces();
+                    if (aClassInterfaces != null) {
+                        if (SMSSupplier.class.isAssignableFrom(aClass)) {
+
+                            int minVersion = getPluginsMinApiVersion((Class<SMSSupplier>) aClass);
+                            SMSSupplier smsSupplier = (SMSSupplier) aClass.newInstance();
+                            if (versionNumber > minVersion) {
+                                List<Method> interfaceMethods = Arrays.asList(SMSSupplier.class.getDeclaredMethods());
+                                for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
+                                    try {
+                                        aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+                                    } catch (NoSuchMethodException e) { //method does not exist, means old plugin
+                                        pluginsToOld.add(smsSupplier);
+                                        break Outer;
+                                    }
+                                }
+                            } else if (minVersion > versionNumber) {
+                                pluginsToNew.add(smsSupplier);
+                                break;
+
+                            }
+                            loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier, minVersion));
+                            break;
+                        }
+                    }
+                } catch (ClassNotFoundException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                } catch (InstantiationException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * find out the correct API Version defined by interface used
+     *
+     * @param aClass Interface extending SMSSupplier
+     * @return the found version
+     */
+    private int getPluginsMinApiVersion(Class<SMSSupplier> aClass) {
+        int out = 13;
+        if (aClass.getSuperclass() == null || aClass.getSuperclass().equals(Object.class)) {
+            Class<?>[] interfaces = aClass.getInterfaces();
+            boolean found = false;
+            for (Class<?> anInterface : interfaces) {
+                APIVersion annotation = anInterface.getAnnotation(APIVersion.class);
+                if (annotation != null) {
+                    out = annotation.minVersion();
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                for (Class<?> anInterface : interfaces) {
+                    if (SMSSupplier.class.isAssignableFrom(anInterface)) {
+                        return getPluginsMinApiVersion((Class<SMSSupplier>) anInterface);
+                    }
+                }
+            }
+        } else if (aClass.equals(SMSSupplier.class)) {
+            return out;
+        } else {
+            return getPluginsMinApiVersion((Class<SMSSupplier>) aClass.getSuperclass());
+        }
+        return out;
     }
 
     public static SMSoIPApplication getApp() {

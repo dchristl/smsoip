@@ -4,7 +4,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
 
 /**
- * dupported results for user output
+ * supported results for user output
  */
 public enum Result {
     /**
