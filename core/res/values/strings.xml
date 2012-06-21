@@ -63,6 +63,7 @@
     <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
     <string name="text_checkLogin">Check credentials</string>
     <string name="text_deprecated_providers">Following plugins could not be loaded. Please update:</string>
+    <string name="text_too_new_providers">Following plugins are too new and could not be loaded. Please update application:</string>
     <string name="text_enable_network_check">Enable network check</string>
     <string name="text_enable_network_check_description">Enable the check on startup if network is available and shows
         you additional options, like enabling W-LAN.

@@ -205,6 +205,10 @@ public class SMSoIPApplication extends Application {
         return pluginsToOld;
     }
 
+    public List<SMSSupplier> getPluginsToNew() {
+        return pluginsToNew;
+    }
+
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
     }

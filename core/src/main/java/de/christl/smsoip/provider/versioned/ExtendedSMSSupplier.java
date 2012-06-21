@@ -6,7 +6,7 @@ import de.christl.smsoip.provider.SMSSupplier;
 
 import java.util.List;
 
-@APIVersion(minVersion = 14)
+@APIVersion(minVersion = 15)
 public interface ExtendedSMSSupplier extends SMSSupplier {
 
     /**

@@ -65,6 +65,8 @@
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
     <string name="text_checkLogin">Zugangsdaten überprüfen</string>
     <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="text_too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte Applikation updaten:
+    </string>
     <string name="text_enable_network_check">Netzwerküberprüfung aktivieren</string>
     <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.

@@ -28,6 +28,7 @@ import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.provider.SMSSupplier;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -67,16 +68,18 @@ public class AllActivity extends Activity {
     protected void onStart() {
         super.onStart();
         registeredActivities.add(this);
+        SMSoIPApplication app = SMSoIPApplication.getApp();
         if (reloadProviders) {
-            SMSoIPApplication.getApp().initProviders();
+            app.initProviders();
             reloadProviders = false;
         }
-        if (SMSoIPApplication.getApp().getPluginsToOld().size() > 0) {
-            showDeprecatedProvidersDialog();
-        } else if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
+        if (app.getPluginsToOld().size() > 0) {
+            showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.text_deprecated_providers));
+        } else if (app.getPluginsToNew().size() > 0) {
+            showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.text_too_new_providers));
+        } else if (app.getProviderEntries().size() == 0) {
             showNoProvidersDialog();
         } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferences.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
-
             ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -93,7 +96,7 @@ public class AllActivity extends Activity {
         }
     }
 
-    private void showDeprecatedProvidersDialog() {
+    private void showNotLoadedProvidersDialog(List<SMSSupplier> suppliers, String messageText) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -103,12 +106,11 @@ public class AllActivity extends Activity {
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String string = getString(R.string.text_deprecated_providers);
-        string += "\n";
-        for (SMSSupplier smsSupplier : SMSoIPApplication.getApp().getPluginsToOld()) {
-            string += smsSupplier.getProvider().getProviderName() + "\n";
+        messageText += "\n";
+        for (SMSSupplier smsSupplier : suppliers) {
+            messageText += smsSupplier.getProvider().getProviderName() + "\n";
         }
-        builder.setMessage(string).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+        builder.setMessage(messageText).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
 
     }
 
