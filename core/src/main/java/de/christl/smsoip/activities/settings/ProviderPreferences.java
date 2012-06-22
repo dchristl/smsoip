@@ -13,6 +13,7 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.EditText;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
+import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
@@ -79,6 +80,7 @@ public class ProviderPreferences extends PreferenceActivity {
             AdPreference adPreference = new AdPreference(this);
             root.addPreference(adPreference);
         }
+        root.addPreference(new MultipleAccountsPreference(this, preferenceManager));
         if (provider.isCheckLoginButtonVisible()) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(true);

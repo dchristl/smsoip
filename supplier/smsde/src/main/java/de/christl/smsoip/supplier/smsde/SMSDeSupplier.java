@@ -7,6 +7,7 @@ import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.FireSMSResult;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -225,10 +226,10 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public Result fireSMS(String smsText, List<String> receivers, String spinnerText) {
+    public List<FireSMSResult> fireSMS(String smsText, List<String> receivers, String spinnerText) {
         String errorText = preCheckNumber(receivers);
         if (!errorText.equals("")) {
-            return Result.UNKNOWN_ERROR().setAlternateText(errorText);
+//            return Result.UNKNOWN_ERROR().setAlternateText(errorText);
         }
         int sendIndex = findSendMethod(spinnerText);
         boolean succesful = true;
@@ -236,7 +237,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         for (String receiverNumber : receivers) {
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
-                return result;
+//                return result;
             }
             String prefix = receiverNumber.substring(0, 7);
             String number = receiverNumber.substring(7);
@@ -281,17 +282,17 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                 sendResults.add(sendResult);
             } catch (SocketTimeoutException stoe) {
                 Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-                return Result.TIMEOUT_ERROR().setAlternateText(buildMessageText(sendResults));
+//                return Result.TIMEOUT_ERROR().setAlternateText(buildMessageText(sendResults));
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
-                return Result.NETWORK_ERROR().setAlternateText(buildMessageText(sendResults));
+//                return Result.NETWORK_ERROR().setAlternateText(buildMessageText(sendResults));
 
             }
         }
         String messageText = buildMessageText(sendResults);
         if (succesful) {
-            return Result.NO_ERROR().setAlternateText(messageText);
+//            return Result.NO_ERROR().setAlternateText(messageText);
         }
-        return Result.UNKNOWN_ERROR().setAlternateText(messageText);
+        return new ArrayList<FireSMSResult>();//Result.UNKNOWN_ERROR().setAlternateText(messageText);
     }
 }

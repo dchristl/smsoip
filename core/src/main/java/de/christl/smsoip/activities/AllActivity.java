@@ -42,6 +42,7 @@ public class AllActivity extends Activity {
     static final int DIALOG_NO_NETWORK_ID = 0;
     private static boolean nwSettingsAlreadyShown = false;
     private boolean reloadProviders = false;
+    private boolean notLoadedDialogAlreadyShown = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,9 @@ public class AllActivity extends Activity {
     }
 
     private void showNotLoadedProvidersDialog(List<SMSSupplier> suppliers, String messageText) {
+        if (notLoadedDialogAlreadyShown) {
+            return;
+        }
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -111,7 +115,7 @@ public class AllActivity extends Activity {
             messageText += smsSupplier.getProvider().getProviderName() + "\n";
         }
         builder.setMessage(messageText).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
-
+        notLoadedDialogAlreadyShown = true;
     }
 
     public static void killAll() {

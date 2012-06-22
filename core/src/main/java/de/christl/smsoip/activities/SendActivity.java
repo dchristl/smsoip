@@ -24,7 +24,6 @@ import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.ImageDialog;
@@ -466,10 +465,10 @@ public class SendActivity extends AllActivity {
         for (Receiver receiver : receiverList) {
             numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
         }
-        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+/*        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion() >= 14) {
             return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList.getStringList(), spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
-        } else {
+        } else*/ {
             return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
         }
 
