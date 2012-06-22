@@ -237,6 +237,7 @@ public class SMSoIPApplication extends Application {
         return getString(resourceId);
     }
 
+
     public boolean isAdsEnabled() {
         return adsEnabled;
     }

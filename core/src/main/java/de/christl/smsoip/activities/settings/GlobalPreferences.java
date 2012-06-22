@@ -105,6 +105,14 @@ public class GlobalPreferences extends PreferenceActivity {
         intentPref.setTitle(R.string.text_visit_project_page);
         intentPref.setSummary(R.string.text_visit_project_page_description);
         root.addPreference(intentPref);
+
+        PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
+        uriString = "market://search?q=pub:Danny Christl";
+        pluginIntent.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
+                .setData(Uri.parse(uriString)));
+        pluginIntent.setTitle(R.string.text_visit_plugin_page);
+        pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
+        root.addPreference(intentPref);
         return root;
     }
 

@@ -58,6 +58,8 @@
     <string name="text_no_default_Provider">Keiner (jedesmal fragen)</string>
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
+    <string name="text_visit_plugin_page">Plugins suchen</string>
+    <string name="text_visit_plugin_page_description">Finde weitere Plugins im Play Store</string>
     <string name="text_area_code">Standardländercode</string>
     <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -65,7 +67,8 @@
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
     <string name="text_checkLogin">Zugangsdaten überprüfen</string>
     <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
-    <string name="text_too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte Applikation updaten:
+    <string name="text_too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
+        Applikation updaten:
     </string>
     <string name="text_enable_network_check">Netzwerküberprüfung aktivieren</string>
     <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar

@@ -22,6 +22,7 @@ import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
@@ -106,7 +107,7 @@ public class SendActivity extends AllActivity {
         setPreselectedContact();
         if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
             smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
-            setTitle(smsSupplier.getProvider().getProviderName());
+            setFullTitle();
             setSpinner();
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
                 spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0));
@@ -121,7 +122,7 @@ public class SendActivity extends AllActivity {
             String defaultSupplier = getDefaultSupplier();
             if (defaultSupplier != null) {
                 smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
-                setTitle(smsSupplier.getProvider().getProviderName());
+                setFullTitle();
                 setSpinner();
                 updateViewOnChangedReceivers();
             } else {
@@ -133,6 +134,11 @@ public class SendActivity extends AllActivity {
             insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
         }
 
+    }
+
+    private void setFullTitle() {
+        OptionProvider provider = smsSupplier.getProvider();
+        setTitle(provider.getProviderName() + " (" + provider.getUserName() + ")");
     }
 
     private void setPreselectedContact() {
@@ -750,7 +756,7 @@ public class SendActivity extends AllActivity {
 
     private void changeSupplier(String supplierClassName) {
         smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
-        setTitle(smsSupplier.getProvider().getProviderName());
+        setFullTitle();
         //reset all not needed informations
         ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
         updateSMScounter();
