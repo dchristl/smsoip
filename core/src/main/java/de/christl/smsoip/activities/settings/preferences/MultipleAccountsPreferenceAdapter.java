@@ -1,16 +1,13 @@
 package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
-import android.widget.EditText;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
@@ -26,6 +23,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
 
     private AccountModelsList objects;
     private int defaultAccount;
+    //    private int defaultAccount;
     private MultipleAccountsPreference dialogPreference;
 
     /**
@@ -33,6 +31,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
      *
      * @param dialogPreference the context.
      * @param objects          to be displayed.
+     * @param defaultAccount
      */
     public MultipleAccountsPreferenceAdapter(MultipleAccountsPreference dialogPreference, AccountModelsList objects, int defaultAccount) {
         super(dialogPreference.getContext(), R.layout.defaultlistitem, objects);
@@ -51,25 +50,10 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
 
         if (item.getUserName().equals(getContext().getString(R.string.text_account_add_account))) {
             row = inflater.inflate(R.layout.lastlistem, parent, false);
-            View addAccount = row.findViewById(R.id.addAccount);
-            addAccount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showUserNamePasswordDialog(null);
-                }
-            });
         } else {
             row = inflater.inflate(R.layout.defaultlistitem, parent, false);
             CheckedTextView checkedTextView = (CheckedTextView) row.findViewById(R.id.check);
-            checkedTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    defaultAccount = position;
-                    Dialog dialog = dialogPreference.getDialog();
-                    dialogPreference.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                    dialog.dismiss();
-                }
-            });
+            checkedTextView.setChecked(position == defaultAccount);
             checkedTextView.setText(item.getUserName());
             View removeAccountBtn = row.findViewById(R.id.removeAccount);
             removeAccountBtn.setOnClickListener(new View.OnClickListener() {
@@ -79,14 +63,13 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
 
                 }
             });
-            checkedTextView.setChecked(position == defaultAccount);
             View checkAccountBtn = row.findViewById(R.id.checkAccount);
             checkAccountBtn.setOnClickListener(buildCheckCredentialsListener(position));
             View editAccount = row.findViewById(R.id.editAccount);
             editAccount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showUserNamePasswordDialog(item);
+                    dialogPreference.showUserNamePasswordDialog(item);
                 }
             });
             //handle visibility by options
@@ -94,7 +77,6 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             int chkBtnVisibility = provider.isCheckLoginButtonVisible() ? View.VISIBLE : View.GONE;
             checkAccountBtn.setVisibility(chkBtnVisibility);
         }
-
         return row;
     }
 
@@ -130,49 +112,9 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
         };
     }
 
-    private void showUserNamePasswordDialog(final AccountModel accountModel) {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.userpassinputs);
-        dialog.setTitle(R.string.text_account_add_account);
-        View okButton = dialog.findViewById(R.id.okButton);
-        final EditText userInput = (EditText) dialog.findViewById(R.id.user);
-        final EditText passInput = (EditText) dialog.findViewById(R.id.pass);
-        if (accountModel != null) { // wants to edit
-            userInput.setText(accountModel.getUserName());
-            passInput.setText(accountModel.getPass());
-        }
-        int passVisibility = dialogPreference.getSupplier().getProvider().isPasswordVisible() ? View.VISIBLE : View.GONE;
-        passInput.setVisibility(passVisibility);
-        dialog.findViewById(R.id.passLabel).setVisibility(passVisibility);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userName = userInput.getText().toString();
-                String pass = passInput.getText().toString();
-                if (!userName.equals("")) {  //user must be supplied, password can be null
-                    //add only if inputs done
-                    if (accountModel == null) {
-                        AccountModel newModel = new AccountModel(userName, pass);
-                        insert(newModel, objects.size() - 1); //add before last (the fake add account one)
-                    } else {
-                        accountModel.setUserName(userName);
-                        accountModel.setPassWord(pass);
-                        notifyDataSetChanged();
-                    }
-                }
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-
-    }
-
 
     public AccountModelsList getObjects() {
         return objects;
     }
 
-    public int getDefaultAccount() {
-        return defaultAccount;
-    }
 }
