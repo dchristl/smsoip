@@ -32,17 +32,10 @@ public class AccountModelsList extends LinkedList<AccountModel> {
     }
 
 
-//    public void cloneValues() {
-////        temporaryValues.clear();
-////        for (Map.Entry<Integer, AccountModel> integerAccountModelsListEntry : originalValues.entrySet()) {
-////            temporaryValues.put(integerAccountModelsListEntry.getKey(), integerAccountModelsListEntry.getValue().cloneSilent());
-////        }
-//    }
-
     /**
      * add a fake account (will not added to original values)
      *
-     * @param description
+     * @param description - description used
      */
     public void addFakeAsLast(String description) {
         addLast(new AccountModel(description, "fake"));
