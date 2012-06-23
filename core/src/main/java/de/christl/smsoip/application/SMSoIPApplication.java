@@ -36,6 +36,7 @@ public class SMSoIPApplication extends Application {
         super.onCreate();
         app = this;
         setWriteToDBAvailable();
+        initProviders();
     }
 
 

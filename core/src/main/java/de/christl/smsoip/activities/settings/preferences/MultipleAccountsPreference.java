@@ -38,7 +38,7 @@ public class MultipleAccountsPreference extends ListPreference {
         setPersistent(false);
         defaultAccount = preferences.getInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, 0);
         setDefaultAccountInSummary();
-        setDialogTitle(R.string.text_account_list);
+        setDialogTitle(R.string.text_chooseAccount);
         setTitle(R.string.text_account_list);
         //needed by preference, but values will be filled later in cycle, so defined empty ones
         setEntryValues(new CharSequence[0]);

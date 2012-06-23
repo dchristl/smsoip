@@ -7,9 +7,12 @@ import android.view.View;
 import android.widget.Spinner;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.application.SMSoIPApplication;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A provider for all options corresponding to a supplier
@@ -22,7 +25,8 @@ public abstract class OptionProvider {
     String userName;
     String password;
     private SharedPreferences settings;
-
+    private Map<Integer, AccountModel> accounts;
+    private Integer currentAccountId = null;
 
     /**
      * default constructor, use the other one for give a name to the provider otherwise classname will be used
@@ -48,12 +52,50 @@ public abstract class OptionProvider {
 
     private void initOptions() {
         settings = SMSoIPApplication.getApp().getSharedPreferences(getClass().getCanonicalName() + "_preferences", Context.MODE_PRIVATE);
+        accounts = new HashMap<Integer, AccountModel>();
         int defaultAccount = settings.getInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, 0);
-        String suffix = defaultAccount == 0 ? "" : "." + defaultAccount;
-        userName = settings.getString(ProviderPreferences.PROVIDER_USERNAME + suffix, "");
-        password = settings.getString(ProviderPreferences.PROVIDER_PASS + suffix, "");
+        String user = settings.getString(ProviderPreferences.PROVIDER_USERNAME, null);
+        if (user != null) {
+            String pass = settings.getString(ProviderPreferences.PROVIDER_PASS, null);
+            accounts.put(0, new AccountModel(user, pass));
+            if (defaultAccount == 0) {
+                userName = user;
+                password = pass;
+                currentAccountId = 0;
+            }
+            for (int i = 1; i < Integer.MAX_VALUE; i++) {
+                String userKey = ProviderPreferences.PROVIDER_USERNAME + "." + i;
+                user = settings.getString(userKey, null);
+                if (user != null) {
+                    String passKey = ProviderPreferences.PROVIDER_PASS + "." + i;
+                    pass = settings.getString(passKey, null);
+                    accounts.put(i, new AccountModel(user, pass));
+                    if (defaultAccount == i) {
+                        userName = user;
+                        password = pass;
+                        currentAccountId = i;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
+    public Map<Integer, AccountModel> getAccounts() {
+        return accounts;
+    }
+
+    public Integer getCurrentAccountIndex() {
+        return currentAccountId;
+    }
+
+    public void setCurrentAccountId(Integer currentAccountId) {
+        this.currentAccountId = currentAccountId;
+        AccountModel accountModel = accounts.get(currentAccountId);
+        userName = accountModel.getUserName();
+        password = accountModel.getPass();
+    }
 
     public String getUserName() {
         return userName;
@@ -106,7 +148,7 @@ public abstract class OptionProvider {
     }
 
 
-    public String[] getArrayByResourceId(int resourceId) {
+    public final String[] getArrayByResourceId(int resourceId) {
         return SMSoIPApplication.getApp().getArrayByResourceId(this, resourceId);
     }
 

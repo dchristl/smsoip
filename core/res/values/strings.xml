@@ -97,4 +97,6 @@
     </string>
     <string name="text_account_add_account">Add account</string>
     <string name="text_account_no_account">Not set</string>
+    <string name="text_changeAccount">Change Account</string>
+    <string name="text_chooseAccount">Choose Account</string>
 </resources>

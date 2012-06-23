@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.Result;
@@ -49,12 +51,14 @@ public class SendActivity extends AllActivity {
     public Toast toast;
     private SMSSupplier smsSupplier;
     private static final int PROVIDER_OPTION = 30;
-    private static final int OPTION_SWITCH = 31;
+    private static final int OPTION_SWITCH_SUPPLIER = 31;
     private static final int DIALOG_SMILEYS = 32;
     private static final int DIALOG_PROVIDER = 33;
-
     private static final int GLOBAL_OPTION = 34;
     private static final int DIALOG_NUMBER_INPUT = 35;
+    private static final int OPTION_SWITCH_ACCOUNT = 36;
+    private static final int DIALOG_SWITCH_ACCOUNT = 37;
+
     private SharedPreferences settings;
     CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
     private View addContactbyNumber;
@@ -65,22 +69,33 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_RECEIVERS = "receivers";
     private static final String SAVED_INSTANCE_SPINNER = "spinner";
     private static final String SAVED_INSTANCE_INFO = "info";
+    private static final String SAVED_INSTANCE_ACCOUNT_ID = "account";
 
     private Dialog lastDialog;
+    private static final String TAG = SendActivity.class.getCanonicalName();
+    private boolean optionsCalled = false;
 
     @Override
     protected void onResume() {
         super.onResume();
-//        refresh all settings, cause it can be changed
-        if (smsSupplier != null) {
+        //this is for performance cases and can cause issues in some case:
+        // if options are called a refresh will be forced because settings can change
+        // if activity is killed a new instance will be creeated automatically (and options are "fresh")
+        // refresh will only be called if kill not happens
+        // otherwise saved instance states are overwritten
+        if (smsSupplier != null && optionsCalled) {
             smsSupplier.getProvider().refresh();
             settings = PreferenceManager.getDefaultSharedPreferences(this);
             setFullTitle();
+            optionsCalled = true;
+        } else if (smsSupplier == null) {
+            Log.e(TAG, "SMSSupplier is null on resume");
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
@@ -116,6 +131,8 @@ public class SendActivity extends AllActivity {
             receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
             receiverList.addAll(tmpReceiverList);
             ((TextView) findViewById(R.id.infoText)).setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INFO));
+            int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
+            switchAccount(accountIndex);
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
@@ -609,7 +626,11 @@ public class SendActivity extends AllActivity {
         MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
         globalOption.setIcon(R.drawable.ic_menu_manage);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
-            item = menu.add(0, OPTION_SWITCH, 0, getString(R.string.text_changeProvider));
+            item = menu.add(0, OPTION_SWITCH_SUPPLIER, 0, getString(R.string.text_changeProvider));
+            item.setIcon(R.drawable.ic_menu_rotate);
+        }
+        if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
+            item = menu.add(0, OPTION_SWITCH_ACCOUNT, 0, getString(R.string.text_changeAccount));
             item.setIcon(R.drawable.ic_menu_rotate);
         }
         return true;
@@ -620,14 +641,20 @@ public class SendActivity extends AllActivity {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
                 startOptionActivity();
+                optionsCalled = true;
                 return true;
-            case OPTION_SWITCH:
+            case OPTION_SWITCH_SUPPLIER:
                 removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
                 showDialog(DIALOG_PROVIDER);
                 return true;
             case GLOBAL_OPTION:
                 Intent pref = new Intent(this, GlobalPreferences.class);
                 startActivity(pref);
+                optionsCalled = true;
+                return true;
+            case OPTION_SWITCH_ACCOUNT:
+                removeDialog(DIALOG_SWITCH_ACCOUNT); //remove the chosenContactsDialog forces recreation
+                showDialog(DIALOG_SWITCH_ACCOUNT);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -748,11 +775,57 @@ public class SendActivity extends AllActivity {
                 });
                 dialog = builder.create();
                 break;
+            case DIALOG_SWITCH_ACCOUNT:
+                OptionProvider provider = smsSupplier.getProvider();
+                Map<Integer, AccountModel> accounts = provider.getAccounts();
+                Map<Integer, AccountModel> filteredAccounts = new HashMap<Integer, AccountModel>();
+                Integer currentAccount = provider.getCurrentAccountIndex();
+                //filter list by current
+                for (Integer integer : accounts.keySet()) {
+                    if (integer.equals(currentAccount)) {
+                        continue;
+                    }
+                    filteredAccounts.put(integer, accounts.get(integer));
+                }
+                switch (filteredAccounts.size()) {
+                    case 1:
+                        for (Integer accountId : filteredAccounts.keySet()) {
+                            switchAccount(accountId);
+                            break;
+                        }
+                        break;
+                    default:
+                        builder = new AlertDialog.Builder(this);
+                        CharSequence[] items = new CharSequence[filteredAccounts.size()];
+                        int i = 0;
+                        final Map<Integer, Integer> charAccountRel = new HashMap<Integer, Integer>(filteredAccounts.size());
+                        for (Integer index : filteredAccounts.keySet()) {
+                            items[i] = filteredAccounts.get(index).getUserName();
+                            charAccountRel.put(i++, index);
+                        }
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                dialog.dismiss();
+                                switchAccount(charAccountRel.get(item));
+                            }
+                        });
+                        builder.setTitle(R.string.text_chooseAccount);
+                        dialog = builder.create();
+                        break;
+                }
+
+                break;
             default:
                 dialog = super.onCreateDialog(id);
         }
         lastDialog = dialog;
         return dialog;
+    }
+
+    private void switchAccount(Integer accountId) {
+        smsSupplier.getProvider().setCurrentAccountId(accountId);
+        setFullTitle();
+        ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
     }
 
     private void changeSupplier(String supplierClassName) {
@@ -801,7 +874,7 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //cloase open dialog if any
+        //close open dialog if any
         if (lastDialog != null) {
             lastDialog.dismiss();
         }
@@ -811,6 +884,7 @@ public class SendActivity extends AllActivity {
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
+            outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, smsSupplier.getProvider().getCurrentAccountIndex());
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
             }
