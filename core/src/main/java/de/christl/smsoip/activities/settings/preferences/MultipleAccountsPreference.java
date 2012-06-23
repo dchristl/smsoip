@@ -2,20 +2,19 @@ package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
-import android.view.View;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
 import de.christl.smsoip.provider.SMSSupplier;
 
-import java.util.List;
-
 /**
  * Preference for managing multiple accounts
+ * mechanism with adding number only gt 0 seems stupid on first view, but is caused by compatibilty to older versions
  */
 public class MultipleAccountsPreference extends ListPreference {
 
@@ -39,25 +38,35 @@ public class MultipleAccountsPreference extends ListPreference {
     private void init() {
         setPersistent(false);
         defaultAccount = preferences.getInt(PROVIDER_DEFAULT_ACCOUNT, 0);
-        String defaultAccountName = preferences.getString(PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.text_account_no_account));
-        fillAccountMap();
+        setDefaultAccountInSummary();
         setDialogTitle(R.string.text_account_list);
         setTitle(R.string.text_account_list);
+        //needed by preference, but values will be filled later in cycle, so defined empty ones
+        setEntryValues(new CharSequence[0]);
+        setEntries(new CharSequence[0]);
+    }
+
+    private void setDefaultAccountInSummary() {
+        String defaultAccountName = preferences.getString(PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.text_account_no_account));
         setSummary(String.format(getContext().getString(R.string.text_account_list_description), defaultAccountName));
-        setEntryValues(accountModels.getKeys());
-        setEntries(accountModels.getValues());
     }
 
     private void fillAccountMap() {
+        accountModels.clear();
+        SharedPreferences.Editor editor = getEditor();
         String userName = preferences.getString(PROVIDER_USERNAME, null);
         if (userName != null) {
             String passWord = preferences.getString(PROVIDER_PASS, null);
+            editor.remove(PROVIDER_USERNAME).remove(PROVIDER_PASS); //will be marked for remove, commited only on positive result
             accountModels.put(userName, passWord);
             for (int i = 1; i < Integer.MAX_VALUE; i++) {
-                userName = preferences.getString(PROVIDER_USERNAME + "." + i, null);
-                passWord = preferences.getString(PROVIDER_PASS + "." + i, null);
+                String userKey = PROVIDER_USERNAME + "." + i;
+                userName = preferences.getString(userKey, null);
                 if (userName != null) {
+                    String passKey = PROVIDER_PASS + "." + i;
+                    passWord = preferences.getString(passKey, null);
                     accountModels.put(userName, passWord);
+                    editor.remove(userKey).remove(passKey);
                 } else {
                     break;
                 }
@@ -67,19 +76,29 @@ public class MultipleAccountsPreference extends ListPreference {
 
     }
 
+
     @Override
-    protected void onBindDialogView(View view) {
-        super.onBindDialogView(view);//update values
+    protected void showDialog(Bundle state) {
+        fillAccountMap();
+        super.showDialog(state);
     }
 
     //
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
-            List<AccountModel> objects = listAdapter.getObjects();
-//            persistBoolean() valuse
-        } else {
-//            accountModels.clear();
+            SharedPreferences.Editor editor = getEditor();
+            AccountModelsList objects = listAdapter.getObjects();
+            objects.removeFake();
+            for (int i = 0, objectsSize = objects.size(); i < objectsSize; i++) {
+                AccountModel accountModel = objects.get(i);
+                editor.putString(PROVIDER_USERNAME + (i == 0 ? "" : "." + i), accountModel.getUserName());
+                editor.putString(PROVIDER_PASS + (i == 0 ? "" : "." + i), accountModel.getPass());
+            }
+            defaultAccount = listAdapter.getDefaultAccount();
+            editor.putInt(PROVIDER_DEFAULT_ACCOUNT, defaultAccount);
+            editor.commit();
+            setDefaultAccountInSummary();
         }
     }
 

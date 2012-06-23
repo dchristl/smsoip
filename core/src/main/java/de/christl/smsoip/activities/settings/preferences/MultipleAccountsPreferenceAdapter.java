@@ -1,6 +1,3 @@
-/**
- * Copyright CMW Mobile.com, 2010. 
- */
 package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.Activity;
@@ -16,9 +13,9 @@ import android.widget.CheckedTextView;
 import android.widget.EditText;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
 import de.christl.smsoip.constant.Result;
 
-import java.util.List;
 
 /**
  * Adapter for managing the view of multiple accounts of one provider
@@ -26,7 +23,7 @@ import java.util.List;
 public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel> {
 
 
-    private List<AccountModel> objects;
+    private AccountModelsList objects;
     private int defaultAccount;
     private MultipleAccountsPreference dialogPreference;
 
@@ -36,7 +33,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
      * @param dialogPreference the context.
      * @param objects          to be displayed.
      */
-    public MultipleAccountsPreferenceAdapter(MultipleAccountsPreference dialogPreference, List<AccountModel> objects, int defaultAccount) {
+    public MultipleAccountsPreferenceAdapter(MultipleAccountsPreference dialogPreference, AccountModelsList objects, int defaultAccount) {
         super(dialogPreference.getContext(), R.layout.defaultlistitem, objects);
         this.dialogPreference = dialogPreference;
         this.objects = objects;
@@ -107,7 +104,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        final Result login = dialogPreference.getSupplier().login(accountModel.getUserName(), accountModel.getPassWord());
+                        final Result login = dialogPreference.getSupplier().login(accountModel.getUserName(), accountModel.getPass());
 
                         Runnable runnable = new Runnable() {
                             public void run() {
@@ -137,21 +134,21 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
         final EditText passInput = (EditText) dialog.findViewById(R.id.pass);
         if (accountModel != null) { // wants to edit
             userInput.setText(accountModel.getUserName());
-            passInput.setText(accountModel.getPassWord());
+            passInput.setText(accountModel.getPass());
         }
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String userName = userInput.getText().toString();
                 String pass = passInput.getText().toString();
-                if (!userName.equals("") || !pass.equals("")) {
+                if (!userName.equals("")) {  //user must be supplied, password can be null
                     //add only if inputs done
                     if (accountModel == null) {
                         AccountModel newModel = new AccountModel(userName, pass);
                         insert(newModel, objects.size() - 1); //add before last (the fake add account one)
                     } else {
                         accountModel.setUserName(userName);
-                        accountModel.setPassWord(userName);
+                        accountModel.setPassWord(pass);
                         notifyDataSetChanged();
                     }
                 }
@@ -163,7 +160,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
     }
 
 
-    public List<AccountModel> getObjects() {
+    public AccountModelsList getObjects() {
         return objects;
     }
 

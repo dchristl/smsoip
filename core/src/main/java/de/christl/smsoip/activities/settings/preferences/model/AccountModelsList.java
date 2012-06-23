@@ -8,27 +8,11 @@ import java.util.*;
 public class AccountModelsList extends LinkedList<AccountModel> {
 
 
+    private AccountModel fake;
+
     public void put(String userName, String passWord) {
         AccountModel accountModel = new AccountModel(userName, passWord);
         add(accountModel);
-    }
-
-
-    public CharSequence[] getKeys() {
-        CharSequence[] out = new CharSequence[size()];
-        for (int i = 0, nullSize = size(); i < nullSize; i++) {
-            out[i++] = String.valueOf(i);
-        }
-        return out;
-    }
-
-    public CharSequence[] getValues() {
-        CharSequence[] out = new CharSequence[size()];
-        int i = 0;
-        for (AccountModel model : this) {
-            out[i++] = model.getUserName();
-        }
-        return out;
     }
 
 
@@ -38,6 +22,11 @@ public class AccountModelsList extends LinkedList<AccountModel> {
      * @param description - description used
      */
     public void addFakeAsLast(String description) {
-        addLast(new AccountModel(description, "fake"));
+        fake = new AccountModel(description, "fake");
+        addLast(fake);
+    }
+
+    public void removeFake() {
+        remove(fake);
     }
 }

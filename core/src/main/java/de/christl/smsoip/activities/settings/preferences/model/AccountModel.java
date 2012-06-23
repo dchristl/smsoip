@@ -21,7 +21,7 @@ public class AccountModel implements Cloneable {
         return userName;
     }
 
-    public String getPassWord() {
+    public String getPass() {
         return passWord;
     }
 
