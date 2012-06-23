@@ -93,8 +93,13 @@ public abstract class OptionProvider {
     public void setCurrentAccountId(Integer currentAccountId) {
         this.currentAccountId = currentAccountId;
         AccountModel accountModel = accounts.get(currentAccountId);
-        userName = accountModel.getUserName();
-        password = accountModel.getPass();
+        if (accountModel != null) {
+            userName = accountModel.getUserName();
+            password = accountModel.getPass();
+        } else {  // this can happen if default account is removed in preferences and application was killed
+            initOptions();
+        }
+
     }
 
     public String getUserName() {
