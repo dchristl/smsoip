@@ -95,4 +95,9 @@
     <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
     <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
+    <string name="text_account_list">Standardaccount</string>
+    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Account ist: &lt;%1$s&gt;
+    </string>
+    <string name="text_account_add_account">Account hinzufügen</string>
+    <string name="text_account_no_account">Nicht gesetzt</string>
 </resources>

@@ -11,7 +11,7 @@
                 android:checkMark="@android:drawable/btn_radio"
                 android:layout_width="wrap_content"
                 android:paddingLeft="6dip"
-                android:paddingRight="10dip"
+                android:paddingRight="6dip"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:gravity="center_vertical"
                 android:textColor="@android:color/black"
@@ -19,6 +19,7 @@
         <ImageView
                 android:id="@+id/editAccount"
                 android:layout_width="wrap_content"
+                android:paddingLeft="10dip"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:layout_gravity="center"
                 android:src="@drawable/btn_menu_edit"
@@ -26,6 +27,7 @@
         <ImageView
                 android:id="@+id/checkAccount"
                 android:layout_width="wrap_content"
+                android:paddingLeft="10dip"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:layout_gravity="center"
                 android:src="@drawable/btn_menu_view"
@@ -33,6 +35,7 @@
         <ImageView
                 android:id="@+id/removeAccount"
                 android:layout_width="wrap_content"
+                android:paddingLeft="10dip"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:layout_gravity="center"
                 android:src="@drawable/btn_remove_account"

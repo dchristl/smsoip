@@ -109,9 +109,10 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
     }
 
     private void addValue() {
-        AccountModel abc = new AccountModel(0, "BlaBlaBlaBlaBlaBlaBlaBlaBlaBlaBlaBlaBlaBlaBla", "blubb" + System.currentTimeMillis());
-        insert(abc, 0);
+        AccountModel newModel = new AccountModel("" + System.currentTimeMillis(), "blubb" + System.currentTimeMillis());
+        insert(newModel, objects.size() - 1); //add before last (the fake add account one)
     }
+
 
     public List<AccountModel> getObjects() {
         return objects;

@@ -1,12 +1,10 @@
 package de.christl.smsoip.activities.settings.preferences.model;
 
-public class AccountModel {
-    private int index;
+public class AccountModel implements Cloneable {
     private final String userName;
     private final String passWord;
 
-    public AccountModel(int i, String userName, String passWord) {
-        index = i;
+    public AccountModel(String userName, String passWord) {
         this.userName = userName;
         this.passWord = passWord;
     }
@@ -19,7 +17,4 @@ public class AccountModel {
         return passWord;
     }
 
-    public int getIndex() {
-        return index;
-    }
 }

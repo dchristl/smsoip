@@ -94,7 +94,8 @@
     <string name="text_pick_for_disabling">Tap for removing</string>
     <string name="text_receiver_added_twice">Receiver number added twice!</string>
     <string name="text_account_list">Default account</string>
-    <string name="text_account_list_description">The default account used for sending. Currently "%1$s" is used.
+    <string name="text_account_list_description">The default account used for sending. Current account is: &lt;%1$s&gt;
     </string>
     <string name="text_account_add_account">Add account</string>
+    <string name="text_account_no_account">Not set</string>
 </resources>
