@@ -25,7 +25,7 @@
     <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
     <string name="text_smscomitted">SMS wird gesendet</string>
     <string name="text_ok">OK</string>
-    <string name="text_no">Abbrechen</string>
+    <string name="text_cancel">Abbrechen</string>
     <string name="text_wantClear">Alle eingegebenen Daten werden gelöscht!</string>
     <string name="text_error">Fehler</string>
     <string name="text_success">Erfolg</string>
@@ -46,7 +46,6 @@
     <string name="text_noOption">Nein</string>
     <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
     <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
-    <string name="button_cancel">Abbrechen</string>
     <string name="button_activateWLAN">W-LAN aktivieren</string>
     <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
     <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!

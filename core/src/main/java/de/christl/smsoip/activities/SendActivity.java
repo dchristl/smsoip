@@ -334,7 +334,7 @@ public class SendActivity extends AllActivity {
                         clearAllInputs();
                     }
                 })
-                .setNegativeButton(getText(R.string.text_no), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getText(R.string.text_cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }

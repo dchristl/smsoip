@@ -2,6 +2,7 @@ package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -26,6 +27,7 @@ public class MultipleAccountsPreference extends ListPreference {
     private MultipleAccountsPreferenceAdapter listAdapter;
     private ProviderPreferences providerPreferences;
     private int defaultAccount;
+    private Handler updateUIHandler = new Handler();
 
     public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences) {
         super(providerPreferences, null);
@@ -93,4 +95,7 @@ public class MultipleAccountsPreference extends ListPreference {
         return providerPreferences.getSmsSupplier();
     }
 
+    public Handler getHandler() {
+        return updateUIHandler;
+    }
 }

@@ -19,7 +19,7 @@
     <Button android:id="@+id/cancel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/button_cancel"
+            android:text="@string/text_cancel"
             android:layout_below="@id/activateWLAN"
             />
 </RelativeLayout>
