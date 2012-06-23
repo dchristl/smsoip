@@ -629,10 +629,9 @@ public class SendActivity extends AllActivity {
             item = menu.add(0, OPTION_SWITCH_SUPPLIER, 0, getString(R.string.text_changeProvider));
             item.setIcon(R.drawable.ic_menu_rotate);
         }
-        if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
-            item = menu.add(0, OPTION_SWITCH_ACCOUNT, 0, getString(R.string.text_changeAccount));
-            item.setIcon(R.drawable.ic_menu_rotate);
-        }
+
+        item = menu.add(0, OPTION_SWITCH_ACCOUNT, 0, getString(R.string.text_changeAccount));
+        item.setIcon(R.drawable.ic_menu_rotate);
         return true;
     }
 
@@ -889,5 +888,13 @@ public class SendActivity extends AllActivity {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
             }
         }
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        MenuItem item = menu.findItem(OPTION_SWITCH_ACCOUNT);
+        //sho only if more than one account is available
+        item.setVisible(smsSupplier.getProvider().getAccounts().size() > 1);
+        return super.onMenuOpened(featureId, menu);
     }
 }
