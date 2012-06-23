@@ -5,10 +5,13 @@ import android.content.SharedPreferences;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.ListAdapter;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
-import de.christl.smsoip.activities.settings.preferences.model.MultipleAccountsModel;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.provider.SMSSupplier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Preference for managing multiple accounts
@@ -19,10 +22,13 @@ public class MultipleAccountsPreference extends ListPreference {
     public static final String PROVIDER_PASS = "provider.password";
     public static final String PROVIDER_DEFAULT_ACCOUNT = "provider.default.number";
     private SharedPreferences preferences;
-    MultipleAccountsModel accountsModel = new MultipleAccountsModel();
+    List<AccountModel> accountModels = new ArrayList<AccountModel>();
+    private MultipleAccountsPreferenceAdapter listAdapter;
+    private ProviderPreferences providerPreferences;
 
     public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences) {
         super(providerPreferences, null);
+        this.providerPreferences = providerPreferences;
         this.preferences = preferences.getSharedPreferences();
         init();
     }
@@ -33,26 +39,33 @@ public class MultipleAccountsPreference extends ListPreference {
         setDialogTitle(R.string.text_account_list);
         setTitle(R.string.text_account_list);
         setSummary(R.string.text_account_list_description);
-        setEntryValues(accountsModel.getKeys());
-        setEntries(accountsModel.getValues());
+        CharSequence[] keys = new CharSequence[accountModels.size()];
+        CharSequence[] userNames = new CharSequence[accountModels.size()];
+        for (int i = 0, accountModelsSize = accountModels.size(); i < accountModelsSize; i++) {
+            AccountModel accountModel = accountModels.get(i);
+            keys[i] = String.valueOf(accountModel.getIndex());
+            userNames[i] = accountModel.getUserName();
+        }
+        setEntryValues(keys);
+        setEntries(userNames);
     }
 
     private void fillAccountMap() {
         String userName = preferences.getString(PROVIDER_USERNAME, null);
         if (userName != null) {
             String passWord = preferences.getString(PROVIDER_PASS, null);
-            accountsModel.put(0, userName, passWord);
+            accountModels.add(new AccountModel(0, userName, passWord));
             for (int i = 1; i < Integer.MAX_VALUE; i++) {
                 userName = preferences.getString(PROVIDER_USERNAME + "." + i, null);
                 passWord = preferences.getString(PROVIDER_PASS + "." + i, null);
                 if (userName != null) {
-                    accountsModel.put(i, userName, passWord);
+                    accountModels.add(new AccountModel(i, userName, passWord));
                 } else {
                     break;
                 }
             }
         }
-        accountsModel.put(-1, getContext().getString(R.string.text_account_add_account), "fake");
+        accountModels.add(new AccountModel(-1, getContext().getString(R.string.text_account_add_account), "fake"));
 
     }
 
@@ -65,6 +78,7 @@ public class MultipleAccountsPreference extends ListPreference {
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
+            List<AccountModel> objects = listAdapter.getObjects();
 //            persistBoolean() valuse
         }
     }
@@ -73,9 +87,13 @@ public class MultipleAccountsPreference extends ListPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         int defaultAccount = preferences.getInt(PROVIDER_DEFAULT_ACCOUNT, 0);
-        ListAdapter listAdapter = new MultipleAccountsPreferenceAdapter(this, accountsModel.getOriginalValues(), defaultAccount);
+        listAdapter = new MultipleAccountsPreferenceAdapter(this, accountModels, defaultAccount);
         builder.setAdapter(listAdapter, this);
         super.onPrepareDialogBuilder(builder);
+    }
+
+    public SMSSupplier getSupplier() {
+        return providerPreferences.getSmsSupplier();
     }
 
 }

@@ -127,4 +127,8 @@ public class ProviderPreferences extends PreferenceActivity {
     private void checkLogin() {
         result = smsSupplier.login(userNamePreference.getText(), passwordPreference.getText());
     }
+
+    public SMSSupplier getSmsSupplier() {
+        return smsSupplier;
+    }
 }

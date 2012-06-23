@@ -5,11 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Danny
- * Date: 22.06.12
- * Time: 22:07
- * To change this template use File | Settings | File Templates.
+ * @deprecated check if can be reomoved
  */
 public class MultipleAccountsModel extends LinkedHashMap<Integer, AccountModel> {
 
@@ -17,7 +13,7 @@ public class MultipleAccountsModel extends LinkedHashMap<Integer, AccountModel> 
 //    private MultipleAccountsModel temporaryValues = new MultipleAccountsModel();
 
     public void put(int i, String userName, String passWord) {
-        put(i, new AccountModel(userName, passWord));
+        put(i, new AccountModel(0, userName, passWord));
     }
 
     public CharSequence[] getKeys() {

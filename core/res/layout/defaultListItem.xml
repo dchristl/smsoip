@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="fill_parent"
+             android:layout_height="?android:attr/listPreferredItemHeight"
+             android:padding="6dip" android:stretchColumns="0" android:shrinkColumns="0">
+    <TableRow android:id="@+id/heading" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <CheckedTextView
+                android:id="@+id/check"
+                android:checkMark="@android:drawable/btn_radio"
+                android:layout_width="wrap_content"
+                android:paddingLeft="6dip"
+                android:paddingRight="10dip"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textSize="20dip"/>
+        <ImageView
+                android:id="@+id/editAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_menu_edit"
+                />
+        <ImageView
+                android:id="@+id/checkAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_menu_view"
+                />
+        <ImageView
+                android:id="@+id/removeAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_remove_account"
+                />
+
+    </TableRow>
+</TableLayout>
