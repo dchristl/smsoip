@@ -41,7 +41,6 @@ public class AllActivity extends Activity {
 
     static final int DIALOG_NO_NETWORK_ID = 0;
     private static boolean nwSettingsAlreadyShown = false;
-    private boolean reloadProviders = false;
     private boolean notLoadedDialogAlreadyShown = false;
 
     @Override
@@ -66,14 +65,11 @@ public class AllActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
-        if (reloadProviders) {
-            app.initProviders();
-            reloadProviders = false;
-        }
+        app.initProviders();
         if (app.getPluginsToOld().size() > 0) {
             showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.text_deprecated_providers));
         } else if (app.getPluginsToNew().size() > 0) {
@@ -204,7 +200,6 @@ public class AllActivity extends Activity {
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.text_no_providers)).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
-        reloadProviders = true;
     }
 
     public static void insertAds(LinearLayout layout, Activity activity) {

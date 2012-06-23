@@ -82,7 +82,6 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SMSoIPApplication.getApp().initProviders(); //call this every time, a new plugin will be installed or removed
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         SIGNSCONSTANT = getText(R.string.text_smssigns);
@@ -193,6 +192,7 @@ public class SendActivity extends AllActivity {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, null);
                 editor.commit();
+                string = null;
             }
         } else {
             string = null;
@@ -469,7 +469,8 @@ public class SendActivity extends AllActivity {
 /*        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion() >= 14) {
             return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList.getStringList(), spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
-        } else*/ {
+        } else*/
+        {
             return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
         }
 

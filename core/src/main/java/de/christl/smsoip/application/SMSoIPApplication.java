@@ -29,6 +29,7 @@ public class SMSoIPApplication extends Application {
     private boolean writeToDatabaseAvailable = false;
     private boolean adsEnabled = true;
     private int versionNumber;
+    private Integer installedPackages;
 
     @Override
     public void onCreate() {
@@ -52,18 +53,22 @@ public class SMSoIPApplication extends Application {
     public void initProviders() {
         try {
             List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
-            PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            versionNumber = pinfo.versionCode;
-            plugins = new ArrayList<SMSoIPPlugin>();
-            for (ApplicationInfo installedApplication : installedApplications) {
-                if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
-                    Resources resourcesForApplication = getPackageManager().getResourcesForApplication(installedApplication);
-                    plugins.add(new SMSoIPPlugin(installedApplication, resourcesForApplication));
-                } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
-                    adsEnabled = false;
+            //refresh only if not yet done and if a new application is installed
+            if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
+                PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                versionNumber = pinfo.versionCode;
+                plugins = new ArrayList<SMSoIPPlugin>();
+                for (ApplicationInfo installedApplication : installedApplications) {
+                    if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
+                        Resources resourcesForApplication = getPackageManager().getResourcesForApplication(installedApplication);
+                        plugins.add(new SMSoIPPlugin(installedApplication, resourcesForApplication));
+                    } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
+                        adsEnabled = false;
+                    }
                 }
+                readOutPlugins();
+                installedPackages = installedApplications.size();
             }
-            readOutPlugins();
 
         } catch (IllegalAccessException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
@@ -75,6 +80,10 @@ public class SMSoIPApplication extends Application {
     }
 
     private void readOutPlugins() throws IOException, IllegalAccessException {
+        //reset all lists
+        loadedProviders = new HashMap<String, ProviderEntry>();
+        pluginsToNew = new ArrayList<SMSSupplier>();
+        pluginsToOld = new ArrayList<SMSSupplier>();
         for (SMSoIPPlugin plugin : plugins) {
             String sourceDir = plugin.getSourceDir();
             DexFile apkDir = new DexFile(sourceDir);
@@ -170,6 +179,9 @@ public class SMSoIPApplication extends Application {
     public <TYPE> TYPE getInstance(String className) {
         try {
             ClassLoader pathClassLoader = getClassLoaderForClass(className);
+            if (pathClassLoader == null) {
+                return null;
+            }
             Class clazz = Class.forName(className, false, pathClassLoader);
             return (TYPE) clazz.newInstance();
         } catch (IllegalAccessException e) {
@@ -188,7 +200,7 @@ public class SMSoIPApplication extends Application {
                 return plugin.getClassLoader();
             }
         }
-        return getClassLoader();
+        return null;
     }
 
 
