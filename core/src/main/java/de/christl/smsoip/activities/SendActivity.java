@@ -75,6 +75,7 @@ public class SendActivity extends AllActivity {
         if (smsSupplier != null) {
             smsSupplier.getProvider().refresh();
             settings = PreferenceManager.getDefaultSharedPreferences(this);
+            setFullTitle();
         }
     }
 

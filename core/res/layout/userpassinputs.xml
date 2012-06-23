@@ -14,7 +14,7 @@
             />
     <EditText android:id="@+id/user" android:layout_height="wrap_content" android:layout_width="fill_parent"
               android:inputType="text"/>
-    <TextView
+    <TextView android:id="@+id/passLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

@@ -15,6 +15,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.option.OptionProvider;
 
 
 /**
@@ -88,6 +89,10 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
                     showUserNamePasswordDialog(item);
                 }
             });
+            //handle visibility by options
+            OptionProvider provider = dialogPreference.getSupplier().getProvider();
+            int chkBtnVisibility = provider.isCheckLoginButtonVisible() ? View.VISIBLE : View.GONE;
+            checkAccountBtn.setVisibility(chkBtnVisibility);
         }
 
         return row;
@@ -98,7 +103,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             @Override
             public void onClick(View v) {
                 final ProgressDialog progressDialog = new ProgressDialog(dialogPreference.getContext());
-                progressDialog.setMessage(getContext().getString(R.string.text_pleaseWait));
+                progressDialog.setMessage(getContext().getString(R.string.text_checkCredentials));
                 final AccountModel accountModel = getItem(position);
                 progressDialog.show();
                 new Thread(new Runnable() {
@@ -113,7 +118,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
                         };
                         dialogPreference.getHandler().post(runnable);
                         try {
-                            Thread.sleep(3000);
+                            Thread.sleep(2000);
                             progressDialog.cancel();
                         } catch (InterruptedException e) {
                             Log.e(this.getClass().getCanonicalName(), "", e);
@@ -136,6 +141,9 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             userInput.setText(accountModel.getUserName());
             passInput.setText(accountModel.getPass());
         }
+        int passVisibility = dialogPreference.getSupplier().getProvider().isPasswordVisible() ? View.VISIBLE : View.GONE;
+        passInput.setVisibility(passVisibility);
+        dialog.findViewById(R.id.passLabel).setVisibility(passVisibility);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

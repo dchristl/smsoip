@@ -48,8 +48,10 @@ public abstract class OptionProvider {
 
     private void initOptions() {
         settings = SMSoIPApplication.getApp().getSharedPreferences(getClass().getCanonicalName() + "_preferences", Context.MODE_PRIVATE);
-        userName = settings.getString(ProviderPreferences.PROVIDER_USERNAME, "");
-        password = settings.getString(ProviderPreferences.PROVIDER_PASS, "");
+        int defaultAccount = settings.getInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, 0);
+        String suffix = defaultAccount == 0 ? "" : "." + defaultAccount;
+        userName = settings.getString(ProviderPreferences.PROVIDER_USERNAME + suffix, "");
+        password = settings.getString(ProviderPreferences.PROVIDER_PASS + suffix, "");
     }
 
 
@@ -71,7 +73,7 @@ public abstract class OptionProvider {
         return null;
     }
 
-    public boolean isUsernameVisible() {
+    public boolean hasAccounts() {
         return true;
     }
 
