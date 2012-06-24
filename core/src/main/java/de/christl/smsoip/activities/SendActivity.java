@@ -78,6 +78,7 @@ public class SendActivity extends AllActivity {
     private Dialog lastDialog;
     private static final String TAG = SendActivity.class.getCanonicalName();
     private boolean optionsCalled = false;
+    private Dialog lastInfoDialog;
 
     @Override
     protected void onResume() {
@@ -123,6 +124,7 @@ public class SendActivity extends AllActivity {
         setSendButton();
         setContactsByNumberInput();
         setPreselectedContact();
+        setLastInfoButton();
         if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
             smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             setFullTitle();
@@ -154,6 +156,19 @@ public class SendActivity extends AllActivity {
             insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
         }
 
+    }
+
+    private void setLastInfoButton() {
+        View showInfoButton = findViewById(R.id.showInfoButton);
+        showInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lastInfoDialog != null) {
+                    lastInfoDialog.show();
+                    killDialogAfterAWhile(lastInfoDialog);
+                }
+            }
+        });
     }
 
     private void setFullTitle() {
@@ -397,13 +412,15 @@ public class SendActivity extends AllActivity {
         }
         if (resultMessage != null) {  //previous operation was a succesful refresh only, so no return message will be shown
             Spanned msg = new SpannableString(resultMessage);
-            final ImageDialog dialog = new ImageDialog(this, succesfulSent, msg);
-            dialog.setOwnerActivity(this);
-            dialog.show();
-            killDialogAfterAWhile(dialog);
+            lastInfoDialog = new ImageDialog(this, succesfulSent, msg);
+            lastInfoDialog.setOwnerActivity(this);
+            lastInfoDialog.show();
+            killDialogAfterAWhile(lastInfoDialog);
             if (succesfulSent) {
                 writeSMSInDatabase(receiverList);
                 clearAllInputs();
+            } else {
+                setInfoButtonVisibility();
             }
         }
 
@@ -637,6 +654,17 @@ public class SendActivity extends AllActivity {
         } else {
             addContactbyNumber.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
+        }
+        setInfoButtonVisibility();
+
+    }
+
+    private void setInfoButtonVisibility() {
+        View showInfoButton = findViewById(R.id.showInfoButton);
+        if (lastInfoDialog != null) {
+            showInfoButton.setVisibility(View.VISIBLE);
+        } else {
+            showInfoButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -953,10 +981,10 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        final EmoImageDialog dialog = new EmoImageDialog(this, fireSMSResults.getResult(), resultMessage.toString());
-        dialog.setOwnerActivity(this);
-        dialog.show();
-        killDialogAfterAWhile(dialog);
+        lastInfoDialog = new EmoImageDialog(this, fireSMSResults.getResult(), resultMessage.toString());
+        lastInfoDialog.setOwnerActivity(this);
+        lastInfoDialog.show();
+        killDialogAfterAWhile(lastInfoDialog);
         writeSMSInDatabase(fireSMSResults.getSuccessList());
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
             clearAllInputs();
