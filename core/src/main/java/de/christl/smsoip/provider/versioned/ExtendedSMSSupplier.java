@@ -3,6 +3,7 @@ package de.christl.smsoip.provider.versioned;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.provider.SMSSupplier;
 
 import java.util.List;
@@ -20,4 +21,13 @@ public interface ExtendedSMSSupplier extends SMSSupplier {
 
     //TODO check if its better to use spinner item
     FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText);
+
+    /**
+     * will be called by checking the login in the option dialog
+     *
+     * @param userName - the username
+     * @param password - the password
+     * @return Result.NO_ERRORS -> Strings will be marked green, otherwise red
+     */
+    SMSActionResult checkCredentials(String userName, String password);
 }

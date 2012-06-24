@@ -6,6 +6,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 /**
  * supported results for user output
  */
+@Deprecated
 public enum Result {
     /**
      * all OK, add additional info for refresh ionformations

@@ -8,6 +8,7 @@ import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.jsoup.Jsoup;
@@ -121,6 +122,11 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
 
     @Override
     public Result login(String userName, String password) {
+        throw new IllegalArgumentException("STUB");
+    }
+
+    @Override
+    public SMSActionResult checkCredentials(String userName, String password) {
         //FIRST STEP
         sessionCookies = new ArrayList<String>();
         try {
@@ -129,13 +135,13 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             HttpURLConnection con = factory.create();
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.NETWORK_ERROR();
+                return SMSActionResult.NETWORK_ERROR();
             }
             String FIRST_COOKIE = "C_SMSDE_ID";
             String firstCookiePattern = FIRST_COOKIE + ".*=.*";
             String smsDeCookie = UrlConnectionFactory.findCookieByPattern(headerFields, firstCookiePattern);
             if (smsDeCookie == null) {
-                return Result.NETWORK_ERROR(); //not possible if network available
+                return SMSActionResult.NETWORK_ERROR(); //not possible if network available
             }
             sessionCookies.add(smsDeCookie.replaceAll(";.*", ""));
             //now we have the login idependent id cookie
@@ -146,7 +152,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             con = factory.writeBody(userNamePasswordBody);
             headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             //get the login cookie
             String tmpSessionCookie = sessionCookies.get(0);
@@ -155,21 +161,21 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             String C_SMSDE_UID = "C_SMSDE_UID";
             String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, C_SMSDE_UID);
             if (c_smsde_uid_cookie == null) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(C_SMSDE_UID, tmpSessionCookie));
             String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
             sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));
             if (sessionCookies.size() != 2) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
-            return Result.LOGIN_SUCCESSFUL();
+            return SMSActionResult.LOGIN_SUCCESSFUL();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
         }
     }
 
@@ -225,14 +231,14 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         String errorText = preCheckNumbers(receivers);
         if (!errorText.equals("")) {
-            return FireSMSResultList.getAllInOneResult(Result.UNKNOWN_ERROR().setAlternateText(errorText));
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(errorText));
         }
         int sendIndex = findSendMethod(spinnerText);
         FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
-            Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
                 out.add(new FireSMSResult(receiver, result));
                 continue;
             }
@@ -279,16 +285,16 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                 HttpURLConnection con = factory.writeBody(body);
                 SMSDeSendResult sendResult = processSendReturn(con.getInputStream());
                 if (sendResult.isSuccess()) {
-                    out.add(new FireSMSResult(receiver, Result.NO_ERROR().setAlternateText(sendResult.getMessage())));
+                    out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(sendResult.getMessage())));
                 } else {
-                    out.add(new FireSMSResult(receiver, Result.UNKNOWN_ERROR().setAlternateText(sendResult.getMessage())));
+                    out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(sendResult.getMessage())));
                 }
             } catch (SocketTimeoutException stoe) {
                 Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-                out.add(new FireSMSResult(receiver, Result.TIMEOUT_ERROR()));
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
-                out.add(new FireSMSResult(receiver, Result.NETWORK_ERROR()));
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
 
             }
         }

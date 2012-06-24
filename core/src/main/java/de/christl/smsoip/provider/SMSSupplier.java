@@ -63,6 +63,7 @@ public interface SMSSupplier {
      * @param password - the password
      * @return Result.NO_ERRORS -> Strings will be marked green, otherwise red
      */
+    @Deprecated
     Result login(String userName, String password);
 
     /**

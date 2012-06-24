@@ -40,7 +40,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     }
 
     private void setSendResultAndFillLists(FireSMSResult fireSMSResult) {
-        if (fireSMSResult.getResult().equals(Result.NO_ERROR)) {
+        if (fireSMSResult.getResult().isSuccess()) {
             switch (result) {
                 case NOT_YET_SET:
                     result = SendResult.SUCCESS;
@@ -87,7 +87,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
      * @param result
      * @return
      */
-    public static FireSMSResultList getAllInOneResult(Result result) {
+    public static FireSMSResultList getAllInOneResult(SMSActionResult result) {
 
         FireSMSResultList out = new FireSMSResultList(1);
         out.add(new FireSMSResult(null, result));

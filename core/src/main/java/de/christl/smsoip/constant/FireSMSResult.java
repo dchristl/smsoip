@@ -8,9 +8,9 @@ import de.christl.smsoip.activities.Receiver;
 public class FireSMSResult {
 
     private Receiver receiver;
-    private Result result;
+    private SMSActionResult result;
 
-    public FireSMSResult(Receiver receiver, Result result) {
+    public FireSMSResult(Receiver receiver, SMSActionResult result) {
         this.receiver = receiver;
         this.result = result;
     }
@@ -19,7 +19,7 @@ public class FireSMSResult {
         return receiver;
     }
 
-    public Result getResult() {
+    public SMSActionResult getResult() {
         return result;
     }
 

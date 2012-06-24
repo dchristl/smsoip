@@ -962,7 +962,7 @@ public class SendActivity extends AllActivity {
         }
         StringBuilder resultMessage = new StringBuilder();
         if (fireSMSResults.size() == 1) {  // nobody cares about extra Infos if only one message was sent
-            resultMessage.append(fireSMSResults.get(0).getResult().getUserText());
+            resultMessage.append(fireSMSResults.get(0).getResult().getMessage());
         } else {
             String unknownReceiverText = getText(R.string.text_unknown).toString();
             for (int i = 0, fireSMSResultsSize = fireSMSResults.size(); i < fireSMSResultsSize; i++) {
@@ -975,7 +975,7 @@ public class SendActivity extends AllActivity {
                     resultMessage.append(receiver.getName());
                 }
                 resultMessage.append("</u></b>");
-                resultMessage.append("<br/>").append(fireSMSResult.getResult().getUserText());
+                resultMessage.append("<br/>").append(fireSMSResult.getResult().getMessage());
                 if (i != fireSMSResultsSize - 1) {
                     resultMessage.append("<br/>");
                 }
