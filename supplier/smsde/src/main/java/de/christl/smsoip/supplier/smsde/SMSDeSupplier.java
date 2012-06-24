@@ -235,6 +235,9 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                 break;
             }
         }
+        if (returnMessage != null) {
+            returnMessage = returnMessage.replaceAll(":", ""); //cut the colons at the end of the line
+        }
         return new SMSDeSendResult(success, returnMessage);
     }
 
@@ -264,27 +267,32 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                         body += "&empfcount=1";
                         body += "&oadc=0";
                         body += "&smslength=160";
-                        body += "&powersms=TRUE";               //no sense
-                        body += "&which_page=power-sms+160";    //no sense
-                        body += "&submitsms=++++++Power-SMS+160+versenden";
+                        body += "&which_page=power-sms+160";    //this is for output of send type
+                        body += "&which_page_international=power-sms-international+160"; //this one makes paid sms OMG
                         break;
                     case TYPE_POWER_160_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
                         body += "&empfcount=1";
                         body += "&oadc=1";
                         body += "&smslength=160";
+                        body += "&which_page=power-sms+160";
+                        body += "&which_page_international=power-sms-international+160";
                         break;
                     case TYPE_POWER_300:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
                         body += "&empfcount=1";
                         body += "&oadc=0";
                         body += "&smslength=300";
+                        body += "&which_page=power-sms+300";
+                        body += "&which_page_international=power-sms-international+300";
                         break;
                     case TYPE_POWER_300_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
                         body += "&empfcount=1";
                         body += "&oadc=1";
                         body += "&smslength=300";
+                        body += "&which_page=power-sms+300";
+                        body += "&which_page_international=power-sms-international+300";
                         break;
                     case TYPE_FREE:
                     default:
