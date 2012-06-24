@@ -230,9 +230,14 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                 if (imageTag.outerHtml().contains("gruen")) {
                     success = true;
                 }
+                Elements a = nextTD.select("a");
+                for (Element element : a) {
+                    element.remove();
+                }
                 returnMessage = nextTD.text();
                 returnMessage = returnMessage.replaceAll(nextTD.select("p").text(), "");
                 returnMessage = returnMessage.replaceAll("[^\\p{Print}]", "").trim();
+                returnMessage = returnMessage.replaceAll("  .*", ""); //replace extra signs at the end
                 break;
             }
         }

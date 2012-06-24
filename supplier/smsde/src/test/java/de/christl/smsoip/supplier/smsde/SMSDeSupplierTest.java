@@ -1,6 +1,7 @@
 package de.christl.smsoip.supplier.smsde;
 
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.constant.SMSActionResult;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class SMSDeSupplierTest {
 
     @Test
     public void testLogin() throws Exception {
-        assertEquals(supplier.login(USER_NAME, PASSWORD), Result.NO_ERROR());
+        assertEquals(supplier.checkCredentials(USER_NAME, PASSWORD), SMSActionResult.NO_ERROR());
         assertTrue(supplier.refreshInformationAfterMessageSuccessfulSent().getUserText().toString().contains(" Credits"));
 //        assertEquals(supplier.fireSMSByText("Ha", new ArrayList<String>(), "asas"), Result.NO_ERROR());
 
@@ -43,6 +44,12 @@ public class SMSDeSupplierTest {
     public void testSuccesfulSent() throws Exception {
         SMSDeSendResult resultSMSDe = supplier.processSendReturn(getClass().getResourceAsStream("good.html"));
         assertEquals("OK! Ihre Free-SMS wurde erfolgreich versendet!", resultSMSDe.getMessage());
+    }
+
+    @Test
+    public void testTooLessCredits() throws Exception {
+        SMSDeSendResult resultSMSDe = supplier.processSendReturn(getClass().getResourceAsStream("too_less_credits.html"));
+        assertEquals("Fehler! Leider verfgen Sie nicht ber gengend credits, um diese 1 SMS zu verschicken. Ihr Kontostand betrgt zur Zeit 10 Credits. um 1 SMS zu versenden, bentigen Sie aber 10 Credits.", resultSMSDe.getMessage()); //Junit does not like german special chars
     }
 
 }
