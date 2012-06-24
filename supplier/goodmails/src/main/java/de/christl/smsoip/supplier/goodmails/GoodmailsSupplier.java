@@ -71,7 +71,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         InputStream is = null;
         String tmpUrl = TARGET_URL + "&sid=" + getSIDParamater();
         FireSMSResultList out = new FireSMSResultList();
-        for (Receiver rece : receivers) {
+        for (Receiver receiver : receivers) {
             StringBuilder builder = new StringBuilder();
             try {
                 URL myUrl = new URL(tmpUrl);
@@ -81,7 +81,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 urlConn.setRequestProperty("Cookie", sessionCookie);
                 urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
                 OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
-                String headerFields = "&to=" + rece + "&smsText=" + URLEncoder.encode(smsText, encoding);
+                String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, encoding);
                 if (spinnerText.equals(Constants.FREE)) {
                     headerFields += "&type=freesms";
                     lastSentType = "FREE";
@@ -115,7 +115,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 }
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
-                out.add(new FireSMSResult(rece, SMSActionResult.NETWORK_ERROR()));
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
             } finally {
                 try {
                     is.close();
@@ -129,9 +129,9 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 if (alternateText.equals("NOT ALLOWED YET")) {
                     alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
                 }
-                out.add(new FireSMSResult(rece, SMSActionResult.UNKNOWN_ERROR(alternateText)));
+                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(alternateText)));
             }
-            out.add(new FireSMSResult(rece, SMSActionResult.NO_ERROR(alternateText)));
+            out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(alternateText)));
         }
         return out;
     }
