@@ -940,13 +940,13 @@ public class SendActivity extends AllActivity {
             for (int i = 0, fireSMSResultsSize = fireSMSResults.size(); i < fireSMSResultsSize; i++) {
                 FireSMSResult fireSMSResult = fireSMSResults.get(i);
                 Receiver receiver = fireSMSResult.getReceiver();
-                resultMessage.append("<b>");
+                resultMessage.append("<b><u>");
                 if (unknownReceiverText.equals(receiver.getName())) {
                     resultMessage.append(receiver.getReceiverNumber());
                 } else {
                     resultMessage.append(receiver.getName());
                 }
-                resultMessage.append("</b>");
+                resultMessage.append("</u></b>");
                 resultMessage.append("<br/>").append(fireSMSResult.getResult().getUserText());
                 if (i != fireSMSResultsSize - 1) {
                     resultMessage.append("<br/>");
