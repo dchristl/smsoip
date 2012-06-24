@@ -5,11 +5,12 @@ package de.christl.smsoip.constant;
  */
 public class FireSMSResult {
 
-
     private String receiver;
     private Result result;
+    private int receiverIndex;
 
-    public FireSMSResult(String receiver, Result result) {
+    public FireSMSResult(int receiverIndex, String receiver, Result result) {
+        this.receiverIndex = receiverIndex;
         this.receiver = receiver;
         this.result = result;
     }

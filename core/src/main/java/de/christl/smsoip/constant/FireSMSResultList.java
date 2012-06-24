@@ -7,14 +7,13 @@ import java.util.ArrayList;
  */
 public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
-
     public String getAllResultsMessage() {
         StringBuilder out = new StringBuilder();
         if (size() == 1) {  // nobody cares about extra Infos if only one message was sent
             out.append(get(0).getResult().getUserText());
         } else {
             for (FireSMSResult fireSMSResult : this) {
-                out.append(fireSMSResult.getReceiver()).append(" -> ").append(fireSMSResult.getResult().getUserText());
+                out.append(fireSMSResult.getReceiver()).append(" -> ").append(fireSMSResult.getResult().getUserText()).append("\n");
             }
         }
         return out.toString();
@@ -40,10 +39,10 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     }
 
     private void setSendResult(Result sendResult) {
-        if (sendResult.equals(Result.NO_ERROR())) {
+        if (sendResult.equals(Result.NO_ERROR)) {
             switch (result) {
                 case NOT_YET_SET:
-                    result = SendResult.ERROR;
+                    result = SendResult.SUCCESS;
                     break;
                 case ERROR:
                     result = SendResult.BOTH;

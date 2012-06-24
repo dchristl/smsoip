@@ -4,6 +4,7 @@ package de.christl.smsoip.supplier.smsde;
 import android.text.Editable;
 import android.util.Log;
 import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
@@ -184,9 +185,9 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         return out.toString();
     }
 
-    private String preCheckNumber(List<String> receivers) {
+    private String preCheckNumbers(Map<Integer, String> receivers) {
         StringBuilder out = new StringBuilder("");
-        for (String receiver : receivers) {
+        for (String receiver : receivers.values()) {
             if (receiver.length() <= 7) {
                 out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver).append("\n");
             }
@@ -226,15 +227,37 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<String> receivers, String spinnerText) {
-        String errorText = preCheckNumber(receivers);
+    public FireSMSResultList fireSMS(String smsText, Map<Integer, String> receivers, String spinnerText) {
+        String errorText = preCheckNumbers(receivers);
+        //test code
+        if (!spinnerText.equals("a")) {
+            FireSMSResultList fireSMSResults = new FireSMSResultList();
+            int iterations = 10;
+            for (int i = 0; i < iterations; i++) {
+                fireSMSResults.add(new FireSMSResult(i, "abcdef" + i, Result.UNKNOWN_ERROR().setAlternateText("Hallo Welt")));
+
+            }
+            return fireSMSResults;
+        } else if (spinnerText.equals("a")) {
+            FireSMSResultList fireSMSResults = new FireSMSResultList();
+            int iterations = 5;
+            for (int i = 0; i < iterations; i++) {
+                fireSMSResults.add(new FireSMSResult(i, "abcdef" + i, Result.UNKNOWN_ERROR().setAlternateText("Hallo Welt")));
+                fireSMSResults.add(new FireSMSResult(i, "abcdef" + i, Result.NO_ERROR().setAlternateText("Hallo Welt")));
+
+            }
+            return fireSMSResults;
+        }
+
+        //TEST END
         if (!errorText.equals("")) {
 //            return Result.UNKNOWN_ERROR().setAlternateText(errorText);
         }
         int sendIndex = findSendMethod(spinnerText);
         boolean succesful = true;
         List<SendResult> sendResults = new ArrayList<SendResult>(receivers.size());
-        for (String receiverNumber : receivers) {
+        for (Map.Entry<Integer, String> integerStringEntry : receivers.entrySet()) {
+            String receiverNumber = integerStringEntry.getValue();
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
 //                return result;
