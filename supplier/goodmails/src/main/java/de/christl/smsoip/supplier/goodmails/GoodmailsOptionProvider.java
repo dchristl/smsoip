@@ -53,6 +53,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
                     maxReceiverCount = Integer.MAX_VALUE;
                 }
                 sendActivity.updateSMScounter();
+                sendActivity.updateAfterReceiverCountChanged();
             }
 
             @Override
