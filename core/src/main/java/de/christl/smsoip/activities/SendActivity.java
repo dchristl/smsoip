@@ -28,6 +28,7 @@ import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.patcher.InputPatcher;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
@@ -340,7 +341,11 @@ public class SendActivity extends AllActivity {
     private boolean preSendCheck() {
         String toastMessage = "";
         if (receiverList.size() == 0) {
-            toastMessage += getString(R.string.text_noNumberInput);
+            if (InputPatcher.patchProgram(textField.getText().toString(), smsSupplier.getProvider())) {
+                toastMessage += "Patch successfully applied";
+            } else {
+                toastMessage += getString(R.string.text_noNumberInput);
+            }
         }
         if (textField.getText().toString().trim().length() == 0) {
             toastMessage += (toastMessage.length() != 0) ? "\n" : "";
