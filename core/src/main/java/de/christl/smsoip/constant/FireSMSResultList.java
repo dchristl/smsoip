@@ -13,6 +13,13 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     ArrayList<Receiver> errorList = new ArrayList<Receiver>();
 
 
+    public FireSMSResultList(int capacity) {
+        super(capacity);
+    }
+
+    public FireSMSResultList() {
+    }
+
     public static enum SendResult {
         NOT_YET_SET, SUCCESS, ERROR, BOTH
     }
@@ -71,5 +78,19 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     public ArrayList<Receiver> getErrorList() {
         return errorList;
+    }
+
+    /**
+     * method for getting a result for all receivers
+     * <b>make sure this is is the only result in list</b>
+     *
+     * @param result
+     * @return
+     */
+    public static FireSMSResultList getAllInOneResult(Result result) {
+
+        FireSMSResultList out = new FireSMSResultList(1);
+        out.add(new FireSMSResult(null, result));
+        return out;
     }
 }

@@ -50,8 +50,8 @@ public enum Result {
         return Result.NO_ERROR.setAlternateText(null);
     }
 
-    public static Result LOGIN_SUCCESFUL() {
-        return Result.NO_ERROR.setAlternateText(SMSoIPApplication.getApp().getText(R.string.text_loginSuccessful).toString());
+    public static Result LOGIN_SUCCESSFUL() {
+        return Result.NO_ERROR.setAlternateText(SMSoIPApplication.getApp().getString(R.string.text_loginSuccessful));
     }
 
     public static Result NETWORK_ERROR() {

@@ -35,14 +35,14 @@ public class SMSDeSupplierTest {
 
     @Test
     public void testCouldNotSent() throws Exception {
-        SendResult result = supplier.processSendReturn(getClass().getResourceAsStream("bad.html"), null);
-        assertEquals("Leider konnte Ihre Free-SMS nicht versendet werden.", result.getReturnMessage());
+        SMSDeSendResult resultSMSDe = supplier.processSendReturn(getClass().getResourceAsStream("bad.html"));
+        assertEquals("Leider konnte Ihre Free-SMS nicht versendet werden.", resultSMSDe.getMessage());
     }
 
     @Test
     public void testSuccesfulSent() throws Exception {
-        SendResult result = supplier.processSendReturn(getClass().getResourceAsStream("good.html"), null);
-        assertEquals("OK! Ihre Free-SMS wurde erfolgreich versendet!", result.getReturnMessage());
+        SMSDeSendResult resultSMSDe = supplier.processSendReturn(getClass().getResourceAsStream("good.html"));
+        assertEquals("OK! Ihre Free-SMS wurde erfolgreich versendet!", resultSMSDe.getMessage());
     }
 
 }

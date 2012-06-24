@@ -163,7 +163,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             if (sessionCookies.size() != 2) {
                 return Result.LOGIN_FAILED_ERROR();
             }
-            return Result.LOGIN_SUCCESFUL();
+            return Result.LOGIN_SUCCESSFUL();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return Result.TIMEOUT_ERROR();
@@ -178,20 +178,13 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         return Result.UNKNOWN_ERROR().setAlternateText("Deprecated API");
     }
 
-    private String buildMessageText(List<SendResult> sendResults) {
-        StringBuilder out = new StringBuilder();
-        for (SendResult sendResult : sendResults) {
-            out.append(sendResult.getNumber()).append("->").append(sendResult.getReturnMessage()).append("\n");
-        }
-        return out.toString();
-    }
 
     private String preCheckNumbers(List<Receiver> receivers) {
         StringBuilder out = new StringBuilder("");
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
             if (receiverNumber.length() <= 7) {
-                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver).append("\n");
+                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver.getReceiverNumber()).append("\n");
             }
         }
         return out.toString();
@@ -208,7 +201,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         return TYPE_FREE;
     }
 
-    SendResult processSendReturn(InputStream is, String number) throws IOException {
+    SMSDeSendResult processSendReturn(InputStream is) throws IOException {
         Document parse = Jsoup.parse(is, ENCODING, "");
         Elements tDsWithImages = parse.select("td.fbrb > table:eq(0)  tr:eq(0) > td.fbrb:has(img[align=absmiddle])");
         boolean success = false;
@@ -225,33 +218,23 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                 break;
             }
         }
-        return new SendResult(number, success, returnMessage);
+        return new SMSDeSendResult(success, returnMessage);
     }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         String errorText = preCheckNumbers(receivers);
-        //test code
-        if (true) {
-            FireSMSResultList fireSMSResults = new FireSMSResultList();
-            for (Receiver receiver : receivers) {
-                fireSMSResults.add(new FireSMSResult(receiver, Result.UNKNOWN_ERROR.setAlternateText("Hallo")));
-            }
-            return fireSMSResults;
-        }
-
-        //TEST END
         if (!errorText.equals("")) {
-//            return Result.UNKNOWN_ERROR().setAlternateText(errorText);
+            return FireSMSResultList.getAllInOneResult(Result.UNKNOWN_ERROR().setAlternateText(errorText));
         }
         int sendIndex = findSendMethod(spinnerText);
-        boolean succesful = true;
-        List<SendResult> sendResults = new ArrayList<SendResult>(receivers.size());
+        FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
-//                return result;
+                out.add(new FireSMSResult(receiver, result));
+                continue;
             }
             String prefix = receiverNumber.substring(0, 7);
             String number = receiverNumber.substring(7);
@@ -264,6 +247,9 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                         body += "&empfcount=1";
                         body += "&oadc=0";
                         body += "&smslength=160";
+                        body += "&powersms=TRUE";               //no sense
+                        body += "&which_page=power-sms+160";    //no sense
+                        body += "&submitsms=++++++Power-SMS+160+versenden";
                         break;
                     case TYPE_POWER_160_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
@@ -291,22 +277,22 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                 }
                 factory.setCookies(sessionCookies);
                 HttpURLConnection con = factory.writeBody(body);
-                SendResult sendResult = processSendReturn(con.getInputStream(), receiverNumber);
-                succesful &= sendResult.isSuccess();
-                sendResults.add(sendResult);
+                SMSDeSendResult sendResult = processSendReturn(con.getInputStream());
+                if (sendResult.isSuccess()) {
+                    out.add(new FireSMSResult(receiver, Result.NO_ERROR().setAlternateText(sendResult.getMessage())));
+                } else {
+                    out.add(new FireSMSResult(receiver, Result.UNKNOWN_ERROR().setAlternateText(sendResult.getMessage())));
+                }
             } catch (SocketTimeoutException stoe) {
                 Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-//                return Result.TIMEOUT_ERROR().setAlternateText(buildMessageText(sendResults));
+                out.add(new FireSMSResult(receiver, Result.TIMEOUT_ERROR()));
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
-//                return Result.NETWORK_ERROR().setAlternateText(buildMessageText(sendResults));
+                out.add(new FireSMSResult(receiver, Result.NETWORK_ERROR()));
 
             }
         }
-        String messageText = buildMessageText(sendResults);
-        if (succesful) {
-//            return Result.NO_ERROR().setAlternateText(messageText);
-        }
-        return new FireSMSResultList();//Result.UNKNOWN_ERROR().setAlternateText(messageText);
+
+        return out;
     }
 }
