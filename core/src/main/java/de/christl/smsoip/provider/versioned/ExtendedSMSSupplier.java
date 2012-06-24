@@ -29,7 +29,6 @@ public interface ExtendedSMSSupplier extends SMSSupplier {
      * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on ic_menu_success or any other otherwise
      */
 
-    //TODO check if its better to use spinner item
     FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText);
 
     /**

@@ -3,9 +3,13 @@ package de.christl.smsoip.supplier.freenet;
 import android.text.Editable;
 import android.text.Html;
 import android.util.Log;
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.constant.FireSMSResult;
+import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -21,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * Class for handling sms by freenet
  */
-public class FreenetSupplier implements SMSSupplier {
+public class FreenetSupplier implements ExtendedSMSSupplier {
 
     private FreenetOptionProvider provider;
 
@@ -35,20 +39,36 @@ public class FreenetSupplier implements SMSSupplier {
     public FreenetSupplier() {
         provider = new FreenetOptionProvider();
     }
+
     @Override
     public Result refreshInformationOnRefreshButtonPressed() {
-        return refreshInformations(false);
+        throw new IllegalArgumentException("STUB");
     }
 
     @Override
     public Result refreshInformationAfterMessageSuccessfulSent() {
+        throw new IllegalArgumentException("STUB");
+    }
+
+    @Override
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+        return refreshInformations(false);
+    }
+
+    @Override
+    public Result login(String userName, String password) {
+        throw new IllegalArgumentException("STUB");
+    }
+
+    @Override
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
         return refreshInformations(true);
     }
 
-    private Result refreshInformations(boolean noLoginBefore) {
+    private SMSActionResult refreshInformations(boolean noLoginBefore) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
-            Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
                 return result;
             }
         }
@@ -67,14 +87,14 @@ public class FreenetSupplier implements SMSSupplier {
             return processRefreshReturn(con.getInputStream());
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
         }
     }
 
-    private Result processRefreshReturn(InputStream is) throws IOException {
+    private SMSActionResult processRefreshReturn(InputStream is) throws IOException {
         String message = inputStream2String(is);
         String out = provider.getTextByResourceId(R.string.text_refresh_informations);
         Pattern p = Pattern.compile("SMS.*?\\}"); //get the SMS JSON object
@@ -95,22 +115,23 @@ public class FreenetSupplier implements SMSSupplier {
                 }
             }
             if (allSMS != null && paidSMS != null) {
-                return Result.NO_ERROR().setAlternateText(String.format(out, allSMS, paidSMS));
+                return SMSActionResult.NO_ERROR(String.format(out, allSMS, paidSMS));
             }
 
         }
-        return Result.UNKNOWN_ERROR();
+        return SMSActionResult.UNKNOWN_ERROR();
     }
 
-    private Result processFireSMSReturn(InputStream is) throws IOException {
+
+    private SMSActionResult processFireSMSReturn(InputStream is) throws IOException {
         String message = inputStream2String(is);
         message = message.replaceAll(".*SMSnotify\" value=\"", "");
         message = message.replaceAll("\">.*", "");
         message = Html.fromHtml(message).toString();
         if (message.contains("erfolgreich")) {
-            return Result.NO_ERROR().setAlternateText(message);
+            return SMSActionResult.NO_ERROR(message);
         } else {
-            return Result.UNKNOWN_ERROR().setAlternateText(message);
+            return SMSActionResult.UNKNOWN_ERROR(message);
         }
     }
 
@@ -134,8 +155,9 @@ public class FreenetSupplier implements SMSSupplier {
         return provider;
     }
 
+
     @Override
-    public Result login(String userName, String password) {
+    public SMSActionResult checkCredentials(String userName, String password) {
         sessionCookies = new ArrayList<String>();
         String tmpUrl = LOGIN_URL + "?username=" + userName + "&password=" + password;
         HttpURLConnection con;
@@ -147,7 +169,7 @@ public class FreenetSupplier implements SMSSupplier {
             con.setRequestMethod("POST");
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             String sidCookie = null;
             Outer:
@@ -164,7 +186,7 @@ public class FreenetSupplier implements SMSSupplier {
                 }
             }
             if (sidCookie == null) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             //now get the freenetMail4Prev cookie, that is also needed
             con = (HttpURLConnection) new URL(HOME_URL).openConnection();
@@ -174,7 +196,7 @@ public class FreenetSupplier implements SMSSupplier {
             con.setRequestProperty("Cookie", sidCookie);
             headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             Outer:
             for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
@@ -189,15 +211,15 @@ public class FreenetSupplier implements SMSSupplier {
                 }
             }
             if (sessionCookies.size() != 2) {
-                return Result.LOGIN_FAILED_ERROR();
+                return SMSActionResult.LOGIN_FAILED_ERROR();
             }
-            return Result.NO_ERROR();
+            return SMSActionResult.LOGIN_SUCCESSFUL();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
         }
 
 
@@ -205,39 +227,44 @@ public class FreenetSupplier implements SMSSupplier {
 
     @Override
     public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        return fireSMS(smsText.toString(), receivers.get(0).toString());
+        throw new IllegalArgumentException("STUB");
     }
 
-    public Result fireSMS(String smsText, String receiver) {
-        Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR)) {
-            return result;
+    @Override
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result);
         }
         try {
             smsText = URLEncoder.encode(smsText, ENCODING);
         } catch (UnsupportedEncodingException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
+        FireSMSResultList out = new FireSMSResultList(receivers.size());
         //currently only free sms supported, for paid accounts change will be here
-        String tmpUrl = SEND_URL + "&senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver + "&smsText=" + smsText;
-        HttpURLConnection con;
-        try {
-            con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
-            StringBuilder cookieBuilder = new StringBuilder();
-            for (String sessionCookie : sessionCookies) {
-                cookieBuilder.append(sessionCookie).append(";");
+        for (Receiver receiver : receivers) {
+            String tmpUrl = SEND_URL + "&senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver.getReceiverNumber() + "&smsText=" + smsText;
+            HttpURLConnection con;
+            try {
+                con = (HttpURLConnection) new URL(tmpUrl).openConnection();
+                con.setReadTimeout(TIMEOUT);
+                con.setRequestProperty("User-Agent", TARGET_AGENT);
+                con.setRequestMethod("POST");
+                StringBuilder cookieBuilder = new StringBuilder();
+                for (String sessionCookie : sessionCookies) {
+                    cookieBuilder.append(sessionCookie).append(";");
+                }
+                con.setRequestProperty("Cookie", cookieBuilder.toString());
+                out.add(new FireSMSResult(receiver, processFireSMSReturn(con.getInputStream())));
+            } catch (SocketTimeoutException stoe) {
+                Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
             }
-            con.setRequestProperty("Cookie", cookieBuilder.toString());
-            return processFireSMSReturn(con.getInputStream());
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
         }
+        return out;
     }
 }

@@ -15,11 +15,6 @@ public class FreenetOptionProvider extends OptionProvider {
 
 
     @Override
-    public int getMaxReceiverCount() {
-        return 1;
-    }
-
-    @Override
     public String getProviderName() {
         return providerName;
     }
