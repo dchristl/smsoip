@@ -101,4 +101,5 @@
     <string name="text_account_no_account">Nicht gesetzt</string>
     <string name="text_changeAccount">Account wechseln</string>
     <string name="text_chooseAccount">Account auswählen</string>
+    <string name="text_partial_success">Teilweiser Erfolg</string>
 </resources>

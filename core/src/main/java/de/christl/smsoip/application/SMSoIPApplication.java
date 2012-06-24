@@ -176,6 +176,10 @@ public class SMSoIPApplication extends Application {
         return loadedProviders;
     }
 
+    public int getMinAPIVersion(SMSSupplier smsSupplier) {
+        return loadedProviders.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion();
+    }
+
     @SuppressWarnings("unchecked")
     public <TYPE> TYPE getInstance(String className) {
         try {

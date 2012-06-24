@@ -10,8 +10,9 @@ import de.christl.smsoip.R;
 
 
 /**
- *
+ * Use the new EmoImageDialog instead
  */
+@Deprecated
 public class ImageDialog extends Dialog {
     private boolean success;
     private Spanned message;

@@ -4,10 +4,10 @@ package de.christl.smsoip.supplier.smsde;
 import android.text.Editable;
 import android.util.Log;
 import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.provider.versioned.FireSMSResult;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -226,7 +226,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public List<FireSMSResult> fireSMS(String smsText, List<String> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<String> receivers, String spinnerText) {
         String errorText = preCheckNumber(receivers);
         if (!errorText.equals("")) {
 //            return Result.UNKNOWN_ERROR().setAlternateText(errorText);
@@ -293,6 +293,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         if (succesful) {
 //            return Result.NO_ERROR().setAlternateText(messageText);
         }
-        return new ArrayList<FireSMSResult>();//Result.UNKNOWN_ERROR().setAlternateText(messageText);
+        return new FireSMSResultList();//Result.UNKNOWN_ERROR().setAlternateText(messageText);
     }
 }

@@ -22,12 +22,15 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
+import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ImageDialog;
 
 import java.util.*;
@@ -188,10 +191,15 @@ public class SendActivity extends AllActivity {
                 }
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
-
+                if (SMSoIPApplication.getApp().getMinAPIVersion(smsSupplier) >= 14) {
+                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getFireSMSAndUpdateUIRunnable()).start();
+                } else {
+                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
+                }
             }
-        });
+        }
+
+        );
     }
 
     private String getDefaultSupplier() {
@@ -378,7 +386,9 @@ public class SendActivity extends AllActivity {
      * @param resultMessage - the resultMessage to show in the Toast or null if only refresh was pressed
      * @param infoText      - the infoText on the screen or null if refresh was not successful
      * @param succesfulSent - was sending succesful
+     * @deprecated will be removed in future releases
      */
+    @Deprecated
     void showReturnMessage(CharSequence resultMessage, CharSequence infoText, boolean succesfulSent) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
         if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
@@ -400,7 +410,7 @@ public class SendActivity extends AllActivity {
 
     }
 
-    private void killDialogAfterAWhile(final ImageDialog dialog) {
+    private void killDialogAfterAWhile(final Dialog dialog) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -478,19 +488,30 @@ public class SendActivity extends AllActivity {
         findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
+    /**
+     * sending old style with only one result
+     * will be removed in future releases
+     *
+     * @return
+     */
+    @Deprecated
     Result send() {
         List<Editable> numberList = new ArrayList<Editable>(receiverList.size());
         for (Receiver receiver : receiverList) {
             numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
         }
-/*        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
-        if (providerEntries.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion() >= 14) {
-            return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList.getStringList(), spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
-        } else*/
-        {
-            return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
-        }
+        return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
 
+    }
+
+    /**
+     * will be called for sending in a thread to update progress dialog
+     * available since API Level 14
+     *
+     * @return
+     */
+    FireSMSResultList sendByThread() {
+        return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList.getStringList(), spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
     }
 
     Result refreshInformations(boolean afterMessageSuccessfulSent) {
@@ -896,5 +917,29 @@ public class SendActivity extends AllActivity {
         //sho only if more than one account is available
         item.setVisible(smsSupplier.getProvider().getAccounts().size() > 1);
         return super.onMenuOpened(featureId, menu);
+    }
+
+    /**
+     * since API level 14
+     *
+     * @param fireSMSResults
+     * @param infoText
+     */
+    public void showReturnMessage(FireSMSResultList fireSMSResults, String infoText) {
+        TextView infoView = (TextView) findViewById(R.id.infoText);
+        if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
+            infoView.setText(infoText);
+        }
+        String resultMessage = fireSMSResults.getAllResultsMessage();
+        final EmoImageDialog dialog = new EmoImageDialog(this, fireSMSResults.getResult(), resultMessage);
+        dialog.setOwnerActivity(this);
+        dialog.show();
+        killDialogAfterAWhile(dialog);
+//        if (result) {
+//            if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+//                writeSMSInDatabase();
+//            }
+//            clearAllInputs();
+//        }
     }
 }
