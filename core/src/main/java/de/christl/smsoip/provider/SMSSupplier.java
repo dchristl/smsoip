@@ -30,6 +30,7 @@ public interface SMSSupplier {
      * @return Result.NO_ERRORS add additional info for the informations next to refresh button<br/>
      *         any other error if not successful
      */
+    @Deprecated
     Result refreshInformationOnRefreshButtonPressed();
 
     /**
@@ -40,6 +41,7 @@ public interface SMSSupplier {
      * @return Result.NO_ERRORS add additional info for the informations next to refresh button<br/>
      *         any other error if not successful
      */
+    @Deprecated
     Result refreshInformationAfterMessageSuccessfulSent();
 
     /**

@@ -56,19 +56,20 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public Result refreshInformationOnRefreshButtonPressed() {
-        return refreshInformations(false);
-    }
-
-    @Override
-    public Result refreshInformationAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
         return refreshInformations(true);
     }
 
-    private Result refreshInformations(boolean afterMessageSentSuccessful) {
+    @Override
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+        return refreshInformations(false);
+    }
+
+
+    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
-            Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR)) {
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
                 return result;
             }
         }
@@ -82,15 +83,15 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
 
         {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
 
         }
     }
 
-    private Result processRefreshInformations(InputStream inputStream) throws IOException {
+    private SMSActionResult processRefreshInformations(InputStream inputStream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, ENCODING));
         String line;
         String credits = null;
@@ -103,9 +104,9 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             }
         }
         if (credits != null) {
-            return Result.NO_ERROR().setAlternateText(credits);
+            return SMSActionResult.NO_ERROR(credits);
         } else {
-            return Result.UNKNOWN_ERROR();
+            return SMSActionResult.UNKNOWN_ERROR();
         }
     }
 
@@ -122,6 +123,16 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
 
     @Override
     public Result login(String userName, String password) {
+        throw new IllegalArgumentException("STUB");
+    }
+
+    @Override
+    public Result refreshInformationOnRefreshButtonPressed() {
+        throw new IllegalArgumentException("STUB");
+    }
+
+    @Override
+    public Result refreshInformationAfterMessageSuccessfulSent() {
         throw new IllegalArgumentException("STUB");
     }
 

@@ -25,6 +25,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.SMSSupplier;
@@ -533,8 +534,19 @@ public class SendActivity extends AllActivity {
         return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
     }
 
+    @Deprecated
     Result refreshInformations(boolean afterMessageSuccessfulSent) {
         return afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
+    }
+
+    /**
+     * since API Level 14
+     *
+     * @param afterMessageSuccessfulSent
+     * @return
+     */
+    SMSActionResult refreshInformationText(boolean afterMessageSuccessfulSent) {
+        return afterMessageSuccessfulSent ? ((ExtendedSMSSupplier) smsSupplier).refreshInfoTextAfterMessageSuccessfulSent() : ((ExtendedSMSSupplier) smsSupplier).refreshInfoTextOnRefreshButtonPressed();
     }
 
 

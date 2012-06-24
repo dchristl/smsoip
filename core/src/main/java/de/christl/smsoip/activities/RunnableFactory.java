@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Handler;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.constant.SMSActionResult;
 
 /**
  * little helper for building updating the ui after sending or refreshing informations
@@ -74,10 +75,9 @@ public class RunnableFactory {
                 CharSequence infoText = null;
                 FireSMSResultList.SendResult result = fireSMSResults.getResult();
                 if (result == FireSMSResultList.SendResult.BOTH || result == FireSMSResultList.SendResult.SUCCESS) { //success or both
-                    Result refreshResult = RunnableFactory.this.sendActivity.refreshInformations(true);
-                    boolean successfulRefreshed = refreshResult.equals(Result.NO_ERROR);
-                    if (successfulRefreshed) {
-                        infoText = refreshResult.getUserText();
+                    SMSActionResult refreshResult = RunnableFactory.this.sendActivity.refreshInformationText(true);
+                    if (refreshResult.isSuccess()) {
+                        infoText = refreshResult.getMessage();
                     }
                 }
                 updateUIHandler.post(getUpdateUIRunnable(fireSMSResults, infoText == null ? null : infoText.toString()));
@@ -105,13 +105,13 @@ public class RunnableFactory {
     public Runnable getRefreshInfosAndUpdateUIRunnable() {
         return new Runnable() {
             public void run() {
-                Result result = RunnableFactory.this.sendActivity.refreshInformations(false);
+                SMSActionResult result = RunnableFactory.this.sendActivity.refreshInformationText(false);
                 CharSequence infoText = null;
                 CharSequence messageText = null;
-                if (result.equals(Result.NO_ERROR)) {
-                    infoText = result.getUserText();
+                if (result.isSuccess()) {
+                    infoText = result.getMessage();
                 } else {
-                    messageText = result.getUserText();
+                    messageText = result.getMessage();
                 }
                 updateUIHandler.post(getUpdateUIRunnable(messageText, infoText, false));
                 progressDialog.cancel();
