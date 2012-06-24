@@ -1,21 +1,21 @@
 package de.christl.smsoip.constant;
 
+import de.christl.smsoip.activities.Receiver;
+
 /**
  * Used for result after sending
  */
 public class FireSMSResult {
 
-    private String receiver;
+    private Receiver receiver;
     private Result result;
-    private int receiverIndex;
 
-    public FireSMSResult(int receiverIndex, String receiver, Result result) {
-        this.receiverIndex = receiverIndex;
+    public FireSMSResult(Receiver receiver, Result result) {
         this.receiver = receiver;
         this.result = result;
     }
 
-    public String getReceiver() {
+    public Receiver getReceiver() {
         return receiver;
     }
 
@@ -23,7 +23,8 @@ public class FireSMSResult {
         return result;
     }
 
-//    public static AllInOneFireSMSResult getAllInOneResult(Result result) {
+
+    //    public static AllInOneFireSMSResult getAllInOneResult(Result result) {
 //        return new AllInOneFireSMSResult(null, result);
 //    }
 //

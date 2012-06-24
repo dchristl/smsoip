@@ -1,5 +1,7 @@
 package de.christl.smsoip.constant;
 
+import de.christl.smsoip.activities.Receiver;
+
 import java.util.ArrayList;
 
 /**
@@ -7,17 +9,9 @@ import java.util.ArrayList;
  */
 public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
-    public String getAllResultsMessage() {
-        StringBuilder out = new StringBuilder();
-        if (size() == 1) {  // nobody cares about extra Infos if only one message was sent
-            out.append(get(0).getResult().getUserText());
-        } else {
-            for (FireSMSResult fireSMSResult : this) {
-                out.append(fireSMSResult.getReceiver()).append(" -> ").append(fireSMSResult.getResult().getUserText()).append("\n");
-            }
-        }
-        return out.toString();
-    }
+    ArrayList<Receiver> successList = new ArrayList<Receiver>();
+    ArrayList<Receiver> errorList = new ArrayList<Receiver>();
+
 
     public static enum SendResult {
         NOT_YET_SET, SUCCESS, ERROR, BOTH
@@ -28,18 +22,18 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     @Override
     public boolean add(FireSMSResult object) {
-        setSendResult(object.getResult());
+        setSendResultAndFillLists(object);
         return super.add(object);
     }
 
     @Override
     public void add(int index, FireSMSResult object) {
-        setSendResult(object.getResult());
+        setSendResultAndFillLists(object);
         super.add(index, object);
     }
 
-    private void setSendResult(Result sendResult) {
-        if (sendResult.equals(Result.NO_ERROR)) {
+    private void setSendResultAndFillLists(FireSMSResult fireSMSResult) {
+        if (fireSMSResult.getResult().equals(Result.NO_ERROR)) {
             switch (result) {
                 case NOT_YET_SET:
                     result = SendResult.SUCCESS;
@@ -50,6 +44,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
                 default:  //in case 2 or 3 result is already set correct
                     break;
             }
+            successList.add(fireSMSResult.getReceiver());
         } else {
             switch (result) {
                 case NOT_YET_SET:
@@ -61,11 +56,20 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
                 default:  //in case 1 or 3 result is already set correctly
                     break;
             }
+            errorList.add(fireSMSResult.getReceiver());
         }
 
     }
 
     public SendResult getResult() {
         return result;
+    }
+
+    public ArrayList<Receiver> getSuccessList() {
+        return successList;
+    }
+
+    public ArrayList<Receiver> getErrorList() {
+        return errorList;
     }
 }

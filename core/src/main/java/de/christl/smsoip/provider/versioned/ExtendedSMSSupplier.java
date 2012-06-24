@@ -1,10 +1,11 @@
 package de.christl.smsoip.provider.versioned;
 
+import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.provider.SMSSupplier;
 
-import java.util.Map;
+import java.util.List;
 
 @APIVersion(minVersion = 14)
 public interface ExtendedSMSSupplier extends SMSSupplier {
@@ -18,5 +19,5 @@ public interface ExtendedSMSSupplier extends SMSSupplier {
      */
 
     //TODO check if its better to use spinner item
-    FireSMSResultList fireSMS(String smsText, Map<Integer, String> receivers, String spinnerText);
+    FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText);
 }

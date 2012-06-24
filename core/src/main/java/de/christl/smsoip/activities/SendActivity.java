@@ -22,6 +22,7 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.database.DatabaseHandler;
@@ -401,9 +402,7 @@ public class SendActivity extends AllActivity {
             dialog.show();
             killDialogAfterAWhile(dialog);
             if (succesfulSent) {
-                if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-                    writeSMSInDatabase();
-                }
+                writeSMSInDatabase(receiverList);
                 clearAllInputs();
             }
         }
@@ -424,16 +423,19 @@ public class SendActivity extends AllActivity {
         }).start();
     }
 
-    private void writeSMSInDatabase() {
-        for (Receiver receiver : receiverList) {
-            ContentValues values = new ContentValues();
-            values.put("address", receiver.getRawNumber());
-            String prefix = "";
-            if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
-                prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
+    private void writeSMSInDatabase(ArrayList<Receiver> receiverList) {
+        boolean writeToDatabaseEnabled = settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        if (writeToDatabaseEnabled) {
+            for (Receiver receiver : receiverList) {
+                ContentValues values = new ContentValues();
+                values.put("address", receiver.getRawNumber());
+                String prefix = "";
+                if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
+                    prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
+                }
+                values.put("body", prefix + textField.getText().toString());
+                getContentResolver().insert(Uri.parse("content://sms/sent"), values);
             }
-            values.put("body", prefix + textField.getText().toString());
-            getContentResolver().insert(Uri.parse("content://sms/sent"), values);
         }
     }
 
@@ -485,7 +487,7 @@ public class SendActivity extends AllActivity {
     private void setSpinner() {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
         smsSupplier.getProvider().createSpinner(this, spinner);
-        findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
+        findViewById(de.christl.smsoip.R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
     /**
@@ -511,7 +513,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     FireSMSResultList sendByThread() {
-        return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList.getReceiverIndexMap(), spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
     }
 
     Result refreshInformations(boolean afterMessageSuccessfulSent) {
@@ -930,16 +932,37 @@ public class SendActivity extends AllActivity {
         if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
             infoView.setText(infoText);
         }
-        String resultMessage = fireSMSResults.getAllResultsMessage();
-        final EmoImageDialog dialog = new EmoImageDialog(this, fireSMSResults.getResult(), resultMessage);
+        StringBuilder resultMessage = new StringBuilder();
+        if (fireSMSResults.size() == 1) {  // nobody cares about extra Infos if only one message was sent
+            resultMessage.append(fireSMSResults.get(0).getResult().getUserText());
+        } else {
+            String unknownReceiverText = getText(R.string.text_unknown).toString();
+            for (int i = 0, fireSMSResultsSize = fireSMSResults.size(); i < fireSMSResultsSize; i++) {
+                FireSMSResult fireSMSResult = fireSMSResults.get(i);
+                Receiver receiver = fireSMSResult.getReceiver();
+                resultMessage.append("<b>");
+                if (unknownReceiverText.equals(receiver.getName())) {
+                    resultMessage.append(receiver.getReceiverNumber());
+                } else {
+                    resultMessage.append(receiver.getName());
+                }
+                resultMessage.append("</b>");
+                resultMessage.append("<br/>").append(fireSMSResult.getResult().getUserText());
+                if (i != fireSMSResultsSize - 1) {
+                    resultMessage.append("<br/>");
+                }
+            }
+        }
+        final EmoImageDialog dialog = new EmoImageDialog(this, fireSMSResults.getResult(), resultMessage.toString());
         dialog.setOwnerActivity(this);
         dialog.show();
         killDialogAfterAWhile(dialog);
-//        if (result) {
-//            if (settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-//                writeSMSInDatabase();
-//            }
-//            clearAllInputs();
-//        }
+        writeSMSInDatabase(fireSMSResults.getSuccessList());
+        if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
+            clearAllInputs();
+        } else {
+            receiverList.removeAll(fireSMSResults.getSuccessList());
+            updateViewOnChangedReceivers();
+        }
     }
 }

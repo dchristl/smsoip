@@ -3,6 +3,7 @@ package de.christl.smsoip.supplier.smsde;
 
 import android.text.Editable;
 import android.util.Log;
+import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
@@ -162,7 +163,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             if (sessionCookies.size() != 2) {
                 return Result.LOGIN_FAILED_ERROR();
             }
-            return Result.NO_ERROR();
+            return Result.LOGIN_SUCCESFUL();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return Result.TIMEOUT_ERROR();
@@ -185,10 +186,11 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         return out.toString();
     }
 
-    private String preCheckNumbers(Map<Integer, String> receivers) {
+    private String preCheckNumbers(List<Receiver> receivers) {
         StringBuilder out = new StringBuilder("");
-        for (String receiver : receivers.values()) {
-            if (receiver.length() <= 7) {
+        for (Receiver receiver : receivers) {
+            String receiverNumber = receiver.getReceiverNumber();
+            if (receiverNumber.length() <= 7) {
                 out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver).append("\n");
             }
         }
@@ -227,24 +229,13 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, Map<Integer, String> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         String errorText = preCheckNumbers(receivers);
         //test code
-        if (!spinnerText.equals("a")) {
+        if (true) {
             FireSMSResultList fireSMSResults = new FireSMSResultList();
-            int iterations = 10;
-            for (int i = 0; i < iterations; i++) {
-                fireSMSResults.add(new FireSMSResult(i, "abcdef" + i, Result.UNKNOWN_ERROR().setAlternateText("Hallo Welt")));
-
-            }
-            return fireSMSResults;
-        } else if (spinnerText.equals("a")) {
-            FireSMSResultList fireSMSResults = new FireSMSResultList();
-            int iterations = 5;
-            for (int i = 0; i < iterations; i++) {
-                fireSMSResults.add(new FireSMSResult(i, "abcdef" + i, Result.UNKNOWN_ERROR().setAlternateText("Hallo Welt")));
-                fireSMSResults.add(new FireSMSResult(i, "abcdef" + i, Result.NO_ERROR().setAlternateText("Hallo Welt")));
-
+            for (Receiver receiver : receivers) {
+                fireSMSResults.add(new FireSMSResult(receiver, Result.UNKNOWN_ERROR.setAlternateText("Hallo")));
             }
             return fireSMSResults;
         }
@@ -256,8 +247,8 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         int sendIndex = findSendMethod(spinnerText);
         boolean succesful = true;
         List<SendResult> sendResults = new ArrayList<SendResult>(receivers.size());
-        for (Map.Entry<Integer, String> integerStringEntry : receivers.entrySet()) {
-            String receiverNumber = integerStringEntry.getValue();
+        for (Receiver receiver : receivers) {
+            String receiverNumber = receiver.getReceiverNumber();
             Result result = login(provider.getUserName(), provider.getPassword());
             if (!result.equals(Result.NO_ERROR)) {
 //                return result;

@@ -3,6 +3,7 @@ package de.christl.smsoip.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 import de.christl.smsoip.R;
@@ -43,7 +44,7 @@ public class EmoImageDialog extends Dialog {
         }
 
         TextView text = (TextView) findViewById(R.id.text);
-        text.setText(resultMessage);
+        text.setText(Html.fromHtml(resultMessage));
 
     }
 }
