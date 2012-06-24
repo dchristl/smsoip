@@ -37,6 +37,7 @@ fileName: strings.xml
     <string name="text_noNetwork">Netzwerkfehler</string>
     <string name="text_unknown_error">Unbekannter Fehler</string>
     <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="text_loginSuccessful">Login erfolgreich</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
     <string name="text_pleaseWait">Bitte warten</string>
@@ -106,6 +107,7 @@ fileName: strings.xml
     <string name="text_account_no_account">Nicht gesetzt</string>
     <string name="text_changeAccount">Account wechseln</string>
     <string name="text_chooseAccount">Account auswählen</string>
+    <string name="text_partial_success">Teilweiser Erfolg</string>
 </resources>
 
 <!--String resources for:
