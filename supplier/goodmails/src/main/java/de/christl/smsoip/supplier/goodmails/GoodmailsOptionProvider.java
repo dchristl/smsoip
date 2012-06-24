@@ -22,6 +22,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
     private int messageLength = 153;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private int maxReceiverCount = 1;
 
     public GoodmailsOptionProvider() {
         super(providerName);
@@ -46,8 +47,10 @@ public class GoodmailsOptionProvider extends OptionProvider {
                 String currentSelection = arraySpinner[position];
                 if (currentSelection.equals(Constants.FREE)) {
                     messageLength = 126;
+                    maxReceiverCount = 1;
                 } else {
                     messageLength = 153;
+                    maxReceiverCount = Integer.MAX_VALUE;
                 }
                 sendActivity.updateSMScounter();
             }
@@ -79,6 +82,6 @@ public class GoodmailsOptionProvider extends OptionProvider {
 
     @Override
     public int getMaxReceiverCount() {
-        return 1;
+        return maxReceiverCount;
     }
 }
