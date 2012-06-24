@@ -174,7 +174,8 @@ public class SendActivity extends AllActivity {
 
     private void setFullTitle() {
         OptionProvider provider = smsSupplier.getProvider();
-        setTitle(provider.getProviderName() + " (" + provider.getUserName() + ")");
+        String userName = provider.getUserName() == null ? getString(R.string.text_account_no_account) : provider.getUserName();
+        setTitle(provider.getProviderName() + " (" + userName + ")");
     }
 
     private void setPreselectedContact() {
@@ -361,7 +362,11 @@ public class SendActivity extends AllActivity {
             public void onClick(View view) {
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshInfosAndUpdateUIRunnable()).start();
+                if (SMSoIPApplication.getApp().getMinAPIVersion(smsSupplier) >= 14) {
+                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
+                } else {
+                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshInfosAndUpdateUIRunnable()).start();
+                }
             }
         });
 
@@ -946,7 +951,10 @@ public class SendActivity extends AllActivity {
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
-            outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, smsSupplier.getProvider().getCurrentAccountIndex());
+            Integer currentAccountIndex = smsSupplier.getProvider().getCurrentAccountIndex();
+            if (currentAccountIndex != null) {
+                outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, currentAccountIndex);
+            }
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
             }

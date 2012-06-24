@@ -101,8 +101,28 @@ public class RunnableFactory {
         };
     }
 
-
+    @Deprecated
     public Runnable getRefreshInfosAndUpdateUIRunnable() {
+        return new Runnable() {
+            public void run() {
+                Result result = RunnableFactory.this.sendActivity.refreshInformations(false);
+                CharSequence infoText = null;
+                CharSequence messageText = null;
+                if (result.equals(Result.NO_ERROR)) {
+                    infoText = result.getUserText();
+                } else {
+                    messageText = result.getUserText();
+                }
+                updateUIHandler.post(getUpdateUIRunnable(messageText, infoText, false));
+                progressDialog.cancel();
+            }
+        };
+    }
+
+    /**
+     * since API level 14
+     */
+    public Runnable getRefreshAndUpdateUIRunnable() {
         return new Runnable() {
             public void run() {
                 SMSActionResult result = RunnableFactory.this.sendActivity.refreshInformationText(false);
