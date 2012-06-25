@@ -169,7 +169,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
             con.setRequestMethod("POST");
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
+                return SMSActionResult.NETWORK_ERROR();
             }
             String sidCookie = null;
             Outer:

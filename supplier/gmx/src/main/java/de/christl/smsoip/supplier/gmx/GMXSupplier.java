@@ -275,7 +275,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         //no network
         Map<String, List<String>> headerFields = con.getHeaderFields();
         if (headerFields == null) {
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
         }
         try {
             lastInputStream = new DataInputStream(con.getInputStream());
