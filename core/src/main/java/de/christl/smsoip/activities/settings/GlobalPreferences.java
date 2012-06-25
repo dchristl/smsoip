@@ -21,7 +21,7 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_DEFAULT_PROVIDER = "global.default.provider";
     public static final String GLOBAL_AREA_CODE = "global.area.code";
     public static final String GLOBAL_ENABLE_NETWORK_CHECK = "global.enable.network.check";
-    public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.propvider.output";
+    public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
 
     @Override
@@ -41,7 +41,7 @@ public class GlobalPreferences extends PreferenceActivity {
         editTextPref.setTitle(R.string.text_signature);
         editTextPref.setSummary(R.string.text_signature_description);
         root.addPreference(editTextPref);
-        ListPreference listPref = new ListPreference(this);
+        final ListPreference listPref = new ListPreference(this);
         Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.size() > 1) {
             Map<String, String> providersWithNames = new LinkedHashMap<String, String>();
@@ -55,6 +55,9 @@ public class GlobalPreferences extends PreferenceActivity {
             listPref.setKey(GLOBAL_DEFAULT_PROVIDER);
             listPref.setTitle(R.string.text_default_provider);
             listPref.setSummary(R.string.text_default_provider_description);
+            if (listPref.getValue() == null) {
+                listPref.setValue("");    //set the value if nothing selected
+            }
             root.addPreference(listPref);
         }
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
