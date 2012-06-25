@@ -43,9 +43,16 @@ public class AllActivity extends Activity {
     private static boolean nwSettingsAlreadyShown = false;
     private boolean notLoadedDialogAlreadyShown = false;
 
+    private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
+    private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
+            nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
+        }
     }
 
     @Override
@@ -200,6 +207,13 @@ public class AllActivity extends Activity {
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.text_no_providers)).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, notLoadedDialogAlreadyShown);
+        outState.putBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, nwSettingsAlreadyShown);
     }
 
     public static void insertAds(LinearLayout layout, Activity activity) {
