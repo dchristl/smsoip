@@ -95,8 +95,13 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 writer.write(headerFields);
                 writer.flush();
                 is = urlConn.getInputStream();
+                Map<String, List<String>> urlConnHeaderFields = urlConn.getHeaderFields();
+                if (urlConnHeaderFields == null) {   //normally not reachable cause will be an IOException in getInputStream
+                    out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+                    continue;
+                }
                 Outer:
-                for (Map.Entry<String, List<String>> header : urlConn.getHeaderFields().entrySet()) {
+                for (Map.Entry<String, List<String>> header : urlConnHeaderFields.entrySet()) {
                     if (header.getKey().equals("content-type")) {
                         for (String entry : header.getValue()) {
                             String charset = "charset";
