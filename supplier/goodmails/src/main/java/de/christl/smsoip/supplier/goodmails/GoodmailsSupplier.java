@@ -285,7 +285,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                     for (String s : stringListEntry.getValue()) {
                         if (s.startsWith("sessionSecret")) {
                             sessionCookie = s;
-                            return SMSActionResult.NO_ERROR();
+                            return SMSActionResult.LOGIN_SUCCESSFUL();
                         }
                     }
                 }

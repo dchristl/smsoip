@@ -298,7 +298,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         }
 
         if (!(sessionId == null || sessionId.length() == 0)) {
-            return SMSActionResult.NO_ERROR();
+            return SMSActionResult.LOGIN_SUCCESSFUL();
         }
         return SMSActionResult.LOGIN_FAILED_ERROR();
     }
