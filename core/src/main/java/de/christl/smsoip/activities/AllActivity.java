@@ -32,7 +32,6 @@ import java.util.Vector;
  *
  */
 public class AllActivity extends Activity {
-    public static final String PUBLISHER_ID = "a14f930decd44ce";
     public static final int EXIT = 0;
     static Vector<Activity> registeredActivities = new Vector<Activity>();
 
@@ -215,8 +214,11 @@ public class AllActivity extends Activity {
 
     public static void insertAds(int adviewId, Activity activity) {
         MobclixAdView adView = (MobclixAdView) activity.findViewById(adviewId);
+        adView.setRefreshTime(5000);
+        adView.addMobclixAdViewListener(new AdViewListener());
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             adView.setVisibility(View.VISIBLE);
+            adView.pause();
         } else {
             adView.setVisibility(View.GONE);
         }

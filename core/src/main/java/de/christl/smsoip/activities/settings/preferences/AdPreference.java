@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.AdViewListener;
 import de.christl.smsoip.application.SMSoIPApplication;
 
 public class AdPreference extends Preference {
@@ -25,11 +26,14 @@ public class AdPreference extends Preference {
         Activity activity = (Activity) getContext();
 
         MobclixAdView adView = new MobclixMMABannerXLAdView(activity);
+        adView.setRefreshTime(5000);
+        adView.addMobclixAdViewListener(new AdViewListener());
         ((LinearLayout) view).addView(adView);
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             adView.setVisibility(View.VISIBLE);
         } else {
             adView.setVisibility(View.GONE);
+            adView.cancelAd();
         }
         return view;
     }
