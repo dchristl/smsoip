@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.application.ChangeLog;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.provider.SMSSupplier;
 
@@ -45,31 +46,6 @@ public class AllActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
-            nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add(0, EXIT, 0, getString(R.string.text_exit));
-        item.setIcon(R.drawable.ic_menu_close_clear_cancel);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == EXIT) {
-            killAll();
-            return true;
-        }
-        return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
         app.initProviders();
@@ -94,6 +70,30 @@ public class AllActivity extends Activity {
                 }
             }
         }
+        if (savedInstanceState != null) {
+            notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
+            nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
+        }
+        ChangeLog cl = new ChangeLog(this);
+//        if (cl.firstRun()) {
+        cl.getLogDialog().show();
+//        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem item = menu.add(0, EXIT, 0, getString(R.string.text_exit));
+        item.setIcon(R.drawable.ic_menu_close_clear_cancel);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == EXIT) {
+            killAll();
+            return true;
+        }
+        return true;
     }
 
     private void showNotLoadedProvidersDialog(List<SMSSupplier> suppliers, String messageText) {

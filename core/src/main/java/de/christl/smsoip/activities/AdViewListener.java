@@ -6,11 +6,7 @@ import com.mobclix.android.sdk.MobclixAdViewListener;
 import de.christl.smsoip.application.SMSoIPApplication;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Danny
- * Date: 28.06.12
- * Time: 20:10
- * To change this template use File | Settings | File Templates.
+ * Simple listener handling visibility of ads by success/error
  */
 public class AdViewListener implements MobclixAdViewListener {
 
