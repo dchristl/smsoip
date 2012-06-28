@@ -18,11 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
@@ -216,17 +213,14 @@ public class AllActivity extends Activity {
         outState.putBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, nwSettingsAlreadyShown);
     }
 
-    public static void insertAds(LinearLayout layout, Activity activity) {
+    public static void insertAds(int adviewId, Activity activity) {
+        MobclixAdView adView = (MobclixAdView) activity.findViewById(adviewId);
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            adView.setVisibility(View.VISIBLE);
+        } else {
+            adView.setVisibility(View.GONE);
+        }
 
-        // Create the adView
-        AdView adView = new AdView(activity, AdSize.BANNER, PUBLISHER_ID);
-
-        // Add the adView to it
-        layout.addView(adView);
-
-        AdRequest adRequest = new AdRequest();
-        adRequest.addTestDevice("9405EE5055BF04AE898858A2515B3588");
-        adView.loadAd(adRequest);
     }
 
 }

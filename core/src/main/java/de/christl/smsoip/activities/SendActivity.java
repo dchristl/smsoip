@@ -154,9 +154,7 @@ public class SendActivity extends AllActivity {
                 showDialog(DIALOG_PROVIDER);
             }
         }
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            insertAds((LinearLayout) findViewById(R.id.linearLayout), this);
-        }
+        insertAds(R.id.banner_adview, this);
 
     }
 

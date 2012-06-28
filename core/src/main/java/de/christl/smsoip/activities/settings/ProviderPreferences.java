@@ -46,10 +46,8 @@ public class ProviderPreferences extends PreferenceActivity {
         if (provider.hasAccounts()) {
             root.addPreference(new MultipleAccountsPreference(this, preferenceManager));
         }
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            AdPreference adPreference = new AdPreference(this);
-            root.addPreference(adPreference);
-        }
+        AdPreference adPreference = new AdPreference(this);
+        root.addPreference(adPreference);
 
         List<Preference> additionalPreferences = provider.getAdditionalPreferences(this);
         if (additionalPreferences != null) {

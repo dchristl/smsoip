@@ -173,7 +173,11 @@
 
                     >
             </Spinner>
-
+            <com.mobclix.android.sdk.MobclixMMABannerXLAdView
+                    android:id="@+id/banner_adview"
+                    android:layout_width="320dip"
+                    android:layout_height="50dip"
+                    android:layout_gravity="center"/>
 
             <Button
                     android:id="@+id/sendButton"

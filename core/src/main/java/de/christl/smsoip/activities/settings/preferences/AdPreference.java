@@ -6,11 +6,10 @@ import android.preference.Preference;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.mobclix.android.sdk.MobclixAdView;
+import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
-import de.christl.smsoip.activities.AllActivity;
+import de.christl.smsoip.application.SMSoIPApplication;
 
 public class AdPreference extends Preference {
 
@@ -23,18 +22,15 @@ public class AdPreference extends Preference {
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        // Initiate a generic request to load it with an ad
-        // the context is a PreferenceActivity
         Activity activity = (Activity) getContext();
 
-        // Create the adView
-        AdView adView = new AdView(activity, AdSize.BANNER, AllActivity.PUBLISHER_ID);
-
+        MobclixAdView adView = new MobclixMMABannerXLAdView(activity);
         ((LinearLayout) view).addView(adView);
-
-        // Initiate a generic request to load it with an ad
-        AdRequest request = new AdRequest();
-        adView.loadAd(request);
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            adView.setVisibility(View.VISIBLE);
+        } else {
+            adView.setVisibility(View.GONE);
+        }
         return view;
     }
 }
