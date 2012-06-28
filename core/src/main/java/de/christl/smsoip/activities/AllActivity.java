@@ -22,8 +22,8 @@ import android.widget.Toast;
 import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
-import de.christl.smsoip.application.ChangeLog;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.provider.SMSSupplier;
 
 import java.util.List;
@@ -75,9 +75,9 @@ public class AllActivity extends Activity {
             nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
         }
         ChangeLog cl = new ChangeLog(this);
-//        if (cl.firstRun()) {
-        cl.getLogDialog().show();
-//        }
+        if (cl.firstRun()) {
+            cl.getLogDialog().show();
+        }
     }
 
     @Override

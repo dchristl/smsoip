@@ -12,7 +12,7 @@
  * @author: Karsten Priegnitz
  * @see: http://code.google.com/p/android-change-log/
  */
-package de.christl.smsoip.application;
+package de.christl.smsoip.application.changelog;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,6 +21,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.webkit.WebView;
 import de.christl.smsoip.R;
 
@@ -41,7 +43,6 @@ public class ChangeLog {
      * Constructor
      * <p/>
      * Retrieves the version names and stores the new version name in
-     * SharedPreferences
      *
      * @param context
      */
@@ -132,7 +133,9 @@ public class ChangeLog {
     }
 
     private AlertDialog getDialog(boolean full) {
-        WebView wv = new WebView(this.context);
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View dialogView = factory.inflate(R.layout.changelogdialog, null);
+        WebView wv = (WebView) dialogView.findViewById(R.id.webView);
         wv.setBackgroundColor(0); // transparent
         // wv.getSettings().setDefaultTextEncodingName("utf-8");
         wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
@@ -141,7 +144,7 @@ public class ChangeLog {
         builder.setTitle(context.getResources().getString(full
                 ? R.string.changelog_full_title
                 : R.string.changelog_title))
-                .setView(wv)
+                .setView(dialogView)
                 .setCancelable(false)
                 .setPositiveButton(
                         context.getResources().getString(
