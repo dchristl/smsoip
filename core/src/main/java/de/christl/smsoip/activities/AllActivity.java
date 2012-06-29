@@ -214,7 +214,7 @@ public abstract class AllActivity extends Activity {
 
     public static void insertAds(int adviewId, Activity activity) {
         MobclixAdView adView = (MobclixAdView) activity.findViewById(adviewId);
-        adView.setRefreshTime(5000);
+        adView.setRefreshTime(10000);
         adView.addMobclixAdViewListener(new AdViewListener());
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             adView.setVisibility(View.VISIBLE);

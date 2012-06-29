@@ -26,7 +26,7 @@ public class AdPreference extends Preference {
         Activity activity = (Activity) getContext();
 
         MobclixAdView adView = new MobclixMMABannerXLAdView(activity);
-        adView.setRefreshTime(5000);
+        adView.setRefreshTime(10000);
         adView.addMobclixAdViewListener(new AdViewListener());
         ((LinearLayout) view).addView(adView);
         if (SMSoIPApplication.getApp().isAdsEnabled()) {

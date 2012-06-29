@@ -74,6 +74,9 @@
     <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
+    <string name="text_enable_info_update">Auto Aktualisierung</string>
+    <string name="text_enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie kostenlose SMS automatisch aktualisiert.
+    </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
         versehen (z.B. \'SMSoIP -> GMX\')

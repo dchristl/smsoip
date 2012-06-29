@@ -77,6 +77,10 @@ fileName: strings.xml
     <string name="text_enable_network_check_description">Enable the check on startup if network is available and shows
         you additional options, like enabling W-LAN.
     </string>
+    <string name="text_enable_info_update">Auto update</string>
+    <string name="text_enable_info_update_description">On app startup the provider informations like free messages will
+        be updated.
+    </string>
     <string name="text_enable_provider_output">Enable output of provider</string>
     <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP
         -> GMX\')

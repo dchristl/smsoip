@@ -21,6 +21,7 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_DEFAULT_PROVIDER = "global.default.provider";
     public static final String GLOBAL_AREA_CODE = "global.area.code";
     public static final String GLOBAL_ENABLE_NETWORK_CHECK = "global.enable.network.check";
+    public static final String GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP = "global.enable.info.update";
     public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
 
@@ -77,6 +78,12 @@ public class GlobalPreferences extends PreferenceActivity {
         enableNetworkCheck.setTitle(R.string.text_enable_network_check);
         enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
         root.addPreference(enableNetworkCheck);
+        CheckBoxPreference enableInfoOnStartup = new CheckBoxPreference(this);
+        enableInfoOnStartup.setDefaultValue(true);
+        enableInfoOnStartup.setKey(GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP);
+        enableInfoOnStartup.setTitle(R.string.text_enable_info_update);
+        enableInfoOnStartup.setSummary(R.string.text_enable_info_update_description);
+        root.addPreference(enableInfoOnStartup);
         boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
         writeToDataBase.setKey(GLOBAL_WRITE_TO_DATABASE);
@@ -113,7 +120,7 @@ public class GlobalPreferences extends PreferenceActivity {
                 .setData(Uri.parse(uriString)));
         pluginIntent.setTitle(R.string.text_visit_plugin_page);
         pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
-        root.addPreference(intentPref);
+        root.addPreference(pluginIntent);
         return root;
     }
 

@@ -155,6 +155,21 @@ public class SendActivity extends AllActivity {
             }
         }
         insertAds(R.id.banner_adview, this);
+        updateInfoTextSilent();
+    }
+
+    private void updateInfoTextSilent() {
+        String info = getString(R.string.text_notyetrefreshed);
+        //supplier have to be set
+        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
+            SMSActionResult actionResult = refreshInformationText(false);
+            if (actionResult.isSuccess()) {
+                info = actionResult.getMessage();
+            }
+        }
+        TextView infoText = (TextView) findViewById(R.id.infoText);
+        infoText.setText(info);
+
 
     }
 
@@ -898,17 +913,17 @@ public class SendActivity extends AllActivity {
     private void switchAccount(Integer accountId) {
         smsSupplier.getProvider().setCurrentAccountId(accountId);
         setFullTitle();
-        ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
+        updateInfoTextSilent();
     }
 
     private void changeSupplier(String supplierClassName) {
         smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
         setFullTitle();
         //reset all not needed informations
-        ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
         updateSMScounter();
         setSpinner();
         updateAfterReceiverCountChanged();
+        updateInfoTextSilent();
     }
 
     public void updateAfterReceiverCountChanged() {
