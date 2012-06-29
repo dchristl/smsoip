@@ -17,10 +17,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
@@ -92,19 +90,13 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         }
     }
 
-    private SMSActionResult processRefreshInformations(InputStream inputStream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, ENCODING));
-        String line;
-        String credits = null;
-        while ((line = reader.readLine()) != null) {
-            if (line.contains("farb") && line.contains("/konto/index.php")) {
-                credits = line.replaceAll(".*\">", "");
-                credits = credits.replaceAll("<.*", "");
-                credits = credits.replaceAll("[[^0-9]&&[^A-z]&&[^ ]].*", "");
-                break;
-            }
-        }
-        if (credits != null) {
+    SMSActionResult processRefreshInformations(InputStream inputStream) throws IOException {
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+        //search for all link forwarding to account and Credits are inside text
+        Elements farbLinks = parse.select("a.farb[href~=konto]:matches(Credits)");
+        String credits = farbLinks.text();
+        credits = credits.replaceAll("[^\\p{Print}]", "").trim(); //remove all non printable lines
+        if (!credits.equals("")) {
             return SMSActionResult.NO_ERROR(credits);
         } else {
             return SMSActionResult.UNKNOWN_ERROR();
