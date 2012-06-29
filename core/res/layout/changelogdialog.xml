@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/clippedbitmap"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollbarContactsTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/clippedbitmap"
         >
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/scrollbarContactsTable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+
+    <WebView android:id="@+id/webView"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
             >
+    </WebView>
+</ScrollView>
 
-        <WebView android:id="@+id/webView"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                >
-        </WebView>
-    </ScrollView>
-
-</LinearLayout>
