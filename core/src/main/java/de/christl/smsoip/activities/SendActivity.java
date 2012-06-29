@@ -711,16 +711,13 @@ public class SendActivity extends AllActivity {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
                 startOptionActivity();
-                optionsCalled = true;
                 return true;
             case OPTION_SWITCH_SUPPLIER:
                 removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
                 showDialog(DIALOG_PROVIDER);
                 return true;
             case GLOBAL_OPTION:
-                Intent pref = new Intent(this, GlobalPreferences.class);
-                startActivity(pref);
-                optionsCalled = true;
+                startGlobalOptionActivity();
                 return true;
             case OPTION_SWITCH_ACCOUNT:
                 removeDialog(DIALOG_SWITCH_ACCOUNT); //remove the chosenContactsDialog forces recreation
@@ -731,12 +728,18 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    private void startGlobalOptionActivity() {
+        Intent pref = new Intent(this, GlobalPreferences.class);
+        startActivity(pref);
+        optionsCalled = true;
+    }
+
 
     private void startOptionActivity() {
-        Intent intent =
-                new Intent(this, ProviderPreferences.class);
+        Intent intent = new Intent(this, ProviderPreferences.class);
         intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, smsSupplier.getClass().getCanonicalName());
         startActivity(intent);
+        optionsCalled = true;
     }
 
 

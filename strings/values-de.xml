@@ -108,6 +108,7 @@ fileName: strings.xml
     <string name="text_changeAccount">Account wechseln</string>
     <string name="text_chooseAccount">Account auswählen</string>
     <string name="text_partial_success">Teilweiser Erfolg</string>
+    <string name="changelog_title">Was ist neu</string>
 </resources>
 
 <!--String resources for:

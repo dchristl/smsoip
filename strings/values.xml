@@ -106,6 +106,7 @@ fileName: strings.xml
     <string name="text_changeAccount">Change Account</string>
     <string name="text_chooseAccount">Choose Account</string>
     <string name="text_partial_success">Partial success</string>
+    <string name="changelog_title">What\'s New</string>
 </resources>
 
 <!--String resources for:

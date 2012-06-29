@@ -32,7 +32,7 @@ import java.util.Vector;
 /**
  *
  */
-public class AllActivity extends Activity {
+public abstract class AllActivity extends Activity {
     public static final int EXIT = 0;
     static Vector<Activity> registeredActivities = new Vector<Activity>();
 

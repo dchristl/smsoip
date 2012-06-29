@@ -125,13 +125,6 @@ public class ChangeLog {
         return this.getDialog(false);
     }
 
-    /**
-     * @return an AlertDialog with a full change log displayed
-     */
-    public AlertDialog getFullLogDialog() {
-        return this.getDialog(true);
-    }
-
     private AlertDialog getDialog(boolean full) {
         LayoutInflater factory = LayoutInflater.from(context);
         final View dialogView = factory.inflate(R.layout.changelogdialog, null);
@@ -141,14 +134,13 @@ public class ChangeLog {
         wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-        builder.setTitle(context.getResources().getString(full
-                ? R.string.changelog_full_title
-                : R.string.changelog_title))
+        builder.setTitle(context.getResources().getString(
+                R.string.changelog_title))
                 .setView(dialogView)
                 .setCancelable(false)
                 .setPositiveButton(
                         context.getResources().getString(
-                                R.string.changelog_ok_button),
+                                R.string.text_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
