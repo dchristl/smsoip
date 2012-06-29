@@ -138,9 +138,9 @@ public class SendActivity extends AllActivity {
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
             receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
             receiverList.addAll(tmpReceiverList);
-            ((TextView) findViewById(R.id.infoText)).setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INFO));
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
+            ((TextView) findViewById(R.id.infoText)).setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INFO));
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
