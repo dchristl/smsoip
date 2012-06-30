@@ -93,6 +93,14 @@
                         android:src="@drawable/btn_emoticons"
                         >
                 </ImageButton>
+                <ImageButton
+                        android:id="@+id/showHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:src="@drawable/ic_menu_start_conversation"
+                        >
+                </ImageButton>
                 <RelativeLayout android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                         >

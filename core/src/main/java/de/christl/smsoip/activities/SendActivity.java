@@ -124,6 +124,7 @@ public class SendActivity extends AllActivity {
         setContactsByNumberInput();
         setPreselectedContact();
         setLastInfoButton();
+        setLastMessagesButton();
         if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
             smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             setFullTitle();
@@ -224,7 +225,6 @@ public class SendActivity extends AllActivity {
         final CharSequence progressText = getText(R.string.text_smscomitted);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                showLastMessagesDialog();
                 if (!preSendCheck() || progressDialog == null) {
                     return;
                 }
@@ -241,9 +241,15 @@ public class SendActivity extends AllActivity {
         );
     }
 
-    private void showLastMessagesDialog() {
-        ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(this, receiverList);
-        lastMessageDialog.show();
+    private void setLastMessagesButton() {
+        findViewById(R.id.showHistory).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
+                lastMessageDialog.show();
+            }
+        });
+
     }
 
 
