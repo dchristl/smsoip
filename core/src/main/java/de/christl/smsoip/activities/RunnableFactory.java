@@ -151,7 +151,16 @@ public class RunnableFactory {
                         }
                     };
                     updateUIHandler.post(runnable);
+                } else {
+                    updateUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendActivity.updateInfoTextAndRefreshButton(null);
+
+                        }
+                    });
                 }
+
             }
         });
         thread.start();

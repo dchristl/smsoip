@@ -137,7 +137,7 @@ public class SendActivity extends AllActivity {
             receiverList.addAll(tmpReceiverList);
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
-            ((TextView) findViewById(R.id.infoText)).setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INFO));
+            updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO));
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
@@ -150,9 +150,10 @@ public class SendActivity extends AllActivity {
                 removeDialog(DIALOG_PROVIDER);
                 showDialog(DIALOG_PROVIDER);
             }
+            updateInfoTextSilent();
         }
         insertAds(R.id.banner_adview, this);
-        updateInfoTextSilent();
+
     }
 
     private void updateInfoTextSilent() {
@@ -171,7 +172,9 @@ public class SendActivity extends AllActivity {
     }
 
     public void updateInfoTextAndRefreshButton(String info) {
-        ((TextView) findViewById(R.id.infoText)).setText(info);
+        if (info != null) {
+            ((TextView) findViewById(R.id.infoText)).setText(info);
+        }
         findViewById(R.id.resfreshButton).setEnabled(true);
     }
 
