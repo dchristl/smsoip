@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
@@ -159,16 +160,26 @@ public class SendActivity extends AllActivity {
     }
 
     private void updateInfoTextSilent() {
-        String info = getString(R.string.text_notyetrefreshed);
-        //supplier have to be set
-        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
-            SMSActionResult actionResult = refreshInformationText(false);
-            if (actionResult.isSuccess()) {
-                info = actionResult.getMessage();
+        Handler handler = new Handler();
+        final View refreshButton = findViewById(R.id.resfreshButton);
+        refreshButton.setEnabled(false);
+        final TextView infoText = (TextView) findViewById(R.id.infoText);
+        infoText.setText(R.string.text_notyetrefreshed);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                String info = getString(R.string.text_notyetrefreshed);
+                //supplier have to be set
+                if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
+                    SMSActionResult actionResult = refreshInformationText(false);
+                    if (actionResult.isSuccess()) {
+                        info = actionResult.getMessage();
+                    }
+                }
+                infoText.setText(info);
+                refreshButton.setEnabled(true);
             }
-        }
-        TextView infoText = (TextView) findViewById(R.id.infoText);
-        infoText.setText(info);
+        };
+        handler.post(runnable);
 
 
     }
