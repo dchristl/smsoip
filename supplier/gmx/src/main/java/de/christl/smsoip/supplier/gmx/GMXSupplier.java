@@ -2,7 +2,7 @@ package de.christl.smsoip.supplier.gmx;
 
 import android.text.Editable;
 import android.util.Log;
-import de.christl.smsoip.models.Receiver;
+import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
