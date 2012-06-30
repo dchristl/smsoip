@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 
@@ -67,7 +68,7 @@ public class DatabaseHandler {
 
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(givenNumber));
         Cursor query = parentActivity.getContentResolver().query(uri, projection, null, null, null);
-        while (query.moveToNext()) {
+        if (query.moveToFirst()) {
             name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             if (name == null || name.equals("")) {
                 name = (String) parentActivity.getText(R.string.text_unknown);
@@ -79,7 +80,6 @@ public class DatabaseHandler {
             int photoId = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
             out = new Receiver(id, name, photoId);
             out.addNumber(givenNumber, "");
-            break; //no need to loop, just pick the first one found
         }
         query.close();
         return out;
@@ -94,6 +94,42 @@ public class DatabaseHandler {
             return c.getBlob(0);
         }
         return null;
+    }
+
+    public Map<Receiver, String> findLastMessage() {
+        Map<Receiver, String> out = new HashMap<Receiver, String>(1);
+        Uri mSmsinboxQueryUri = Uri.parse("content://sms/inbox");    //only inbox will be queried
+        Cursor cursor = parentActivity.getContentResolver().query(mSmsinboxQueryUri,
+                new String[]{"_id", "thread_id", "address", "person", "date",
+                        "body", "type"}, null, null, "date desc limit 1");
+        parentActivity.startManagingCursor(cursor);
+        String[] columns = new String[]{"address", "person", "date", "body", "type"};
+        if (cursor.getCount() > 0) {
+            String count = Integer.toString(cursor.getCount());
+            Log.e("Count", count);
+            if (cursor.moveToFirst()) {
+                String number = cursor.getString(cursor.getColumnIndex(columns[0]));
+                String name = cursor.getString(cursor.getColumnIndex(columns[1]));
+                String date = cursor.getString(cursor.getColumnIndex(columns[2]));
+                String msg = cursor.getString(cursor.getColumnIndex(columns[3]));
+                String type = cursor.getString(cursor.getColumnIndex(columns[4]));
+                Log.e(parentActivity.getClass().getCanonicalName(), "number " + number);
+                Log.e(parentActivity.getClass().getCanonicalName(), "name " + name);
+                Log.e(parentActivity.getClass().getCanonicalName(), "date " + date);
+                Log.e(parentActivity.getClass().getCanonicalName(), "msg " + msg);
+                Log.e(parentActivity.getClass().getCanonicalName(), "type " + type);
+                Receiver receiver = findContactByNumber(number);
+                if (receiver == null) {
+                    receiver = new Receiver("-1", (String) parentActivity.getText(R.string.text_unknown), 0);
+                    receiver.addNumber(number);
+
+                }
+                Log.e(parentActivity.getClass().getCanonicalName(), "Receiver " + receiver);
+                out.put(receiver, msg);
+
+            }
+        }
+        return out;
     }
 
 }

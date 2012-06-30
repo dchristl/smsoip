@@ -75,7 +75,8 @@
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
     <string name="text_enable_info_update">Auto Aktualisierung</string>
-    <string name="text_enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie kostenlose SMS automatisch aktualisiert.
+    <string name="text_enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie
+        kostenlose SMS automatisch aktualisiert.
     </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
@@ -107,4 +108,6 @@
     <string name="text_chooseAccount">Account auswählen</string>
     <string name="text_partial_success">Teilweiser Erfolg</string>
     <string name="changelog_title">Was ist neu</string>
+    <string name="text_lastMessage">Letzte Nachricht</string>
+    <string name="text_lastConversation">Letzte Konversationen</string>
 </resources>

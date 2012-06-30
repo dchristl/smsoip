@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scrollbarlastMessagesTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/clippedbitmap"
+        >
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            >
+        <TextView android:text="@string/text_lastMessage"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textStyle="bold"
+                  android:textColor="#C0C0F0"
+                />
+        <TextView android:id="@+id/contact"
+                  android:textColor="#C0F0C0"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingTop="5dp"
+                />
+        <TextView android:id="@+id/message"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingTop="5dp"
+                />
+        <TextView android:text="@string/text_lastConversation"
+                  android:textStyle="bold"
+                  android:textColor="#C0C0F0"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:padding="5dp"
+                />
+        <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tableLayout"
+                android:stretchColumns="*"
+                >
+        </TableLayout>
+    </LinearLayout>
+</ScrollView>

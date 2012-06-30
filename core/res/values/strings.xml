@@ -106,4 +106,6 @@
     <string name="text_chooseAccount">Choose Account</string>
     <string name="text_partial_success">Partial success</string>
     <string name="changelog_title">What\'s New</string>
+    <string name="text_lastMessage">Last message</string>
+    <string name="text_lastConversation">Last conversation</string>
 </resources>

@@ -30,6 +30,12 @@ public class Receiver implements Serializable, Parcelable {
         this.enabled = true;
     }
 
+    public Receiver(String pickedId, String name) {
+        this.pickedId = pickedId;
+        this.name = name;
+        this.enabled = true;
+    }
+
     public void setNumberTypeMap(HashMap<String, String> numberTypeMap) {
         this.numberTypeMap = numberTypeMap;
     }
@@ -70,6 +76,17 @@ public class Receiver implements Serializable, Parcelable {
         fixedRawNumberMapping.put(fixedNumber, rawNumber);
         numberTypeMap.put(fixedNumber, type);
     }
+
+    /**
+     * add a number as receivernumber and raw number
+     *
+     * @param rawNumber
+     */
+    public void addNumber(String rawNumber) {
+        receiverNumber = fixNumber(rawNumber);
+        fixedRawNumberMapping.put(receiverNumber, rawNumber);
+    }
+
 
     public Map<String, String> getNumberTypeMap() {
         return numberTypeMap;
@@ -124,6 +141,7 @@ public class Receiver implements Serializable, Parcelable {
 
     }
 
+
     public static final Parcelable.Creator<Receiver> CREATOR = new Parcelable.Creator<Receiver>() {
 
 
@@ -151,4 +169,20 @@ public class Receiver implements Serializable, Parcelable {
         }
     };
 
+    @Override
+    public String toString() {
+        return "Receiver{" +
+                "pickedId='" + pickedId + '\'' +
+                ", name='" + name + '\'' +
+                ", photoId=" + photoId +
+                ", receiverNumber='" + receiverNumber + '\'' +
+                ", enabled=" + enabled +
+                ", fixedRawNumberMapping=" + fixedRawNumberMapping +
+                ", numberTypeMap=" + numberTypeMap +
+                '}';
+    }
+
+    public boolean isUnknown() {
+        return pickedId.equals("-1");
+    }
 }

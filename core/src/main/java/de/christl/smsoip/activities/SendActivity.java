@@ -31,10 +31,7 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
 import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
-import de.christl.smsoip.ui.ChosenContactsDialog;
-import de.christl.smsoip.ui.EmoImageDialog;
-import de.christl.smsoip.ui.ImageDialog;
+import de.christl.smsoip.ui.*;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -159,12 +156,12 @@ public class SendActivity extends AllActivity {
     }
 
     private void updateInfoTextSilent() {
-        final View refreshButton = findViewById(R.id.resfreshButton);
-        refreshButton.setEnabled(false);
-        final TextView infoText = (TextView) findViewById(R.id.infoText);
-        infoText.setText(R.string.text_notyetrefreshed);
         //only if parameter and supplier set
         if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
+            final View refreshButton = findViewById(R.id.resfreshButton);
+            refreshButton.setEnabled(false);
+            final TextView infoText = (TextView) findViewById(R.id.infoText);
+            infoText.setText(R.string.text_notyetrefreshed);
             RunnableFactory factory = new RunnableFactory(this, null);
             factory.updateInfoTextInBackground();
 
@@ -219,10 +216,12 @@ public class SendActivity extends AllActivity {
     }
 
     private void setSendButton() {
+
         Button sendButton = (Button) findViewById(R.id.sendButton);
         final CharSequence progressText = getText(R.string.text_smscomitted);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                showLastMessagesDialog();
                 if (!preSendCheck() || progressDialog == null) {
                     return;
                 }
@@ -238,6 +237,12 @@ public class SendActivity extends AllActivity {
 
         );
     }
+
+    private void showLastMessagesDialog() {
+        ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(this, receiverList);
+        lastMessageDialog.show();
+    }
+
 
     private String getDefaultSupplier() {
         String string = settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "");
