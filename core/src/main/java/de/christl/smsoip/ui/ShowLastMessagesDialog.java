@@ -61,14 +61,6 @@ public class ShowLastMessagesDialog extends Dialog {
             receiverView.setGravity(Gravity.CENTER);
             layout.addView(receiverView);
 
-//            android:layout_width="wrap_content"
-//            android:layout_height="wrap_content"
-//            android:text="sampl esamplesamp lesam plesam plesamplesamp lesamplesample samplesamplesam plesamplesamplesamplesamplesa mplesamplesampl esamplesam plesample"
-//            android:gravity="left"
-//            android:paddingRight="50"
-//            android:paddingLeft="20"
-//            android:layout_gravity="center"
-//            android:textColor="#F0EC6F"
             for (Message message : conversation) {
                 TextView messageView = new TextView(getContext());
                 messageView.setText(message.getMessage());
