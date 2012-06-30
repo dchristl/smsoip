@@ -6,14 +6,17 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Window;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.models.Message;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -27,6 +30,7 @@ public class ShowLastMessagesDialog extends Dialog {
         super(context);
         this.receiverList = receiverList;
         dbHandler = new DatabaseHandler(((Activity) context));
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     @Override
@@ -47,24 +51,21 @@ public class ShowLastMessagesDialog extends Dialog {
         TableLayout tableLayout = (TableLayout) findViewById(R.id.tableLayout);
         /* Create a new row to be added. */
         for (final Receiver receiver : receiverList) {
+            LinkedList<Message> conversation = dbHandler.findConversation(receiver);
             TableRow receiverTableRow = new TableRow(getContext());
             TextView receiverView = new TextView(getContext());
             receiverView.setText(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
-//            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-//                    TableRow.LayoutParams.WRAP_CONTENT);
-//            layoutParams.span = 2;
-//            receiverView.setLayoutParams(layoutParams);
             receiverView.setTextColor(Color.parseColor("#C0F0C0"));
             receiverView.setPadding(5, 5, 5, 5);
             receiverView.setGravity(Gravity.CENTER);
 
             receiverTableRow.addView(receiverView);
             tableLayout.addView(receiverTableRow);
-            for (int i = 0; i < 5; i++) {
+            for (Message message : conversation) {
                 TableRow messagTableRow = new TableRow(getContext());
                 TextView messageView = new TextView(getContext());
-                messageView.setText("Bla Blaasasasas");
-                messageView.setGravity(i % 2 == 0 ? Gravity.LEFT : Gravity.RIGHT);
+                messageView.setText(message.getMessage());
+                messageView.setGravity(message.isOutgoing() ? Gravity.RIGHT : Gravity.LEFT);
                 messagTableRow.addView(messageView);
                 tableLayout.addView(messagTableRow);
             }

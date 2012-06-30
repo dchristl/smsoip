@@ -3,7 +3,7 @@ package de.christl.smsoip.supplier.freenet;
 import android.text.Editable;
 import android.text.Html;
 import android.util.Log;
-import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.models.Receiver;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.Result;

@@ -9,8 +9,11 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.models.Message;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -98,33 +101,23 @@ public class DatabaseHandler {
 
     public Map<Receiver, String> findLastMessage() {
         Map<Receiver, String> out = new HashMap<Receiver, String>(1);
-        Uri mSmsinboxQueryUri = Uri.parse("content://sms/inbox");    //only inbox will be queried
-        Cursor cursor = parentActivity.getContentResolver().query(mSmsinboxQueryUri,
-                new String[]{"_id", "thread_id", "address", "person", "date",
-                        "body", "type"}, null, null, "date desc limit 1");
+        Uri inboxQuery = Uri.parse("content://sms/inbox");    //only inbox will be queried
+        Cursor cursor = parentActivity.getContentResolver().query(inboxQuery,
+                new String[]{"address", "body"}, null, null, "date desc limit 1");
         parentActivity.startManagingCursor(cursor);
-        String[] columns = new String[]{"address", "person", "date", "body", "type"};
+        String[] columns = new String[]{"address", "body"};
         if (cursor.getCount() > 0) {
             String count = Integer.toString(cursor.getCount());
             Log.e("Count", count);
             if (cursor.moveToFirst()) {
                 String number = cursor.getString(cursor.getColumnIndex(columns[0]));
-                String name = cursor.getString(cursor.getColumnIndex(columns[1]));
-                String date = cursor.getString(cursor.getColumnIndex(columns[2]));
-                String msg = cursor.getString(cursor.getColumnIndex(columns[3]));
-                String type = cursor.getString(cursor.getColumnIndex(columns[4]));
-                Log.e(parentActivity.getClass().getCanonicalName(), "number " + number);
-                Log.e(parentActivity.getClass().getCanonicalName(), "name " + name);
-                Log.e(parentActivity.getClass().getCanonicalName(), "date " + date);
-                Log.e(parentActivity.getClass().getCanonicalName(), "msg " + msg);
-                Log.e(parentActivity.getClass().getCanonicalName(), "type " + type);
+                String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
                 Receiver receiver = findContactByNumber(number);
                 if (receiver == null) {
                     receiver = new Receiver("-1", (String) parentActivity.getText(R.string.text_unknown), 0);
                     receiver.addNumber(number);
 
                 }
-                Log.e(parentActivity.getClass().getCanonicalName(), "Receiver " + receiver);
                 out.put(receiver, msg);
 
             }
@@ -132,4 +125,29 @@ public class DatabaseHandler {
         return out;
     }
 
+    /**
+     * returns the last 10 messages with this receiver (ingoing and outgoing) in correct time order
+     *
+     * @param receiver
+     * @return
+     */
+    public LinkedList<Message> findConversation(Receiver receiver) {
+        String receiverNumber = receiver.getReceiverNumber();
+
+        LinkedList<Message> out = new LinkedList<Message>();
+        //query the outbox by rawnumber
+        Uri smsQuery = Uri.parse("content://sms/");
+        //replace all non numeric chars and get a number
+        String selection = receiverNumber + "  like ('%' || replacedAddress) and type in (1,2)";
+        String[] projection = {"cast(replace(replace(replace(replace(replace(address,'+',''),'-',''),')',''),'(',''),' ','') as int) as replacedAddress", "body", "date", "type"};
+        Cursor cursor = parentActivity.getContentResolver().query(smsQuery,
+                projection, selection, null, "date desc limit 10");
+        while (cursor.moveToNext()) {
+            String message = cursor.getString(1);
+            Date date = new Date(cursor.getLong(2));
+            int type = cursor.getInt(3);
+            out.add(new Message(message, type == 2, date));
+        }
+        return out;
+    }
 }

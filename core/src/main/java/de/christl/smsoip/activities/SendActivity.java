@@ -479,7 +479,7 @@ public class SendActivity extends AllActivity {
         if (writeToDatabaseEnabled) {
             for (Receiver receiver : receiverList) {
                 ContentValues values = new ContentValues();
-                values.put("address", receiver.getRawNumber());
+                values.put("address", receiver.getReceiverNumber());
                 String prefix = "";
                 if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
                     prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
