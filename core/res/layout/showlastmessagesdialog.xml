@@ -17,13 +17,14 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:textStyle="bold"
+                  android:gravity="center"
                   android:textColor="#C0C0F0"
                 />
         <TextView android:id="@+id/contact"
                   android:textColor="#C0F0C0"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:paddingTop="5dp"
+                  android:padding="5dp"
                 />
         <TextView android:id="@+id/message"
                   android:layout_width="wrap_content"
@@ -31,18 +32,20 @@
                   android:paddingTop="5dp"
                 />
         <TextView android:text="@string/text_lastConversation"
+                  android:id="@+id/lastConversation"
                   android:textStyle="bold"
                   android:textColor="#C0C0F0"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:padding="5dp"
                 />
-        <TableLayout
+        <LinearLayout
+                android:id="@+id/conversationLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tableLayout"
-                android:stretchColumns="*"
+                android:orientation="vertical"
                 >
-        </TableLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
