@@ -22,13 +22,12 @@
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:weightSum="1.0"
-                    xmlns:android="http://schemas.android.com/apk/res/android"
                     >
                 <EditText
                         android:id="@+id/numberInput"
                         android:lines="1"
                         android:scrollbars="vertical"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_targetnumber"
                         android:layout_weight="1"
@@ -84,8 +83,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:src="@drawable/btn_shorttext"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
                         >
                 </ImageButton>
                 <ImageButton
@@ -94,8 +91,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:src="@drawable/btn_emoticons"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
                         >
                 </ImageButton>
                 <RelativeLayout android:layout_width="fill_parent"
@@ -120,7 +115,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center"
-                    xmlns:android="http://schemas.android.com/apk/res/android"
                     >
                 <ImageButton
                         android:id="@+id/clearButton"
