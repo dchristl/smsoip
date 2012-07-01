@@ -155,7 +155,7 @@ public class SendActivity extends AllActivity {
             updateInfoTextSilent();
         }
         insertAds(R.id.banner_adview, this);
-
+        showChangelogIfNeeded();
     }
 
     private void updateInfoTextSilent() {
@@ -996,7 +996,6 @@ public class SendActivity extends AllActivity {
     }
 
 
-
     @Override
     public boolean onSearchRequested() {
         if (searchButton.getVisibility() == View.VISIBLE) {
@@ -1011,7 +1010,9 @@ public class SendActivity extends AllActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //close open dialog if any
-        if (lastDialog != null) {
+        if (lastDialog != null && smsSupplier != null) {
+            //close only if the last dialog was not choose supllier dialog on startup otherwise on returning the gui is
+            // open and  no supplier means FC
             lastDialog.dismiss();
         }
         if (smsSupplier != null) { //only save instance if provider is already chosen

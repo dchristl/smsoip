@@ -74,6 +74,9 @@ public abstract class AllActivity extends Activity {
             notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
             nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
         }
+    }
+
+    protected void showChangelogIfNeeded() {
         ChangeLog cl = new ChangeLog(this);
         if (cl.firstRun()) {
             cl.getLogDialog().show();
