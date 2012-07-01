@@ -63,6 +63,7 @@ public class ShowLastMessagesDialog extends Dialog {
                 TextView messageView = (TextView) findViewById(R.id.message);
                 messageView.setText(message);
                 messageView.setOnClickListener(onClickListener);
+                findViewById(R.id.clickToAdd).setOnClickListener(onClickListener);
             }
         }
         if (receiverList.isEmpty()) {
@@ -73,9 +74,6 @@ public class ShowLastMessagesDialog extends Dialog {
         /* Create a new row to be added. */
         for (final Receiver receiver : receiverList) {
             LinkedList<Message> conversation = dbHandler.findConversation(receiver);
-            if (conversation.isEmpty()) {
-                continue;  // dont show anything if no messages for this receiver
-            }
             TextView receiverView = new TextView(getContext());
             receiverView.setTextColor(Color.parseColor("#C0F0C0"));
             receiverView.setPadding(5, 5, 5, 0);
