@@ -1,5 +1,5 @@
-1. Install Admob to your local repository (currently not available in global repos)
-        - call "mvn" in folder install-admob
+1. Install Admob and mobclix to your local repository (currently not available in global repos)
+        - call "mvn" in folder install-admob and install-mobclix
 2. Build project in your project folder by calling maven with some parameters:
         - call "mvn clean install -Dcertificate.pass=<certificate_password> -Dcertificate.store=<path_to_your_certificate> -Djayway.sdk.path=<folder_to_your_android_sdks> -Doutput.folder=<your_output_folder> -DskipTests"
 3. If you want to execute JUnit-tests, add your plugin credentials (and remove skipTests), for example
