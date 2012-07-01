@@ -65,6 +65,8 @@ public class ShowLastMessagesDialog extends Dialog {
                 messageView.setOnClickListener(onClickListener);
                 findViewById(R.id.clickToAdd).setOnClickListener(onClickListener);
             }
+        } else {
+            findViewById(R.id.clickToAdd).setVisibility(View.GONE);
         }
         if (receiverList.isEmpty()) {
             findViewById(R.id.lastConversation).setVisibility(View.GONE);
