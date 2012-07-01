@@ -121,6 +121,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+                continue;
             } finally {
                 try {
                     is.close();
@@ -135,6 +136,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                     alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
                 }
                 out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(alternateText)));
+                continue;
             }
             out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(alternateText)));
         }
