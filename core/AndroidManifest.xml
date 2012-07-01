@@ -25,7 +25,6 @@
                 <data android:scheme="smsto"/>
             </intent-filter>
         </activity>
-        <activity android:configChanges="orientation" android:name=".activities.AllActivity"/>
         <activity android:configChanges="orientation" android:name=".activities.settings.GlobalPreferences"/>
         <activity android:configChanges="orientation" android:name=".activities.settings.ProviderPreferences"/>
         <activity
