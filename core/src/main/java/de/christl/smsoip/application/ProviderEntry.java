@@ -1,18 +1,18 @@
 package de.christl.smsoip.application;
 
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 /**
  *
  */
 public class ProviderEntry {
 
-    private final SMSSupplier supplier;
+    private final ExtendedSMSSupplier supplier;
     private int minAPIVersion;
     private OptionProvider provider;
 
-    public ProviderEntry(SMSSupplier smsSupplier, int minAPIVersion) {
+    public ProviderEntry(ExtendedSMSSupplier smsSupplier, int minAPIVersion) {
         supplier = smsSupplier;
         this.minAPIVersion = minAPIVersion;
         provider = smsSupplier.getProvider();

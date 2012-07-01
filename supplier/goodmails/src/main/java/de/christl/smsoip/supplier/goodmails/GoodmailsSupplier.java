@@ -1,14 +1,11 @@
 package de.christl.smsoip.supplier.goodmails;
 
-import android.text.Editable;
 import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.supplier.goodmails.constant.Constants;
 
@@ -77,9 +74,9 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 URL myUrl = new URL(tmpUrl);
                 urlConn = (HttpURLConnection) myUrl.openConnection();
                 urlConn.setDoOutput(true);
-                urlConn.setReadTimeout(SMSSupplier.TIMEOUT);
+                urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
                 urlConn.setRequestProperty("Cookie", sessionCookie);
-                urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
+                urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
                 OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
                 String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, encoding);
                 if (spinnerText.equals(Constants.FREE)) {
@@ -148,25 +145,6 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     }
 
 
-    @Override
-    public Result refreshInformationOnRefreshButtonPressed() {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result refreshInformationAfterMessageSuccessfulSent() {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result login(String userName, String password) {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        throw new IllegalArgumentException("STUB");
-    }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
@@ -193,10 +171,10 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         try {
             URL myUrl = new URL(tmpUrl);
             urlConn = (HttpURLConnection) myUrl.openConnection();
-            urlConn.setReadTimeout(SMSSupplier.TIMEOUT);
+            urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Cookie", sessionCookie);
-            urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
+            urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
             is = urlConn.getInputStream();
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
@@ -278,8 +256,8 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         HttpURLConnection con;
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setReadTimeout(SMSSupplier.TIMEOUT);
-            con.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
+            con.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
+            con.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
             con.setRequestMethod("GET");
             con.setInstanceFollowRedirects(false);
             Map<String, List<String>> headerFields = con.getHeaderFields();

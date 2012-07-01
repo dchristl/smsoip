@@ -5,12 +5,11 @@ import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
 
 import java.util.List;
 
 @APIVersion(minVersion = 14)
-public interface ExtendedSMSSupplier extends SMSSupplier {
+public interface ExtendedSMSSupplier {
 
     /**
      * HTTP Useragent.

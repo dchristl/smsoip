@@ -14,7 +14,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 /**
  * Preference for managing multiple accounts
@@ -124,7 +124,7 @@ public class MultipleAccountsPreference extends ListPreference {
 
     }
 
-    public SMSSupplier getSupplier() {
+    public ExtendedSMSSupplier getSupplier() {
         return providerPreferences.getSmsSupplier();
     }
 

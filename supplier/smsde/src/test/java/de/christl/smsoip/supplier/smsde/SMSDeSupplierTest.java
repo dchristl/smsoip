@@ -31,7 +31,7 @@ public class SMSDeSupplierTest {
     @Test
     public void testLogin() throws Exception {
         assertEquals(supplier.checkCredentials(USER_NAME, PASSWORD), SMSActionResult.NO_ERROR());
-        assertTrue(supplier.refreshInformationAfterMessageSuccessfulSent().getUserText().toString().contains(" Credits"));
+        assertTrue(supplier.refreshInfoTextAfterMessageSuccessfulSent().toString().contains(" Credits"));
 //        assertEquals(supplier.fireSMSByText("Ha", new ArrayList<String>(), "asas"), Result.NO_ERROR());
 
     }

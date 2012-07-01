@@ -24,7 +24,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.changelog.ChangeLog;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.util.List;
 import java.util.Vector;
@@ -99,7 +99,7 @@ public abstract class AllActivity extends Activity {
         return true;
     }
 
-    private void showNotLoadedProvidersDialog(List<SMSSupplier> suppliers, String messageText) {
+    private void showNotLoadedProvidersDialog(List<ExtendedSMSSupplier> suppliers, String messageText) {
         if (notLoadedDialogAlreadyShown) {
             return;
         }
@@ -113,7 +113,7 @@ public abstract class AllActivity extends Activity {
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         messageText += "\n";
-        for (SMSSupplier smsSupplier : suppliers) {
+        for (ExtendedSMSSupplier smsSupplier : suppliers) {
             messageText += smsSupplier.getProvider().getProviderName() + "\n";
         }
         builder.setMessage(messageText).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();

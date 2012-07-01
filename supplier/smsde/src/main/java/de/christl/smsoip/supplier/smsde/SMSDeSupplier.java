@@ -1,13 +1,11 @@
 package de.christl.smsoip.supplier.smsde;
 
 
-import android.text.Editable;
 import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
@@ -114,20 +112,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         return provider;
     }
 
-    @Override
-    public Result login(String userName, String password) {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result refreshInformationOnRefreshButtonPressed() {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result refreshInformationAfterMessageSuccessfulSent() {
-        throw new IllegalArgumentException("STUB");
-    }
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
@@ -181,11 +165,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return SMSActionResult.NETWORK_ERROR();
         }
-    }
-
-    @Override
-    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        return Result.UNKNOWN_ERROR().setAlternateText("Deprecated API");
     }
 
 

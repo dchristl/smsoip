@@ -1,12 +1,10 @@
 package de.christl.smsoip.supplier.freenet;
 
-import android.text.Editable;
 import android.text.Html;
 import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
@@ -40,24 +38,10 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
         provider = new FreenetOptionProvider();
     }
 
-    @Override
-    public Result refreshInformationOnRefreshButtonPressed() {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result refreshInformationAfterMessageSuccessfulSent() {
-        throw new IllegalArgumentException("STUB");
-    }
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
         return refreshInformations(false);
-    }
-
-    @Override
-    public Result login(String userName, String password) {
-        throw new IllegalArgumentException("STUB");
     }
 
     @Override
@@ -225,10 +209,6 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
 
     }
 
-    @Override
-    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        throw new IllegalArgumentException("STUB");
-    }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {

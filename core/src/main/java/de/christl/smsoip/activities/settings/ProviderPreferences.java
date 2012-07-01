@@ -10,7 +10,7 @@ import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ProviderPreferences extends PreferenceActivity {
     public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
-    private SMSSupplier smsSupplier;
+    private ExtendedSMSSupplier smsSupplier;
     public static final String PROVIDER_USERNAME = "provider.username";
     public static final String PROVIDER_PASS = "provider.password";
     public static final String PROVIDER_DEFAULT_ACCOUNT = "provider.default.number";
@@ -58,7 +58,7 @@ public class ProviderPreferences extends PreferenceActivity {
         return root;
     }
 
-    public SMSSupplier getSmsSupplier() {
+    public ExtendedSMSSupplier getSmsSupplier() {
         return smsSupplier;
     }
 }

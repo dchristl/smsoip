@@ -11,11 +11,8 @@ import android.widget.CheckedTextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
-import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 
@@ -95,15 +92,10 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        SMSSupplier supplier = dialogPreference.getSupplier();
+                        ExtendedSMSSupplier supplier = dialogPreference.getSupplier();
                         final String text;
-                        if (SMSoIPApplication.getApp().getMinAPIVersion(supplier) >= 14) {
-                            SMSActionResult smsActionResult = ((ExtendedSMSSupplier) supplier).checkCredentials(accountModel.getUserName(), accountModel.getPass());
-                            text = smsActionResult.getMessage();
-                        } else {
-                            final Result login = supplier.login(accountModel.getUserName(), accountModel.getPass());
-                            text = login.getUserText().toString();
-                        }
+                        SMSActionResult smsActionResult = supplier.checkCredentials(accountModel.getUserName(), accountModel.getPass());
+                        text = smsActionResult.getMessage();
                         Runnable runnable = new Runnable() {
                             public void run() {
                                 progressDialog.setMessage(text);

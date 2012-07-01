@@ -25,12 +25,10 @@ import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
-import de.christl.smsoip.provider.SMSSupplier;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.*;
 
@@ -53,7 +51,7 @@ public class SendActivity extends AllActivity {
 
 
     public Toast toast;
-    private SMSSupplier smsSupplier;
+    private ExtendedSMSSupplier smsSupplier;
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH_SUPPLIER = 31;
     private static final int DIALOG_SMILEYS = 32;
@@ -231,11 +229,7 @@ public class SendActivity extends AllActivity {
                 }
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                if (SMSoIPApplication.getApp().getMinAPIVersion(smsSupplier) >= 14) {
-                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getFireSMSAndUpdateUIRunnable()).start();
-                } else {
-                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getSendAndUpdateUIRunnable()).start();
-                }
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getFireSMSAndUpdateUIRunnable()).start();
             }
         }
 
@@ -418,11 +412,7 @@ public class SendActivity extends AllActivity {
             public void onClick(View view) {
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
-                if (SMSoIPApplication.getApp().getMinAPIVersion(smsSupplier) >= 14) {
-                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
-                } else {
-                    new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshInfosAndUpdateUIRunnable()).start();
-                }
+                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
             }
         });
 
@@ -582,21 +572,6 @@ public class SendActivity extends AllActivity {
         findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
-    /**
-     * sending old style with only one result
-     * will be removed in future releases
-     *
-     * @return
-     */
-    @Deprecated
-    Result send() {
-        List<Editable> numberList = new ArrayList<Editable>(receiverList.size());
-        for (Receiver receiver : receiverList) {
-            numberList.add(new SpannableStringBuilder(receiver.getReceiverNumber()));
-        }
-        return smsSupplier.fireSMS(textField.getText(), numberList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
-
-    }
 
     /**
      * will be called for sending in a thread to update progress dialog
@@ -605,13 +580,9 @@ public class SendActivity extends AllActivity {
      * @return
      */
     FireSMSResultList sendByThread() {
-        return ((ExtendedSMSSupplier) smsSupplier).fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        return smsSupplier.fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
     }
 
-    @Deprecated
-    Result refreshInformations(boolean afterMessageSuccessfulSent) {
-        return afterMessageSuccessfulSent ? smsSupplier.refreshInformationAfterMessageSuccessfulSent() : smsSupplier.refreshInformationOnRefreshButtonPressed();
-    }
 
     /**
      * since API Level 14
@@ -620,7 +591,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     SMSActionResult refreshInformationText(boolean afterMessageSuccessfulSent) {
-        return afterMessageSuccessfulSent ? ((ExtendedSMSSupplier) smsSupplier).refreshInfoTextAfterMessageSuccessfulSent() : ((ExtendedSMSSupplier) smsSupplier).refreshInfoTextOnRefreshButtonPressed();
+        return afterMessageSuccessfulSent ? smsSupplier.refreshInfoTextAfterMessageSuccessfulSent() : smsSupplier.refreshInfoTextOnRefreshButtonPressed();
     }
 
 

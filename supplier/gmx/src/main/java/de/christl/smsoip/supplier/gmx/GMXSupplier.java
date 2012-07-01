@@ -1,10 +1,8 @@
 package de.christl.smsoip.supplier.gmx;
 
-import android.text.Editable;
 import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
@@ -303,23 +301,4 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         return SMSActionResult.LOGIN_FAILED_ERROR();
     }
 
-    @Override
-    public Result refreshInformationOnRefreshButtonPressed() {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result refreshInformationAfterMessageSuccessfulSent() {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result login(String userName, String password) {
-        throw new IllegalArgumentException("STUB");
-    }
-
-    @Override
-    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        throw new IllegalArgumentException("STUB");
-    }
 }

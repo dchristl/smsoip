@@ -11,7 +11,7 @@ import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -23,8 +23,8 @@ public class SMSoIPApplication extends Application {
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
-    List<SMSSupplier> pluginsToOld = new ArrayList<SMSSupplier>();
-    List<SMSSupplier> pluginsToNew = new ArrayList<SMSSupplier>();
+    List<ExtendedSMSSupplier> pluginsToOld = new ArrayList<ExtendedSMSSupplier>();
+    List<ExtendedSMSSupplier> pluginsToNew = new ArrayList<ExtendedSMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
     private boolean adsEnabled = true;
@@ -83,8 +83,8 @@ public class SMSoIPApplication extends Application {
     private void readOutPlugins() throws IOException, IllegalAccessException {
         //reset all lists
         loadedProviders = new HashMap<String, ProviderEntry>();
-        pluginsToNew = new ArrayList<SMSSupplier>();
-        pluginsToOld = new ArrayList<SMSSupplier>();
+        pluginsToNew = new ArrayList<ExtendedSMSSupplier>();
+        pluginsToOld = new ArrayList<ExtendedSMSSupplier>();
         for (SMSoIPPlugin plugin : plugins) {
             String sourceDir = plugin.getSourceDir();
             DexFile apkDir = new DexFile(sourceDir);
@@ -102,12 +102,12 @@ public class SMSoIPApplication extends Application {
                     Class<?> aClass = Class.forName(s, false, pathClassLoader);
                     Class<?>[] aClassInterfaces = aClass.getInterfaces();
                     if (aClassInterfaces != null) {
-                        if (SMSSupplier.class.isAssignableFrom(aClass)) {
+                        if (ExtendedSMSSupplier.class.isAssignableFrom(aClass)) {
 
-                            int minVersion = getPluginsMinApiVersion((Class<SMSSupplier>) aClass);
-                            SMSSupplier smsSupplier = (SMSSupplier) aClass.newInstance();
+                            int minVersion = getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass);
+                            ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
                             if (versionNumber > minVersion) {
-                                List<Method> interfaceMethods = Arrays.asList(SMSSupplier.class.getDeclaredMethods());
+                                List<Method> interfaceMethods = Arrays.asList(ExtendedSMSSupplier.class.getDeclaredMethods());
                                 for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
                                     try {
                                         aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
@@ -140,7 +140,7 @@ public class SMSoIPApplication extends Application {
      * @param aClass Interface extending SMSSupplier
      * @return the found version
      */
-    private int getPluginsMinApiVersion(Class<SMSSupplier> aClass) {
+    private int getPluginsMinApiVersion(Class<ExtendedSMSSupplier> aClass) {
         int out = 13;
         if (aClass.getSuperclass() == null || aClass.getSuperclass().equals(Object.class)) {
             Class<?>[] interfaces = aClass.getInterfaces();
@@ -155,15 +155,15 @@ public class SMSoIPApplication extends Application {
             }
             if (!found) {
                 for (Class<?> anInterface : interfaces) {
-                    if (SMSSupplier.class.isAssignableFrom(anInterface)) {
-                        return getPluginsMinApiVersion((Class<SMSSupplier>) anInterface);
+                    if (ExtendedSMSSupplier.class.isAssignableFrom(anInterface)) {
+                        return getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) anInterface);
                     }
                 }
             }
-        } else if (aClass.equals(SMSSupplier.class)) {
+        } else if (aClass.equals(ExtendedSMSSupplier.class)) {
             return out;
         } else {
-            return getPluginsMinApiVersion((Class<SMSSupplier>) aClass.getSuperclass());
+            return getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass.getSuperclass());
         }
         return out;
     }
@@ -176,7 +176,7 @@ public class SMSoIPApplication extends Application {
         return loadedProviders;
     }
 
-    public int getMinAPIVersion(SMSSupplier smsSupplier) {
+    public int getMinAPIVersion(ExtendedSMSSupplier smsSupplier) {
         return loadedProviders.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion();
     }
 
@@ -218,11 +218,11 @@ public class SMSoIPApplication extends Application {
         return null;
     }
 
-    public List<SMSSupplier> getPluginsToOld() {
+    public List<ExtendedSMSSupplier> getPluginsToOld() {
         return pluginsToOld;
     }
 
-    public List<SMSSupplier> getPluginsToNew() {
+    public List<ExtendedSMSSupplier> getPluginsToNew() {
         return pluginsToNew;
     }
 

@@ -3,7 +3,6 @@ package de.christl.smsoip.activities;
 import android.app.ProgressDialog;
 import android.os.Handler;
 import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.Result;
 import de.christl.smsoip.constant.SMSActionResult;
 
 /**
@@ -37,30 +36,6 @@ public class RunnableFactory {
         };
     }
 
-    /**
-     * @return the runnable for sending
-     * @deprecated will be removed in future releases (for old send mechanism)
-     */
-    @Deprecated
-    public Runnable getSendAndUpdateUIRunnable() {
-        return new Runnable() {
-            public void run() {
-                Result sendResult = RunnableFactory.this.sendActivity.send();
-                CharSequence resultMessage = sendResult.getUserText();
-                boolean successfulSent = sendResult.equals(Result.NO_ERROR);
-                CharSequence infoText = null;
-                if (successfulSent) {
-                    Result refreshResult = RunnableFactory.this.sendActivity.refreshInformations(true);
-                    boolean successfulRefreshed = refreshResult.equals(Result.NO_ERROR);
-                    if (successfulRefreshed) {
-                        infoText = refreshResult.getUserText();
-                    }
-                }
-                updateUIHandler.post(getUpdateUIRunnable(resultMessage, infoText, successfulSent));
-                RunnableFactory.this.progressDialog.cancel();
-            }
-        };
-    }
 
     /**
      * available since API level 14
@@ -101,23 +76,6 @@ public class RunnableFactory {
         };
     }
 
-    @Deprecated
-    public Runnable getRefreshInfosAndUpdateUIRunnable() {
-        return new Runnable() {
-            public void run() {
-                Result result = RunnableFactory.this.sendActivity.refreshInformations(false);
-                CharSequence infoText = null;
-                CharSequence messageText = null;
-                if (result.equals(Result.NO_ERROR)) {
-                    infoText = result.getUserText();
-                } else {
-                    messageText = result.getUserText();
-                }
-                updateUIHandler.post(getUpdateUIRunnable(messageText, infoText, false));
-                progressDialog.cancel();
-            }
-        };
-    }
 
     /**
      * since API level 14
