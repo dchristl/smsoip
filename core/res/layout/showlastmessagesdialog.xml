@@ -20,6 +20,7 @@
                   android:textStyle="bold"
                   android:gravity="center"
                   android:textColor="#C0C0F0"
+                  android:textSize="20dp"
                 />
         <TextView android:id="@+id/contact"
                   android:textColor="#C0F0C0"
@@ -40,6 +41,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:padding="5dp"
+                  android:textSize="20dp"
                 />
         <LinearLayout
                 android:id="@+id/conversationLayout"

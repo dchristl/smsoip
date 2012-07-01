@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -43,22 +46,33 @@ public class ShowLastMessagesDialog extends Dialog {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
                 Receiver receiver = receiverStringEntry.getKey();
                 String message = receiverStringEntry.getValue();
-                ((TextView) findViewById(R.id.contact)).setText(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
+                TextView contact = (TextView) findViewById(R.id.contact);
+                contact.setTypeface(null, Typeface.ITALIC);
+                SpannableString content = new SpannableString(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                contact.setText(content);
                 ((TextView) findViewById(R.id.message)).setText(message);
             }
         }
         if (receiverList.isEmpty()) {
             findViewById(R.id.lastConversation).setVisibility(View.GONE);
+            return;
         }
         LinearLayout layout = (LinearLayout) findViewById(R.id.conversationLayout);
         /* Create a new row to be added. */
         for (final Receiver receiver : receiverList) {
             LinkedList<Message> conversation = dbHandler.findConversation(receiver);
+            if (conversation.isEmpty()) {
+                continue;  // dont show anything if no messages for this receiver
+            }
             TextView receiverView = new TextView(getContext());
-            receiverView.setText(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
             receiverView.setTextColor(Color.parseColor("#C0F0C0"));
             receiverView.setPadding(5, 5, 5, 0);
             receiverView.setGravity(Gravity.CENTER);
+            receiverView.setTypeface(null, Typeface.ITALIC);
+            SpannableString content = new SpannableString(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            receiverView.setText(content);
             layout.addView(receiverView);
 
             for (Message message : conversation) {
