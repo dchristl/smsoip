@@ -77,16 +77,6 @@ public class Receiver implements Serializable, Parcelable {
         numberTypeMap.put(fixedNumber, type);
     }
 
-    /**
-     * add a number as receivernumber and raw number
-     *
-     * @param rawNumber
-     */
-    public void addNumber(String rawNumber) {
-        receiverNumber = fixNumber(rawNumber);
-        fixedRawNumberMapping.put(receiverNumber, rawNumber);
-    }
-
 
     public Map<String, String> getNumberTypeMap() {
         return numberTypeMap;

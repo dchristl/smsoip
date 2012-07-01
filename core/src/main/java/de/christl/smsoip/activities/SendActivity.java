@@ -245,7 +245,23 @@ public class SendActivity extends AllActivity {
         findViewById(R.id.showHistory).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
+                final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
+                lastMessageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        String receiverNumber = lastMessageDialog.getReceiverNumber();
+                        if (receiverNumber != null) {
+                            DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
+                            Receiver contactByNumber = dbHandler.findContactByNumber(receiverNumber);
+                            if (contactByNumber == null) {
+                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
+                                contactByNumber.addNumber(receiverNumber, getText(R.string.text_unknown).toString());
+                            }
+                            String number = contactByNumber.getFixedNumberByRawNumber(receiverNumber);
+                            addToReceiverList(contactByNumber, number);
+                        }
+                    }
+                });
                 lastMessageDialog.show();
             }
         });

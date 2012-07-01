@@ -114,10 +114,13 @@ public class DatabaseHandler {
                 String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
                 Receiver receiver = findContactByNumber(number);
                 if (receiver == null) {
-                    receiver = new Receiver("-1", (String) parentActivity.getText(R.string.text_unknown), 0);
-                    receiver.addNumber(number);
+                    String text = (String) parentActivity.getText(R.string.text_unknown);
+                    receiver = new Receiver("-1", text, 0);
+                    receiver.addNumber(number, text);
 
                 }
+                String fixedNumber = receiver.getFixedNumberByRawNumber(number);
+                receiver.setReceiverNumber(fixedNumber);
                 out.put(receiver, msg);
 
             }

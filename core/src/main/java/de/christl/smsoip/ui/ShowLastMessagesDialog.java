@@ -28,6 +28,7 @@ import java.util.Map;
 public class ShowLastMessagesDialog extends Dialog {
     private DatabaseHandler dbHandler;
     private ArrayList<Receiver> receiverList;
+    private String receiverNumber = null;
 
     public ShowLastMessagesDialog(Context context, ArrayList<Receiver> receiverList) {
         super(context);
@@ -44,14 +45,24 @@ public class ShowLastMessagesDialog extends Dialog {
         Map<Receiver, String> lastMessage = dbHandler.findLastMessage();
         if (lastMessage.size() > 0) {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
-                Receiver receiver = receiverStringEntry.getKey();
+                final Receiver receiver = receiverStringEntry.getKey();
+                View.OnClickListener onClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        receiverNumber = receiver.getRawNumber();
+                        ShowLastMessagesDialog.this.dismiss();
+                    }
+                };
                 String message = receiverStringEntry.getValue();
                 TextView contact = (TextView) findViewById(R.id.contact);
                 contact.setTypeface(null, Typeface.ITALIC);
                 SpannableString content = new SpannableString(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                 contact.setText(content);
-                ((TextView) findViewById(R.id.message)).setText(message);
+                contact.setOnClickListener(onClickListener);
+                TextView messageView = (TextView) findViewById(R.id.message);
+                messageView.setText(message);
+                messageView.setOnClickListener(onClickListener);
             }
         }
         if (receiverList.isEmpty()) {
@@ -91,5 +102,9 @@ public class ShowLastMessagesDialog extends Dialog {
                 layout.addView(messageView);
             }
         }
+    }
+
+    public String getReceiverNumber() {
+        return receiverNumber;
     }
 }
