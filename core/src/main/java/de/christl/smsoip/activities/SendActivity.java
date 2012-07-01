@@ -3,7 +3,6 @@ package de.christl.smsoip.activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -242,7 +241,9 @@ public class SendActivity extends AllActivity {
     }
 
     private void setLastMessagesButton() {
-        findViewById(R.id.showHistory).setOnClickListener(new View.OnClickListener() {
+        View showHistoryButton = findViewById(R.id.showHistory);
+        showHistoryButton.setVisibility(SMSoIPApplication.getApp().isWriteToDatabaseAvailable() ? View.VISIBLE : View.GONE);
+        showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
@@ -502,16 +503,13 @@ public class SendActivity extends AllActivity {
     private void writeSMSInDatabase(ArrayList<Receiver> receiverList) {
         boolean writeToDatabaseEnabled = settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         if (writeToDatabaseEnabled) {
-            for (Receiver receiver : receiverList) {
-                ContentValues values = new ContentValues();
-                values.put("address", receiver.getReceiverNumber());
-                String prefix = "";
-                if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
-                    prefix = "SMSoIP (" + smsSupplier.getProviderInfo() + "): ";
-                }
-                values.put("body", prefix + textField.getText().toString());
-                getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+            StringBuilder message = new StringBuilder();
+            if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
+                message.append(getString(R.string.applicationName)).append(" (").append(smsSupplier.getProviderInfo()).append("): ");
             }
+            message.append(textField.getText());
+            DatabaseHandler handler = new DatabaseHandler(this);
+            handler.writeSMSInDatabase(receiverList, message.toString());
         }
     }
 

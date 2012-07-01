@@ -3,6 +3,7 @@ package de.christl.smsoip.database;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -11,10 +12,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.models.Message;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Handling class for all stuff for internal database
@@ -130,6 +128,13 @@ public class DatabaseHandler {
 
     /**
      * returns the last 10 messages with this receiver (ingoing and outgoing) in correct time order
+     * query contains kind of fuzzy logic where, cause the receiver number is not saved in same way always
+     * so special chars like (,),-,+ will be removed and the result will be cast to an integer to avoid leading zeros
+     * the result (replacedAdress in query) is for example 49171123456 and the receivernumber for comparison is always a
+     * number with leading zeros and international format like 0049171123456, so the replaced number have to be a subquery of
+     * the receiver number (49171123456 is at the end of 0049171123456)
+     * its imho the only way to get this by one query, other way is to fetch all and compare them by java, but it can
+     * be very slow on phones with much messages
      *
      * @param receiver
      * @return
@@ -152,5 +157,14 @@ public class DatabaseHandler {
             out.add(new Message(message, type == 2, date));
         }
         return out;
+    }
+
+    public void writeSMSInDatabase(ArrayList<Receiver> receiverList, String message) {
+        for (Receiver receiver : receiverList) {
+            ContentValues values = new ContentValues();
+            values.put("address", receiver.getReceiverNumber());
+            values.put("body", message);
+            parentActivity.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+        }
     }
 }
