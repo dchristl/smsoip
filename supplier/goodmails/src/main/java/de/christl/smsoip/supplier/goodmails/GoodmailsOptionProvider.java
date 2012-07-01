@@ -18,7 +18,7 @@ import java.util.List;
  *
  */
 public class GoodmailsOptionProvider extends OptionProvider {
-    private static final String providerName = "Goodmails";
+    private static final String PROVIDER_NAME = "Goodmails";
     private int messageLength = 153;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
@@ -26,7 +26,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
     private int maxMessageCount = 1;
 
     public GoodmailsOptionProvider() {
-        super(providerName);
+        super(PROVIDER_NAME);
     }
 
     @Override

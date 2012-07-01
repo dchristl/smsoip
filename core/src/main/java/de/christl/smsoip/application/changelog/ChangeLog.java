@@ -71,7 +71,6 @@ public class ChangeLog {
         } catch (NameNotFoundException e) {
             this.thisVersion = "?";
             Log.e(TAG, "could not get version name from manifest!");
-            e.printStackTrace();
         }
         Log.d(TAG, "appVersion: " + this.thisVersion);
 
@@ -239,7 +238,7 @@ public class ChangeLog {
             this.closeList();
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(this.getClass().getCanonicalName(), e.getMessage());
         }
 
         return sb.toString();

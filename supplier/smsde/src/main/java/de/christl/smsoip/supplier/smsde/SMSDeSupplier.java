@@ -125,8 +125,8 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             if (headerFields == null) {
                 return SMSActionResult.NETWORK_ERROR();
             }
-            String FIRST_COOKIE = "C_SMSDE_ID";
-            String firstCookiePattern = FIRST_COOKIE + ".*=.*";
+            String firstCookie = "C_SMSDE_ID";
+            String firstCookiePattern = firstCookie + ".*=.*";
             String smsDeCookie = UrlConnectionFactory.findCookieByPattern(headerFields, firstCookiePattern);
             if (smsDeCookie == null) {
                 return SMSActionResult.NETWORK_ERROR(); //not possible if network available
@@ -146,12 +146,12 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             String tmpSessionCookie = sessionCookies.get(0);
             tmpSessionCookie = tmpSessionCookie.replaceAll("=.*", "");
             sessionCookies = new ArrayList<String>();
-            String C_SMSDE_UID = "C_SMSDE_UID";
-            String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, C_SMSDE_UID);
+            String cSmsdeUid = "C_SMSDE_UID";
+            String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, cSmsdeUid);
             if (c_smsde_uid_cookie == null) {
                 return SMSActionResult.LOGIN_FAILED_ERROR();
             }
-            sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(C_SMSDE_UID, tmpSessionCookie));
+            sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(cSmsdeUid, tmpSessionCookie));
             String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
             sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));
             if (sessionCookies.size() != 2) {

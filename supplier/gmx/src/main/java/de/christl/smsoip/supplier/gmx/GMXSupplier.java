@@ -36,7 +36,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
     private DataInputStream lastInputStream;
     private String genericRadioButtonId;
     private static final String CRLF = "\r\n";
-    private final static String ENCODING = "UTF-8";
+    private static final String ENCODING = "UTF-8";
 
     public GMXSupplier() {
         provider = new GMXOptionProvider();

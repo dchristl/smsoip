@@ -49,7 +49,7 @@ public class SendActivity extends AllActivity {
 
     private static final int PICK_CONTACT_REQUEST = 0;
 
-    private CharSequence SIGNSCONSTANT;
+    private CharSequence signsconstant;
     private ProgressDialog progressDialog;
 
 
@@ -105,12 +105,12 @@ public class SendActivity extends AllActivity {
         super.onCreate(savedInstanceState);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
-        SIGNSCONSTANT = getText(R.string.text_smssigns);
+        signsconstant = getText(R.string.text_smssigns);
         inputField = (EditText) findViewById(R.id.numberInput);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         smssigns = (TextView) findViewById(R.id.smssigns);
-        smssigns.setText(String.format(SIGNSCONSTANT.toString(), 0, 0));
+        smssigns.setText(String.format(signsconstant.toString(), 0, 0));
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         //disable inputs on field
         inputField.setKeyListener(null);
@@ -545,7 +545,7 @@ public class SendActivity extends AllActivity {
         } else {
             smssigns.setTextColor(defaultColor);
         }
-        smssigns.setText(String.format(SIGNSCONSTANT.toString(), charSequence.length(), smsCount));
+        smssigns.setText(String.format(signsconstant.toString(), charSequence.length(), smsCount));
     }
 
     private void setSearchButton() {
@@ -590,60 +590,57 @@ public class SendActivity extends AllActivity {
 
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
-        if (requestCode == PICK_CONTACT_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Uri contactData = data.getData();
-                final Receiver pickedReceiver = new DatabaseHandler(this).getPickedContactData(contactData);
+        if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
+            Uri contactData = data.getData();
+            final Receiver pickedReceiver = new DatabaseHandler(this).getPickedContactData(contactData);
 
-                if (!pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
-                    //always one contact, so it will be filled always
+            if (!pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
+                //always one contact, so it will be filled always
 
-                    final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
-                    if (numberTypeMap.size() == 1) { //only one number, so choose this
-                        addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0]);
+                final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
+                if (numberTypeMap.size() == 1) { //only one number, so choose this
+                    addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0]);
 
-                    } else { //more than one number for contact
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                        builder.setTitle(String.format(getText(R.string.text_pickNumber).toString(), pickedReceiver.getName()));
-                        //build a map of string on screen with corresponding number for layout
-                        final Map<String, String> presentationMap = new HashMap<String, String>();
-                        for (Map.Entry<String, String> numberTypes : numberTypeMap.entrySet()) {
-                            presentationMap.put(numberTypes.getKey() + " (" + numberTypes.getValue() + ")", numberTypes.getKey());
-                        }
-                        final String[] items = presentationMap.keySet().toArray(new String[presentationMap.size()]);
-                        builder.setItems(items, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                String key = null;//get the picked number back from origin map
-                                for (Map.Entry<String, String> entry : presentationMap.entrySet()) {
-                                    if (entry.getKey().equals(items[item])) {
-                                        key = entry.getValue();
-                                        break;
-                                    }
-                                }
-                                addToReceiverList(pickedReceiver, key);
-                            }
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                    }
-                } else {
+                } else { //more than one number for contact
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-
-                    builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedReceiver.getName()))
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
+                    builder.setTitle(String.format(getText(R.string.text_pickNumber).toString(), pickedReceiver.getName()));
+                    //build a map of string on screen with corresponding number for layout
+                    final Map<String, String> presentationMap = new HashMap<String, String>();
+                    for (Map.Entry<String, String> numberTypes : numberTypeMap.entrySet()) {
+                        presentationMap.put(numberTypes.getKey() + " (" + numberTypes.getValue() + ")", numberTypes.getKey());
+                    }
+                    final String[] items = presentationMap.keySet().toArray(new String[presentationMap.size()]);
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            String key = null;//get the picked number back from origin map
+                            for (Map.Entry<String, String> entry : presentationMap.entrySet()) {
+                                if (entry.getKey().equals(items[item])) {
+                                    key = entry.getValue();
+                                    break;
                                 }
-                            });
-
-
+                            }
+                            addToReceiverList(pickedReceiver, key);
+                        }
+                    });
                     AlertDialog alert = builder.create();
                     alert.show();
                 }
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+
+                builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedReceiver.getName()))
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         }
 

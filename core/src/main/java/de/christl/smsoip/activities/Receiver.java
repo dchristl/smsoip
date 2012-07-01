@@ -83,16 +83,17 @@ public class Receiver implements Serializable, Parcelable {
     }
 
     private String fixNumber(String rawNumber) {
+        String out = rawNumber;
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
-        if (!rawNumber.startsWith("+") && !rawNumber.startsWith("00")) {   //area code not already added
-            rawNumber = rawNumber.replaceFirst("^0", "");        //replace leading zero
+        if (!out.startsWith("+") && !out.startsWith("00")) {   //area code not already added
+            out = out.replaceFirst("^0", "");        //replace leading zero
             String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
             String prefix = "00" + areaCode;
-            rawNumber = prefix + rawNumber;
+            out = prefix + out;
         } else {
-            rawNumber = rawNumber.replaceFirst("\\+", "00");  //replace plus if there
+            out = out.replaceFirst("\\+", "00");  //replace plus if there
         }
-        return rawNumber.replaceAll("[^0-9]", "");   //clean up not numbervalues
+        return out.replaceAll("[^0-9]", "");   //clean up not numbervalues
     }
 
 

@@ -42,6 +42,7 @@ public abstract class AllActivity extends Activity {
 
     private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
+    private static final String APP_MARKET_URL = "market://search?q=pub:Danny Christl";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -198,7 +199,6 @@ public abstract class AllActivity extends Activity {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String APP_MARKET_URL = "market://search?q=pub:Danny Christl";
 
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
                 AllActivity.this.startActivity(intent);

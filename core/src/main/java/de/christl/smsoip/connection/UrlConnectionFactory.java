@@ -169,14 +169,14 @@ public class UrlConnectionFactory {
         return con;
     }
 
-    private void writeMultipartBody(Map<String, String> parameterMap, String ENCODING) throws IOException {
+    private void writeMultipartBody(Map<String, String> parameterMap, String encoding) throws IOException {
         if (con == null) {
             create();
         }
         con.setDoOutput(true);
         String boundary = "--" + Long.toHexString(System.currentTimeMillis());
         OutputStream output = con.getOutputStream();
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, encoding), true);
         con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
             writer.append("--").append(boundary).append(CRLF);

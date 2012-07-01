@@ -14,11 +14,11 @@ public interface ExtendedSMSSupplier {
     /**
      * HTTP Useragent.
      */
-    static final String TARGET_AGENT = "Mozilla/3.0 (compatible)";
+    final String TARGET_AGENT = "Mozilla/3.0 (compatible)";
     /**
      * TIMEOUT can be used for any connection
      */
-    static final int TIMEOUT = 10000;
+    final int TIMEOUT = 10000;
 
     /**
      * will be called on send SMS button

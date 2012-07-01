@@ -10,7 +10,7 @@ public class Message implements Serializable{
 
     private String message;
     private boolean outgoing = true;
-    private Date date;
+    private final Date date;
 
     public Message(String message, boolean outgoing, Date date) {
         this.message = message;

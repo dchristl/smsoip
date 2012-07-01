@@ -15,13 +15,13 @@ import java.util.List;
 
 public class SMSDeOptionProvider extends OptionProvider {
 
-    private static final String providerName = "SMS.de";
+    private static final String PROVIDER_NAME = "SMS.de";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private int messageLength = 142;
     private int maxReceivers = 1;
 
     public SMSDeOptionProvider() {
-        super(providerName);
+        super(PROVIDER_NAME);
     }
 
     @Override

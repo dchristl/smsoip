@@ -101,29 +101,27 @@ public class SMSoIPApplication extends Application {
                 try {
                     Class<?> aClass = Class.forName(s, false, pathClassLoader);
                     Class<?>[] aClassInterfaces = aClass.getInterfaces();
-                    if (aClassInterfaces != null) {
-                        if (ExtendedSMSSupplier.class.isAssignableFrom(aClass)) {
+                    if (aClassInterfaces != null && ExtendedSMSSupplier.class.isAssignableFrom(aClass)) {
 
-                            int minVersion = getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass);
-                            ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
-                            if (versionNumber > minVersion) {
-                                List<Method> interfaceMethods = Arrays.asList(ExtendedSMSSupplier.class.getDeclaredMethods());
-                                for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
-                                    try {
-                                        aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
-                                    } catch (NoSuchMethodException e) { //method does not exist, means old plugin
-                                        pluginsToOld.add(smsSupplier);
-                                        break Outer;
-                                    }
+                        int minVersion = getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass);
+                        ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
+                        if (versionNumber > minVersion) {
+                            List<Method> interfaceMethods = Arrays.asList(ExtendedSMSSupplier.class.getDeclaredMethods());
+                            for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
+                                try {
+                                    aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+                                } catch (NoSuchMethodException e) { //method does not exist, means old plugin
+                                    pluginsToOld.add(smsSupplier);
+                                    break Outer;
                                 }
-                            } else if (minVersion > versionNumber) {
-                                pluginsToNew.add(smsSupplier);
-                                break;
-
                             }
-                            loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier, minVersion));
+                        } else if (minVersion > versionNumber) {
+                            pluginsToNew.add(smsSupplier);
                             break;
+
                         }
+                        loadedProviders.put(aClass.getCanonicalName(), new ProviderEntry(smsSupplier, minVersion));
+                        break;
                     }
                 } catch (ClassNotFoundException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);

@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class GMXOptionProvider extends OptionProvider {
 
-    private static final String providerName = "GMX";
+    private static final String PROVIDER_NAME = "GMX";
     public static final String PROVIDER_CHECKNOFREESMSAVAILABLE = "provider.checknofreesmsavailable";
 
     public GMXOptionProvider() {
-        super(providerName);
+        super(PROVIDER_NAME);
     }
 
     @Override
