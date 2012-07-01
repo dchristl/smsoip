@@ -130,7 +130,7 @@ public class SendActivity extends AllActivity {
             setFullTitle();
             setSpinner();
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
-                spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0));
+                spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0), false);
             }
             inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
@@ -547,7 +547,7 @@ public class SendActivity extends AllActivity {
     private void setSpinner() {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
         smsSupplier.getProvider().createSpinner(this, spinner);
-        findViewById(de.christl.smsoip.R.id.typeText).setVisibility(spinner.getVisibility());
+        findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
     /**
