@@ -166,4 +166,13 @@ public abstract class OptionProvider {
         spinner.setVisibility(View.GONE);
     }
 
+    /**
+     * get the maximum count of messages can be send by this receiver
+     *
+     * @return
+     */
+    public int getMaxMessageCount() {
+        return Integer.MAX_VALUE;
+    }
+
 }

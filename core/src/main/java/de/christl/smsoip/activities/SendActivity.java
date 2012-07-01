@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -525,7 +527,7 @@ public class SendActivity extends AllActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (smsSupplier != null) { //activity was resumed
-                    updateSMScounter(s);
+                    updateSMScounter();
                 }
             }
 
@@ -536,13 +538,29 @@ public class SendActivity extends AllActivity {
         });
     }
 
-    public void updateSMScounter(CharSequence charSequence) {
+    public void updateSMScounter() {
+        Editable charSequence = textField.getText();
         int smsCount = 0;
-        int messageLength = smsSupplier.getProvider().getTextMessageLength();
+        //save the default color of textview
+        ColorStateList defaultColor = new TextView(this).getTextColors();
+        OptionProvider provider = smsSupplier.getProvider();
+        int messageLength = provider.getTextMessageLength();
+        int maxMessageCount = provider.getMaxMessageCount();
+
+        InputFilter[] fArray = new InputFilter[1];
+        fArray[0] = new InputFilter.LengthFilter(maxMessageCount * messageLength);
+        textField.setFilters(fArray);
 
         if (charSequence.length() != 0) {
             smsCount = Math.round((charSequence.length() / messageLength));
             smsCount = charSequence.length() % messageLength == 0 ? smsCount : smsCount + 1;
+            if (smsCount > maxMessageCount) {
+                smssigns.setTextColor(Color.rgb(255, 0, 0));
+            } else {
+                smssigns.setTextColor(defaultColor);
+            }
+        } else {
+            smssigns.setTextColor(defaultColor);
         }
         smssigns.setText(String.format(SIGNSCONSTANT.toString(), charSequence.length(), smsCount));
     }
@@ -978,9 +996,6 @@ public class SendActivity extends AllActivity {
     }
 
 
-    public void updateSMScounter() {
-        updateSMScounter(textField.getText());
-    }
 
     @Override
     public boolean onSearchRequested() {

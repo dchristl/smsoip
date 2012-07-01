@@ -89,5 +89,8 @@ public class SMSDeOptionProvider extends OptionProvider {
         return out;
     }
 
-
+    @Override
+    public int getMaxMessageCount() {
+        return 1;
+    }
 }

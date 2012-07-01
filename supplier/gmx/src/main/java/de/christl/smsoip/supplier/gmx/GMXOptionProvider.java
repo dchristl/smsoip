@@ -31,5 +31,8 @@ public class GMXOptionProvider extends OptionProvider {
         return out;
     }
 
-
+    @Override
+    public int getMaxMessageCount() {
+        return 5;
+    }
 }
