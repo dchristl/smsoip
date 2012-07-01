@@ -9,9 +9,9 @@ import java.util.ArrayList;
  */
 public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
-    ArrayList<Receiver> successList = new ArrayList<Receiver>();
-    ArrayList<Receiver> errorList = new ArrayList<Receiver>();
-
+    private ArrayList<Receiver> successList = new ArrayList<Receiver>();
+    private SendResult result = SendResult.NOT_YET_SET;
+    private ArrayList<Receiver> errorList = new ArrayList<Receiver>();
 
     public FireSMSResultList(int capacity) {
         super(capacity);
@@ -19,12 +19,10 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     public FireSMSResultList() {
     }
-
     public static enum SendResult {
         NOT_YET_SET, SUCCESS, ERROR, BOTH
-    }
 
-    SendResult result = SendResult.NOT_YET_SET;
+    }
 
 
     @Override

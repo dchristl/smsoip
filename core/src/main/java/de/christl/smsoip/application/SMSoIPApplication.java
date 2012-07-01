@@ -22,9 +22,9 @@ public class SMSoIPApplication extends Application {
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
-    Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
-    List<ExtendedSMSSupplier> pluginsToOld = new ArrayList<ExtendedSMSSupplier>();
-    List<ExtendedSMSSupplier> pluginsToNew = new ArrayList<ExtendedSMSSupplier>();
+    private Map<String, ProviderEntry> loadedProviders = new HashMap<String, ProviderEntry>();
+    private List<ExtendedSMSSupplier> pluginsToOld = new ArrayList<ExtendedSMSSupplier>();
+    private List<ExtendedSMSSupplier> pluginsToNew = new ArrayList<ExtendedSMSSupplier>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
     private boolean adsEnabled = true;

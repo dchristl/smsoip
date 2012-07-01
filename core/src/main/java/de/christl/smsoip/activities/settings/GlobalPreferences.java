@@ -133,7 +133,7 @@ public class GlobalPreferences extends PreferenceActivity {
                 EditTextPreference editTextPreference = (EditTextPreference) preference;
                 String value;
                 try {
-                    value = (String) newValue;
+                    value = newValue.toString();
                     value = value.replaceFirst("\\+", "");
                     value = value.replaceFirst("^0*", "");
                     Integer.parseInt(value);

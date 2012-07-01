@@ -19,11 +19,11 @@ import java.util.Map;
  */
 public abstract class OptionProvider {
 
-    String currProvider;
+    private String currProvider;
 
 
-    String userName;
-    String password;
+    private String userName;
+    private String password;
     private SharedPreferences settings;
     private Map<Integer, AccountModel> accounts;
     private Integer currentAccountId = null;

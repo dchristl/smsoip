@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class GMXSupplier implements ExtendedSMSSupplier {
 
-    OptionProvider provider;
+    private OptionProvider provider;
     /**
      * this.getClass().getCanonicalName() for output.
      */
@@ -100,6 +100,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         parameterMap.put("sendMessage", "1");
         HttpURLConnection con;
 
+        PrintWriter writer = null;
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setDoOutput(true);
@@ -109,7 +110,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
             con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
             OutputStream output = con.getOutputStream();
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
+            writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
             for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
                 writer.append("--").append(boundary).append(CRLF);
                 writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
@@ -126,6 +127,10 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR());
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 

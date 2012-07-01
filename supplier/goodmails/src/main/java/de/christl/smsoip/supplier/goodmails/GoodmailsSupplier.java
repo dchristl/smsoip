@@ -32,7 +32,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     private String encoding = "ISO-8859-1";
 
     private boolean found = false;
-    OptionProvider provider;
+    private OptionProvider provider;
 
     static final String NOT_ALLOWED_YET = "NOT ALLOWED YET"; ///special case on resend
     static final String MESSAGE_SENT_SUCCESSFUL = "Die SMS wurde erfolgreich verschickt.";
@@ -70,6 +70,8 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
             StringBuilder builder = new StringBuilder();
+            OutputStreamWriter writer = null;
+            BufferedReader reader = null;
             try {
                 URL myUrl = new URL(tmpUrl);
                 urlConn = (HttpURLConnection) myUrl.openConnection();
@@ -77,7 +79,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
                 urlConn.setRequestProperty("Cookie", sessionCookie);
                 urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
-                OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
+                writer = new OutputStreamWriter(urlConn.getOutputStream());
                 String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, encoding);
                 if (spinnerText.equals(Constants.FREE)) {
                     headerFields += "&type=freesms";
@@ -110,7 +112,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                     }
                 }
                 String line;
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
+                reader = new BufferedReader(new InputStreamReader(is, encoding));
 
                 while ((line = reader.readLine()) != null) {
                     builder.append(processLine(line));
@@ -121,7 +123,15 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 continue;
             } finally {
                 try {
-                    is.close();
+                    if (reader != null) {
+                        reader.close();
+                    }
+                    if (is != null) {
+                        is.close();
+                    }
+                    if (writer != null) {
+                        writer.close();
+                    }
                 } catch (IOException e) {
                     Log.e(this.getClass().getCanonicalName(), "IOException", e);
                 }
@@ -143,7 +153,6 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     private boolean messageSuccessful(StringBuilder builder) {
         return !builder.toString().equals(MESSAGE_SENT_SUCCESSFUL);
     }
-
 
 
     @Override
@@ -168,6 +177,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         InputStream is = null;
         String credits = null;
         String tmpUrl = HOME_PAGE + "&sid=" + getSIDParamater();
+        BufferedReader reader = null;
         try {
             URL myUrl = new URL(tmpUrl);
             urlConn = (HttpURLConnection) myUrl.openConnection();
@@ -177,7 +187,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
             urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
             is = urlConn.getInputStream();
             String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
+            reader = new BufferedReader(new InputStreamReader(is, encoding));
             while ((line = reader.readLine()) != null) {
                 if (line.contains("name=\"glf_password\"")) {
                     Pattern p = Pattern.compile("value=\"[0-9]+[\\.+[0-9]+]*\"");
@@ -198,6 +208,9 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
         } finally {
             try {
+                if (reader != null) {
+                    reader.close();
+                }
                 if (is != null) {
                     is.close();
                 }

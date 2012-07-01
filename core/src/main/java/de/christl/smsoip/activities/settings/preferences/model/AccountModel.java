@@ -1,6 +1,6 @@
 package de.christl.smsoip.activities.settings.preferences.model;
 
-public class AccountModel implements Cloneable {
+public class AccountModel {
     private String userName;
     private String passWord;
 

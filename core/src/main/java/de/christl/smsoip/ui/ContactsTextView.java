@@ -36,8 +36,7 @@ public class ContactsTextView extends TextView {
     }
 
 
-
-    public int getWidthBySize() {
+    private int getWidthBySize() {
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         return (int) (0.35 * display.getWidth());

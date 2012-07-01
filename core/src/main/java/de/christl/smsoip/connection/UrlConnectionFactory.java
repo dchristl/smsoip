@@ -158,6 +158,7 @@ public class UrlConnectionFactory {
         OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
         writer.write(body);
         writer.flush();
+        writer.close();
         return con;
     }
 
@@ -185,6 +186,7 @@ public class UrlConnectionFactory {
 
         }
         writer.append("--").append(boundary).append("--").append(CRLF).flush();
+        writer.close();
     }
 
 }

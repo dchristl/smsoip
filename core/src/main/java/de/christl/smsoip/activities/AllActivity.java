@@ -26,15 +26,15 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  *
  */
 public abstract class AllActivity extends Activity {
     public static final int EXIT = 0;
-    static Vector<Activity> registeredActivities = new Vector<Activity>();
+    private static List<Activity> registeredActivities = new ArrayList<Activity>();
 
     static final int DIALOG_NO_NETWORK_ID = 0;
     private static boolean nwSettingsAlreadyShown = false;

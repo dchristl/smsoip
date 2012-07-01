@@ -24,7 +24,7 @@ public class MultipleAccountsPreference extends ListPreference {
 
 
     private SharedPreferences preferences;
-    AccountModelsList accountModels = new AccountModelsList();
+    private AccountModelsList accountModels = new AccountModelsList();
     private MultipleAccountsPreferenceAdapter listAdapter;
     private ProviderPreferences providerPreferences;
     private int defaultAccount;

@@ -44,16 +44,16 @@ public class SendActivity extends AllActivity {
 
     private EditText inputField;
     private EditText textField;
-    TextView smssigns;
+    private TextView smssigns;
     private Spinner spinner;
 
     private static final int PICK_CONTACT_REQUEST = 0;
 
-    public CharSequence SIGNSCONSTANT;
+    private CharSequence SIGNSCONSTANT;
     private ProgressDialog progressDialog;
 
 
-    public Toast toast;
+    private Toast toast;
     private ExtendedSMSSupplier smsSupplier;
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH_SUPPLIER = 31;
@@ -65,7 +65,7 @@ public class SendActivity extends AllActivity {
     private static final int DIALOG_SWITCH_ACCOUNT = 37;
 
     private SharedPreferences settings;
-    CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
+    private CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
     private View addContactbyNumber;
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
