@@ -172,7 +172,7 @@ public abstract class OptionProvider {
      * @return
      */
     public int getMaxMessageCount() {
-        return Integer.MAX_VALUE;
+        return 20; //do not put more messages than Integer.Max_Value / messageLength, otherwise it will be negative and no input in the editfield will be possible
     }
 
 }
