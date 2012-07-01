@@ -16,9 +16,9 @@ public class EmoImageDialog extends Dialog {
     private final FireSMSResultList.SendResult result;
     private final String resultMessage;
 
-    public EmoImageDialog(Context context, FireSMSResultList.SendResult result, String resultMessage) {
+    public EmoImageDialog(Context context, FireSMSResultList fireSMSResults, String resultMessage) {
         super(context);
-        this.result = result;
+        this.result = fireSMSResults.getResult();
         this.resultMessage = resultMessage;
     }
 

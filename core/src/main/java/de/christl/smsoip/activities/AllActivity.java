@@ -99,7 +99,7 @@ public abstract class AllActivity extends Activity {
         return true;
     }
 
-    private void showNotLoadedProvidersDialog(List<ExtendedSMSSupplier> suppliers, String messageText) {
+    private void showNotLoadedProvidersDialog(List<ExtendedSMSSupplier> suppliers, String headline) {
         if (notLoadedDialogAlreadyShown) {
             return;
         }
@@ -112,11 +112,12 @@ public abstract class AllActivity extends Activity {
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        messageText += "\n";
+        StringBuilder message = new StringBuilder(headline);
+        message.append("\n");
         for (ExtendedSMSSupplier smsSupplier : suppliers) {
-            messageText += smsSupplier.getProvider().getProviderName() + "\n";
+            message.append(smsSupplier.getProvider().getProviderName()).append("\n");
         }
-        builder.setMessage(messageText).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+        builder.setMessage(message).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
         notLoadedDialogAlreadyShown = true;
     }
 

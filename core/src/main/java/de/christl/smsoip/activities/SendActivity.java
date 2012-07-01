@@ -30,7 +30,10 @@ import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.ui.*;
+import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
+import de.christl.smsoip.ui.ChosenContactsDialog;
+import de.christl.smsoip.ui.EmoImageDialog;
+import de.christl.smsoip.ui.ShowLastMessagesDialog;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -448,32 +451,22 @@ public class SendActivity extends AllActivity {
         updateViewOnChangedReceivers();
     }
 
+
     /**
-     * updates the toast and the refresh informations after sending and/or refreshing
+     * update the info text if refresh was succesful, otherwise a dialog will be shown
      *
-     * @param resultMessage - the resultMessage to show in the Toast or null if only refresh was pressed
-     * @param infoText      - the infoText on the screen or null if refresh was not successful
-     * @param succesfulSent - was sending succesful
-     * @deprecated will be removed in future releases
+     * @param smsActionResult
      */
-    @Deprecated
-    void showReturnMessage(CharSequence resultMessage, CharSequence infoText, boolean succesfulSent) {
+    void updateInfoTextThroughRefresh(SMSActionResult smsActionResult) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
-        if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
-            infoView.setText(infoText);
-        }
-        if (resultMessage != null) {  //previous operation was a succesful refresh only, so no return message will be shown
-            Spanned msg = new SpannableString(resultMessage);
-            lastInfoDialog = new ImageDialog(this, succesfulSent, msg);
+        if (smsActionResult.isSuccess()) {
+            infoView.setText(smsActionResult.getMessage());
+        } else {     //on error show the ImageDialog
+            lastInfoDialog = new EmoImageDialog(this, FireSMSResultList.getAllInOneResult(smsActionResult), smsActionResult.getMessage());
             lastInfoDialog.setOwnerActivity(this);
             lastInfoDialog.show();
             killDialogAfterAWhile(lastInfoDialog);
-            if (succesfulSent) {
-                writeSMSInDatabase(receiverList);
-                clearAllInputs();
-            } else {
-                setInfoButtonVisibility();
-            }
+            setInfoButtonVisibility();
         }
 
     }
@@ -891,11 +884,11 @@ public class SendActivity extends AllActivity {
                 Map<Integer, AccountModel> filteredAccounts = new HashMap<Integer, AccountModel>();
                 Integer currentAccount = provider.getCurrentAccountIndex();
                 //filter list by current
-                for (Integer integer : accounts.keySet()) {
-                    if (integer.equals(currentAccount)) {
+                for (Map.Entry<Integer, AccountModel> next : accounts.entrySet()) {
+                    if (next.getKey().equals(currentAccount)) {
                         continue;
                     }
-                    filteredAccounts.put(integer, accounts.get(integer));
+                    filteredAccounts.put(next.getKey(), next.getValue());
                 }
                 switch (filteredAccounts.size()) {
                     case 1:
@@ -1042,7 +1035,7 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        lastInfoDialog = new EmoImageDialog(this, fireSMSResults.getResult(), resultMessage.toString());
+        lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
         lastInfoDialog.show();
         killDialogAfterAWhile(lastInfoDialog);

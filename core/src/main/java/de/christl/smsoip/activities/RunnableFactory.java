@@ -21,21 +21,6 @@ public class RunnableFactory {
         updateUIHandler = new Handler();
     }
 
-    /**
-     * @param resultMessage
-     * @param infoText
-     * @param succesfulSent
-     * @deprecated will be removed in future releases (for old send mechanism)
-     */
-    @Deprecated
-    private Runnable getUpdateUIRunnable(final CharSequence resultMessage, final CharSequence infoText, final boolean succesfulSent) {
-        return new Runnable() {
-            public void run() {
-                RunnableFactory.this.sendActivity.showReturnMessage(resultMessage, infoText, succesfulSent);
-            }
-        };
-    }
-
 
     /**
      * available since API level 14
@@ -83,15 +68,13 @@ public class RunnableFactory {
     public Runnable getRefreshAndUpdateUIRunnable() {
         return new Runnable() {
             public void run() {
-                SMSActionResult result = RunnableFactory.this.sendActivity.refreshInformationText(false);
-                CharSequence infoText = null;
-                CharSequence messageText = null;
-                if (result.isSuccess()) {
-                    infoText = result.getMessage();
-                } else {
-                    messageText = result.getMessage();
-                }
-                updateUIHandler.post(getUpdateUIRunnable(messageText, infoText, false));
+                final SMSActionResult result = RunnableFactory.this.sendActivity.refreshInformationText(false);
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        RunnableFactory.this.sendActivity.updateInfoTextThroughRefresh(result);
+                    }
+                };
+                updateUIHandler.post(runnable);
                 progressDialog.cancel();
             }
         };
