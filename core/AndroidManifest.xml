@@ -30,6 +30,11 @@
         <activity
                 android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
                 android:name="com.google.ads.AdActivity"/>
+        <activity android:name="org.acra.CrashReportDialog"
+                  android:theme="@android:style/Theme.Dialog"
+                  android:launchMode="singleInstance"
+                  android:excludeFromRecents="true"
+                  android:finishOnTaskLaunch="true"/>
         <meta-data android:name="com.mobclix.APPLICATION_ID" android:value="8C3C9514-6B9F-44FB-BA42-57B331AD0B19"/>
         <meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14f930decd44ce"/>
         <activity android:name="com.mobclix.android.sdk.MobclixBrowserActivity"

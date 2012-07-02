@@ -242,6 +242,11 @@
                 <artifactId>sqlite-jdbc</artifactId>
                 <version>3.7.2</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.acra</groupId>
+                <artifactId>acra</artifactId>
+                <version>4.2.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
