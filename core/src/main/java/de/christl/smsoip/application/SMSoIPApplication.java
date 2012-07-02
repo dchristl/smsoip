@@ -19,12 +19,9 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
 
-import static org.acra.ReportField.*;
-
-@ReportsCrashes(formKey = "dDQ4RzRTaGxfZHdLZlNtU2gtTWtDOVE6MQ", customReportContent = {APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE}, mode = ReportingInteractionMode.NOTIFICATION,
+@ReportsCrashes(formKey = "dDQ4RzRTaGxfZHdLZlNtU2gtTWtDOVE6MQ", mode = ReportingInteractionMode.NOTIFICATION,
         resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
         resNotifTickerText = R.string.crash_notif_ticker_text,
         resNotifTitle = R.string.crash_notif_title,
@@ -76,7 +73,7 @@ public class SMSoIPApplication extends Application {
             //refresh only if not yet done and if a new application is installed
             if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
                 PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                versionNumber = pinfo.versionCode;
+                versionNumber = ((APIVersion) ExtendedSMSSupplier.class.getAnnotations()[0]).minVersion();
                 plugins = new ArrayList<SMSoIPPlugin>();
                 for (ApplicationInfo installedApplication : installedApplications) {
                     if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
@@ -110,7 +107,6 @@ public class SMSoIPApplication extends Application {
             PathClassLoader pathClassLoader = new PathClassLoader(sourceDir, getClassLoader());
             plugin.setClassLoader(pathClassLoader);
             Enumeration<String> classFileEntries = apkDir.entries();
-            Outer:
             while (classFileEntries.hasMoreElements()) {
                 String s = classFileEntries.nextElement();
                 if (!s.startsWith(PLUGIN_CLASS_PREFIX)) {
@@ -125,15 +121,8 @@ public class SMSoIPApplication extends Application {
                         int minVersion = getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass);
                         ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
                         if (versionNumber > minVersion) {
-                            List<Method> interfaceMethods = Arrays.asList(ExtendedSMSSupplier.class.getDeclaredMethods());
-                            for (Method interfaceMethod : interfaceMethods) {  //check of all methods in interface are there and if signature fits
-                                try {
-                                    aClass.getDeclaredMethod(interfaceMethod.getName(), interfaceMethod.getParameterTypes());
-                                } catch (NoSuchMethodException e) { //method does not exist, means old plugin
-                                    pluginsToOld.add(smsSupplier);
-                                    break Outer;
-                                }
-                            }
+                            pluginsToOld.add(smsSupplier);
+                            break;
                         } else if (minVersion > versionNumber) {
                             pluginsToNew.add(smsSupplier);
                             break;
@@ -149,15 +138,15 @@ public class SMSoIPApplication extends Application {
                 }
             }
         }
-        for (Map.Entry<String, ProviderEntry> loadedProvider : loadedProviders.entrySet()) {
-            ErrorReporter.getInstance().putCustomData("SUCCESFUL", String.valueOf(loadedProvider.getValue().getMinAPIVersion()));
-        }
-        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToOld) {
-            ErrorReporter.getInstance().putCustomData("toold" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
-        }
-        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToNew) {
-            ErrorReporter.getInstance().putCustomData("toNew" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
-        }
+//        for (Map.Entry<String, ProviderEntry> loadedProvider : loadedProviders.entrySet()) {
+        ErrorReporter.getInstance().putCustomData("SUCCESFUL", "myvalue");
+//        }
+//        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToOld) {
+//            ErrorReporter.getInstance().putCustomData("toold" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
+//        }
+//        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToNew) {
+//            ErrorReporter.getInstance().putCustomData("toNew" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
+//        }
     }
 
     /**
