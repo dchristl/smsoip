@@ -14,6 +14,7 @@ import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
+import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
@@ -23,17 +24,17 @@ import java.util.*;
 
 import static org.acra.ReportField.*;
 
-@ReportsCrashes(formKey = "dHhfekRGT256a3NfRnVzVi1iemVTN1E6MQ", customReportContent = {APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE},      mode = ReportingInteractionMode.NOTIFICATION,
-                resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
-                resNotifTickerText = R.string.crash_notif_ticker_text,
-                resNotifTitle = R.string.crash_notif_title,
-                resNotifText = R.string.crash_notif_text,
-                resNotifIcon = android.R.drawable.stat_notify_error, // optional. default is a warning sign
-                resDialogText = R.string.crash_dialog_text,
-                resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
-                resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
-                resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
-                resDialogOkToast = R.string.crash_dialog_ok_toast)
+@ReportsCrashes(formKey = "dDQ4RzRTaGxfZHdLZlNtU2gtTWtDOVE6MQ", customReportContent = {APP_VERSION_CODE, ANDROID_VERSION, PHONE_MODEL, CUSTOM_DATA, STACK_TRACE}, mode = ReportingInteractionMode.NOTIFICATION,
+        resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+        resNotifTickerText = R.string.crash_notif_ticker_text,
+        resNotifTitle = R.string.crash_notif_title,
+        resNotifText = R.string.crash_notif_text,
+        resNotifIcon = android.R.drawable.stat_notify_error, // optional. default is a warning sign
+        resDialogText = R.string.crash_dialog_text,
+        resDialogIcon = android.R.drawable.ic_dialog_info, //optional. default is a warning sign
+        resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
+        resDialogCommentPrompt = R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+        resDialogOkToast = R.string.crash_dialog_ok_toast)
 public class SMSoIPApplication extends Application {
 
     private static SMSoIPApplication app;
@@ -147,6 +148,15 @@ public class SMSoIPApplication extends Application {
                     Log.e(this.getClass().getCanonicalName(), "", e);
                 }
             }
+        }
+        for (Map.Entry<String, ProviderEntry> loadedProvider : loadedProviders.entrySet()) {
+            ErrorReporter.getInstance().putCustomData("SUCCESFUL", String.valueOf(loadedProvider.getValue().getMinAPIVersion()));
+        }
+        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToOld) {
+            ErrorReporter.getInstance().putCustomData("toold" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
+        }
+        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToNew) {
+            ErrorReporter.getInstance().putCustomData("toNew" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
         }
     }
 

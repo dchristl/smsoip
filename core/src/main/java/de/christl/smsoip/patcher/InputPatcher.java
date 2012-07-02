@@ -9,6 +9,7 @@ import de.christl.smsoip.option.OptionProvider;
 public abstract class InputPatcher {
 
     public static final String DISABLE_PAID_SMS_IN_SMS_DE = "iamebenezerscrooge";
+    public static final String CRASH_ME = "crashme"; //TODO remove
 
     public static boolean patchProgram(String s, OptionProvider provider) {
         if (s.equals(DISABLE_PAID_SMS_IN_SMS_DE)) {
@@ -20,6 +21,8 @@ public abstract class InputPatcher {
             edit.putBoolean(DISABLE_PAID_SMS_IN_SMS_DE, true);
             edit.commit();
             return true;
+        } else if (s.equals(CRASH_ME)) {
+            throw new IllegalArgumentException("This is a wanted behaviour");
         }
         return false;
     }
