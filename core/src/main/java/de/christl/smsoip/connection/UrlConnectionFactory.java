@@ -44,6 +44,7 @@ public class UrlConnectionFactory {
     public HttpURLConnection create() throws IOException {
         con = (HttpURLConnection) new URL(url).openConnection();
         con.setReadTimeout(timeout);
+        con.setConnectTimeout(timeout);
         con.setRequestProperty("User-Agent", targetAgent);
         con.setRequestMethod(method);
         con.setInstanceFollowRedirects(followRedirects);
