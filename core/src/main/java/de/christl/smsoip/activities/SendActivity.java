@@ -160,17 +160,18 @@ public class SendActivity extends AllActivity {
 
     private void updateInfoTextSilent() {
         //only if parameter and supplier set
-        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
-            final View refreshButton = findViewById(R.id.resfreshButton);
-            refreshButton.setEnabled(false);
-            final TextView infoText = (TextView) findViewById(R.id.infoText);
-            infoText.setText(R.string.text_notyetrefreshed);
-            RunnableFactory factory = new RunnableFactory(this, null);
-            factory.updateInfoTextInBackground();
+//        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
+//            final View refreshButton = findViewById(R.id.resfreshButton);
+//            refreshButton.setEnabled(false);
+//            final TextView infoText = (TextView) findViewById(R.id.infoText);
+//            infoText.setText(R.string.text_notyetrefreshed);
+//            RunnableFactory factory = new RunnableFactory(this, null);
+//            factory.updateInfoTextInBackground();
+//
+//        }
 
-        }
-
-
+        final TextView infoText = (TextView) findViewById(R.id.infoText);
+        infoText.setText(R.string.text_notyetrefreshed);
     }
 
     public void updateInfoTextAndRefreshButton(String info) {
