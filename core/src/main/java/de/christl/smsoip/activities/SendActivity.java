@@ -78,6 +78,7 @@ public class SendActivity extends AllActivity {
     private Dialog lastDialog;
     private static final String TAG = SendActivity.class.getCanonicalName();
     private boolean optionsCalled = false;
+    private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
 
     @Override
@@ -92,9 +93,13 @@ public class SendActivity extends AllActivity {
             smsSupplier.getProvider().refresh();
             settings = PreferenceManager.getDefaultSharedPreferences(this);
             setFullTitle();
-            optionsCalled = true;
+            optionsCalled = false;
         } else if (smsSupplier == null) {
             Log.e(TAG, "SMSSupplier is null on resume");
+        }
+        if (providerOptionsCalled) {
+            updateInfoTextSilent();
+            providerOptionsCalled = false;
         }
     }
 
@@ -807,6 +812,7 @@ public class SendActivity extends AllActivity {
         intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, smsSupplier.getClass().getCanonicalName());
         startActivity(intent);
         optionsCalled = true;
+        providerOptionsCalled = true;
     }
 
 
