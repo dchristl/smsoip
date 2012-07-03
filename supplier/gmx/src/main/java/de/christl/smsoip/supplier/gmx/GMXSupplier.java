@@ -105,6 +105,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setDoOutput(true);
             con.setReadTimeout(TIMEOUT);
+            con.setConnectTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
@@ -266,6 +267,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setReadTimeout(TIMEOUT);
+            con.setConnectTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("POST");
         } catch (SocketTimeoutException stoe) {

@@ -61,6 +61,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setReadTimeout(TIMEOUT);
+            con.setConnectTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("GET");
             StringBuilder cookieBuilder = new StringBuilder();
@@ -149,6 +150,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
             //first get the login cookie
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setReadTimeout(TIMEOUT);
+            con.setConnectTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("POST");
             Map<String, List<String>> headerFields = con.getHeaderFields();
@@ -175,6 +177,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
             //now get the freenetMail4Prev cookie, that is also needed
             con = (HttpURLConnection) new URL(HOME_URL).openConnection();
             con.setReadTimeout(TIMEOUT);
+            con.setConnectTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("POST");
             con.setRequestProperty("Cookie", sidCookie);
@@ -231,6 +234,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
             try {
                 con = (HttpURLConnection) new URL(tmpUrl).openConnection();
                 con.setReadTimeout(TIMEOUT);
+                con.setConnectTimeout(TIMEOUT);
                 con.setRequestProperty("User-Agent", TARGET_AGENT);
                 con.setRequestMethod("POST");
                 StringBuilder cookieBuilder = new StringBuilder();

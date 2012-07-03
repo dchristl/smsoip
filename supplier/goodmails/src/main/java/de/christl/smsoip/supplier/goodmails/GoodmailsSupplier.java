@@ -76,7 +76,8 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 URL myUrl = new URL(tmpUrl);
                 urlConn = (HttpURLConnection) myUrl.openConnection();
                 urlConn.setDoOutput(true);
-                urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
+                urlConn.setReadTimeout(TIMEOUT);
+                urlConn.setConnectTimeout(TIMEOUT);
                 urlConn.setRequestProperty("Cookie", sessionCookie);
                 urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
                 writer = new OutputStreamWriter(urlConn.getOutputStream());
@@ -182,6 +183,8 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
             URL myUrl = new URL(tmpUrl);
             urlConn = (HttpURLConnection) myUrl.openConnection();
             urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
+            urlConn.setConnectTimeout(TIMEOUT);
+            urlConn.setConnectTimeout(TIMEOUT);
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Cookie", sessionCookie);
             urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
