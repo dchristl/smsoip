@@ -2,7 +2,6 @@ package de.christl.smsoip.patcher;
 
 import android.content.SharedPreferences;
 import de.christl.smsoip.option.OptionProvider;
-import org.acra.ErrorReporter;
 
 /**
  * Patcher for changing values suring runtime
@@ -23,12 +22,7 @@ public abstract class InputPatcher {
             edit.commit();
             return true;
         } else if (s.equals(CRASH_ME)) {
-            try {
-                throw new IllegalArgumentException("This is a wanted behaviour");
-            } catch (IllegalArgumentException e) {
-                ErrorReporter.getInstance().handleSilentException(e);
-                throw e;
-            }
+            throw new IllegalArgumentException("This is a wanted behaviour");
         }
         return false;
     }

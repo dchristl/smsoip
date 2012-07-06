@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.christl.SMSoIP</groupId>
+    <artifactId>install-sdk</artifactId>
+    <version>1.0.0</version>
+    <!--Helper POM for installing acra to local repo-->
+    <build>
+        <defaultGoal>install:install-file</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <file>android.jar</file>
+                    <groupId>com.google.android</groupId>
+                    <artifactId>android</artifactId>
+                    <packaging>jar</packaging>
+                    <version>4.0.3</version>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

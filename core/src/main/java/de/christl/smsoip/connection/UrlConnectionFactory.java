@@ -104,7 +104,7 @@ public class UrlConnectionFactory {
             String cookieList = stringListEntry.getKey();
             if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                 for (String cookie : stringListEntry.getValue()) {
-                    if (cookie.toUpperCase().startsWith(cookieName + "=")) {
+                    if (cookie != null && cookie.toUpperCase().startsWith(cookieName + "=")) {
                         return cookie;
                     }
                 }
@@ -118,7 +118,7 @@ public class UrlConnectionFactory {
             String cookieList = stringListEntry.getKey();
             if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                 for (String cookie : stringListEntry.getValue()) {
-                    if (cookie.matches(pattern)) {
+                    if (cookie != null && cookie.matches(pattern)) {
                         return cookie;
                     }
                 }
@@ -133,7 +133,7 @@ public class UrlConnectionFactory {
             String cookieList = stringListEntry.getKey();
             if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                 for (String cookie : stringListEntry.getValue()) {
-                    if (cookie.matches(pattern)) {
+                    if (cookie != null && cookie.matches(pattern)) {
                         out.add(cookie);
                     }
                 }

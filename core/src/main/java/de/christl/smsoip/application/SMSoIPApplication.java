@@ -13,7 +13,6 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import org.acra.ACRA;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -48,7 +47,7 @@ public class SMSoIPApplication extends Application {
 
     @Override
     public void onCreate() {
-        ACRA.init(this);
+//        ACRA.init(this);
         super.onCreate();
         app = this;
         setWriteToDBAvailable();
@@ -74,6 +73,7 @@ public class SMSoIPApplication extends Application {
             if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
                 PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
                 versionNumber = ((APIVersion) ExtendedSMSSupplier.class.getAnnotations()[0]).minVersion();
+                ErrorReporter.getInstance().putCustomData("API-Version", String.valueOf(versionNumber));
                 plugins = new ArrayList<SMSoIPPlugin>();
                 for (ApplicationInfo installedApplication : installedApplications) {
                     if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
@@ -139,13 +139,13 @@ public class SMSoIPApplication extends Application {
             }
         }
 //        for (Map.Entry<String, ProviderEntry> loadedProvider : loadedProviders.entrySet()) {
-        ErrorReporter.getInstance().putCustomData("SUCCESFUL", "myvalue");
+//            ErrorReporter.getInstance().putCustomData(loadedProvider.getKey(), String.valueOf(loadedProvider.getValue().getMinAPIVersion()));
 //        }
 //        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToOld) {
-//            ErrorReporter.getInstance().putCustomData("toold" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
+//            ErrorReporter.getInstance().putCustomData(extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
 //        }
 //        for (ExtendedSMSSupplier extendedSMSSupplier : pluginsToNew) {
-//            ErrorReporter.getInstance().putCustomData("toNew" + extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
+//            ErrorReporter.getInstance().putCustomData(extendedSMSSupplier.toString(), extendedSMSSupplier.toString());
 //        }
     }
 

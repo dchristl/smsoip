@@ -282,7 +282,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
             }
             for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
                 String cookie = stringListEntry.getKey();
-                if (cookie.equalsIgnoreCase("set-cookie")) {
+                if (cookie != null && cookie.equalsIgnoreCase("set-cookie")) {
                     for (String s : stringListEntry.getValue()) {
                         if (s.startsWith("sessionSecret")) {
                             sessionCookie = s;

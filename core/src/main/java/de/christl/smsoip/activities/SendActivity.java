@@ -15,8 +15,12 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.*;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
@@ -720,22 +724,21 @@ public class SendActivity extends AllActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+
         MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
-        item.setIcon(R.drawable.ic_menu_manage);
+        item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
         globalOption.setIcon(R.drawable.ic_menu_compose);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
             item = menu.add(0, OPTION_SWITCH_SUPPLIER, 0, getString(R.string.text_changeProvider));
-            item.setIcon(R.drawable.ic_menu_rotate);
+            item.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
 
         item = menu.add(0, OPTION_SWITCH_ACCOUNT, 0, getString(R.string.text_changeAccount));
-        item.setIcon(R.drawable.ic_menu_refresh);
-        return true;
+        item.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -946,7 +949,6 @@ public class SendActivity extends AllActivity {
 
     public void updateAfterReceiverCountChanged() {
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
-
         if (receiverList.size() > maxReceiverCount) {
             CheckForDuplicatesArrayList newReceiverList = new CheckForDuplicatesArrayList();
             for (int i = 0; i < maxReceiverCount; i++) {
@@ -998,13 +1000,14 @@ public class SendActivity extends AllActivity {
         }
     }
 
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        MenuItem item = menu.findItem(OPTION_SWITCH_ACCOUNT);
-        //sho only if more than one account is available
-        item.setVisible(smsSupplier.getProvider().getAccounts().size() > 1);
-        return super.onMenuOpened(featureId, menu);
-    }
+
+//    @Override
+//    public boolean onMenuOpened(int featureId, Menu menu) {
+//        MenuItem item = menu.findItem(OPTION_SWITCH_ACCOUNT);
+//        //show only if more than one account is available
+//        item.setVisible(smsSupplier.getProvider().getAccounts().size() > 1);
+//        return super.onMenuOpened(featureId, menu);
+//    }
 
     /**
      * since API level 14

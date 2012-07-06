@@ -163,7 +163,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
                 String cookieList = stringListEntry.getKey();
                 if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                     for (String cookie : stringListEntry.getValue()) {
-                        if (cookie.startsWith("SID")) {
+                        if (cookie != null && cookie.startsWith("SID")) {
                             sessionCookies.add(cookie);
                             sidCookie = cookie;
                             break Outer;
@@ -190,7 +190,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
                 String cookieList = stringListEntry.getKey();
                 if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                     for (String cookie : stringListEntry.getValue()) {
-                        if (cookie.startsWith("freenetMail4Prev")) {
+                        if (cookie != null && cookie.startsWith("freenetMail4Prev")) {
                             sessionCookies.add(cookie);
                             break Outer;
                         }

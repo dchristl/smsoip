@@ -1,5 +1,6 @@
 package de.christl.smsoip.activities;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,11 +15,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
@@ -32,7 +34,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class AllActivity extends Activity {
+public abstract class AllActivity extends SherlockActivity {
     public static final int EXIT = 0;
     private static List<Activity> registeredActivities = new ArrayList<Activity>();
 
