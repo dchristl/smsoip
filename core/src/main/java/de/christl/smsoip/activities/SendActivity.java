@@ -104,6 +104,7 @@ public class SendActivity extends AllActivity {
         }
         if (providerOptionsCalled) {
             updateInfoTextSilent();
+            invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
     }
@@ -738,6 +739,7 @@ public class SendActivity extends AllActivity {
 
         item = menu.add(0, OPTION_SWITCH_ACCOUNT, 0, getString(R.string.text_changeAccount));
         item.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        item.setVisible(smsSupplier != null && smsSupplier.getProvider().getAccounts().size() > 1);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -945,6 +947,7 @@ public class SendActivity extends AllActivity {
         setSpinner();
         updateAfterReceiverCountChanged();
         updateInfoTextSilent();
+        invalidateOptionsMenu();
     }
 
     public void updateAfterReceiverCountChanged() {
@@ -1000,14 +1003,6 @@ public class SendActivity extends AllActivity {
         }
     }
 
-
-//    @Override
-//    public boolean onMenuOpened(int featureId, Menu menu) {
-//        MenuItem item = menu.findItem(OPTION_SWITCH_ACCOUNT);
-//        //show only if more than one account is available
-//        item.setVisible(smsSupplier.getProvider().getAccounts().size() > 1);
-//        return super.onMenuOpened(featureId, menu);
-//    }
 
     /**
      * since API level 14
