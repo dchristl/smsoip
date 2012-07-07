@@ -172,7 +172,7 @@ public class SendActivity extends AllActivity {
     private void updateInfoTextSilent() {
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
-        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, true) && smsSupplier != null) {
+        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smsSupplier != null) {
             final View refreshButton = findViewById(R.id.resfreshButton);
             refreshButton.setEnabled(false);
             infoText.setText(R.string.text_notyetrefreshed);
