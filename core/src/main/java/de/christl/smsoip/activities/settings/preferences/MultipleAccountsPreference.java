@@ -107,6 +107,13 @@ public class MultipleAccountsPreference extends ListPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
+        builder.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MultipleAccountsPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+            }
+        });
+
         listAdapter = new MultipleAccountsPreferenceAdapter(this, accountModels, defaultAccount);
         builder.setAdapter(listAdapter, this);
         builder.setSingleChoiceItems(listAdapter, defaultAccount, new DialogInterface.OnClickListener() {
@@ -116,8 +123,7 @@ public class MultipleAccountsPreference extends ListPreference {
                     showUserNamePasswordDialog(null);
                 } else {
                     defaultAccount = which;
-                    MultipleAccountsPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
-                    dialog.dismiss();
+                    listAdapter.setDefaultAccount(defaultAccount);
                 }
             }
         });

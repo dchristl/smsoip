@@ -5,8 +5,6 @@
     <string name="text_chooseProvider">Anbieter auswählen</string>
     <string name="text_provider_settings">Anbietereinstellungen</string>
     <string name="text_program_settings">Programmeinstellungen</string>
-    <string name="text_provider_settings_short">Anbieter</string>
-    <string name="text_program_settings_short">Programm</string>
     <string name="text_mainmenu">Hauptmenü</string>
     <string name="text_exit">Beenden</string>
     <string name="text_optionTitle">Optionen für</string>
@@ -99,8 +97,9 @@
     <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
     <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
-    <string name="text_account_list">Standardaccount</string>
-    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Account ist: &lt;%1$s&gt;
+    <string name="text_account_list">Account-Verwaltung</string>
+    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardsccount ist:
+        &lt;%1$s&gt;
     </string>
     <string name="text_account_add_account">Account hinzufügen</string>
     <string name="text_account_no_account">Nicht gesetzt</string>

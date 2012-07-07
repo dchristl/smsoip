@@ -106,7 +106,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
                             Thread.sleep(2000);
                             progressDialog.cancel();
                         } catch (InterruptedException e) {
-                            Log.e(this.getClass().getCanonicalName(), "", e);
+                            Log.e(MultipleAccountsPreferenceAdapter.class.getCanonicalName(), "", e);
                         }
                     }
                 }).start();
@@ -118,6 +118,11 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
 
     public AccountModelsList getObjects() {
         return objects;
+    }
+
+    public void setDefaultAccount(int defaultAccount) {
+        this.defaultAccount = defaultAccount;
+        notifyDataSetChanged();
     }
 
 }

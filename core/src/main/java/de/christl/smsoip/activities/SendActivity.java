@@ -728,9 +728,9 @@ public class SendActivity extends AllActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings_short));
+        MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings));
         item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings_short));
+        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings));
         globalOption.setIcon(R.drawable.ic_menu_compose);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
             item = menu.add(0, OPTION_SWITCH_SUPPLIER, 0, getString(R.string.text_changeProvider));

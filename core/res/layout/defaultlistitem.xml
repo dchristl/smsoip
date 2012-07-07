@@ -13,7 +13,7 @@
                 android:paddingRight="6dip"
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:gravity="center_vertical"
-                android:textColor="@android:color/black"
+                android:textColor="?android:attr/textColorTertiary"
                 android:textSize="20dip"/>
         <ImageView
                 android:id="@+id/editAccount"
