@@ -10,8 +10,6 @@ fileName: strings.xml
     <string name="text_chooseProvider">Choose Provider</string>
     <string name="text_provider_settings">Provider settings</string>
     <string name="text_program_settings">Program settings</string>
-    <string name="text_provider_settings_short">Provider</string>
-    <string name="text_program_settings_short">Program</string>
     <string name="text_mainmenu">Main menu</string>
     <string name="text_exit">Quit</string>
     <string name="text_optionTitle">Options for</string>
@@ -102,8 +100,8 @@ fileName: strings.xml
     <string name="text_not_supported_on_device">Not supported on this device</string>
     <string name="text_pick_for_disabling">Tap for removing</string>
     <string name="text_receiver_added_twice">Receiver number added twice!</string>
-    <string name="text_account_list">Default account</string>
-    <string name="text_account_list_description">The default account used for sending. Current account is: &lt;%1$s&gt;
+    <string name="text_account_list">Account management</string>
+    <string name="text_account_list_description">Manage accounts and choose the default one. Current default account is: &lt;%1$s&gt;
     </string>
     <string name="text_account_add_account">Add account</string>
     <string name="text_account_no_account">Not set</string>

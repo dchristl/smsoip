@@ -110,9 +110,6 @@
     <string name="text_lastMessage">Letzte Nachricht</string>
     <string name="text_lastConversation">Letzte Konversationen</string>
     <string name="text_clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>
-    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the
-        issue !
-    </string>
     <string name="crash_toast_text">Uuups! Das sollte nicht passieren, bitte sende einen Fehlerbericht an den
         Entwickler!
     </string>

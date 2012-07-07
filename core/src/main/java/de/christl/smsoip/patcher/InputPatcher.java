@@ -14,16 +14,16 @@ public abstract class InputPatcher {
 
     private static final String ADD_SUPPLIER_PREFERENCE = "asp";
     private static final String ADD_GLOBAL_PREFERENCE = "agp";
-    private static final String IAMEBENEZERSCROOGE = "iamebenezerscrooge";
     private static final String ENABLE_AUTO_UPDATE = "autoupdateenable";
+    public static final String SHOW_RETURN_FROM_SERVER = "iamebenezerscrooge";
 
     public static boolean patchProgram(String input, OptionProvider provider) {
         if (input.startsWith(ADD_SUPPLIER_PREFERENCE)) {
             return addSupplierPreference(input, provider);
         } else if (input.startsWith(ADD_GLOBAL_PREFERENCE)) {
             return addGlobalPreference(input);
-        } else if (input.equals(IAMEBENEZERSCROOGE)) {
-            return addSupplierPreference(ADD_SUPPLIER_PREFERENCE + " " + IAMEBENEZERSCROOGE + " " + "b" + " " + "true", provider);
+        } else if (input.equals(SHOW_RETURN_FROM_SERVER)) {
+            return addSupplierPreference(ADD_SUPPLIER_PREFERENCE + " " + SHOW_RETURN_FROM_SERVER + " " + "b" + " " + "true", provider);
         } else if (input.equals(ENABLE_AUTO_UPDATE)) {
             return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP + " " + "b" + " " + "true");
         }

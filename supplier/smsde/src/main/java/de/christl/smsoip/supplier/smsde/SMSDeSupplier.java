@@ -238,7 +238,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
             try {
                 UrlConnectionFactory factory;
                 String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING));
-                boolean paidDisabled = provider.getSettings().getBoolean(InputPatcher.DISABLE_PAID_SMS_IN_SMS_DE, false);
+                boolean flagSet = provider.getSettings().getBoolean(InputPatcher.SHOW_RETURN_FROM_SERVER, false);
                 switch (sendIndex) {
                     case TYPE_POWER_160:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
@@ -246,8 +246,8 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                         body += "&oadc=0";
                         body += "&smslength=160";
                         body += "&which_page=power-sms+160";    //this is for output of send type
-                        if (!paidDisabled) {
-                            body += "&which_page_international=power-sms-international+160"; //this one makes paid sms OMG
+                        if (!flagSet) {
+                            body += "&which_page_international=power-sms-international+160"; //this is for the return message
                         }
                         break;
                     case TYPE_POWER_160_SI:
@@ -256,7 +256,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                         body += "&oadc=1";
                         body += "&smslength=160";
                         body += "&which_page=power-sms+160";
-                        if (!paidDisabled) {
+                        if (!flagSet) {
                             body += "&which_page_international=power-sms-international+160";
                         }
                         break;
@@ -266,7 +266,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                         body += "&oadc=0";
                         body += "&smslength=300";
                         body += "&which_page=power-sms+300";
-                        if (!paidDisabled) {
+                        if (!flagSet) {
                             body += "&which_page_international=power-sms-international+300";
                         }
                         break;
@@ -276,7 +276,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
                         body += "&oadc=1";
                         body += "&smslength=300";
                         body += "&which_page=power-sms+300";
-                        if (!paidDisabled) {
+                        if (!flagSet) {
                             body += "&which_page_international=power-sms-international+300";
                         }
                         break;
