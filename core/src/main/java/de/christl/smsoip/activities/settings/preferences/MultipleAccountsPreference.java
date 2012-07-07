@@ -27,7 +27,6 @@ public class MultipleAccountsPreference extends ListPreference {
     private AccountModelsList accountModels = new AccountModelsList();
     private MultipleAccountsPreferenceAdapter listAdapter;
     private ProviderPreferences providerPreferences;
-    private int defaultAccount;
     private Handler updateUIHandler = new Handler();
     private SharedPreferences.Editor editor;
 
@@ -40,7 +39,6 @@ public class MultipleAccountsPreference extends ListPreference {
 
     private void init() {
         setPersistent(false);
-        defaultAccount = preferences.getInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, 0);
         setDefaultAccountInSummary();
         setDialogTitle(R.string.text_chooseAccount);
         setTitle(R.string.text_account_list);
@@ -49,7 +47,12 @@ public class MultipleAccountsPreference extends ListPreference {
         setEntries(new CharSequence[0]);
     }
 
+    private int getDefaultAccount() {
+        return preferences.getInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, 0);
+    }
+
     private void setDefaultAccountInSummary() {
+        int defaultAccount = getDefaultAccount();
         String defaultAccountName = preferences.getString(ProviderPreferences.PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.text_account_no_account));
         setSummary(String.format(getContext().getString(R.string.text_account_list_description), defaultAccountName));
     }
@@ -97,7 +100,7 @@ public class MultipleAccountsPreference extends ListPreference {
                 editor.putString(ProviderPreferences.PROVIDER_USERNAME + (i == 0 ? "" : "." + i), accountModel.getUserName());
                 editor.putString(ProviderPreferences.PROVIDER_PASS + (i == 0 ? "" : "." + i), accountModel.getPass());
             }
-            editor.putInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, defaultAccount);
+            editor.putInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, listAdapter.getDefaultAccount());
             editor.commit();
             setDefaultAccountInSummary();
         }
@@ -114,16 +117,15 @@ public class MultipleAccountsPreference extends ListPreference {
             }
         });
 
-        listAdapter = new MultipleAccountsPreferenceAdapter(this, accountModels, defaultAccount);
+        listAdapter = new MultipleAccountsPreferenceAdapter(this, accountModels, getDefaultAccount());
         builder.setAdapter(listAdapter, this);
-        builder.setSingleChoiceItems(listAdapter, defaultAccount, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(listAdapter, listAdapter.getDefaultAccount(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (listAdapter.getItem(which).getUserName().equals(getContext().getString(R.string.text_account_add_account))) {
                     showUserNamePasswordDialog(null);
                 } else {
-                    defaultAccount = which;
-                    listAdapter.setDefaultAccount(defaultAccount);
+                    listAdapter.setDefaultAccount(which);
                 }
             }
         });

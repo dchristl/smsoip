@@ -61,6 +61,9 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
                 @Override
                 public void onClick(View v) {
                     remove(getItem(position));
+                    if (position == defaultAccount) {
+                        defaultAccount = 0; //set back to the first one
+                    }
 
                 }
             });
@@ -79,6 +82,14 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             checkAccountBtn.setVisibility(chkBtnVisibility);
         }
         return row;
+    }
+
+    @Override
+    public void insert(AccountModel object, int index) {
+        if (objects.size() == 1) {   //set the new account as default if none exist (the first is always the fake one)
+            defaultAccount = index;
+        }
+        super.insert(object, index);
     }
 
     private View.OnClickListener buildCheckCredentialsListener(final int position) {
@@ -125,4 +136,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
         notifyDataSetChanged();
     }
 
+    public int getDefaultAccount() {
+        return defaultAccount;
+    }
 }
