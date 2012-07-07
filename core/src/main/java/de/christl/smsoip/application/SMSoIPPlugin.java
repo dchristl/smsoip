@@ -1,23 +1,29 @@
 package de.christl.smsoip.application;
 
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import dalvik.system.PathClassLoader;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Simple class for
+ * Simple class for managing plugins during read out
  */
 public class SMSoIPPlugin {
     private ApplicationInfo installedApplication;
+    private PackageInfo packageInfo;
     private Resources resources;
     private PathClassLoader classLoader;
     private Set<String> availableClasses = new HashSet<String>();
+    private int minAPIVersion;
+    private ExtendedSMSSupplier supplier;
 
-    public SMSoIPPlugin(ApplicationInfo installedApplication, Resources resourcesForApplication) {
+    public SMSoIPPlugin(ApplicationInfo installedApplication, PackageInfo packageInfo, Resources resourcesForApplication) {
         this.installedApplication = installedApplication;
+        this.packageInfo = packageInfo;
         resources = resourcesForApplication;
     }
 
@@ -57,5 +63,30 @@ public class SMSoIPPlugin {
 
     public String[] resolveArrayStringResource(int resourceId) {
         return resources.getStringArray(resourceId);
+    }
+
+    public String getSupplierClassName() {
+        return supplier.getClass().getCanonicalName();
+    }
+
+    public void setMinAPIVersion(int minVersion) {
+        this.minAPIVersion = minVersion;
+    }
+
+    public int getMinAPIVersion() {
+        return minAPIVersion;
+    }
+
+    public void setSupplier(ExtendedSMSSupplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getProviderName() {
+        return supplier.getProvider().getProviderName();
+    }
+
+
+    public String getVersion() {
+        return packageInfo.versionName;
     }
 }

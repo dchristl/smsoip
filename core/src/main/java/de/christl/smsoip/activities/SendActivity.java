@@ -25,8 +25,8 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
-import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
@@ -284,7 +284,7 @@ public class SendActivity extends AllActivity {
         //check if default provider is installed
         if (!string.equals("")) {
             boolean found = false;
-            for (ProviderEntry providerEntry : SMSoIPApplication.getApp().getProviderEntries().values()) {
+            for (SMSoIPPlugin providerEntry : SMSoIPApplication.getApp().getProviderEntries().values()) {
                 if (providerEntry.getSupplierClassName().equals(string)) {
                     found = true;
                     break;
@@ -814,15 +814,15 @@ public class SendActivity extends AllActivity {
                 dialog = builder.create();
                 break;
             case DIALOG_PROVIDER:
-                Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+                Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
                 if (providerEntries.size() == 0) { //skip if no provider available
                     break;
                 }
-                final List<ProviderEntry> filteredProviderEntries = new ArrayList<ProviderEntry>();
+                final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
                 if (smsSupplier == null) {   //add all if current provider not set
                     filteredProviderEntries.addAll(providerEntries.values());
                 } else {
-                    for (ProviderEntry providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
+                    for (SMSoIPPlugin providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
                         if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
                             filteredProviderEntries.add(providerEntry);
                         }
@@ -832,7 +832,7 @@ public class SendActivity extends AllActivity {
                 if (filteredProvidersSize > 1) {
                     final CharSequence[] providerItems = new String[filteredProvidersSize];
                     for (int i = 0; i < filteredProvidersSize; i++) {
-                        ProviderEntry providerEntry = filteredProviderEntries.get(i);
+                        SMSoIPPlugin providerEntry = filteredProviderEntries.get(i);
                         providerItems[i] = providerEntry.getProviderName();
                     }
                     builder = new AlertDialog.Builder(this);

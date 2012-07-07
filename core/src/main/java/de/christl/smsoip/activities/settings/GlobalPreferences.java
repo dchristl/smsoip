@@ -8,8 +8,8 @@ import android.preference.*;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
-import de.christl.smsoip.application.ProviderEntry;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.application.SMSoIPPlugin;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -43,11 +43,11 @@ public class GlobalPreferences extends PreferenceActivity {
         editTextPref.setSummary(R.string.text_signature_description);
         root.addPreference(editTextPref);
         final ListPreference listPref = new ListPreference(this);
-        Map<String, ProviderEntry> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.size() > 1) {
             Map<String, String> providersWithNames = new LinkedHashMap<String, String>();
             providersWithNames.put((String) getText(R.string.text_no_default_Provider), "");
-            for (ProviderEntry providerEntry : providerEntries.values()) {
+            for (SMSoIPPlugin providerEntry : providerEntries.values()) {
                 providersWithNames.put(providerEntry.getProviderName(), providerEntry.getSupplierClassName());
             }
             listPref.setEntries(providersWithNames.keySet().toArray(new CharSequence[providersWithNames.size()]));

@@ -25,10 +25,11 @@ import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.application.changelog.ChangeLog;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -102,7 +103,7 @@ public abstract class AllActivity extends SherlockActivity {
         return true;
     }
 
-    private void showNotLoadedProvidersDialog(List<ExtendedSMSSupplier> suppliers, String headline) {
+    private void showNotLoadedProvidersDialog(HashMap<String, SMSoIPPlugin> suppliers, String headline) {
         if (notLoadedDialogAlreadyShown) {
             return;
         }
@@ -117,8 +118,8 @@ public abstract class AllActivity extends SherlockActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         StringBuilder message = new StringBuilder(headline);
         message.append("\n");
-        for (ExtendedSMSSupplier smsSupplier : suppliers) {
-            message.append(smsSupplier.getProvider().getProviderName()).append("\n");
+        for (SMSoIPPlugin smsSupplier : suppliers.values()) {
+            message.append(smsSupplier.getProviderName()).append("\n");
         }
         builder.setMessage(message).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
         notLoadedDialogAlreadyShown = true;
