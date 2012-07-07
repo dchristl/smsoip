@@ -3,4 +3,9 @@
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_refresh_informations">"Credits: %s"</string>
+    <string-array name="array_spinner">
+        <item>FREE (0 Credits)</item>
+        <item>STANDARD (10 Credits)</item>
+        <item>FAKE (12 Credits)</item>
+    </string-array>
 </resources>

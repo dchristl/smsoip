@@ -7,7 +7,6 @@ import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.supplier.goodmails.constant.Constants;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -64,6 +63,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result);
         }
+        int sendIndex = findSendMethod(spinnerText);
         HttpURLConnection urlConn;
         InputStream is = null;
         String tmpUrl = TARGET_URL + "&sid=" + getSIDParamater();
@@ -82,15 +82,19 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
                 writer = new OutputStreamWriter(urlConn.getOutputStream());
                 String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, encoding);
-                if (spinnerText.equals(Constants.FREE)) {
-                    headerFields += "&type=freesms";
-                    lastSentType = "FREE";
-                } else if (spinnerText.equals(Constants.STANDARD)) {
-                    headerFields += "&type=standardsms";
-                    lastSentType = "STANDARD";
-                } else if (spinnerText.equals(Constants.FAKE)) {
-                    headerFields += "&type=aksms";
-                    lastSentType = "FAKE";
+                switch (sendIndex) {
+                    case 0: //free
+                        headerFields += "&type=freesms";
+                        lastSentType = "FREE";
+                        break;
+                    case 1:  //standard
+                        headerFields += "&type=standardsms";
+                        lastSentType = "STANDARD";
+                        break;
+                    default:  //fake
+                        headerFields += "&type=aksms";
+                        lastSentType = "FAKE";
+                        break;
                 }
                 writer.write(headerFields);
                 writer.flush();
@@ -102,7 +106,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 }
                 Outer:
                 for (Map.Entry<String, List<String>> header : urlConnHeaderFields.entrySet()) {
-                    if (header.getKey().equals("content-type")) {
+                    if (header.getKey() != null && header.getKey().equals("content-type")) {
                         for (String entry : header.getValue()) {
                             String charset = "charset";
                             if (entry.contains(charset)) {
@@ -300,5 +304,16 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         }
 
         return SMSActionResult.LOGIN_FAILED_ERROR();
+    }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                return i;
+            }
+        }
+        return 0;
     }
 }

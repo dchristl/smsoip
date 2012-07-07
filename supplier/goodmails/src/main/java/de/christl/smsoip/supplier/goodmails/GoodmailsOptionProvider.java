@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.supplier.goodmails.constant.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
 
     @Override
     public void createSpinner(final SendActivity sendActivity, Spinner spinner) {
-        final String[] arraySpinner = new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE};
+        final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
         spinner.setVisibility(View.VISIBLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -45,15 +44,19 @@ public class GoodmailsOptionProvider extends OptionProvider {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String currentSelection = arraySpinner[position];
-                if (currentSelection.equals(Constants.FREE)) {
-                    messageLength = 126;
-                    maxReceiverCount = 1;
-                    maxMessageCount = 1;
-                } else {
-                    messageLength = 153;
-                    maxReceiverCount = Integer.MAX_VALUE;
-                    maxMessageCount = 9;
+                switch (position) {
+                    case 0:   //Free
+                        messageLength = 126;
+                        maxReceiverCount = 1;
+                        maxMessageCount = 1;
+                        break;
+                    default: //Fake
+                    case 1:   //Standard
+                        messageLength = 153;
+                        maxReceiverCount = Integer.MAX_VALUE;
+                        maxMessageCount = 9;
+                        break;
+
                 }
                 sendActivity.updateSMScounter();
                 sendActivity.updateAfterReceiverCountChanged();
@@ -64,7 +67,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
                 //do nothing
             }
         });
-        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, Constants.FREE));
+        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
         spinner.setSelection(defaultPosition);
     }
 
@@ -73,13 +76,14 @@ public class GoodmailsOptionProvider extends OptionProvider {
         List<Preference> out = new ArrayList<Preference>();
 
         ListPreference listPref = new ListPreference(context);
-        listPref.setEntries(new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE});
-        listPref.setEntryValues(new String[]{Constants.FREE, Constants.STANDARD, Constants.FAKE});
+        String[] typeArray = getArrayByResourceId(R.array.array_spinner);
+        listPref.setEntries(typeArray);
+        listPref.setEntryValues(typeArray);
         listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
         listPref.setTitle(getTextByResourceId(R.string.text_default_type));
         listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
-        listPref.setDefaultValue(Constants.FREE);
+        listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
         return out;
     }
