@@ -114,15 +114,21 @@
     <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the
         issue !
     </string>
-    <string name="crash_notif_ticker_text">Unexpected error, please send a report…</string>
-    <string name="crash_notif_title">CrashTest has crashed…</string>
-    <string name="crash_notif_text">Please click here to help fix the issue.</string>
-
-    <string name="crash_dialog_title">CrashTest has crashed</string>
-    <string name="crash_dialog_text">An unexpected error occurred forcing the
-        application to stop. Please help us fix this by sending us error data,
-        all you have to do is click \'OK\'.
+    <string name="crash_toast_text">Uuups! Das sollte nicht passieren, bitte sende einen Fehlerbericht an den
+        Entwickler!
     </string>
-    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
-    <string name="crash_dialog_ok_toast">Thank you !</string>
+    <string name="crash_notif_ticker_text">Unerwarteter Fehler in SMSoIP, bitte sende den Fehlerbericht…</string>
+    <string name="crash_notif_title">SMSoIP wurde beendet…</string>
+    <string name="crash_notif_text">Bitte klicke hier, um das Problem zu beheben.</string>
+
+    <string name="crash_dialog_title">SMSoIP wurde beendet</string>
+    <string name="crash_dialog_text">Ein unerwarteter Fehler hat dazu geführt, dass die App beendet wurde. Bitte stelle
+        sicher, dass SMSoIP und alle installierten Plugins auf dem neuesten Stand sind. Wenn dies weiterhin zum Fehler
+        führt, hilf bitte mit diesen zu beheben, indem du den Fehlerreport an den Entwickler schickst. Alles was du
+        tun musst ist \'OK\' klicken. Es werden keinerlei privaten Daten übertragen.
+    </string>
+    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare zum Problem hinzufügen:</string>
+    <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
+        behoben.
+    </string>
 </resources>

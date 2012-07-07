@@ -109,18 +109,18 @@
     <string name="text_lastMessage">Last message</string>
     <string name="text_lastConversation">Last conversation</string>
     <string name="text_clickToAdd">(Click to add as receiver)</string>
-    <string name="crash_toast_text">Ooooops ! I crashed, but a report has been sent to my developer to help fix the
-        issue !
+    <string name="crash_toast_text">Ooooops! This shoud not happen, please send crash report to developer!
     </string>
-    <string name="crash_notif_ticker_text">Unexpected error, please send a report…</string>
-    <string name="crash_notif_title">CrashTest has crashed…</string>
+    <string name="crash_notif_ticker_text">Unexpected error in SMSoIP, please send a report…</string>
+    <string name="crash_notif_title">SMSoIP has crashed…</string>
     <string name="crash_notif_text">Please click here to help fix the issue.</string>
 
-    <string name="crash_dialog_title">CrashTest has crashed</string>
+    <string name="crash_dialog_title">SMSoIP has crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing the
-        application to stop. Please help us fix this by sending us error data,
-        all you have to do is click \'OK\'.
+        application to stop. Please make sure you have the latest version of SMSoIP and your used plugins installed.
+        If this will not work, please help the developer to improve SMSoIP by sending error data,
+        all you have to do is click \'OK\'. No private data will be send.
     </string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
-    <string name="crash_dialog_ok_toast">Thank you !</string>
+    <string name="crash_dialog_ok_toast">Thank you for your support! Error will be fixed as soon as possible.</string>
 </resources>
