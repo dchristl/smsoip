@@ -3,6 +3,7 @@ package de.christl.smsoip.application;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
@@ -63,6 +64,10 @@ public class SMSoIPPlugin {
 
     public String[] resolveArrayStringResource(int resourceId) {
         return resources.getStringArray(resourceId);
+    }
+
+    public Drawable resolveDrawable(int drawableId) {
+        return resources.getDrawable(drawableId);
     }
 
     public String getSupplierClassName() {

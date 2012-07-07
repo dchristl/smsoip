@@ -2,6 +2,7 @@ package de.christl.smsoip.option;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.preference.Preference;
 import android.view.View;
 import android.widget.Spinner;
@@ -148,10 +149,13 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 
-    public final String getTextByResourceId(int resourceId, int quantity) {
+    protected final String getTextByResourceId(int resourceId, int quantity) {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId, quantity);
     }
 
+    protected final Drawable getDrawble(int drawableId) {
+        return SMSoIPApplication.getApp().getDrawable(this, drawableId);
+    }
 
     public final String[] getArrayByResourceId(int resourceId) {
         return SMSoIPApplication.getApp().getArrayByResourceId(this, resourceId);
@@ -175,4 +179,8 @@ public abstract class OptionProvider {
         return 20; //do not put more messages than Integer.Max_Value / messageLength, otherwise it will be negative and no input in the editfield will be possible
     }
 
+    //TODO compatibility make abstract
+    public Drawable getIconDrawable() {
+        return null;
+    }
 }

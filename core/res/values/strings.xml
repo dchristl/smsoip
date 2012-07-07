@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_send">Send</string>
-    <string name="text_changeProvider">Change Provider</string>
+    <string name="text_changeProvider">Provider</string>
     <string name="text_chooseProvider">Choose Provider</string>
     <string name="text_provider_settings">Provider settings</string>
     <string name="text_program_settings">Program settings</string>
@@ -96,11 +96,12 @@
     <string name="text_pick_for_disabling">Tap for removing</string>
     <string name="text_receiver_added_twice">Receiver number added twice!</string>
     <string name="text_account_list">Account management</string>
-    <string name="text_account_list_description">Manage accounts and choose the default one. Current default account is: &lt;%1$s&gt;
+    <string name="text_account_list_description">Manage accounts and choose the default one. Current default account is:
+        &lt;%1$s&gt;
     </string>
     <string name="text_account_add_account">Add account</string>
     <string name="text_account_no_account">Not set</string>
-    <string name="text_changeAccount">Change Account</string>
+    <string name="text_changeAccount">Account</string>
     <string name="text_chooseAccount">Choose Account</string>
     <string name="text_partial_success">Partial success</string>
     <string name="changelog_title">What\'s New</string>

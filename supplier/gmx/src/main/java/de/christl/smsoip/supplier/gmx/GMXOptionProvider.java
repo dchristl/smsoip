@@ -1,6 +1,7 @@
 package de.christl.smsoip.supplier.gmx;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import de.christl.smsoip.option.OptionProvider;
@@ -34,5 +35,10 @@ public class GMXOptionProvider extends OptionProvider {
     @Override
     public int getMaxMessageCount() {
         return 5;
+    }
+
+    @Override
+    public Drawable getIconDrawable() {
+        return getDrawble(R.drawable.icon);
     }
 }

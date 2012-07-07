@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import dalvik.system.DexFile;
@@ -287,5 +288,13 @@ public class SMSoIPApplication extends Application {
 
     public boolean isAdsEnabled() {
         return adsEnabled;
+    }
+
+    public Drawable getDrawable(OptionProvider optionProvider, int drawableId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveDrawable(drawableId);
+        }
+        return null;
     }
 }

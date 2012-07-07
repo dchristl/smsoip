@@ -1,5 +1,6 @@
 package de.christl.smsoip.supplier.freenet;
 
+import android.graphics.drawable.Drawable;
 import de.christl.smsoip.option.OptionProvider;
 
 /**
@@ -17,5 +18,10 @@ public class FreenetOptionProvider extends OptionProvider {
     @Override
     public String getProviderName() {
         return providerName;
+    }
+
+    @Override
+    public Drawable getIconDrawable() {
+        return getDrawble(R.drawable.icon);
     }
 }

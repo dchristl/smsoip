@@ -1,6 +1,7 @@
 package de.christl.smsoip.supplier.smsde;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
@@ -92,5 +93,10 @@ public class SMSDeOptionProvider extends OptionProvider {
     @Override
     public int getMaxMessageCount() {
         return 1;
+    }
+
+    @Override
+    public Drawable getIconDrawable() {
+        return getDrawble(R.drawable.icon);
     }
 }

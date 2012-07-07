@@ -1,6 +1,7 @@
 package de.christl.smsoip.supplier.goodmails;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
@@ -96,5 +97,10 @@ public class GoodmailsOptionProvider extends OptionProvider {
     @Override
     public int getMaxMessageCount() {
         return maxMessageCount;
+    }
+
+    @Override
+    public Drawable getIconDrawable() {
+        return getDrawble(R.drawable.icon);
     }
 }

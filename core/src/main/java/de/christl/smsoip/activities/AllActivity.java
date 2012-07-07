@@ -89,7 +89,7 @@ public abstract class AllActivity extends SherlockActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add(0, EXIT, 0, getString(R.string.text_exit));
+        MenuItem item = menu.add(0, EXIT, Menu.CATEGORY_SECONDARY, getString(R.string.text_exit));
         item.setIcon(R.drawable.ic_menu_close_clear_cancel);
         return true;
     }

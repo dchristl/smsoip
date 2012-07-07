@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -207,7 +208,7 @@ public class SendActivity extends AllActivity {
     private void setFullTitle() {
         OptionProvider provider = smsSupplier.getProvider();
         String userName = provider.getUserName() == null ? getString(R.string.text_account_no_account) : provider.getUserName();
-        setTitle(provider.getProviderName() + " (" + userName + ")");
+        setTitle(provider.getProviderName() + " (" + userName + ")");     //TODO exchange if icons are set completely
     }
 
     private void setPreselectedContact() {
@@ -340,6 +341,7 @@ public class SendActivity extends AllActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        invalidateOptionsMenu();
         if (chosenContactsDialog != null && chosenContactsDialog.isShowing()) {
             chosenContactsDialog.redraw();
         }
@@ -353,7 +355,6 @@ public class SendActivity extends AllActivity {
                 showDialog(DIALOG_SMILEYS);
             }
         });
-
     }
 
     private void setShortTextButton() {
@@ -728,18 +729,26 @@ public class SendActivity extends AllActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuItem item = menu.add(0, PROVIDER_OPTION, 0, getString(R.string.text_provider_settings));
+        MenuItem item = menu.add(0, PROVIDER_OPTION, Menu.CATEGORY_SECONDARY, getString(R.string.text_provider_settings));
         item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, 0, getString(R.string.text_program_settings));
+        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, Menu.CATEGORY_SECONDARY, getString(R.string.text_program_settings));
         globalOption.setIcon(R.drawable.ic_menu_compose);
-        if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) { //show only if more than one provider available
-            item = menu.add(0, OPTION_SWITCH_SUPPLIER, 0, getString(R.string.text_changeProvider));
-            item.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) {
+            MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, getString(R.string.text_changeProvider));
+            switchSupplier.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
-
-        item = menu.add(0, OPTION_SWITCH_ACCOUNT, 0, getString(R.string.text_changeAccount));
-        item.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        item.setVisible(smsSupplier != null && smsSupplier.getProvider().getAccounts().size() > 1);
+        if (smsSupplier != null && smsSupplier.getProvider().getAccounts().size() > 1) {
+            MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, getString(R.string.text_changeAccount));
+            switchAccount.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        }
+        if (smsSupplier != null) {
+            Drawable iconDrawable = smsSupplier.getProvider().getIconDrawable();
+            if (iconDrawable != null) {
+                getSupportActionBar().setIcon(iconDrawable);
+            } else {
+                getSupportActionBar().setIcon(R.drawable.icon);
+            }
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -902,7 +911,6 @@ public class SendActivity extends AllActivity {
                     case 1:
                         for (Integer accountId : filteredAccounts.keySet()) {
                             switchAccount(accountId);
-                            break;
                         }
                         break;
                     default:
@@ -1048,4 +1056,5 @@ public class SendActivity extends AllActivity {
             updateViewOnChangedReceivers();
         }
     }
+
 }
