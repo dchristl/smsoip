@@ -12,7 +12,7 @@
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>smsde</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>apk</packaging>
 
     <build>
