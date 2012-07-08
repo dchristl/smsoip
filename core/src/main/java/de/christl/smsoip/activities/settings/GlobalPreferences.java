@@ -107,7 +107,7 @@ public class GlobalPreferences extends PreferenceActivity {
             }
         });
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
-        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "http://problemexterminator.blogspot.de/p/smsoip-de.html" : "http://problemexterminator.blogspot.de/p/smsoip.html";
+        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version" : "https://sites.google.com/site/smsoip/home";
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
                 .setData(Uri.parse(uriString)));
         intentPref.setTitle(R.string.text_visit_project_page);
