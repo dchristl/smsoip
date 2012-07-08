@@ -179,15 +179,29 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         return out.toString();
     }
 
-    private int findSendMethod(String spinnerText) {
+    private int findSendMethod(String spinnerText, String smsText) {
         String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        int sendType = TYPE_FREE;
         for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
             String sendOption = arrayByResourceId[i];
             if (sendOption.equals(spinnerText)) {
-                return i;
+                sendType = i;
             }
         }
-        return TYPE_FREE;
+        if (smsText.length() <= 160) {
+            // if 300 is chosen and message is shorter as needed, choose the cheaper send type
+            switch (sendType) {
+                case TYPE_POWER_300:
+                    sendType = TYPE_POWER_160;
+                    break;
+                case TYPE_POWER_300_SI:
+                    sendType = TYPE_POWER_160_SI;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return sendType;
     }
 
     SMSDeSendResult processSendReturn(InputStream is) throws IOException {
@@ -224,7 +238,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         if (!errorText.equals("")) {
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(errorText));
         }
-        int sendIndex = findSendMethod(spinnerText);
+        int sendIndex = findSendMethod(spinnerText, smsText);
         FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
