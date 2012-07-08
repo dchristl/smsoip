@@ -6,7 +6,7 @@ fileName: strings.xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="button_send">Senden</string>
-    <string name="text_changeProvider">Anbieter wechseln</string>
+    <string name="text_changeProvider">Anbieter</string>
     <string name="text_chooseProvider">Anbieter auswählen</string>
     <string name="text_provider_settings">Anbietereinstellungen</string>
     <string name="text_program_settings">Programmeinstellungen</string>
@@ -103,12 +103,12 @@ fileName: strings.xml
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
     <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
     <string name="text_account_list">Account-Verwaltung</string>
-    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardsccount ist:
+    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
         &lt;%1$s&gt;
     </string>
     <string name="text_account_add_account">Account hinzufügen</string>
     <string name="text_account_no_account">Nicht gesetzt</string>
-    <string name="text_changeAccount">Account wechseln</string>
+    <string name="text_changeAccount">Account</string>
     <string name="text_chooseAccount">Account auswählen</string>
     <string name="text_partial_success">Teilweiser Erfolg</string>
     <string name="changelog_title">Was ist neu</string>
