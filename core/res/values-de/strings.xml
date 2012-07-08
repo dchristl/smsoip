@@ -98,7 +98,7 @@
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
     <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
     <string name="text_account_list">Account-Verwaltung</string>
-    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardsccount ist:
+    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
         &lt;%1$s&gt;
     </string>
     <string name="text_account_add_account">Account hinzufügen</string>
