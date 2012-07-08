@@ -208,7 +208,7 @@ public class SendActivity extends AllActivity {
     private void setFullTitle() {
         OptionProvider provider = smsSupplier.getProvider();
         String userName = provider.getUserName() == null ? getString(R.string.text_account_no_account) : provider.getUserName();
-        setTitle(provider.getProviderName() + " (" + userName + ")");     //TODO exchange if icons are set completely
+        setTitle(userName);
     }
 
     private void setPreselectedContact() {
