@@ -53,11 +53,11 @@ public class SMSDeOptionProvider extends OptionProvider {
                     case 1:    //power sms 160
                     case 2:
                         messageLength = 160;
-                        maxReceivers = Integer.MAX_VALUE;
+                        maxReceivers = 5;
                         break;
                     default:                  //power sms 300
                         messageLength = 300;
-                        maxReceivers = Integer.MAX_VALUE;
+                        maxReceivers = 5;
                         break;
                 }
                 sendActivity.updateSMScounter();

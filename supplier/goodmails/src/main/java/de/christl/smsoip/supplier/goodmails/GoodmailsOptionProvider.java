@@ -54,7 +54,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
                     default: //Fake
                     case 1:   //Standard
                         messageLength = 153;
-                        maxReceiverCount = Integer.MAX_VALUE;
+                        maxReceiverCount = 5;
                         maxMessageCount = 9;
                         break;
 
