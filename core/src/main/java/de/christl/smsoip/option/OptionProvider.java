@@ -134,7 +134,7 @@ public abstract class OptionProvider {
     }
 
     public int getMaxReceiverCount() {
-        return Integer.MAX_VALUE;
+        return 5;
     }
 
     public void refresh() {
