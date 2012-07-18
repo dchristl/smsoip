@@ -93,10 +93,12 @@ public class ShowLastMessagesDialog extends Dialog {
                     messageView.setGravity(Gravity.RIGHT);
                     messageView.setPadding(50, 20, 20, 5);
                     messageView.setTextColor(Color.parseColor("#F0D64F"));
+//                    messageView.setBackgroundColor(0x88F0EC6F);
                 } else {
                     messageView.setGravity(Gravity.LEFT);
                     messageView.setPadding(20, 20, 50, 5);
                     messageView.setTextColor(Color.parseColor("#F0EC6F"));
+//                    messageView.setBackgroundColor(0x88F0D64F);
                 }
 
                 layout.addView(messageView);
