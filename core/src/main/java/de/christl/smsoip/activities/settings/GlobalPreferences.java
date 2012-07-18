@@ -1,6 +1,7 @@
 package de.christl.smsoip.activities.settings;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP = "global.update.info.startup";
     public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
+    private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
+    private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +118,20 @@ public class GlobalPreferences extends PreferenceActivity {
         root.addPreference(intentPref);
 
         PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
-        uriString = "market://search?q=pub:Danny Christl";
-        pluginIntent.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
-                .setData(Uri.parse(uriString)));
+        pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+                    GlobalPreferences.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //Market not available on device
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
+                    GlobalPreferences.this.startActivity(intent);
+                }
+                return true;
+            }
+        });
         pluginIntent.setTitle(R.string.text_visit_plugin_page);
         pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
         root.addPreference(pluginIntent);

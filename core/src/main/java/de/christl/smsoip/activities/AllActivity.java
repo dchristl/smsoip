@@ -4,6 +4,7 @@ package de.christl.smsoip.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,7 +46,8 @@ public abstract class AllActivity extends SherlockActivity {
 
     private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
-    private static final String APP_MARKET_URL = "market://search?q=pub:Danny Christl";
+    private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
+    private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -203,8 +205,14 @@ public abstract class AllActivity extends SherlockActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
-                AllActivity.this.startActivity(intent);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+                    AllActivity.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //Market not available on device
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
+                    AllActivity.this.startActivity(intent);
+                }
                 killAll();
             }
         };
