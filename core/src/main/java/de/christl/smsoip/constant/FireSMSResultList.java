@@ -19,6 +19,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     public FireSMSResultList() {
     }
+
     public static enum SendResult {
         NOT_YET_SET, SUCCESS, ERROR, BOTH
 
@@ -38,6 +39,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     }
 
     private void setSendResultAndFillLists(FireSMSResult fireSMSResult) {
+        Receiver receiver = fireSMSResult.getReceiver();
         if (fireSMSResult.getResult().isSuccess()) {
             switch (result) {
                 case NOT_YET_SET:
@@ -49,7 +51,9 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
                 default:  //in case 2 or 3 result is already set correct
                     break;
             }
-            successList.add(fireSMSResult.getReceiver());
+            if (receiver != null) {    //all in one result
+                successList.add(receiver);
+            }
         } else {
             switch (result) {
                 case NOT_YET_SET:
@@ -61,7 +65,9 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
                 default:  //in case 1 or 3 result is already set correctly
                     break;
             }
-            errorList.add(fireSMSResult.getReceiver());
+            if (receiver != null) {
+                errorList.add(receiver);
+            }
         }
 
     }
@@ -91,4 +97,5 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
         out.add(new FireSMSResult(null, result));
         return out;
     }
+
 }

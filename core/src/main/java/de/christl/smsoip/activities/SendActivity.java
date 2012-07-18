@@ -1067,7 +1067,12 @@ public class SendActivity extends AllActivity {
         lastInfoDialog.setOwnerActivity(this);
         lastInfoDialog.show();
         killDialogAfterAWhile(lastInfoDialog);
-        writeSMSInDatabase(fireSMSResults.getSuccessList());
+        //special case if all in one result used, needed a better implementation on next releases
+        if (fireSMSResults.getResult().equals(FireSMSResultList.SendResult.SUCCESS) && fireSMSResults.getSuccessList().isEmpty()) {
+            writeSMSInDatabase(receiverList);
+        } else {
+            writeSMSInDatabase(fireSMSResults.getSuccessList());
+        }
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
             clearAllInputs();
         } else {
