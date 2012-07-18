@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Handler;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
+import org.acra.ErrorReporter;
 
 /**
  * little helper for building updating the ui after sending or refreshing informations
@@ -31,6 +32,7 @@ public class RunnableFactory {
         return new Runnable() {
             @Override
             public void run() {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "getFireSMSAndUpdateUIRunnable");
                 FireSMSResultList fireSMSResults = RunnableFactory.this.sendActivity.sendByThread();
                 CharSequence infoText = null;
                 FireSMSResultList.SendResult result = fireSMSResults.getResult();
@@ -56,6 +58,7 @@ public class RunnableFactory {
     private Runnable getUpdateUIRunnable(final FireSMSResultList fireSMSResults, final String infoText) {
         return new Runnable() {
             public void run() {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "getUpdateUIRunnable");
                 RunnableFactory.this.sendActivity.showReturnMessage(fireSMSResults, infoText);
             }
         };
@@ -68,6 +71,7 @@ public class RunnableFactory {
     public Runnable getRefreshAndUpdateUIRunnable() {
         return new Runnable() {
             public void run() {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "getRefreshAndUpdateUIRunnable");
                 final SMSActionResult result = RunnableFactory.this.sendActivity.refreshInformationText(false);
                 Runnable runnable = new Runnable() {
                     public void run() {
@@ -83,6 +87,7 @@ public class RunnableFactory {
     public void updateInfoTextInBackground() {
         Thread thread = new Thread(new Runnable() {
             public void run() {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "updateInfoTextInBackground");
                 SMSActionResult actionResult = sendActivity.refreshInformationText(false);
                 if (actionResult.isSuccess()) {
                     final String infoText = actionResult.getMessage();

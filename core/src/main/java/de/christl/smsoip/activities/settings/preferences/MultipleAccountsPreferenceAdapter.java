@@ -14,6 +14,7 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import org.acra.ErrorReporter;
 
 
 /**
@@ -60,6 +61,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             removeAccountBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ErrorReporter.getInstance().putCustomData("LAST ACTION", "removeAccount onClick");
                     remove(getItem(position));
                     if (position == defaultAccount) {
                         defaultAccount = 0; //set back to the first one
@@ -73,6 +75,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             editAccount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ErrorReporter.getInstance().putCustomData("LAST ACTION", "editAccount onclick");
                     dialogPreference.showUserNamePasswordDialog(item);
                 }
             });
@@ -96,6 +99,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "checkCredentials onClick");
                 final ProgressDialog progressDialog = new ProgressDialog(dialogPreference.getContext());
                 progressDialog.setMessage(getContext().getString(R.string.text_checkCredentials));
                 final AccountModel accountModel = getItem(position);

@@ -39,6 +39,7 @@ import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
+import org.acra.ErrorReporter;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -90,6 +91,7 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "onResume");
         //this is for performance cases and can cause issues in some case:
         // if options are called a refresh will be forced because settings can change
         // if activity is killed a new instance will be creeated automatically (and options are "fresh")
@@ -167,9 +169,11 @@ public class SendActivity extends AllActivity {
         }
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "onCreate");
     }
 
     private void showProvidersDialog() {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "showProvidersDialog");
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
         if (smsSupplier == null) {   //add all if current provider not set
@@ -192,6 +196,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void updateInfoTextSilent() {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "updateInfoTextSilent");
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
         if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smsSupplier != null) {
@@ -234,7 +239,7 @@ public class SendActivity extends AllActivity {
 
     private void setPreselectedContact() {
         Uri data = getIntent().getData();
-
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "setPreselectedContact");
         if (data != null) {
             DatabaseHandler dbHandler = new DatabaseHandler(this);
             String givenNumber = data.getSchemeSpecificPart();
@@ -277,6 +282,7 @@ public class SendActivity extends AllActivity {
         showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "lastMessagesButtonClicked");
                 final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
                 lastMessageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -326,6 +332,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setContactsByNumberInput() {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "setContactsByNumberInput");
         addContactbyNumber = findViewById(R.id.addcontactbynumber);
 
         addContactbyNumber.setOnClickListener(new View.OnClickListener() {
@@ -348,6 +355,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void showChosenContactsDialog() {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "showChosenContactsDialog");
         chosenContactsDialog = new ChosenContactsDialog(this, receiverList);
         chosenContactsDialog.setOwnerActivity(this);
         chosenContactsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -445,6 +453,7 @@ public class SendActivity extends AllActivity {
         final CharSequence progressText = getText(R.string.text_pleaseWait);
         refreshButon.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                ErrorReporter.getInstance().putCustomData("LAST ACTION", "Refresh clicked");
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
                 new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
@@ -605,6 +614,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     FireSMSResultList sendByThread() {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "sendByThread" + smsSupplier.getProviderInfo());
         return smsSupplier.fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
     }
 
@@ -616,6 +626,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     SMSActionResult refreshInformationText(boolean afterMessageSuccessfulSent) {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "refreshInformationText" + smsSupplier.getProviderInfo());
         return afterMessageSuccessfulSent ? smsSupplier.refreshInfoTextAfterMessageSuccessfulSent() : smsSupplier.refreshInfoTextOnRefreshButtonPressed();
     }
 
@@ -680,6 +691,7 @@ public class SendActivity extends AllActivity {
 
 
     private void addToReceiverList(Receiver receiver, String receiverNumber) {
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "addToReceiverList");
         int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
             receiver.setReceiverNumber(receiverNumber);
@@ -968,6 +980,7 @@ public class SendActivity extends AllActivity {
 
     private void changeSupplier(String supplierClassName) {
         smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "changeSupplier" + smsSupplier.getProviderInfo());
         setFullTitle();
         //reset all not needed informations
         updateSMScounter();
