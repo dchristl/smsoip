@@ -161,13 +161,34 @@ public class SendActivity extends AllActivity {
                 setSpinner();
                 updateViewOnChangedReceivers();
             } else {
-                removeDialog(DIALOG_PROVIDER);
-                showDialog(DIALOG_PROVIDER);
+                showProvidersDialog();
             }
             updateInfoTextSilent();
         }
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
+    }
+
+    private void showProvidersDialog() {
+        Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
+        if (smsSupplier == null) {   //add all if current provider not set
+            filteredProviderEntries.addAll(providerEntries.values());
+        } else {
+            for (SMSoIPPlugin providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
+                if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
+                    filteredProviderEntries.add(providerEntry);
+                }
+            }
+        }
+        if (filteredProviderEntries.size() == 1) {
+            changeSupplier(filteredProviderEntries.get(0).getSupplierClassName());
+        }
+        //only show the dialog if more thann two providers are installed otherwise NPE on some devices
+        else if (filteredProviderEntries.size() > 1) { //skip if no provider available
+            removeDialog(DIALOG_PROVIDER);
+            showDialog(DIALOG_PROVIDER);
+        }
     }
 
     private void updateInfoTextSilent() {
@@ -759,18 +780,33 @@ public class SendActivity extends AllActivity {
                 startOptionActivity();
                 return true;
             case OPTION_SWITCH_SUPPLIER:
-                removeDialog(DIALOG_PROVIDER); //remove the chosenContactsDialog forces recreation
-                showDialog(DIALOG_PROVIDER);
+                showProvidersDialog();
                 return true;
             case GLOBAL_OPTION:
                 startGlobalOptionActivity();
                 return true;
             case OPTION_SWITCH_ACCOUNT:
-                removeDialog(DIALOG_SWITCH_ACCOUNT); //remove the chosenContactsDialog forces recreation
-                showDialog(DIALOG_SWITCH_ACCOUNT);
+                showAccountDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showAccountDialog() { //only available if more than one is available
+        OptionProvider provider = smsSupplier.getProvider();
+        Map<Integer, AccountModel> accounts = provider.getAccounts();
+        if (accounts.size() > 2) {
+            removeDialog(DIALOG_SWITCH_ACCOUNT); //remove the chosenContactsDialog forces recreation
+            showDialog(DIALOG_SWITCH_ACCOUNT);
+        } else { //only one  other than the current
+            Integer accountIndex = provider.getCurrentAccountIndex();
+            for (Integer accountId : accounts.keySet()) {
+                if (!accountIndex.equals(accountId)) {
+                    switchAccount(accountId);
+                    break;
+                }
+            }
         }
     }
 
@@ -801,8 +837,7 @@ public class SendActivity extends AllActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-
-        Dialog dialog = null;
+        Dialog dialog;
         switch (id) {
             case DIALOG_SMILEYS:
                 final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};
@@ -822,11 +857,8 @@ public class SendActivity extends AllActivity {
                 });
                 dialog = builder.create();
                 break;
-            case DIALOG_PROVIDER:
+            case DIALOG_PROVIDER://this will only called if more than two providers are available, otherwise dialog will be null
                 Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
-                if (providerEntries.size() == 0) { //skip if no provider available
-                    break;
-                }
                 final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
                 if (smsSupplier == null) {   //add all if current provider not set
                     filteredProviderEntries.addAll(providerEntries.values());
@@ -838,26 +870,22 @@ public class SendActivity extends AllActivity {
                     }
                 }
                 int filteredProvidersSize = filteredProviderEntries.size();
-                if (filteredProvidersSize > 1) {
-                    final CharSequence[] providerItems = new String[filteredProvidersSize];
-                    for (int i = 0; i < filteredProvidersSize; i++) {
-                        SMSoIPPlugin providerEntry = filteredProviderEntries.get(i);
-                        providerItems[i] = providerEntry.getProviderName();
-                    }
-                    builder = new AlertDialog.Builder(this);
-                    builder.setItems(providerItems, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int item) {
-                            String supplierClassName = filteredProviderEntries.get(item).getSupplierClassName();
-                            dialog.dismiss();
-                            changeSupplier(supplierClassName);
-                        }
-                    });
-                    builder.setTitle(R.string.text_chooseProvider);
-                    builder.setCancelable(providerEntries.size() != filteredProvidersSize); //only cancelable on switch providers
-                    dialog = builder.create();
-                } else {  //have to be a min of 1 here, else button will not be available
-                    changeSupplier(filteredProviderEntries.get(0).getSupplierClassName());
+                final CharSequence[] providerItems = new String[filteredProvidersSize];
+                for (int i = 0; i < filteredProvidersSize; i++) {
+                    SMSoIPPlugin providerEntry = filteredProviderEntries.get(i);
+                    providerItems[i] = providerEntry.getProviderName();
                 }
+                builder = new AlertDialog.Builder(this);
+                builder.setItems(providerItems, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        String supplierClassName = filteredProviderEntries.get(item).getSupplierClassName();
+                        dialog.dismiss();
+                        changeSupplier(supplierClassName);
+                    }
+                });
+                builder.setTitle(R.string.text_chooseProvider);
+                builder.setCancelable(providerEntries.size() != filteredProvidersSize); //only cancelable on switch providers
+                dialog = builder.create();
                 break;
             case DIALOG_NUMBER_INPUT:
                 final EditText input = new EditText(this);
@@ -907,32 +935,23 @@ public class SendActivity extends AllActivity {
                     }
                     filteredAccounts.put(next.getKey(), next.getValue());
                 }
-                switch (filteredAccounts.size()) {
-                    case 1:
-                        for (Integer accountId : filteredAccounts.keySet()) {
-                            switchAccount(accountId);
-                        }
-                        break;
-                    default:
-                        builder = new AlertDialog.Builder(this);
-                        CharSequence[] items = new CharSequence[filteredAccounts.size()];
-                        int i = 0;
-                        final Map<Integer, Integer> charAccountRel = new HashMap<Integer, Integer>(filteredAccounts.size());
-                        for (Integer index : filteredAccounts.keySet()) {
-                            items[i] = filteredAccounts.get(index).getUserName();
-                            charAccountRel.put(i++, index);
-                        }
-                        builder.setItems(items, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                dialog.dismiss();
-                                switchAccount(charAccountRel.get(item));
-                            }
-                        });
-                        builder.setTitle(R.string.text_chooseAccount);
-                        dialog = builder.create();
-                        break;
-                }
 
+                builder = new AlertDialog.Builder(this);
+                CharSequence[] items = new CharSequence[filteredAccounts.size()];
+                int i = 0;
+                final Map<Integer, Integer> charAccountRel = new HashMap<Integer, Integer>(filteredAccounts.size());
+                for (Integer index : filteredAccounts.keySet()) {
+                    items[i] = filteredAccounts.get(index).getUserName();
+                    charAccountRel.put(i++, index);
+                }
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        dialog.dismiss();
+                        switchAccount(charAccountRel.get(item));
+                    }
+                });
+                builder.setTitle(R.string.text_chooseAccount);
+                dialog = builder.create();
                 break;
             default:
                 dialog = super.onCreateDialog(id);
