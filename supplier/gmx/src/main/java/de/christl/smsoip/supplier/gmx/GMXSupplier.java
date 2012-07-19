@@ -5,7 +5,9 @@ import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -20,7 +22,7 @@ import java.util.Map;
 /**
  *
  */
-public class GMXSupplier implements ExtendedSMSSupplier {
+public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private OptionProvider provider;
     /**
@@ -310,4 +312,8 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         return SMSActionResult.LOGIN_FAILED_ERROR();
     }
 
+    @Override
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+        return null;
+    }
 }

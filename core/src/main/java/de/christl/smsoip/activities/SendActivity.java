@@ -3,6 +3,7 @@ package de.christl.smsoip.activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -34,6 +36,8 @@ import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
+import de.christl.smsoip.picker.DateTimeObject;
+import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
@@ -87,6 +91,7 @@ public class SendActivity extends AllActivity {
     private boolean optionsCalled = false;
     private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
+    private DateTimeObject dateTime;
 
     @Override
     protected void onResume() {
@@ -169,7 +174,26 @@ public class SendActivity extends AllActivity {
         }
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
+        setDateTimePickerDialog();
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "onCreate");
+    }
+
+    private void setDateTimePickerDialog() {
+        final TextView viewById = (TextView) findViewById(R.id.timeText);
+        dateTime = new DateTimeObject(Calendar.getInstance(), 3);
+        final TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                viewById.setText(dateTime.toString());
+            }
+        };
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RangeTimePicker newFragment = new RangeTimePicker(SendActivity.this, listener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
+                newFragment.show();
+            }
+        });
     }
 
     private void showProvidersDialog() {

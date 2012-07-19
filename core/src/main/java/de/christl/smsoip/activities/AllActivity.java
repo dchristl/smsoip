@@ -19,7 +19,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.mobclix.android.sdk.MobclixAdView;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class AllActivity extends SherlockActivity {
+public abstract class AllActivity extends SherlockFragmentActivity {
     public static final int EXIT = 0;
     private static List<Activity> registeredActivities = new ArrayList<Activity>();
 

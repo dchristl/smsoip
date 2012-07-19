@@ -127,4 +127,5 @@
     <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
         behoben.
     </string>
+    <string name="text_now">Sofort</string>
 </resources>

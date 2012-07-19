@@ -140,6 +140,7 @@
                         android:src="@drawable/btn_refresh"
                         >
                 </ImageButton>
+
                 <TextView
                         android:id="@+id/infoText"
                         android:layout_width="fill_parent"
@@ -147,6 +148,7 @@
                         android:text="@string/text_notyetrefreshed"
                         >
                 </TextView>
+
                 <RelativeLayout android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                         >
@@ -159,7 +161,31 @@
                             android:layout_alignParentRight="true"
                             android:visibility="invisible"
                             />
+
                 </RelativeLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    >
+                <CheckBox
+                        android:id="@+id/pickTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:src="@drawable/btn_refresh"
+                        >
+                </CheckBox>
+                <TextView
+                        android:padding="5dp"
+                        android:id="@+id/timeText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_now"
+                        >
+                </TextView>
             </LinearLayout>
             <TextView
                     android:id="@+id/typeText"
@@ -168,6 +194,7 @@
                     android:gravity="center_vertical|center_horizontal"
                     android:text="@string/text_chooseType"
                     />
+
             <Spinner
                     android:id="@+id/typeSpinner"
                     android:layout_width="fill_parent"

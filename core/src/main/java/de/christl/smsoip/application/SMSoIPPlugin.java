@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class SMSoIPPlugin {
     private Set<String> availableClasses = new HashSet<String>();
     private int minAPIVersion;
     private ExtendedSMSSupplier supplier;
+    private boolean timeShiftCapable = false;
 
     public SMSoIPPlugin(ApplicationInfo installedApplication, PackageInfo packageInfo, Resources resourcesForApplication) {
         this.installedApplication = installedApplication;
@@ -84,6 +86,9 @@ public class SMSoIPPlugin {
 
     public void setSupplier(ExtendedSMSSupplier supplier) {
         this.supplier = supplier;
+        if (TimeShiftSupplier.class.isAssignableFrom(supplier.getClass())) {
+            timeShiftCapable = true;
+        }
     }
 
     public String getProviderName() {
@@ -94,4 +99,9 @@ public class SMSoIPPlugin {
     public String getVersion() {
         return packageInfo.versionName;
     }
+
+    public boolean isTimeShiftCapable() {
+        return timeShiftCapable;
+    }
+
 }
