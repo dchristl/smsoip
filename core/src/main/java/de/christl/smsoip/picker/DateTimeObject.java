@@ -63,6 +63,10 @@ public class DateTimeObject {
         setMembers(instance);
     }
 
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
     @Override
     public String toString() {
         return sdf.format(calendar.getTime());

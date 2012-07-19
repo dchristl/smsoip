@@ -165,35 +165,50 @@
                 </RelativeLayout>
 
             </LinearLayout>
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:id="@+id/timeShiftLayout"
-                    android:visibility="gone"
+
+            <TableLayout android:layout_width="fill_parent"
+                         android:layout_height="fill_parent"
+                         android:padding="5dp"
+                         android:id="@+id/timeShiftLayout"
+                         android:gravity="center"
                     >
-                <CheckBox
-                        android:id="@+id/pickTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:src="@drawable/btn_refresh"
-                        >
-                </CheckBox>
+
                 <TextView
-                        android:padding="5dp"
-                        android:id="@+id/timeText"
+                        android:id="@+id/textView"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/text_now"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
+                        android:text="@string/text_sending_time"
+                        android:layout_span="2"
+                        />
+                <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
                         >
-                </TextView>
-            </LinearLayout>
+                    <CheckBox
+                            android:id="@+id/pickTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="50dp"
+                            >
+                    </CheckBox>
+                    <TextView
+                            android:id="@+id/timeText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_now"
+                            android:padding="10dp"
+                            >
+                    </TextView>
+                </TableRow>
+            </TableLayout>
+
             <TextView
                     android:id="@+id/typeText"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical|center_horizontal"
+                    android:gravity="center"
                     android:text="@string/text_chooseType"
                     />
 

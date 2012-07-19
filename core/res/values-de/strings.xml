@@ -17,7 +17,7 @@
     <string name="hint_targetnumber">Empfänger</string>
     <string name="hint_smsText">Nachricht</string>
     <string name="hint_sendernumber">Absender</string>
-    <string name="text_chooseType">Typ wählen</string>
+    <string name="text_chooseType">Sendetyp</string>
     <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
     <string name="text_pickNumber">Nummer für %1$s auswählen:</string>
     <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
@@ -128,4 +128,6 @@
         behoben.
     </string>
     <string name="text_now">Sofort</string>
+    <string name="text_sending_time">Sendezeit</string>
+    <string name="text_click_for_change">(Klick zum Ändern)</string>
 </resources>

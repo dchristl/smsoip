@@ -28,6 +28,5 @@ public class RangeTimePicker extends TimePickerDialog {
             view.setCurrentMinute(dateTime.getMinute());
         }
         setTitle(dateTime.toString());
-
     }
 }

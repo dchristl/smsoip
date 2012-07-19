@@ -85,6 +85,7 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_SPINNER = "spinner";
     private static final String SAVED_INSTANCE_INFO = "info";
     private static final String SAVED_INSTANCE_ACCOUNT_ID = "account";
+    private static final String SAVED_INSTANCE_DATE_TIME = "datetime";
 
     private Dialog lastDialog;
     private static final String TAG = SendActivity.class.getCanonicalName();
@@ -149,6 +150,12 @@ public class SendActivity extends AllActivity {
             smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             setFullTitle();
             setSpinner();
+            long timeInMillis = savedInstanceState.getLong(SAVED_INSTANCE_DATE_TIME, -1);
+            if (timeInMillis != -1) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(timeInMillis);
+                dateTime = new DateTimeObject(calendar, smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+            }
             setDateTimePickerDialog();
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
                 spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0), false);
@@ -181,25 +188,50 @@ public class SendActivity extends AllActivity {
 
     private void setDateTimePickerDialog() {
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
+        final TextView timeText = (TextView) findViewById(R.id.timeText);
         if (smSoIPPlugin.isTimeShiftCapable()) {
             timeShiftLayout.setVisibility(View.VISIBLE);
-            final TextView viewById = (TextView) findViewById(R.id.timeText);
-            dateTime = new DateTimeObject(Calendar.getInstance(), smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+            if (dateTime != null) {
+                timeText.setText(dateTime.toString() + " " + getString(R.string.text_click_for_change));
+            }
             final TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    viewById.setText(dateTime.toString());
+                    if (dateTime != null) {
+                        timeText.setText(dateTime.toString() + " " + getString(R.string.text_click_for_change));
+                    }
                 }
             };
-            viewById.setOnClickListener(new View.OnClickListener() {
+            final View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RangeTimePicker newFragment = new RangeTimePicker(SendActivity.this, listener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
-                    newFragment.show();
+                    RangeTimePicker rangeTimePicker = new RangeTimePicker(SendActivity.this, listener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
+                    rangeTimePicker.show();
+                }
+            };
+
+            CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
+            pickTimeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        dateTime = new DateTimeObject(Calendar.getInstance(), smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+                        timeText.setOnClickListener(onClickListener);
+                        timeText.setText(dateTime.toString() + " " + getString(R.string.text_click_for_change));
+                    } else {
+                        timeText.setOnClickListener(null);
+                        timeText.setText(R.string.text_now);
+                        dateTime = null;
+                    }
+
                 }
             });
+
         } else {
             timeShiftLayout.setVisibility(View.GONE);
+            timeText.setOnClickListener(null);
+            timeText.setText(R.string.text_now);
+            dateTime = null;
         }
     }
 
@@ -1069,6 +1101,9 @@ public class SendActivity extends AllActivity {
             Integer currentAccountIndex = smSoIPPlugin.getProvider().getCurrentAccountIndex();
             if (currentAccountIndex != null) {
                 outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, currentAccountIndex);
+            }
+            if (dateTime != null) {
+                outState.putLong(SAVED_INSTANCE_DATE_TIME, dateTime.getCalendar().getTimeInMillis());
             }
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
