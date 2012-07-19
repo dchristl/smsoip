@@ -41,7 +41,9 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:paddingTop="5dp"
-                  android:textColor="#F0EC6F"
+                  android:textColor="#6400F0"
+                  android:padding="5dp"
+                  android:background="#AAE9C400"
                 />
         <TextView android:text="@string/text_lastConversation"
                   android:id="@+id/lastConversation"

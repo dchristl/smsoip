@@ -90,14 +90,22 @@ public class ShowLastMessagesDialog extends Dialog {
                 TextView messageView = new TextView(getContext());
                 messageView.setText(message.getMessage());
                 if (message.isOutgoing()) {
-                    messageView.setGravity(Gravity.RIGHT);
-                    messageView.setPadding(50, 20, 20, 5);
-                    messageView.setTextColor(Color.parseColor("#F0D64F"));
+                    messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+                    messageView.setPadding(50, 0, 20, 20);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    layoutParams.setMargins(50, 0, 0, 0);
+                    messageView.setLayoutParams(layoutParams);
+                    messageView.setTextColor(Color.parseColor("#0014F0"));
+                    messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_left));
 //                    messageView.setBackgroundColor(0x88F0EC6F);
                 } else {
-                    messageView.setGravity(Gravity.LEFT);
-                    messageView.setPadding(20, 20, 50, 5);
-                    messageView.setTextColor(Color.parseColor("#F0EC6F"));
+                    messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+                    messageView.setPadding(20, 0, 50, 20);
+                    messageView.setTextColor(Color.parseColor("#6400F0"));
+                    messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_right));
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    layoutParams.setMargins(0, 0, 50, 0);
+                    messageView.setLayoutParams(layoutParams);
 //                    messageView.setBackgroundColor(0x88F0D64F);
                 }
 

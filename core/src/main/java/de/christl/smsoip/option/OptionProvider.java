@@ -179,8 +179,5 @@ public abstract class OptionProvider {
         return 20; //do not put more messages than Integer.Max_Value / messageLength, otherwise it will be negative and no input in the editfield will be possible
     }
 
-    //TODO compatibility make abstract
-    public Drawable getIconDrawable() {
-        return null;
-    }
+    public abstract Drawable getIconDrawable();
 }
