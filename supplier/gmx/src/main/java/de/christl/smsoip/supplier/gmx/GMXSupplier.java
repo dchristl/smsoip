@@ -47,7 +47,7 @@ public class GMXSupplier implements ExtendedSMSSupplier {
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
-            return FireSMSResultList.getAllInOneResult(result);
+            return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             SMSActionResult tmpResult = refreshInformations(true, 0);
@@ -60,17 +60,17 @@ public class GMXSupplier implements ExtendedSMSSupplier {
                     try {
                         freeSMS = Integer.parseInt(split[4]);
                     } catch (NumberFormatException e) {
-                        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)));
+                        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)), receivers);
                     }
                     int messageLength = getProvider().getTextMessageLength();
                     int smsCount = Math.round((smsText.length() / messageLength));
                     smsCount = smsText.length() % messageLength == 0 ? smsCount : smsCount + 1;
                     noFreeAvailable = !((receivers.size() * smsCount) <= freeSMS);
                 } else {
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)));
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)), receivers);
                 }
                 if (noFreeAvailable) {
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_free_messages_available)));
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_free_messages_available)), receivers);
                 }
             }
         }
@@ -120,14 +120,14 @@ public class GMXSupplier implements ExtendedSMSSupplier {
 
             }
             writer.append("--").append(boundary).append("--").append(CRLF).flush();
-            return FireSMSResultList.getAllInOneResult(processReturn(con.getInputStream()));
+            return FireSMSResultList.getAllInOneResult(processReturn(con.getInputStream()), receivers);
 
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR());
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receivers);
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR());
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receivers);
         } finally {
             if (writer != null) {
                 writer.close();
@@ -225,7 +225,8 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         StringBuilder out = new StringBuilder("");
         boolean found = false;
         int loop = 1;
-        while ((inputLine = lastInputStream.readLine()) != null) {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(lastInputStream));
+        while ((inputLine = bufferedReader.readLine()) != null) {
             if (!found && inputLine.contains("SMMS_tab_content_info_free")) { //starting point of free sms
                 found = true;
             }
@@ -285,7 +286,8 @@ public class GMXSupplier implements ExtendedSMSSupplier {
         try {
             lastInputStream = new DataInputStream(con.getInputStream());
             String inputLine;
-            while ((inputLine = lastInputStream.readLine()) != null) {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(lastInputStream));
+            while ((inputLine = bufferedReader.readLine()) != null) {
                 if (inputLine.contains(SESSION_ID_URL_STRING)) {
                     sessionId = inputLine.replaceAll(".*jsessionid=", "");
                     sessionId = sessionId.replaceAll("\\?.*", "");

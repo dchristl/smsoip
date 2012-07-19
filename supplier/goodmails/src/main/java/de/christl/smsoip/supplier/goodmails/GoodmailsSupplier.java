@@ -61,7 +61,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
-            return FireSMSResultList.getAllInOneResult(result);
+            return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         int sendIndex = findSendMethod(spinnerText);
         HttpURLConnection urlConn;

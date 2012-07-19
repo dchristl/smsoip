@@ -217,14 +217,14 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
-            return FireSMSResultList.getAllInOneResult(result);
+            return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         String message;
         try {
             message = URLEncoder.encode(smsText, ENCODING);
         } catch (UnsupportedEncodingException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(e.getMessage()));
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(e.getMessage()), receivers);
         }
         FireSMSResultList out = new FireSMSResultList(receivers.size());
         //currently only free sms supported, for paid accounts change will be here

@@ -172,7 +172,7 @@ public class DatabaseHandler {
         return out;
     }
 
-    public void writeSMSInDatabase(ArrayList<Receiver> receiverList, String message) {
+    public void writeSMSInDatabase(List<Receiver> receiverList, String message) {
         for (Receiver receiver : receiverList) {
             ContentValues values = new ContentValues();
             values.put("address", receiver.getReceiverNumber());

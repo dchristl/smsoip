@@ -236,7 +236,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         String errorText = preCheckNumbers(receivers);
         if (!errorText.equals("")) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(errorText));
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(errorText), receivers);
         }
         int sendIndex = findSendMethod(spinnerText, smsText);
         FireSMSResultList out = new FireSMSResultList();

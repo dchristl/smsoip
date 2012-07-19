@@ -3,15 +3,16 @@ package de.christl.smsoip.constant;
 import de.christl.smsoip.activities.Receiver;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple list for convenient access methods
  */
 public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
-    private ArrayList<Receiver> successList = new ArrayList<Receiver>();
+    private List<Receiver> successList = new ArrayList<Receiver>();
     private SendResult result = SendResult.NOT_YET_SET;
-    private ArrayList<Receiver> errorList = new ArrayList<Receiver>();
+    private List<Receiver> errorList = new ArrayList<Receiver>();
 
     public FireSMSResultList(int capacity) {
         super(capacity);
@@ -76,12 +77,20 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
         return result;
     }
 
-    public ArrayList<Receiver> getSuccessList() {
+    public List<Receiver> getSuccessList() {
         return successList;
     }
 
-    public ArrayList<Receiver> getErrorList() {
+    public List<Receiver> getErrorList() {
         return errorList;
+    }
+
+    private void setSuccessList(List<Receiver> successList) {
+        this.successList = successList;
+    }
+
+    private void setErrorList(List<Receiver> errorList) {
+        this.errorList = errorList;
     }
 
     /**
@@ -90,11 +99,23 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
      *
      * @param result
      * @return
+     * @deprecated Use version with receivers
      */
+    @Deprecated
     public static FireSMSResultList getAllInOneResult(SMSActionResult result) {
-
         FireSMSResultList out = new FireSMSResultList(1);
         out.add(new FireSMSResult(null, result));
+        return out;
+    }
+
+    public static FireSMSResultList getAllInOneResult(SMSActionResult result, List<Receiver> receivers) {
+        FireSMSResultList out = new FireSMSResultList(1);
+        out.add(new FireSMSResult(null, result));
+        if (result.isSuccess()) {
+            out.setSuccessList(receivers);
+        } else {
+            out.setErrorList(receivers);
+        }
         return out;
     }
 
