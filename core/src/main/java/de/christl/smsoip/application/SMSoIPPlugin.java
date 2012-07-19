@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import dalvik.system.PathClassLoader;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
@@ -104,4 +105,15 @@ public class SMSoIPPlugin {
         return timeShiftCapable;
     }
 
+    public OptionProvider getProvider() {
+        return supplier.getProvider();
+    }
+
+    public ExtendedSMSSupplier getSupplier() {
+        return supplier;
+    }
+
+    public TimeShiftSupplier getTimeShiftSupplier() {
+        return (TimeShiftSupplier) supplier;
+    }
 }

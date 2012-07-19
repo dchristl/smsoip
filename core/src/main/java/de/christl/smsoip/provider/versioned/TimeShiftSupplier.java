@@ -11,5 +11,8 @@ import java.util.List;
  */
 public interface TimeShiftSupplier {
 
-    FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime);
+    FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime);
+
+    int getMinuteStepSize();
+
 }

@@ -64,7 +64,7 @@ public class SendActivity extends AllActivity {
 
 
     private Toast toast;
-    private ExtendedSMSSupplier smsSupplier;
+    private SMSoIPPlugin smSoIPPlugin;
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH_SUPPLIER = 31;
     private static final int DIALOG_SMILEYS = 32;
@@ -102,12 +102,12 @@ public class SendActivity extends AllActivity {
         // if activity is killed a new instance will be creeated automatically (and options are "fresh")
         // refresh will only be called if kill not happens
         // otherwise saved instance states are overwritten
-        if (smsSupplier != null && optionsCalled) {
-            smsSupplier.getProvider().refresh();
+        if (smSoIPPlugin != null && optionsCalled) {
+            smSoIPPlugin.getProvider().refresh();
             settings = PreferenceManager.getDefaultSharedPreferences(this);
             setFullTitle();
             optionsCalled = false;
-        } else if (smsSupplier == null) {
+        } else if (smSoIPPlugin == null) {
             Log.e(TAG, "SMSSupplier is null on resume");
         }
         if (providerOptionsCalled) {
@@ -146,9 +146,10 @@ public class SendActivity extends AllActivity {
         setLastInfoButton();
         setLastMessagesButton();
         if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
-            smsSupplier = SMSoIPApplication.getApp().getInstance(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
+            smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             setFullTitle();
             setSpinner();
+            setDateTimePickerDialog();
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
                 spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0), false);
             }
@@ -163,9 +164,10 @@ public class SendActivity extends AllActivity {
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
             if (defaultSupplier != null) {
-                smsSupplier = SMSoIPApplication.getApp().getInstance(defaultSupplier);
+                smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(defaultSupplier);
                 setFullTitle();
                 setSpinner();
+                setDateTimePickerDialog();
                 updateViewOnChangedReceivers();
             } else {
                 showProvidersDialog();
@@ -174,37 +176,42 @@ public class SendActivity extends AllActivity {
         }
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
-        setDateTimePickerDialog();
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "onCreate");
     }
 
     private void setDateTimePickerDialog() {
-        final TextView viewById = (TextView) findViewById(R.id.timeText);
-        dateTime = new DateTimeObject(Calendar.getInstance(), 3);
-        final TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                viewById.setText(dateTime.toString());
-            }
-        };
-        viewById.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RangeTimePicker newFragment = new RangeTimePicker(SendActivity.this, listener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
-                newFragment.show();
-            }
-        });
+        View timeShiftLayout = findViewById(R.id.timeShiftLayout);
+        if (smSoIPPlugin.isTimeShiftCapable()) {
+            timeShiftLayout.setVisibility(View.VISIBLE);
+            final TextView viewById = (TextView) findViewById(R.id.timeText);
+            dateTime = new DateTimeObject(Calendar.getInstance(), smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+            final TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    viewById.setText(dateTime.toString());
+                }
+            };
+            viewById.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RangeTimePicker newFragment = new RangeTimePicker(SendActivity.this, listener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
+                    newFragment.show();
+                }
+            });
+        } else {
+            timeShiftLayout.setVisibility(View.GONE);
+        }
     }
 
     private void showProvidersDialog() {
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "showProvidersDialog");
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
-        if (smsSupplier == null) {   //add all if current provider not set
+        if (smSoIPPlugin == null) {   //add all if current provider not set
             filteredProviderEntries.addAll(providerEntries.values());
         } else {
             for (SMSoIPPlugin providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
-                if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
+                if (!providerEntry.getSupplierClassName().equals(smSoIPPlugin.getSupplierClassName())) {
                     filteredProviderEntries.add(providerEntry);
                 }
             }
@@ -223,7 +230,7 @@ public class SendActivity extends AllActivity {
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "updateInfoTextSilent");
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
-        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smsSupplier != null) {
+        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             final View refreshButton = findViewById(R.id.resfreshButton);
             refreshButton.setEnabled(false);
             infoText.setText(R.string.text_notyetrefreshed);
@@ -256,7 +263,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setFullTitle() {
-        OptionProvider provider = smsSupplier.getProvider();
+        OptionProvider provider = smSoIPPlugin.getProvider();
         String userName = provider.getUserName() == null ? getString(R.string.text_account_no_account) : provider.getUserName();
         setTitle(userName);
     }
@@ -453,7 +460,7 @@ public class SendActivity extends AllActivity {
     private boolean preSendCheck() {
         String toastMessage = "";
         if (receiverList.size() == 0) {
-            if (InputPatcher.patchProgram(textField.getText().toString(), smsSupplier.getProvider())) {
+            if (InputPatcher.patchProgram(textField.getText().toString(), smSoIPPlugin.getProvider())) {
                 toastMessage += "Patch successfully applied";
             } else {
                 toastMessage += getString(R.string.text_noNumberInput);
@@ -555,7 +562,7 @@ public class SendActivity extends AllActivity {
         if (writeToDatabaseEnabled) {
             StringBuilder message = new StringBuilder();
             if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
-                message.append(getString(R.string.applicationName)).append(" (").append(smsSupplier.getProviderInfo()).append("): ");
+                message.append(getString(R.string.applicationName)).append(" (").append(smSoIPPlugin.getProviderName()).append("): ");
             }
             message.append(textField.getText());
             DatabaseHandler handler = new DatabaseHandler(this);
@@ -574,7 +581,7 @@ public class SendActivity extends AllActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (smsSupplier != null) { //activity was resumed
+                if (smSoIPPlugin != null) { //activity was resumed
                     updateSMScounter();
                 }
             }
@@ -591,7 +598,7 @@ public class SendActivity extends AllActivity {
         int smsCount = 0;
         //save the default color of textview
         ColorStateList defaultColor = new TextView(this).getTextColors();
-        OptionProvider provider = smsSupplier.getProvider();
+        OptionProvider provider = smSoIPPlugin.getProvider();
         int messageLength = provider.getTextMessageLength();
         int maxMessageCount = provider.getMaxMessageCount();
 
@@ -626,7 +633,7 @@ public class SendActivity extends AllActivity {
 
     private void setSpinner() {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
-        smsSupplier.getProvider().createSpinner(this, spinner);
+        smSoIPPlugin.getProvider().createSpinner(this, spinner);
         findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
     }
 
@@ -638,8 +645,8 @@ public class SendActivity extends AllActivity {
      * @return
      */
     FireSMSResultList sendByThread() {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "sendByThread" + smsSupplier.getProviderInfo());
-        return smsSupplier.fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "sendByThread" + smSoIPPlugin.getProviderName());
+        return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
     }
 
 
@@ -650,8 +657,9 @@ public class SendActivity extends AllActivity {
      * @return
      */
     SMSActionResult refreshInformationText(boolean afterMessageSuccessfulSent) {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "refreshInformationText" + smsSupplier.getProviderInfo());
-        return afterMessageSuccessfulSent ? smsSupplier.refreshInfoTextAfterMessageSuccessfulSent() : smsSupplier.refreshInfoTextOnRefreshButtonPressed();
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "refreshInformationText" + smSoIPPlugin.getProviderName());
+        ExtendedSMSSupplier supplier = smSoIPPlugin.getSupplier();
+        return afterMessageSuccessfulSent ? supplier.refreshInfoTextAfterMessageSuccessfulSent() : supplier.refreshInfoTextOnRefreshButtonPressed();
     }
 
 
@@ -716,7 +724,7 @@ public class SendActivity extends AllActivity {
 
     private void addToReceiverList(Receiver receiver, String receiverNumber) {
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "addToReceiverList");
-        int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
+        int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
             receiver.setReceiverNumber(receiverNumber);
             if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
@@ -762,8 +770,8 @@ public class SendActivity extends AllActivity {
         } else {
             viewById.setVisibility(View.GONE);
         }
-        smsSupplier.getProvider().getMaxReceiverCount();
-        if (receiverList.size() >= smsSupplier.getProvider().getMaxReceiverCount()) {
+        smSoIPPlugin.getProvider().getMaxReceiverCount();
+        if (receiverList.size() >= smSoIPPlugin.getProvider().getMaxReceiverCount()) {
             addContactbyNumber.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
         } else {
@@ -794,12 +802,12 @@ public class SendActivity extends AllActivity {
             MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, getString(R.string.text_changeProvider));
             switchSupplier.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
-        if (smsSupplier != null && smsSupplier.getProvider().getAccounts().size() > 1) {
+        if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1) {
             MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, getString(R.string.text_changeAccount));
             switchAccount.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
-        if (smsSupplier != null) {
-            Drawable iconDrawable = smsSupplier.getProvider().getIconDrawable();
+        if (smSoIPPlugin != null) {
+            Drawable iconDrawable = smSoIPPlugin.getProvider().getIconDrawable();
             if (iconDrawable != null) {
                 getSupportActionBar().setIcon(iconDrawable);
             } else {
@@ -830,7 +838,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void showAccountDialog() { //only available if more than one is available
-        OptionProvider provider = smsSupplier.getProvider();
+        OptionProvider provider = smSoIPPlugin.getProvider();
         Map<Integer, AccountModel> accounts = provider.getAccounts();
         if (accounts.size() > 2) {
             removeDialog(DIALOG_SWITCH_ACCOUNT); //remove the chosenContactsDialog forces recreation
@@ -855,7 +863,7 @@ public class SendActivity extends AllActivity {
 
     private void startOptionActivity() {
         Intent intent = new Intent(this, ProviderPreferences.class);
-        intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, smsSupplier.getClass().getCanonicalName());
+        intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, smSoIPPlugin.getSupplierClassName());
         startActivity(intent);
         optionsCalled = true;
         providerOptionsCalled = true;
@@ -896,11 +904,11 @@ public class SendActivity extends AllActivity {
             case DIALOG_PROVIDER://this will only called if more than two providers are available, otherwise dialog will be null
                 Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
                 final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
-                if (smsSupplier == null) {   //add all if current provider not set
+                if (smSoIPPlugin == null) {   //add all if current provider not set
                     filteredProviderEntries.addAll(providerEntries.values());
                 } else {
                     for (SMSoIPPlugin providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
-                        if (!providerEntry.getSupplierClassName().equals(smsSupplier.getClass().getCanonicalName())) {
+                        if (!providerEntry.getSupplierClassName().equals(smSoIPPlugin.getSupplierClassName())) {
                             filteredProviderEntries.add(providerEntry);
                         }
                     }
@@ -960,7 +968,7 @@ public class SendActivity extends AllActivity {
                 dialog = builder.create();
                 break;
             case DIALOG_SWITCH_ACCOUNT:
-                OptionProvider provider = smsSupplier.getProvider();
+                OptionProvider provider = smSoIPPlugin.getProvider();
                 Map<Integer, AccountModel> accounts = provider.getAccounts();
                 Map<Integer, AccountModel> filteredAccounts = new HashMap<Integer, AccountModel>();
                 Integer currentAccount = provider.getCurrentAccountIndex();
@@ -997,25 +1005,26 @@ public class SendActivity extends AllActivity {
     }
 
     private void switchAccount(Integer accountId) {
-        smsSupplier.getProvider().setCurrentAccountId(accountId);
+        smSoIPPlugin.getProvider().setCurrentAccountId(accountId);
         setFullTitle();
         updateInfoTextSilent();
     }
 
     private void changeSupplier(String supplierClassName) {
-        smsSupplier = SMSoIPApplication.getApp().getInstance(supplierClassName);
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "changeSupplier" + smsSupplier.getProviderInfo());
+        smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
+        ErrorReporter.getInstance().putCustomData("LAST ACTION", "changeSupplier" + smSoIPPlugin.getProviderName());
         setFullTitle();
         //reset all not needed informations
         updateSMScounter();
         setSpinner();
+        setDateTimePickerDialog();
         updateAfterReceiverCountChanged();
         updateInfoTextSilent();
         invalidateOptionsMenu();
     }
 
     public void updateAfterReceiverCountChanged() {
-        int maxReceiverCount = smsSupplier.getProvider().getMaxReceiverCount();
+        int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
         if (receiverList.size() > maxReceiverCount) {
             CheckForDuplicatesArrayList newReceiverList = new CheckForDuplicatesArrayList();
             for (int i = 0; i < maxReceiverCount; i++) {
@@ -1046,18 +1055,18 @@ public class SendActivity extends AllActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //close open dialog if any
-        if (lastDialog != null && smsSupplier != null) {
+        if (lastDialog != null && smSoIPPlugin != null) {
             //close only if the last dialog was not choose supllier dialog on startup otherwise on returning the gui is
             // open and  no supplier means FC
             lastDialog.dismiss();
         }
-        if (smsSupplier != null) { //only save instance if provider is already chosen
-            outState.putString(SAVED_INSTANCE_SUPPLIER, smsSupplier.getClass().getCanonicalName());
+        if (smSoIPPlugin != null) { //only save instance if provider is already chosen
+            outState.putString(SAVED_INSTANCE_SUPPLIER, smSoIPPlugin.getSupplierClassName());
             outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
-            Integer currentAccountIndex = smsSupplier.getProvider().getCurrentAccountIndex();
+            Integer currentAccountIndex = smSoIPPlugin.getProvider().getCurrentAccountIndex();
             if (currentAccountIndex != null) {
                 outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, currentAccountIndex);
             }
