@@ -144,7 +144,13 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
         sessionCookies = new ArrayList<String>();
-        String tmpUrl = LOGIN_URL + "?username=" + userName + "&password=" + password;
+        String tmpUrl;
+        try {
+            tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName, ENCODING) + "&password=" + URLEncoder.encode(password, ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
         HttpURLConnection con;
         try {
             //first get the login cookie
