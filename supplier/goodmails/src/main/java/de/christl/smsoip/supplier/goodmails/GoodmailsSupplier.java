@@ -28,7 +28,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     public static final String HOME_PAGE = "http://www.goodmails.de/index.php?action=userfrontpage";
     private static final String TARGET_URL = "http://www.goodmails.de/sms.php?action=sendSMS";
     private String sessionCookie;
-    private String encoding = "ISO-8859-1";
+    private static final String ENCODING = "UTF-8";
 
     private boolean found = false;
     private OptionProvider provider;
@@ -81,7 +81,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 urlConn.setRequestProperty("Cookie", sessionCookie);
                 urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
                 writer = new OutputStreamWriter(urlConn.getOutputStream());
-                String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, encoding);
+                String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, ENCODING);
                 switch (sendIndex) {
                     case 0: //free
                         headerFields += "&type=freesms";
@@ -104,20 +104,8 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                     out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
                     continue;
                 }
-                Outer:
-                for (Map.Entry<String, List<String>> header : urlConnHeaderFields.entrySet()) {
-                    if (header.getKey() != null && header.getKey().equals("content-type")) {
-                        for (String entry : header.getValue()) {
-                            String charset = "charset";
-                            if (entry.contains(charset)) {
-                                encoding = entry.substring(entry.indexOf(charset) + charset.length() + 1);
-                                break Outer;
-                            }
-                        }
-                    }
-                }
                 String line;
-                reader = new BufferedReader(new InputStreamReader(is, encoding));
+                reader = new BufferedReader(new InputStreamReader(is, ENCODING));
 
                 while ((line = reader.readLine()) != null) {
                     builder.append(processLine(line));
@@ -194,7 +182,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
             urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
             is = urlConn.getInputStream();
             String line;
-            reader = new BufferedReader(new InputStreamReader(is, encoding));
+            reader = new BufferedReader(new InputStreamReader(is, ENCODING));
             while ((line = reader.readLine()) != null) {
                 if (line.contains("name=\"glf_password\"")) {
                     Pattern p = Pattern.compile("value=\"[0-9]+[\\.+[0-9]+]*\"");
@@ -271,8 +259,14 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
-        String tmpUrl = LOGIN_URL + "&glf_username=" + userName + "&glf_password=" +
-                password + "&email_domain=goodmails.de&language=deutsch&do=login";
+        String tmpUrl;
+        try {
+            tmpUrl = LOGIN_URL + "&glf_username=" + URLEncoder.encode(userName, ENCODING) + "&glf_password=" +
+                    URLEncoder.encode(password, ENCODING) + "&email_domain=goodmails.de&language=deutsch&do=login";
+        } catch (UnsupportedEncodingException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
         HttpURLConnection con;
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
