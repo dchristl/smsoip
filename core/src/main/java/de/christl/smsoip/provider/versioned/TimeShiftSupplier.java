@@ -15,4 +15,6 @@ public interface TimeShiftSupplier {
 
     int getMinuteStepSize();
 
+    int getDaysInFuture();
+
 }

@@ -1,9 +1,6 @@
 package de.christl.smsoip.activities;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,8 +34,10 @@ import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
 import de.christl.smsoip.picker.DateTimeObject;
+import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
@@ -154,7 +153,8 @@ public class SendActivity extends AllActivity {
             if (timeInMillis != -1) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(timeInMillis);
-                dateTime = new DateTimeObject(calendar, smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+                TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
+                dateTime = new DateTimeObject(calendar, timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
             }
             setDateTimePickerDialog();
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
@@ -197,39 +197,57 @@ public class SendActivity extends AllActivity {
                 pickDay.setText(dateTime.dayString());
                 pickHour.setText(dateTime.timeString());
             }
-            final TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+            final TimePickerDialog.OnTimeSetListener timeListener = new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     if (dateTime != null) {
-                        pickDay.setText(dateTime.dayString());
                         pickHour.setText(dateTime.timeString());
                     }
                 }
             };
-            final View.OnClickListener onClickListener = new View.OnClickListener() {
+            final DatePickerDialog.OnDateSetListener dayListener = new DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onClick(View v) {
-                    RangeTimePicker rangeTimePicker = new RangeTimePicker(SendActivity.this, listener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
-                    rangeTimePicker.show();
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    if (dateTime != null) {
+                        pickDay.setText(dateTime.dayString());
+                    }
                 }
             };
 
+            final View.OnClickListener pickHourListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RangeTimePicker rangeTimePicker = new RangeTimePicker(SendActivity.this, timeListener, dateTime, DateFormat.is24HourFormat(SendActivity.this));
+                    rangeTimePicker.show();
+                }
+            };
+            final View.OnClickListener pickDayListener = new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    RangeDayPickerDialog dayPickerDialog = new RangeDayPickerDialog(SendActivity.this, dayListener, dateTime);
+                    dayPickerDialog.show();
+                }
+            };
             CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
             pickTimeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         if (dateTime == null) {
-                            dateTime = new DateTimeObject(Calendar.getInstance(), smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+                            TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
+                            dateTime = new DateTimeObject(Calendar.getInstance(), timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
                         }
                         pickDay.setText(dateTime.dayString());
                         pickHour.setText(dateTime.timeString());
-                        pickHour.setOnClickListener(onClickListener);
+                        pickHour.setOnClickListener(pickHourListener);
+                        pickDay.setOnClickListener(pickDayListener);
                         timeText.setVisibility(View.GONE);
                         pickHour.setVisibility(View.VISIBLE);
                         pickDay.setVisibility(View.VISIBLE);
                     } else {
                         pickHour.setOnClickListener(null);
+                        pickDay.setOnClickListener(null);
                         timeText.setText(R.string.text_now);
                         timeText.setVisibility(View.VISIBLE);
                         pickHour.setVisibility(View.GONE);

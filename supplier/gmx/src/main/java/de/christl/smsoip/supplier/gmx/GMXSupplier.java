@@ -321,4 +321,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public int getMinuteStepSize() {
         return 5;
     }
+
+    @Override
+    public int getDaysInFuture() {
+        return Integer.MAX_VALUE;
+    }
 }
