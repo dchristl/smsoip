@@ -52,6 +52,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
+        try {
+            smsText = URLEncoder.encode(smsText, ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
+        }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             SMSActionResult tmpResult = refreshInformations(true, 0);
             if (tmpResult.isSuccess()) {
