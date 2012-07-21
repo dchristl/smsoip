@@ -1,5 +1,8 @@
 package de.christl.smsoip.picker;
 
+import android.text.format.DateFormat;
+import de.christl.smsoip.application.SMSoIPApplication;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -70,5 +73,13 @@ public class DateTimeObject {
     @Override
     public String toString() {
         return sdf.format(calendar.getTime());
+    }
+
+    public String timeString() {
+        return DateFormat.getTimeFormat(SMSoIPApplication.getApp()).format(calendar.getTime());
+    }
+
+    public String dayString() {
+        return java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM).format(calendar.getTime());
     }
 }

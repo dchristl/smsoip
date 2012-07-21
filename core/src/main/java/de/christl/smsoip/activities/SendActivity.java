@@ -189,16 +189,20 @@ public class SendActivity extends AllActivity {
     private void setDateTimePickerDialog() {
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
+        final Button pickDay = (Button) findViewById(R.id.pickDay);
+        final Button pickHour = (Button) findViewById(R.id.pickHour);
         if (smSoIPPlugin.isTimeShiftCapable()) {
             timeShiftLayout.setVisibility(View.VISIBLE);
             if (dateTime != null) {
-                timeText.setText(dateTime.toString() + " " + getString(R.string.text_click_for_change));
+                pickDay.setText(dateTime.dayString());
+                pickHour.setText(dateTime.timeString());
             }
             final TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     if (dateTime != null) {
-                        timeText.setText(dateTime.toString() + " " + getString(R.string.text_click_for_change));
+                        pickDay.setText(dateTime.dayString());
+                        pickHour.setText(dateTime.timeString());
                     }
                 }
             };
@@ -215,12 +219,21 @@ public class SendActivity extends AllActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        dateTime = new DateTimeObject(Calendar.getInstance(), smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
-                        timeText.setOnClickListener(onClickListener);
-                        timeText.setText(dateTime.toString() + " " + getString(R.string.text_click_for_change));
+                        if (dateTime == null) {
+                            dateTime = new DateTimeObject(Calendar.getInstance(), smSoIPPlugin.getTimeShiftSupplier().getMinuteStepSize());
+                        }
+                        pickDay.setText(dateTime.dayString());
+                        pickHour.setText(dateTime.timeString());
+                        pickHour.setOnClickListener(onClickListener);
+                        timeText.setVisibility(View.GONE);
+                        pickHour.setVisibility(View.VISIBLE);
+                        pickDay.setVisibility(View.VISIBLE);
                     } else {
-                        timeText.setOnClickListener(null);
+                        pickHour.setOnClickListener(null);
                         timeText.setText(R.string.text_now);
+                        timeText.setVisibility(View.VISIBLE);
+                        pickHour.setVisibility(View.GONE);
+                        pickDay.setVisibility(View.GONE);
                         dateTime = null;
                     }
 
@@ -231,7 +244,8 @@ public class SendActivity extends AllActivity {
             timeShiftLayout.setVisibility(View.GONE);
             timeText.setOnClickListener(null);
             timeText.setText(R.string.text_now);
-            dateTime = null;
+            pickHour.setVisibility(View.GONE);
+            pickDay.setVisibility(View.GONE);
         }
     }
 
