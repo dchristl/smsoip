@@ -2,12 +2,17 @@ package de.christl.smsoip.supplier.gmx;
 
 import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -36,8 +41,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String LOGIN_URL = "https://ums.gmx.net/ums/login?0-1.IFormSubmitListener-login&dev=dsk";
     private String sessionId;
     private static final String SESSION_ID_URL_STRING = "jsessionid";
-    private DataInputStream lastInputStream;
-    private String genericRadioButtonId;
+    private Document lastParsedDocument;
+    private String sendNowRadioButtonId;
+    private String sendLaterRadioButtonId;
     private static final String CRLF = "\r\n";
     private static final String ENCODING = "UTF-8";
 
@@ -45,18 +51,15 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         provider = new GMXOptionProvider();
     }
 
+    public GMXSupplier(GMXOptionProvider provider) {
+        this.provider = provider;
+    }
 
-    @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
-        }
-        try {
-            smsText = URLEncoder.encode(smsText, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             SMSActionResult tmpResult = refreshInformations(true, 0);
@@ -101,11 +104,26 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         parameterMap.put("upload-panel:upload-form:file\"; filename=\"", "");
         parameterMap.put("subject", "");
         parameterMap.put("textMessage", smsText);
-        parameterMap.put("send-date-panel:send-date-form:send-options-rdgrp", genericRadioButtonId);
+        String radioButtonId;
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        parameterMap.put("send-date-panel:send-date-form:send-date", sdf.format(new Date()));
-        parameterMap.put("send-date-panel:send-date-form:send-date-hour", "0");
-        parameterMap.put("send-date-panel:send-date-form:send-date-minute", "0");
+        String dateString;
+        String hour;
+        String minute;
+        if (dateTimeObject == null) {
+            radioButtonId = sendNowRadioButtonId;
+            dateString = sdf.format(new Date());
+            hour = "0";
+            minute = "0";
+        } else {
+            radioButtonId = sendLaterRadioButtonId;
+            dateString = sdf.format(dateTimeObject.getCalendar().getTime());
+            hour = String.valueOf(dateTimeObject.getHour());
+            minute = String.valueOf(dateTimeObject.getMinute());
+        }
+        parameterMap.put("send-date-panel:send-date-form:send-options-rdgrp", radioButtonId);
+        parameterMap.put("send-date-panel:send-date-form:send-date", dateString);
+        parameterMap.put("send-date-panel:send-date-form:send-date-hour", hour);
+        parameterMap.put("send-date-panel:send-date-form:send-date-minute", minute);
         parameterMap.put("sendMessage", "1");
         HttpURLConnection con;
 
@@ -144,29 +162,25 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
     }
 
-    private SMSActionResult processReturn(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
+    /**
+     * its an ajax response and easier to handle than with JSoup
+     *
+     * @param is
+     * @return
+     * @throws IOException
+     */
+    SMSActionResult processReturn(InputStream is) throws IOException {
 
+        Document document = Jsoup.parse(is, ENCODING, "");
+        String feedBackPanelText = document.select("component").text();
 
-        String line;
-        StringBuilder returnFromServer = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            returnFromServer.append(line);
+        Document feedBackPanelContent = Jsoup.parse(feedBackPanelText, ENCODING);
+        Elements feedBackPanelDiv = feedBackPanelContent.select("div");
+        if (feedBackPanelDiv.select("span").attr("class").equals("feedbackPanelERROR")) {
+            return SMSActionResult.UNKNOWN_ERROR(feedBackPanelDiv.text());
+        } else {
+            return SMSActionResult.NO_ERROR(feedBackPanelDiv.select("#confirmation_message_text").text());
         }
-        String message = returnFromServer.toString();
-        if (message.contains("feedbackPanelERROR")) {
-            message = message.replaceAll(".*<span class=\"feedbackPanelERROR\">", "");
-            message = message.replaceAll("<.*", "");
-            //some additional clean up
-            message = message.replaceAll("[\\[\\]^]", "");
-            return SMSActionResult.UNKNOWN_ERROR(message);
-        } else if (message.contains("confirmation_message_text")) {
-            message = message.replaceAll(".*<div id=\"confirmation_message_text\">", "");
-            message = message.replaceAll("<.*", "");
-            return SMSActionResult.NO_ERROR(message);
-        }
-
-        return SMSActionResult.UNKNOWN_ERROR(message);
     }
 
     @Override
@@ -192,7 +206,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
         }
         String infoText = "";
-        if (lastInputStream == null) {
+        if (lastParsedDocument == null) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
         try {
@@ -200,9 +214,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
-        if (infoText.equals("") && tryNr < 5) {
-            return refreshInformations(false, ++tryNr);
-        }
+//        if (infoText.equals("") && tryNr < 5) {
+//            return refreshInformations(false, ++tryNr);
+//        }
         return SMSActionResult.NO_ERROR(infoText);
     }
 
@@ -230,29 +244,25 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
      * @throws IOException
      */
     private String findInfoText() throws IOException {
-        String inputLine;
         StringBuilder out = new StringBuilder("");
-        boolean found = false;
-        int loop = 1;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(lastInputStream));
-        while ((inputLine = bufferedReader.readLine()) != null) {
-            if (!found && inputLine.contains("SMMS_tab_content_info_free")) { //starting point of free sms
-                found = true;
-            }
-            if (found) {
-                if (inputLine.contains("SMMS_tab_content_info_text_small")) { //loop 2 and 4
-                    out.append(inputLine.replaceAll("<.*?>", "").trim()); //replace all html tags
-                    if (loop == 2) {
-                        out.append(CRLF);
-                    } else {
-                        break;
-                    }
-                    loop++;
-                } else if (inputLine.contains("SMMS_tab_content_info_text")) { //loop 1 and 3
-                    out.append(inputLine.replaceAll("<.*?>", " ").trim()).append(" : ");
-                    loop++;
-                }
-            }
+        Elements freeElementText = lastParsedDocument.select("#SMMS_tab_content_info_free").select(".SMMS_tab_content_info_text");
+        if (freeElementText.size() > 0) {
+            out.append(freeElementText.text());
+            out.append(" : ");
+        }
+        Elements freeElement = lastParsedDocument.select("#SMMS_tab_content_info_free").select(".SMMS_tab_content_info_text_small");
+        if (freeElement.size() > 0) {
+            out.append(freeElement.text());
+            out.append(CRLF);
+        }
+        Elements payElementText = lastParsedDocument.select("#SMMS_tab_content_info_pay").select(".SMMS_tab_content_info_text");
+        if (payElementText.size() > 0) {
+            out.append(payElementText.text());
+            out.append(" : ");
+        }
+        Elements payElement = lastParsedDocument.select("#SMMS_tab_content_info_pay").select(".SMMS_tab_content_info_text_small");
+        if (payElement.size() > 0) {
+            out.append(payElement.text());
         }
         return out.toString();
     }
@@ -277,14 +287,13 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         } catch (UnsupportedEncodingException e) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
-        HttpURLConnection con;
+        sendNowRadioButtonId = null;
+        sendLaterRadioButtonId = null;
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
         sessionId = null;
+        HttpURLConnection con;
         try {
-            con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setConnectTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
+            con = factory.create();
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
             return SMSActionResult.TIMEOUT_ERROR();
@@ -298,35 +307,46 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             return SMSActionResult.NETWORK_ERROR();
         }
         try {
-            lastInputStream = new DataInputStream(con.getInputStream());
-            String inputLine;
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(lastInputStream));
-            while ((inputLine = bufferedReader.readLine()) != null) {
-                if (inputLine.contains(SESSION_ID_URL_STRING)) {
-                    sessionId = inputLine.replaceAll(".*jsessionid=", "");
+            Document document = Jsoup.parse(con.getInputStream(), ENCODING, "");
+            Elements scripts = document.select("script");
+            for (Element script : scripts) {
+                String data = script.data();
+                if (data.contains(SESSION_ID_URL_STRING)) {
+                    sessionId = data.replaceAll("\\s", "");
+                    sessionId = sessionId.replaceAll(".*jsessionid=", "");
                     sessionId = sessionId.replaceAll("\\?.*", "");
-                }
-                if (inputLine.contains("SMMS_tab_content_radio") && inputLine.contains("checked")) {
-                    genericRadioButtonId = inputLine.replaceAll(".*value=\"", "");
-                    genericRadioButtonId = genericRadioButtonId.replaceAll("\" checked.*", "");
-                }
-                if (sessionId != null && sessionId.length() > 0 && genericRadioButtonId != null && genericRadioButtonId.length() > 0) {
                     break;
                 }
+            }
+
+            Elements radioButtons = document.select("input[id^=SMMS_tab_content_radio]");
+            for (Element radioButton : radioButtons) {
+                if (radioButton.hasAttr("checked")) {
+                    sendNowRadioButtonId = radioButton.attr("value");
+                } else {
+                    sendLaterRadioButtonId = radioButton.attr("value");
+                }
+            }
+            if (!(sessionId == null || sessionId.length() == 0)) {
+                lastParsedDocument = document;
+                return SMSActionResult.LOGIN_SUCCESSFUL();
             }
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
 
-        if (!(sessionId == null || sessionId.length() == 0)) {
-            return SMSActionResult.LOGIN_SUCCESSFUL();
-        }
+
         return SMSActionResult.LOGIN_FAILED_ERROR();
     }
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
-        return null;
+        return fireSMS(smsText, receivers, spinnerText, dateTime);
+    }
+
+    @Override
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+        return fireSMS(smsText, receivers, spinnerText, null);
     }
 
     @Override

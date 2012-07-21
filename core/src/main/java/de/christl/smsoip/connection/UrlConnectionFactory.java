@@ -170,7 +170,7 @@ public class UrlConnectionFactory {
         return con;
     }
 
-    private void writeMultipartBody(Map<String, String> parameterMap, String encoding) throws IOException {
+    public void writeMultipartBody(Map<String, String> parameterMap, String encoding) throws IOException {
         if (con == null) {
             create();
         }

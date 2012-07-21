@@ -710,7 +710,11 @@ public class SendActivity extends AllActivity {
      */
     FireSMSResultList sendByThread() {
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "sendByThread" + smSoIPPlugin.getProviderName());
-        return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        if (smSoIPPlugin.isTimeShiftCapable() && dateTime != null) {
+            return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString(), dateTime);
+        } else {
+            return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+        }
     }
 
 
