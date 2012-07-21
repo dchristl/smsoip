@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -264,7 +265,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
-        String tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + userName + "&password=" + password;
+        String tmpUrl;
+        try {
+            tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName, ENCODING) + "&password=" + URLEncoder.encode(password, ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
         HttpURLConnection con;
         sessionId = null;
         try {
@@ -324,6 +330,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public int getDaysInFuture() {
-        return Integer.MAX_VALUE;
+        return 365 * 5; //five years should be enough
     }
 }
