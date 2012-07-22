@@ -122,4 +122,7 @@ public class DateTimeObject {
     }
 
 
+    public DateTimeObject copy() {
+        return new DateTimeObject(calendar, minuteStepSize, daysInFuture);
+    }
 }

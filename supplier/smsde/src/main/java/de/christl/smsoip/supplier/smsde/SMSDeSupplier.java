@@ -9,7 +9,9 @@ import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
+import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SMSDeSupplier implements ExtendedSMSSupplier {
+public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private SMSDeOptionProvider provider;
 
@@ -319,5 +321,20 @@ public class SMSDeSupplier implements ExtendedSMSSupplier {
         }
 
         return out;
+    }
+
+    @Override
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+        return null;
+    }
+
+    @Override
+    public int getMinuteStepSize() {
+        return 10;
+    }
+
+    @Override
+    public int getDaysInFuture() {
+        return 5;
     }
 }

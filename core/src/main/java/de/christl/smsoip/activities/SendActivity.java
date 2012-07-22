@@ -201,6 +201,7 @@ public class SendActivity extends AllActivity {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     if (dateTime != null) {
+                        dateTime.setTime(hourOfDay, minute);
                         pickHour.setText(dateTime.timeString());
                     }
                 }
@@ -209,6 +210,7 @@ public class SendActivity extends AllActivity {
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     if (dateTime != null) {
+                        dateTime.setDay(year, monthOfYear, dayOfMonth);
                         pickDay.setText(dateTime.dayString());
                     }
                 }

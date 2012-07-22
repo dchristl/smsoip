@@ -15,7 +15,7 @@ public class RangeTimePicker extends TimePickerDialog {
 
     public RangeTimePicker(Context activity, OnTimeSetListener timePickerFragment, DateTimeObject dateTime, boolean hourFormat) {
         super(activity, timePickerFragment, dateTime.getHour(), dateTime.getMinute(), hourFormat);
-        this.dateTime = dateTime;
+        this.dateTime = dateTime.copy();
         setTitle(dateTime.toString());
     }
 
@@ -29,4 +29,5 @@ public class RangeTimePicker extends TimePickerDialog {
         }
         setTitle(dateTime.toString());
     }
+
 }

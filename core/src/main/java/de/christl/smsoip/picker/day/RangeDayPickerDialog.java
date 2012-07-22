@@ -14,18 +14,17 @@ public class RangeDayPickerDialog extends DatePickerDialog {
 
     public RangeDayPickerDialog(Context context, OnDateSetListener callBack, DateTimeObject dateTime) {
         super(context, callBack, dateTime.getYear(), dateTime.getMonth(), dateTime.getDay());
-        this.dateTime = dateTime;
+        this.dateTime = dateTime.copy();
         setTitle(dateTime.toString());
     }
 
     @Override
     public void onDateChanged(DatePicker view, int year, int month, int day) {
         dateTime.setDay(year, month, day);
-        if (dateTime.getYear() == year && dateTime.getMonth() == month && dateTime.getDay() == day) {
-            super.onDateChanged(view, year, month, day);
-        } else {
-            view.init(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay(), this);
+        if (dateTime.getYear() != year || dateTime.getMonth() != month || dateTime.getDay() != day) {
+            updateDate(dateTime.getYear(), dateTime.getMonth(), dateTime.getDay());
         }
         setTitle(dateTime.toString());
     }
+
 }
