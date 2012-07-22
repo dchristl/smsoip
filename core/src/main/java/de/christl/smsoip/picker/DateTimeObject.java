@@ -14,8 +14,7 @@ public class DateTimeObject {
 
     private int lastMinute = -1;
 
-    private final int minuteStepSize;
-    private final SimpleDateFormat sdf = new SimpleDateFormat();
+    private int minuteStepSize;
     private int daysInFuture;
 
 
@@ -77,7 +76,7 @@ public class DateTimeObject {
 
     @Override
     public String toString() {
-        return sdf.format(calendar.getTime());
+        return new SimpleDateFormat().format(calendar.getTime());
     }
 
     public String timeString() {
@@ -115,14 +114,27 @@ public class DateTimeObject {
         Calendar toCompareInstance = Calendar.getInstance();
         if (toCompareInstance.before(instance)) {
             toCompareInstance.set(Calendar.DAY_OF_MONTH, toCompareInstance.get(Calendar.DAY_OF_MONTH) + daysInFuture);
-            if (toCompareInstance.after(instance)) {
-                this.calendar = instance;
+            if (!toCompareInstance.after(instance)) {
+                instance.set(Calendar.DAY_OF_MONTH, toCompareInstance.get(Calendar.DAY_OF_MONTH));
+                instance.set(Calendar.YEAR, toCompareInstance.get(Calendar.YEAR));
+                instance.set(Calendar.MONTH, toCompareInstance.get(Calendar.MONTH));
             }
+            this.calendar = instance;
         }
     }
 
 
     public DateTimeObject copy() {
         return new DateTimeObject(calendar, minuteStepSize, daysInFuture);
+    }
+
+    public void setDaysInFuture(int daysInFuture) {
+        this.daysInFuture = daysInFuture;
+        setDayMembers(calendar);
+    }
+
+    public void setMinuteStepSize(int minuteStepSize) {
+        this.minuteStepSize = minuteStepSize;
+        setTimeMembers(calendar);
     }
 }

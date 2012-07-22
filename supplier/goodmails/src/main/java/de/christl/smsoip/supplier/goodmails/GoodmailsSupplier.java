@@ -261,8 +261,8 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     public SMSActionResult checkCredentials(String userName, String password) {
         String tmpUrl;
         try {
-            tmpUrl = LOGIN_URL + "&glf_username=" + URLEncoder.encode(userName, ENCODING) + "&glf_password=" +
-                    URLEncoder.encode(password, ENCODING) + "&email_domain=goodmails.de&language=deutsch&do=login";
+            tmpUrl = LOGIN_URL + "&glf_username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&glf_password=" +
+                    URLEncoder.encode(password == null ? "" : password, ENCODING) + "&email_domain=goodmails.de&language=deutsch&do=login";
         } catch (UnsupportedEncodingException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.UNKNOWN_ERROR();

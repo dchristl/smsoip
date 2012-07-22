@@ -146,7 +146,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
         sessionCookies = new ArrayList<String>();
         String tmpUrl;
         try {
-            tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName, ENCODING) + "&password=" + URLEncoder.encode(password, ENCODING);
+            tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
         } catch (UnsupportedEncodingException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.UNKNOWN_ERROR();

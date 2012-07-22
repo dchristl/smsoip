@@ -195,7 +195,9 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin.isTimeShiftCapable(spinnerText)) {
             timeShiftLayout.setVisibility(View.VISIBLE);
             if (dateTime != null) {
-
+                TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
+                dateTime.setMinuteStepSize(timeShiftSupplier.getMinuteStepSize());
+                dateTime.setDaysInFuture(timeShiftSupplier.getDaysInFuture());
                 pickDay.setVisibility(View.VISIBLE);
                 pickHour.setVisibility(View.VISIBLE);
                 pickDay.setText(dateTime.dayString());
