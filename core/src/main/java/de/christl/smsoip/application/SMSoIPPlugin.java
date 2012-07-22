@@ -113,8 +113,8 @@ public class SMSoIPPlugin {
         return packageInfo.versionName;
     }
 
-    public boolean isTimeShiftCapable() {
-        return timeShiftCapable;
+    public boolean isTimeShiftCapable(String sendType) {
+        return timeShiftCapable && getTimeShiftSupplier().isSendTypeTimeShiftCapable(sendType);
     }
 
     public OptionProvider getProvider() {

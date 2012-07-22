@@ -337,4 +337,10 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public int getDaysInFuture() {
         return 5;
     }
+
+    @Override
+    public boolean isSendTypeTimeShiftCapable(String spinnerText) {
+        int sendType = findSendMethod(spinnerText, "");
+        return sendType != TYPE_FREE;
+    }
 }

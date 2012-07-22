@@ -17,4 +17,5 @@ public interface TimeShiftSupplier {
 
     int getDaysInFuture();
 
+    boolean isSendTypeTimeShiftCapable(String spinnerText);
 }

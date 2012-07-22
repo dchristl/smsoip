@@ -156,10 +156,10 @@ public class SendActivity extends AllActivity {
                 TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
                 dateTime = new DateTimeObject(calendar, timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
             }
-            setDateTimePickerDialog();
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
                 spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0), false);
             }
+            setDateTimePickerDialog();
             inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
             receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
@@ -191,7 +191,8 @@ public class SendActivity extends AllActivity {
         final TextView timeText = (TextView) findViewById(R.id.timeText);
         final Button pickDay = (Button) findViewById(R.id.pickDay);
         final Button pickHour = (Button) findViewById(R.id.pickHour);
-        if (smSoIPPlugin.isTimeShiftCapable()) {
+        String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
+        if (smSoIPPlugin.isTimeShiftCapable(spinnerText)) {
             timeShiftLayout.setVisibility(View.VISIBLE);
             if (dateTime != null) {
                 pickDay.setText(dateTime.dayString());
@@ -536,7 +537,8 @@ public class SendActivity extends AllActivity {
             toastMessage += (toastMessage.length() != 0) ? "\n" : "";
             toastMessage += getString(R.string.text_noTextInput);
         }
-        if (smSoIPPlugin.isTimeShiftCapable() && dateTime != null) {
+        String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
+        if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
             if (dateTime.getCalendar().before(Calendar.getInstance())) {
                 toastMessage += (toastMessage.length() != 0) ? "\n" : "";
                 toastMessage += getString(R.string.text_time_in_past);
@@ -718,10 +720,11 @@ public class SendActivity extends AllActivity {
      */
     FireSMSResultList sendByThread() {
         ErrorReporter.getInstance().putCustomData("LAST ACTION", "sendByThread" + smSoIPPlugin.getProviderName());
-        if (smSoIPPlugin.isTimeShiftCapable() && dateTime != null) {
-            return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString(), dateTime);
+        String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
+        if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
+            return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
         } else {
-            return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString());
+            return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
         }
     }
 
@@ -855,7 +858,7 @@ public class SendActivity extends AllActivity {
             searchButton.setVisibility(View.VISIBLE);
         }
         setInfoButtonVisibility();
-
+        setDateTimePickerDialog();
     }
 
     private void setInfoButtonVisibility() {

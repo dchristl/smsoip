@@ -408,4 +408,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public int getDaysInFuture() {
         return 365 * 5; //five years should be enough
     }
+
+    @Override
+    public boolean isSendTypeTimeShiftCapable(String spinnerText) {
+        return true;
+    }
 }
