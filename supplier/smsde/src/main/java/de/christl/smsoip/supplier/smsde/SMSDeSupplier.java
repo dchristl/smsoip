@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -236,6 +237,10 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+        return sendSMS(smsText, receivers, spinnerText, null);
+    }
+
+    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) {
         String errorText = preCheckNumbers(receivers);
         if (!errorText.equals("")) {
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(errorText), receivers);
@@ -302,6 +307,13 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                         body += "&smslength=151";
                         break;
                 }
+                if (dateTimeObject != null) {
+                    body += "&schedule=set";
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    body += "&day=" + sdf.format(dateTimeObject.getCalendar().getTime());
+                    body += "&hour=" + dateTimeObject.getHour();
+                    body += "&minute=" + dateTimeObject.getMinute();
+                }
                 factory.setCookies(sessionCookies);
                 HttpURLConnection con = factory.writeBody(body);
                 SMSDeSendResult sendResult = processSendReturn(con.getInputStream());
@@ -325,7 +337,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
-        return null;
+        return sendSMS(smsText, receivers, spinnerText, dateTime);
     }
 
     @Override
