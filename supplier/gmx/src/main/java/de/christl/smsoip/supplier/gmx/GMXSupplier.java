@@ -20,10 +20,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -37,6 +34,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     private static final String TARGET_URL = "https://ums.gmx.net/ums/home;jsessionid=%s?1-1.IBehaviorListener.0-main~tab-content~panel~container-content~panel-form-sendMessage&wicket-ajax=true&wicket-ajax-baseurl=home";
+    private static final String SAVE_URL = "https://ums.gmx.net/ums/home;jsessionid=%s?1-1.IBehaviorListener.0-main~tab-content~panel~container-content~panel-form-send~date~panel-send~date~form-save&wicket-ajax=true&wicket-ajax-baseurl=home";
+
 
     private static final String LOGIN_URL = "https://ums.gmx.net/ums/login?0-1.IFormSubmitListener-login&dev=dsk";
     private String sessionId;
@@ -51,7 +50,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         provider = new GMXOptionProvider();
     }
 
-    public GMXSupplier(GMXOptionProvider provider) {
+    GMXSupplier(GMXOptionProvider provider) {
         this.provider = provider;
     }
 
@@ -70,7 +69,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 if (split.length > 4) {
                     int freeSMS;
                     try {
-                        freeSMS = Integer.parseInt(split[4]);
+                        freeSMS = Integer.parseInt(split[3]);
                     } catch (NumberFormatException e) {
                         return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)), receivers);
                     }
@@ -86,9 +85,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 }
             }
         }
-        String tmpUrl = String.format(TARGET_URL, sessionId);
 
-        String boundary = "--" + Long.toHexString(System.currentTimeMillis());
+
         Map<String, String> parameterMap = new LinkedHashMap<String, String>();
         parameterMap.put("id8_hf_0", "");
         parameterMap.put("from", "0");
@@ -119,6 +117,14 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             dateString = sdf.format(dateTimeObject.getCalendar().getTime());
             hour = String.valueOf(dateTimeObject.getHour());
             minute = String.valueOf(dateTimeObject.getMinute());
+            parameterMap.put("send-date-panel:send-date-form:send-options-rdgrp", radioButtonId);
+            parameterMap.put("send-date-panel:send-date-form:send-date", dateString);
+            parameterMap.put("send-date-panel:send-date-form:send-date-hour", hour);
+            parameterMap.put("send-date-panel:send-date-form:send-date-minute", minute);
+            SMSActionResult smsActionResult = sendSaveRequest(parameterMap);
+            if (!smsActionResult.isSuccess()) {
+                return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
+            }
         }
         parameterMap.put("send-date-panel:send-date-form:send-options-rdgrp", radioButtonId);
         parameterMap.put("send-date-panel:send-date-form:send-date", dateString);
@@ -129,12 +135,14 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         PrintWriter writer = null;
         try {
+            String tmpUrl = String.format(TARGET_URL, sessionId);
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
             con.setDoOutput(true);
             con.setReadTimeout(TIMEOUT);
             con.setConnectTimeout(TIMEOUT);
             con.setRequestProperty("User-Agent", TARGET_AGENT);
             con.setRequestMethod("POST");
+            String boundary = "--" + Long.toHexString(System.currentTimeMillis());
             con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
             OutputStream output = con.getOutputStream();
@@ -155,6 +163,48 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receivers);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+    }
+
+    private SMSActionResult sendSaveRequest(Map<String, String> parameterMap) {
+
+        Map<String, String> otherParameterMap = new HashMap<String, String>(parameterMap);
+        otherParameterMap.put("send-date-panel:send-date-form:save", "1");
+        PrintWriter writer = null;
+        try {
+            String tmpUrl = String.format(SAVE_URL, sessionId);
+            String boundary = "--" + Long.toHexString(System.currentTimeMillis());
+            HttpURLConnection con = (HttpURLConnection) new URL(tmpUrl).openConnection();
+            con.setDoOutput(true);
+            con.setReadTimeout(TIMEOUT);
+            con.setConnectTimeout(TIMEOUT);
+            con.setRequestProperty("User-Agent", TARGET_AGENT);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
+            OutputStream output = con.getOutputStream();
+            writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
+            for (Map.Entry<String, String> stringStringEntry : otherParameterMap.entrySet()) {
+                writer.append("--").append(boundary).append(CRLF);
+                writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
+                writer.append(CRLF);
+                writer.append(stringStringEntry.getValue()).append(CRLF).flush();
+
+            }
+            writer.append("--").append(boundary).append("--").append(CRLF).flush();
+            con.getInputStream(); //just fire request
+            return SMSActionResult.NO_ERROR();
+
+        } catch (SocketTimeoutException stoe) {
+            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+            return SMSActionResult.TIMEOUT_ERROR();
+        } catch (IOException e) {
+            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+            return SMSActionResult.NETWORK_ERROR();
         } finally {
             if (writer != null) {
                 writer.close();

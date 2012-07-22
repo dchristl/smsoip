@@ -138,8 +138,10 @@ public class SMSoIPApplication extends Application {
                     }
                 } catch (ClassNotFoundException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
+                    pluginsToNew.put(s, plugin);
                 } catch (InstantiationException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
+                    pluginsToOld.put(s, plugin);
                 }
             }
         }
