@@ -155,14 +155,28 @@ public class SMSoIPApplication extends Application {
             builder.append(" ").append(smSoIPPlugin.getVersion()).append("\n");
         }
         builder.append("<to old>:\n");
-        for (SMSoIPPlugin smSoIPPlugin : pluginsToOld.values()) {
-            builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
-            builder.append(" ").append(smSoIPPlugin.getVersion()).append("\n");
+        for (Map.Entry<String, SMSoIPPlugin> stringSMSoIPPluginEntry : pluginsToOld.entrySet()) {
+            SMSoIPPlugin smSoIPPlugin = stringSMSoIPPluginEntry.getValue();
+            String canonicalName = stringSMSoIPPluginEntry.getKey();
+            if (smSoIPPlugin.getSupplier() != null) {
+                builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
+                builder.append(" ").append(smSoIPPlugin.getVersion());
+            } else {
+                builder.append(canonicalName);
+            }
+            builder.append("\n");
         }
         builder.append("<to new>:\n");
-        for (SMSoIPPlugin smSoIPPlugin : pluginsToNew.values()) {
-            builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
-            builder.append(" ").append(smSoIPPlugin.getVersion()).append("\n");
+        for (Map.Entry<String, SMSoIPPlugin> stringSMSoIPPluginEntry : pluginsToNew.entrySet()) {
+            SMSoIPPlugin smSoIPPlugin = stringSMSoIPPluginEntry.getValue();
+            String canonicalName = stringSMSoIPPluginEntry.getKey();
+            if (smSoIPPlugin.getSupplier() != null) {
+                builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
+                builder.append(" ").append(smSoIPPlugin.getVersion());
+            } else {
+                builder.append(canonicalName);
+            }
+            builder.append("\n");
         }
         ErrorReporter.getInstance().putCustomData("PLUGINS", builder.toString());
     }

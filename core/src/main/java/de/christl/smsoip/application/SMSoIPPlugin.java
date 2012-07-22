@@ -93,7 +93,19 @@ public class SMSoIPPlugin {
     }
 
     public String getProviderName() {
-        return supplier.getProvider().getProviderName();
+        String supplierName = "";
+        if (supplier == null) { //Plugin could not be loaded, so get the name from package
+            for (String availableClass : availableClasses) {
+                if (availableClass.contains(SMSoIPApplication.PLUGIN_CLASS_PREFIX)) {
+                    supplierName = availableClass.replace(SMSoIPApplication.PLUGIN_CLASS_PREFIX + ".", "");
+                    supplierName = supplierName.replaceAll("\\..*", "");
+                    break;
+                }
+            }
+        } else {
+            supplierName = supplier.getProvider().getProviderName();
+        }
+        return supplierName;
     }
 
 
