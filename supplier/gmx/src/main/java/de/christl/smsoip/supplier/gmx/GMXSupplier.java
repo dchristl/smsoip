@@ -333,7 +333,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public SMSActionResult checkCredentials(String userName, String password) {
         String tmpUrl;
         try {
-            tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName, ENCODING) + "&password=" + URLEncoder.encode(password, ENCODING);
+            tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
         } catch (UnsupportedEncodingException e) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
