@@ -534,6 +534,12 @@ public class SendActivity extends AllActivity {
             toastMessage += (toastMessage.length() != 0) ? "\n" : "";
             toastMessage += getString(R.string.text_noTextInput);
         }
+        if (smSoIPPlugin.isTimeShiftCapable() && dateTime != null) {
+            if (dateTime.getCalendar().before(Calendar.getInstance())) {
+                toastMessage += (toastMessage.length() != 0) ? "\n" : "";
+                toastMessage += getString(R.string.text_time_in_past);
+            }
+        }
         if (toastMessage.length() > 0) {
             toast.setText(toastMessage);
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);

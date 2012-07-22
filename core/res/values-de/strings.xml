@@ -128,5 +128,6 @@
         behoben.
     </string>
     <string name="text_now">Sofort</string>
-    <string name="text_sending_time">Sendezeit</string>
+    <string name="text_sending_time">Sendezeitpunkt</string>
+    <string name="text_time_in_past">Sendezeitpunkt ist in der Vergangenheit!</string>
 </resources>

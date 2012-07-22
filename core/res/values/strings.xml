@@ -124,4 +124,5 @@
     <string name="crash_dialog_ok_toast">Thank you for your support! Error will be fixed as soon as possible.</string>
     <string name="text_now">Now</string>
     <string name="text_sending_time">Sending time</string>
+    <string name="text_time_in_past">Sending time is in past!</string>
 </resources>
