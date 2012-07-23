@@ -99,15 +99,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
      *
      * @param result
      * @return
-     * @deprecated Use version with receivers
      */
-    @Deprecated
-    public static FireSMSResultList getAllInOneResult(SMSActionResult result) {
-        FireSMSResultList out = new FireSMSResultList(1);
-        out.add(new FireSMSResult(null, result));
-        return out;
-    }
-
     public static FireSMSResultList getAllInOneResult(SMSActionResult result, List<Receiver> receivers) {
         FireSMSResultList out = new FireSMSResultList(1);
         out.add(new FireSMSResult(null, result));

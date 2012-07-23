@@ -55,18 +55,18 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
 
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) {
+    public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
-            SMSActionResult tmpResult = refreshInformations(true, 0);
+            SMSActionResult tmpResult = refreshInformations(true);
             if (tmpResult.isSuccess()) {
                 String userText = tmpResult.getMessage();
                 String[] split = userText.split(" ");
                 boolean noFreeAvailable;
-                if (split.length > 4) {
+                if (split.length > 3) {
                     int freeSMS;
                     try {
                         freeSMS = Integer.parseInt(split[3]);
@@ -235,9 +235,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
-        SMSActionResult result = refreshInformations(false, 0);
+        SMSActionResult result = refreshInformations(false);
         if (result.isSuccess() && result.getMessage().equals("")) {              //informations are not available at first try so do it twice
-            result = refreshInformations(false, 0);
+            result = refreshInformations(false);
         }
         return result;
 
@@ -245,10 +245,10 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
-        return refreshInformations(true, 0);
+        return refreshInformations(true);
     }
 
-    private SMSActionResult refreshInformations(boolean noLoginBefore, int tryNr) {
+    private SMSActionResult refreshInformations(boolean noLoginBefore) {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
@@ -264,9 +264,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
-//        if (infoText.equals("") && tryNr < 5) {
-//            return refreshInformations(false, ++tryNr);
-//        }
         return SMSActionResult.NO_ERROR(infoText);
     }
 
@@ -391,12 +388,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
-        return fireSMS(smsText, receivers, spinnerText, dateTime);
+        return sendSMS(smsText, receivers, dateTime);
     }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
-        return fireSMS(smsText, receivers, spinnerText, null);
+        return sendSMS(smsText, receivers, null);
     }
 
     @Override
