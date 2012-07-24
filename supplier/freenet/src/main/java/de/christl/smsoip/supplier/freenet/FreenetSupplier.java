@@ -7,7 +7,9 @@ import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -23,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * Class for handling sms by freenet
  */
-public class FreenetSupplier implements ExtendedSMSSupplier {
+public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private FreenetOptionProvider provider;
 
@@ -221,6 +223,11 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+        return sendSMS(smsText, receivers, null);
+    }
+
+    //    myAction=send&from=&senderName=service%40freenet.de&defaultEmailSender=&to=01745686886&smsText=Test+zeitversetzt&later=1&day=24&month=07&year=2012&hours=22&minutes=09&smsToSent=1
+    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTime) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
@@ -236,6 +243,12 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
         //currently only free sms supported, for paid accounts change will be here
         for (Receiver receiver : receivers) {
             String tmpUrl = SEND_URL + "&senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver.getReceiverNumber() + "&smsText=" + message;
+            if (dateTime != null) {
+                tmpUrl += String.format("&later=1&day=%02d&month=%02d&year=%d&hours=%02d&minutes=%02d", dateTime.getDay(), dateTime.getMonth() + 1, dateTime.getYear(), dateTime.getHour(), dateTime.getMinute());
+            }
+            if (provider.getSettings().getBoolean(FreenetOptionProvider.PROVIDER_SAVE_IN_SENT, false)) {
+                tmpUrl += "&smsToSent=1";
+            }
             HttpURLConnection con;
             try {
                 con = (HttpURLConnection) new URL(tmpUrl).openConnection();
@@ -258,5 +271,25 @@ public class FreenetSupplier implements ExtendedSMSSupplier {
             }
         }
         return out;
+    }
+
+    @Override
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+        return sendSMS(smsText, receivers, dateTime);
+    }
+
+    @Override
+    public int getMinuteStepSize() {
+        return 1;
+    }
+
+    @Override
+    public int getDaysInFuture() {
+        return 400;
+    }
+
+    @Override
+    public boolean isSendTypeTimeShiftCapable(String spinnerText) {
+        return true;
     }
 }

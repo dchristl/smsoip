@@ -112,6 +112,9 @@ public class DateTimeObject {
 
     private void setDayMembers(Calendar instance) {
         Calendar toCompareInstance = Calendar.getInstance();
+        toCompareInstance.set(Calendar.HOUR_OF_DAY, 0);   //ignore time
+        toCompareInstance.set(Calendar.MINUTE, 0);
+        toCompareInstance.set(Calendar.MILLISECOND, 0);
         if (toCompareInstance.before(instance)) {
             toCompareInstance.set(Calendar.DAY_OF_MONTH, toCompareInstance.get(Calendar.DAY_OF_MONTH) + daysInFuture);
             if (!toCompareInstance.after(instance)) {

@@ -168,6 +168,8 @@ fileName: strings.xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="text_refresh_informations">All: %1$d Paid: %2$d</string>
+    <string name="text_save_in_sent">Save messages in "sent" folder</string>
+    <string name="text_save_in_sent_long">Text messages will be saved in "Sent" - folder of mail account.</string>
 </resources>
 <!--String resources for:
 project: smsde
