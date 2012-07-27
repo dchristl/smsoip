@@ -60,13 +60,6 @@ public interface ExtendedSMSSupplier {
     SMSActionResult refreshInfoTextAfterMessageSuccessfulSent();
 
     /**
-     * the additional provider info, will be put before the sms message in database
-     *
-     * @return a short string for the provider
-     */
-    String getProviderInfo();
-
-    /**
      * the corresponding provider of this supplier
      *
      * @return corresponding provider

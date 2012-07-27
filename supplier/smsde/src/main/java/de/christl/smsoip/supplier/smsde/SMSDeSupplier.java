@@ -106,11 +106,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     @Override
-    public String getProviderInfo() {
-        return provider.getProviderName();
-    }
-
-    @Override
     public OptionProvider getProvider() {
         return provider;
     }

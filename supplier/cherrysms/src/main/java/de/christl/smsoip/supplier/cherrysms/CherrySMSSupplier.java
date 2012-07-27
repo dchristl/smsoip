@@ -114,11 +114,6 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public String getProviderInfo() {
-        return provider.getProviderName();
-    }
-
-    @Override
     public OptionProvider getProvider() {
         return provider;
     }

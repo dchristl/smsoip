@@ -238,11 +238,6 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         return "";
     }
 
-    @Override
-    public String getProviderInfo() {
-        return "GM -> " + lastSentType;
-    }
-
 
     @Override
     public OptionProvider getProvider() {
