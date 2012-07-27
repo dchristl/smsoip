@@ -69,6 +69,7 @@ public class GoodmailsOptionProvider extends OptionProvider {
             }
         });
         int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
+        defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
         spinner.setSelection(defaultPosition);
     }
 

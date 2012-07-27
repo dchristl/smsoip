@@ -1,9 +1,13 @@
 package de.christl.smsoip.supplier.cherrysms;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -26,6 +30,8 @@ public class CherrySMSOptionProvider extends OptionProvider {
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
 
+    private static final String SUPPORT_URL = "http://www.cherry-sms.com/?ref=RBSYJMGF";
+
     public CherrySMSOptionProvider() {
         super(providerName);
     }
@@ -44,6 +50,7 @@ public class CherrySMSOptionProvider extends OptionProvider {
         spinner.setAdapter(adapter);
 
         int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
+        defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
         spinner.setSelection(defaultPosition);
     }
 
@@ -61,16 +68,23 @@ public class CherrySMSOptionProvider extends OptionProvider {
         listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
+        PreferenceScreen intentPref = ((PreferenceActivity) context).getPreferenceManager().createPreferenceScreen(context);
+        intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
+                .setData(Uri.parse(SUPPORT_URL)));
+        intentPref.setTitle(getTextByResourceId(R.string.text_need_account));
+        intentPref.setSummary(getTextByResourceId(R.string.text_need_account_long));
+        out.add(intentPref);
         return out;
     }
 
     static String getMD5String(String utf8String) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        byte[] bytesOfMessage = utf8String.getBytes("UTF-8");
+        byte[] bytesOfMessage = utf8String.getBytes("ISO-8859-1");
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] thedigest = md.digest(bytesOfMessage);
         StringBuilder hexString = new StringBuilder();
         for (byte aThedigest : thedigest) {
-            hexString.append(Integer.toHexString(0xFF & aThedigest));
+            String hexStringRaw = Integer.toHexString(0xFF & aThedigest);
+            hexString.append(("00" + hexStringRaw).substring(hexStringRaw.length()));   //add leading zero to String
         }
 
         return hexString.toString();

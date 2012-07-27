@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="array_spinner">
-        <item>Mit Absenderkennung (1 Credit)</item>
-        <item>Ohne Absenderkennung (2 Credits)</item>
+        <item>Ohne Absenderkennung (1 Credit)</item>
+        <item>Mit Absenderkennung (2 Credits)</item>
     </string-array>
     <string name="text_default_type">Standard Absendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+    <string name="text_need_account">Noch keinen Account?</string>
+    <string name="text_need_account_long">Du willst einen Account anlegen und gleichzeitig die Weiterentwicklung von
+        SMSoIP unterstützen. Dann nutze diesen Link, um dich anzumelden.
+    </string>
     <string name="text_refresh_informations">Verbleibende Credits: %1$d</string>
     <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'
@@ -21,5 +25,6 @@
     <string name="text_return_71">Feature auf dieser Route nicht möglich</string>
     <string name="text_return_80">Übertragung an SMS-C nicht möglich</string>
     <string name="text_return_90">Versand möglich</string>
-    <string name="text_return_100">SMS wurde erfolgreich an "%1$s" gesendet zum Preis von %2$s Credits</string>
+    <string name="text_return_100">SMS wurde erfolgreich für %1$s Credits versendet</string>
+    <string name="text_unknown_error">Unbekannter Fehlercode: %1$d</string>
 </resources>
