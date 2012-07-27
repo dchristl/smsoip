@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_spinner">
+        <item>Without source identifier (1 Credit)</item>
+        <item>With source identifier (2 Credits)</item>
+    </string-array>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_refresh_informations">Remaining credits: %1$d</string>
+    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+        like \'00491721234567\'
+    </string>
+    <string name="text_return_10">Recipent number is not correct</string>
+    <string name="text_return_20">Sender ID is not correct</string>
+    <string name="text_return_30">Message text is not correct</string>
+    <string name="text_return_31">Message type is not correct</string>
+    <string name="text_return_40">Route message incorrect</string>
+    <string name="text_return_50">Identification failed</string>
+    <string name="text_return_60">Not enough credits</string>
+    <string name="text_return_70">Grid is not covered by Route</string>
+    <string name="text_return_71">Feature not possible on this route</string>
+    <string name="text_return_80">Transfer to SMS-C failed</string>
+    <string name="text_return_90">Shipping available</string>
+    <string name="text_return_100">Message was succesfully sent to "%1$s" for %2$s credits</string>
+</resources>

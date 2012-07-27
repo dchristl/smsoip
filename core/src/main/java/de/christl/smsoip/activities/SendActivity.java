@@ -641,7 +641,11 @@ public class SendActivity extends AllActivity {
         if (writeToDatabaseEnabled) {
             StringBuilder message = new StringBuilder();
             if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
-                message.append(getString(R.string.applicationName)).append(" (").append(smSoIPPlugin.getProviderName()).append("): ");
+                message.append(getString(R.string.applicationName)).append(" (").append(smSoIPPlugin.getProviderName());
+                if (dateTime != null) {
+                    message.append(" ").append(dateTime.dayString()).append(",").append(dateTime.timeString());
+                }
+                message.append("): ");
             }
             message.append(textField.getText());
             DatabaseHandler handler = new DatabaseHandler(this);

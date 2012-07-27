@@ -20,6 +20,7 @@
         <module>goodmails</module>
         <module>freenet</module>
         <module>smsde</module>
+        <module>cherrysms</module>
     </modules>
 
     <dependencies>

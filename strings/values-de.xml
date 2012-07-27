@@ -83,7 +83,7 @@ fileName: strings.xml
     </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
-        versehen (z.B. \'SMSoIP -> GMX\')
+        versehen (z.B. \'SMSoIP -> GMX\', Sendezeit)
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
@@ -197,4 +197,34 @@ fileName: strings.xml
     <string name="text_default_type">Standard Absendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="text_wrong_number">Falsche Nummer</string>
+</resources>
+<!--String resources for:
+project: cherrysms
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_spinner">
+        <item>Mit Absenderkennung (1 Credit)</item>
+        <item>Ohne Absenderkennung (2 Credits)</item>
+    </string-array>
+    <string name="text_default_type">Standard Absendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+    <string name="text_refresh_informations">Verbleibende Credits: %1$d</string>
+    <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
+        Format sein, z.B. \'00491721234567\'
+    </string>
+    <string name="text_return_10">Empfängernummer nicht korrekt</string>
+    <string name="text_return_20">Absender ID ist nicht korrekt</string>
+    <string name="text_return_30">Nachrichtentext nicht korrekt</string>
+    <string name="text_return_31">Nachrichtentyp ist nicht korrekt</string>
+    <string name="text_return_40">Nachrichtenroute ist nicht korrekt</string>
+    <string name="text_return_50">Zugangsdaten fehlerhaft</string>
+    <string name="text_return_60">Nicht genügend Credits vorhanden</string>
+    <string name="text_return_70">Netz wird von Route nicht unterstützt</string>
+    <string name="text_return_71">Feature auf dieser Route nicht möglich</string>
+    <string name="text_return_80">Übertragung an SMS-C nicht möglich</string>
+    <string name="text_return_90">Versand möglich</string>
+    <string name="text_return_100">SMS wurde erfolgreich an "%1$s" gesendet zum Preis von %2$s Credits</string>
 </resources>

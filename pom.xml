@@ -230,7 +230,7 @@
             <dependency>
                 <groupId>com.google.ads</groupId>
                 <artifactId>admob</artifactId>
-                <version>6.0.1</version>
+                <version>6.1.0</version>
             </dependency>
             <dependency>
                 <groupId>com.mobclix</groupId>

@@ -44,19 +44,6 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     }
 
 
-    //    POST /sms.php?action=sendSMS&sid=9jno2qh83lt1nl8md76p2c6ns6 HTTP/1.1
-//    Host: www.goodmails.de
-//    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0
-//    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-//    Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
-//    Accept-Encoding: gzip, deflate
-//    Proxy-Connection: keep-alive
-//    Referer: http://www.goodmails.de/sms.php?sid=9jno2qh83lt1nl8md76p2c6ns6&action=compose&type=2
-//    Cookie: sessionSecret_39pl3t9p8bgt0ip990buos3jr5=681e359d8aec81c0dfd270dc2b3eb7d8; sessionSecret_cqjink2rqid28h21rfamo3jhe2=c2eccf2c5b9436b670cbf383d7a0922b; sessionSecret_9jno2qh83lt1nl8md76p2c6ns6=2bb048c513937f5a5417ec83a90977de
-//    Content-Type: application/x-www-form-urlencoded
-//    Content-Length: 109
-//
-//    type=standardsms&to=454564654&smsText=bla+bla+blubbsklyajdjkshdhsdhjksd%0D%0A%0D%0Asadasdsd%0D%0Af%0D%0Asdf
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
@@ -135,11 +122,16 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 if (alternateText.equals("NOT ALLOWED YET")) {
                     alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
                 }
-                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(alternateText)));
+                SMSActionResult actionResult = SMSActionResult.UNKNOWN_ERROR();
+                if (!alternateText.equals("")) {
+                    actionResult = SMSActionResult.UNKNOWN_ERROR(alternateText);
+                }
+                out.add(new FireSMSResult(receiver, actionResult));
                 continue;
             }
             out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(alternateText)));
         }
+
         return out;
     }
 

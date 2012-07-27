@@ -173,11 +173,19 @@ public class DatabaseHandler {
     }
 
     public void writeSMSInDatabase(List<Receiver> receiverList, String message) {
-        for (Receiver receiver : receiverList) {
-            ContentValues values = new ContentValues();
-            values.put("address", receiver.getReceiverNumber());
-            values.put("body", message);
-            parentActivity.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+        try {
+            for (Receiver receiver : receiverList) {
+                ContentValues values = new ContentValues();
+                values.put("address", receiver.getReceiverNumber());
+                values.put("body", message);
+//                if (time != null) {
+//                    values.put("date", time.getCalendar().getTime().getTime());
+//                }
+                parentActivity.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+            }
+        } catch (Exception e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            ErrorReporter.getInstance().handleSilentException(e);
         }
     }
 }

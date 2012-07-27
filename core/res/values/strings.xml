@@ -76,7 +76,7 @@
     </string>
     <string name="text_enable_provider_output">Enable output of provider</string>
     <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP
-        -> GMX\')
+        -> GMX\', sending time)
     </string>
     <string name="name_heading">name</string>
     <string name="number_heading">number</string>

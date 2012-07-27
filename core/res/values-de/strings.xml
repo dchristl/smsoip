@@ -78,7 +78,7 @@
     </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
-        versehen (z.B. \'SMSoIP -> GMX\')
+        versehen (z.B. \'SMSoIP -> GMX\', Sendezeit)
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
