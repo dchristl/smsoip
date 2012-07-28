@@ -77,10 +77,6 @@ public class CherrySMSOptionProvider extends OptionProvider {
         return out;
     }
 
-    @Override
-    public int getMaxMessageCount() {
-        return 1;
-    }
 
     static String getMD5String(String utf8String) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         byte[] bytesOfMessage = utf8String.getBytes("ISO-8859-1");
