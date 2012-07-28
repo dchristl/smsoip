@@ -61,7 +61,7 @@ public class SMSoIPApplication extends Application {
             Uri sentUri = Uri.parse("content://sms/sent");
             String type = getContentResolver().getType(sentUri);
             //uri is available, so check for every column we use
-            String[] projection = {"date", "body2", "address"};
+            String[] projection = {"date", "body", "address"};
             //just compile to see if all columns are available
             getContentResolver().query(sentUri, projection, null, null, null);
             if (type != null) {
