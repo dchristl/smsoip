@@ -649,7 +649,7 @@ public class SendActivity extends AllActivity {
             }
             message.append(textField.getText());
             DatabaseHandler handler = new DatabaseHandler(this);
-            handler.writeSMSInDatabase(receiverList, message.toString());
+            handler.writeSMSInDatabase(receiverList, message.toString(), dateTime);
         }
     }
 

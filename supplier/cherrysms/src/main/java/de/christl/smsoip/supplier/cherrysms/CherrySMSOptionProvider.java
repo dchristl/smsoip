@@ -26,7 +26,7 @@ import java.util.List;
 public class CherrySMSOptionProvider extends OptionProvider {
 
 
-    private static String providerName = "Cherry-SMS";
+    private static final String providerName = "Cherry-SMS";
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
 
@@ -75,6 +75,11 @@ public class CherrySMSOptionProvider extends OptionProvider {
         intentPref.setSummary(getTextByResourceId(R.string.text_need_account_long));
         out.add(intentPref);
         return out;
+    }
+
+    @Override
+    public int getMaxMessageCount() {
+        return 1;
     }
 
     static String getMD5String(String utf8String) throws UnsupportedEncodingException, NoSuchAlgorithmException {

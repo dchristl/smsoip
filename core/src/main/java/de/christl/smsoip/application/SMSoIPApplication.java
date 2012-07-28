@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -57,11 +58,18 @@ public class SMSoIPApplication extends Application {
 
     private void setWriteToDBAvailable() {
         try {
-            String type = getContentResolver().getType(Uri.parse("content://sms/sent"));
+            Uri sentUri = Uri.parse("content://sms/sent");
+            String type = getContentResolver().getType(sentUri);
+            //uri is available, so check for every column we use
+            String[] projection = {"date", "body2", "address"};
+            //just compile to see if all columns are available
+            getContentResolver().query(sentUri, projection, null, null, null);
             if (type != null) {
                 writeToDatabaseAvailable = true;
             }
         } catch (IllegalArgumentException e) {
+            writeToDatabaseAvailable = false;
+        } catch (SQLiteException e) {
             writeToDatabaseAvailable = false;
         }
     }

@@ -11,6 +11,7 @@ import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.models.Message;
+import de.christl.smsoip.picker.DateTimeObject;
 import org.acra.ErrorReporter;
 
 import java.util.*;
@@ -172,15 +173,15 @@ public class DatabaseHandler {
         return out;
     }
 
-    public void writeSMSInDatabase(List<Receiver> receiverList, String message) {
+    public void writeSMSInDatabase(List<Receiver> receiverList, String message, DateTimeObject time) {
         try {
             for (Receiver receiver : receiverList) {
                 ContentValues values = new ContentValues();
                 values.put("address", receiver.getReceiverNumber());
                 values.put("body", message);
-//                if (time != null) {
-//                    values.put("date", time.getCalendar().getTime().getTime());
-//                }
+                if (time != null) {
+                    values.put("date", time.getCalendar().getTime().getTime());
+                }
                 parentActivity.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
             }
         } catch (Exception e) {
