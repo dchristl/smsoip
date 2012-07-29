@@ -1,6 +1,7 @@
 package de.christl.smsoip.constant;
 
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.ui.BreakingProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     private List<Receiver> successList = new ArrayList<Receiver>();
     private SendResult result = SendResult.NOT_YET_SET;
     private List<Receiver> errorList = new ArrayList<Receiver>();
+    private BreakingProgressDialog builder;
 
     public FireSMSResultList(int capacity) {
         super(capacity);
@@ -22,8 +24,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     }
 
     public static enum SendResult {
-        NOT_YET_SET, SUCCESS, ERROR, BOTH
-
+        NOT_YET_SET, SUCCESS, ERROR, BOTH, DIALOG
     }
 
 
@@ -41,7 +42,12 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     private void setSendResultAndFillLists(FireSMSResult fireSMSResult) {
         Receiver receiver = fireSMSResult.getReceiver();
-        if (fireSMSResult.getResult().isSuccess()) {
+        SMSActionResult smsActionResult = fireSMSResult.getResult();
+        if (smsActionResult.isDialogResult()) {
+            result = SendResult.DIALOG;
+            builder = smsActionResult.getBuilder();
+        }
+        if (smsActionResult.isSuccess()) {
             switch (result) {
                 case NOT_YET_SET:
                     result = SendResult.SUCCESS;
@@ -91,6 +97,10 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     private void setErrorList(List<Receiver> errorList) {
         this.errorList = errorList;
+    }
+
+    public BreakingProgressDialog getBuilder() {
+        return builder;
     }
 
     /**

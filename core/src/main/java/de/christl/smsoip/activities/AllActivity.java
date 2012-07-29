@@ -48,6 +48,11 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
+    private static AllActivity context;
+
+    protected AllActivity() {
+        context = this;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -240,4 +245,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     }
 
+    public static Context getActivity() {
+        return context;
+    }
 }

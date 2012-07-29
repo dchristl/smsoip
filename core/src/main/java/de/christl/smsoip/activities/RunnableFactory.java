@@ -1,10 +1,15 @@
 package de.christl.smsoip.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Handler;
+import android.util.Log;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.ui.BreakingProgressDialog;
 import org.acra.ErrorReporter;
+
+import java.util.concurrent.*;
 
 /**
  * little helper for building updating the ui after sending or refreshing informations
@@ -33,17 +38,68 @@ public class RunnableFactory {
             @Override
             public void run() {
                 ErrorReporter.getInstance().putCustomData("LAST ACTION", "getFireSMSAndUpdateUIRunnable");
-                FireSMSResultList fireSMSResults = RunnableFactory.this.sendActivity.sendByThread();
-                CharSequence infoText = null;
-                FireSMSResultList.SendResult result = fireSMSResults.getResult();
-                if (result == FireSMSResultList.SendResult.BOTH || result == FireSMSResultList.SendResult.SUCCESS) { //success or both
-                    SMSActionResult refreshResult = RunnableFactory.this.sendActivity.refreshInformationText(true);
-                    if (refreshResult.isSuccess()) {
-                        infoText = refreshResult.getMessage();
+                ExecutorService executorService = Executors.newFixedThreadPool(2);
+                Callable<FireSMSResultList> runnable = new Callable<FireSMSResultList>() {
+                    @Override
+                    public FireSMSResultList call() throws Exception {
+                        return RunnableFactory.this.sendActivity.sendByThread();
                     }
+                };
+
+                Future<FireSMSResultList> future = executorService.submit(runnable);
+
+                FireSMSResultList fireSMSResults = null;
+                try {
+                    fireSMSResults = future.get();
+                } catch (InterruptedException e) {
+                    Log.e("christl", "", e);
+                } catch (ExecutionException e) {
+                    Log.e("christl", "", e);
                 }
-                updateUIHandler.post(getUpdateUIRunnable(fireSMSResults, infoText == null ? null : infoText.toString()));
-                RunnableFactory.this.progressDialog.cancel();
+
+                if (fireSMSResults != null) {
+
+                    if (fireSMSResults.getResult().equals(FireSMSResultList.SendResult.DIALOG)) {
+                        final BreakingProgressDialog builder = fireSMSResults.getBuilder();
+                        updateUIHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                builder.setListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
+                                        CharSequence infoText = null;
+                                        //wait until the sending has finished
+                                        FireSMSResultList fireSMSResultList = builder.getFireSMSResults();
+                                        FireSMSResultList.SendResult sendResult = fireSMSResultList.getResult();
+                                        if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
+                                            SMSActionResult refreshResult = RunnableFactory.this.sendActivity.refreshInformationText(true);
+                                            if (refreshResult.isSuccess()) {
+                                                infoText = refreshResult.getMessage();
+                                            }
+                                        }
+                                        updateUIHandler.post(getUpdateUIRunnable(fireSMSResultList, infoText == null ? null : infoText.toString()));
+                                        RunnableFactory.this.progressDialog.cancel();
+                                    }
+                                });
+
+                                builder.show();
+                            }
+                        });
+                    } else {
+                        CharSequence infoText = null;
+                        FireSMSResultList.SendResult sendResult = fireSMSResults.getResult();
+                        if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
+                            SMSActionResult refreshResult = RunnableFactory.this.sendActivity.refreshInformationText(true);
+                            if (refreshResult.isSuccess()) {
+                                infoText = refreshResult.getMessage();
+                            }
+                        }
+                        updateUIHandler.post(getUpdateUIRunnable(fireSMSResults, infoText == null ? null : infoText.toString()));
+                        RunnableFactory.this.progressDialog.cancel();
+                    }
+
+                }
+
             }
         };
     }

@@ -2,6 +2,7 @@ package de.christl.smsoip.constant;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.ui.BreakingProgressDialog;
 
 /**
  * Result class for some actions in send activity
@@ -9,6 +10,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 public class SMSActionResult {
     private boolean success;
     private String message;
+    private BreakingProgressDialog builder;
 
     public SMSActionResult(boolean success, String message) {
         this.success = success;
@@ -28,6 +30,13 @@ public class SMSActionResult {
         this.message = message;
     }
 
+    public SMSActionResult(BreakingProgressDialog builder) {
+        this.builder = builder;
+    }
+
+    public BreakingProgressDialog getBuilder() {
+        return builder;
+    }
 
     public SMSActionResult setMessage(String message) {
         this.message = message;
@@ -85,7 +94,15 @@ public class SMSActionResult {
      *
      * @return
      */
-    public static SMSActionResult USERS_CANCEL() {
-        return new SMSActionResult(null);
+    public static SMSActionResult USER_CANCELED() {
+        return new SMSActionResult(R.string.text_user_cancelled);
+    }
+
+    public static SMSActionResult SHOW_DIALOG_RESULT(BreakingProgressDialog dialog) {
+        return new SMSActionResult(dialog);
+    }
+
+    public boolean isDialogResult() {
+        return builder != null;
     }
 }
