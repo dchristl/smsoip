@@ -97,7 +97,7 @@ public class GlobalPreferences extends PreferenceActivity {
         root.addPreference(writeToDataBase);
         final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
         enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
-        enableProviderOutput.setDefaultValue(true);
+        enableProviderOutput.setDefaultValue(false);
         enableProviderOutput.setEnabled(writeToDatabaseAvailable);
         enableProviderOutput.setTitle(R.string.text_enable_provider_output);
         enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);

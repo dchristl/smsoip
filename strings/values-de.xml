@@ -35,6 +35,7 @@ fileName: strings.xml
     <string name="text_noNetwork">Netzwerkfehler</string>
     <string name="text_unknown_error">Unbekannter Fehler</string>
     <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="text_user_cancelled">Abbruch durch Nutzer</string>
     <string name="text_loginSuccessful">Login erfolgreich</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>

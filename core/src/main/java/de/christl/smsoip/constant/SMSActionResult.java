@@ -79,4 +79,13 @@ public class SMSActionResult {
     public static SMSActionResult UNKNOWN_ERROR(String message) {
         return new SMSActionResult(message);
     }
+
+    /**
+     * little helper for cancelling without return message
+     *
+     * @return
+     */
+    public static SMSActionResult USERS_CANCEL() {
+        return new SMSActionResult(null);
+    }
 }

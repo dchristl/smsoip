@@ -650,7 +650,7 @@ public class SendActivity extends AllActivity {
         boolean writeToDatabaseEnabled = settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         if (writeToDatabaseEnabled) {
             StringBuilder message = new StringBuilder();
-            if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, true)) {
+            if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
                 message.append(getString(R.string.applicationName)).append(" (").append(smSoIPPlugin.getProviderName());
                 message.append("): ");
             }
@@ -1211,13 +1211,7 @@ public class SendActivity extends AllActivity {
         lastInfoDialog.setOwnerActivity(this);
         lastInfoDialog.show();
         killDialogAfterAWhile(lastInfoDialog);
-        //TODO remove after new plugin versions
-        //special case if all in one result used, needed a better implementation on next releases
-        if (fireSMSResults.getResult().equals(FireSMSResultList.SendResult.SUCCESS) && fireSMSResults.getSuccessList().isEmpty()) {
-            writeSMSInDatabase(receiverList);
-        } else {
-            writeSMSInDatabase(fireSMSResults.getSuccessList());
-        }
+        writeSMSInDatabase(fireSMSResults.getSuccessList());
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
             clearAllInputs();
         } else {

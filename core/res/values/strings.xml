@@ -29,6 +29,7 @@
     <string name="text_noNetwork">Network error</string>
     <string name="text_unknown_error">Unknown error</string>
     <string name="text_loginFailed">Pass invalid!</string>
+    <string name="text_user_cancelled">User canceled</string>
     <string name="text_loginSuccessful">Login successful</string>
     <string name="text_notyetrefreshed">Not yet refreshed</string>
     <string name="description">Sending SMS by several providers</string>
