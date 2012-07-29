@@ -221,7 +221,13 @@ public class SendActivity extends AllActivity {
                     }
                 }
             };
-
+            final CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
+            timeText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    pickTimeCheckBox.setChecked(true);
+                }
+            });
             final View.OnClickListener pickHourListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -237,7 +243,7 @@ public class SendActivity extends AllActivity {
                     dayPickerDialog.show();
                 }
             };
-            CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
+
             pickTimeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
