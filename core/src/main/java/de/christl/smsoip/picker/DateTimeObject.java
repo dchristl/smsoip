@@ -134,13 +134,17 @@ public class DateTimeObject {
         toCompareInstance.set(Calendar.MINUTE, 0);
         toCompareInstance.set(Calendar.MILLISECOND, 0);
         if (toCompareInstance.before(instance)) {
-            toCompareInstance.set(Calendar.DAY_OF_MONTH, toCompareInstance.get(Calendar.DAY_OF_MONTH) + daysInFuture);
+            toCompareInstance.add(Calendar.DAY_OF_MONTH, daysInFuture);
             if (!toCompareInstance.after(instance)) {
                 instance.set(Calendar.DAY_OF_MONTH, toCompareInstance.get(Calendar.DAY_OF_MONTH));
                 instance.set(Calendar.YEAR, toCompareInstance.get(Calendar.YEAR));
                 instance.set(Calendar.MONTH, toCompareInstance.get(Calendar.MONTH));
             }
             this.calendar = instance;
+        } else {
+            this.calendar.set(Calendar.DAY_OF_MONTH, toCompareInstance.get(Calendar.DAY_OF_MONTH));
+            this.calendar.set(Calendar.YEAR, toCompareInstance.get(Calendar.YEAR));
+            this.calendar.set(Calendar.MONTH, toCompareInstance.get(Calendar.MONTH));
         }
     }
 
