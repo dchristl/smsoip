@@ -19,8 +19,8 @@
 
 <resources>
     <string-array name="array_spinner">
-        <item>Without source identifier (1 Credit)</item>
-        <item>With source identifier (2 Credits)</item>
+        <item>Without source identifier (1 Credit/SMS)</item>
+        <item>With source identifier (2 Credits/SMS)</item>
     </string-array>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
