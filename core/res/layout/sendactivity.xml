@@ -18,256 +18,250 @@
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-        android:id="@+id/linearLayout"
+<ScrollView
+        android:id="@+id/scrollbarSend"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@drawable/background_holo_dark"
         xmlns:android="http://schemas.android.com/apk/res/android"
         >
-    <ScrollView
-            android:id="@+id/scrollbarSend"
+    <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
         <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-            <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:weightSum="1.0"
-                    >
-                <EditText
-                        android:id="@+id/numberInput"
-                        android:lines="1"
-                        android:scrollbars="vertical"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/hint_targetnumber"
-                        android:layout_weight="1"
-                        >
-                </EditText>
-                <ImageButton
-                        android:id="@+id/showChosenContacts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/btn_showchosencontactsdialog"
-                        android:visibility="gone"
-                        >
-                </ImageButton>
-                <ImageButton
-                        android:id="@+id/searchButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/btn_addcontactbysearch"
-                        >
-                </ImageButton>
-                <ImageButton
-                        android:id="@+id/addcontactbynumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/btn_addcontactbynumber"
-                        >
-                </ImageButton>
-
-
-            </LinearLayout>
-            <TextView
-                    android:id="@+id/smssigns"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    />
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="1.0"
+                >
             <EditText
-                    android:id="@+id/textInput"
-                    android:layout_width="fill_parent"
-                    android:layout_height="125dp"
-                    android:hint="@string/hint_smsText"
-                    android:textSize="15dp"
-                    android:gravity="top|left"
+                    android:id="@+id/numberInput"
+                    android:lines="1"
+                    android:scrollbars="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_targetnumber"
+                    android:layout_weight="1"
                     >
             </EditText>
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                    >
-                <ImageButton
-                        android:id="@+id/shortTextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/btn_shorttext"
-                        >
-                </ImageButton>
-                <ImageButton
-                        android:id="@+id/insertSmileyButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/btn_emoticons"
-                        >
-                </ImageButton>
-                <ImageButton
-                        android:id="@+id/showHistory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:src="@drawable/ic_menu_start_conversation"
-                        >
-                </ImageButton>
-                <RelativeLayout android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                        >
-                    <ImageButton
-                            android:id="@+id/insertSigButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:src="@drawable/btn_insertsig"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-
-                            >
-                    </ImageButton>
-                </RelativeLayout>
-            </LinearLayout>
-
-            <LinearLayout
+            <ImageButton
+                    android:id="@+id/showChosenContacts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
+                    android:src="@drawable/btn_showchosencontactsdialog"
+                    android:visibility="gone"
+                    >
+            </ImageButton>
+            <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/btn_addcontactbysearch"
+                    >
+            </ImageButton>
+            <ImageButton
+                    android:id="@+id/addcontactbynumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/btn_addcontactbynumber"
+                    >
+            </ImageButton>
+
+
+        </LinearLayout>
+        <TextView
+                android:id="@+id/smssigns"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                />
+        <EditText
+                android:id="@+id/textInput"
+                android:layout_width="fill_parent"
+                android:layout_height="125dp"
+                android:hint="@string/hint_smsText"
+                android:textSize="15dp"
+                android:gravity="top|left"
+                >
+        </EditText>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                >
+            <ImageButton
+                    android:id="@+id/shortTextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:src="@drawable/btn_shorttext"
+                    >
+            </ImageButton>
+            <ImageButton
+                    android:id="@+id/insertSmileyButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:src="@drawable/btn_emoticons"
+                    >
+            </ImageButton>
+            <ImageButton
+                    android:id="@+id/showHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:src="@drawable/ic_menu_start_conversation"
+                    >
+            </ImageButton>
+            <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
                     >
                 <ImageButton
-                        android:id="@+id/clearButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="top"
-                        android:src="@drawable/btn_clear"
-                        >
-                </ImageButton>
-                <ImageButton
-                        android:id="@+id/resfreshButton"
+                        android:id="@+id/insertSigButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:src="@drawable/btn_refresh"
+                        android:src="@drawable/btn_insertsig"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+
                         >
                 </ImageButton>
+            </RelativeLayout>
+        </LinearLayout>
 
-                <TextView
-                        android:id="@+id/infoText"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/text_notyetrefreshed"
-                        >
-                </TextView>
-
-                <RelativeLayout android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                        >
-                    <ImageButton
-                            android:id="@+id/showInfoButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_menu_info_details"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:visibility="invisible"
-                            />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <TableLayout android:layout_width="fill_parent"
-                         android:layout_height="fill_parent"
-                         android:padding="5dp"
-                         android:id="@+id/timeShiftLayout"
-                         android:gravity="center"
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                >
+            <ImageButton
+                    android:id="@+id/clearButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:src="@drawable/btn_clear"
                     >
-
-                <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center"
-                        android:text="@string/text_sending_time"
-                        android:layout_span="2"
-                        />
-                <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        >
-                    <CheckBox
-                            android:id="@+id/pickTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="30dp"
-                            >
-                    </CheckBox>
-                    <TextView
-                            android:id="@+id/timeText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_now"
-                            android:paddingLeft="20dp"
-                            >
-                    </TextView>
-                    <Button
-                            android:id="@+id/pickDay"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:layout_marginLeft="20dp"
-                            >
-                    </Button>
-                    <Button
-                            android:id="@+id/pickHour"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:layout_marginLeft="20dp"
-                            >
-                    </Button>
-                </TableRow>
-            </TableLayout>
+            </ImageButton>
+            <ImageButton
+                    android:id="@+id/resfreshButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/btn_refresh"
+                    >
+            </ImageButton>
 
             <TextView
-                    android:id="@+id/typeText"
+                    android:id="@+id/infoText"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/text_chooseType"
-                    />
-
-            <Spinner
-                    android:id="@+id/typeSpinner"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-
+                    android:text="@string/text_notyetrefreshed"
                     >
-            </Spinner>
-            <com.mobclix.android.sdk.MobclixMMABannerXLAdView
-                    android:id="@+id/banner_adview"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"/>
+            </TextView>
 
-            <Button
-                    android:id="@+id/sendButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/button_send"
+            <RelativeLayout android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
                     >
-            </Button>
+                <ImageButton
+                        android:id="@+id/showInfoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_info_details"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:visibility="invisible"
+                        />
+
+            </RelativeLayout>
 
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <TableLayout android:layout_width="fill_parent"
+                     android:layout_height="fill_parent"
+                     android:padding="5dp"
+                     android:id="@+id/timeShiftLayout"
+                     android:gravity="center"
+                >
+
+            <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center"
+                    android:text="@string/text_sending_time"
+                    />
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    >
+                <CheckBox
+                        android:id="@+id/pickTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        >
+                </CheckBox>
+                <TextView
+                        android:id="@+id/timeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_now"
+                        android:paddingLeft="20dp"
+                        >
+                </TextView>
+                <Button
+                        android:id="@+id/pickDay"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginLeft="20dp"
+                        >
+                </Button>
+                <Button
+                        android:id="@+id/pickHour"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginLeft="20dp"
+                        >
+                </Button>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+                android:id="@+id/typeText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/text_chooseType"
+                />
+
+        <Spinner
+                android:id="@+id/typeSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                >
+        </Spinner>
+        <com.mobclix.android.sdk.MobclixMMABannerXLAdView
+                android:id="@+id/banner_adview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"/>
+
+        <Button
+                android:id="@+id/sendButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_send"
+                >
+        </Button>
+
+    </LinearLayout>
+</ScrollView>
