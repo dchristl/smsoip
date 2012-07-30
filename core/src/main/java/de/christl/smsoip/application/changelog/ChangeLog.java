@@ -14,6 +14,22 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *     This file is modified version of Changelog, provided by Karsten Priegnitz
+ *     original copyright:
+ *
+ * Copyright (C) 2011, Karsten Priegnitz
+ *
+ * Permission to use, copy, modify, and distribute this piece of software
+ * for any purpose with or without fee is hereby granted, provided that
+ * the above copyright notice and this permission notice appear in the
+ * source code of all copies.
+ *
+ * It would be appreciated if you mention the author in your change log,
+ * contributors list or the like.
+ *
+ * @author: Karsten Priegnitz
+ * @see: http://code.google.com/p/android-change-log/
  */
 
 package de.christl.smsoip.application.changelog;
