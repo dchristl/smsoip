@@ -736,6 +736,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void killDialogAfterAWhile(final Dialog dialog) {
+        ErrorReporterStack.put("killDialogAfterAWhile");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1077,9 +1078,11 @@ public class SendActivity extends AllActivity {
         super.onStop();
     }
 
+
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
+        ErrorReporterStack.put("onCreateDialog " + id);
         switch (id) {
             case DIALOG_SMILEYS:
                 final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};

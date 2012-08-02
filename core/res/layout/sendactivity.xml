@@ -199,6 +199,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_span="5"
+                    android:textSize="18dp"
                     android:text="@string/text_sending_time"
                     />
         </TableRow>
@@ -225,7 +226,6 @@
                             android:layout_marginLeft="20dp"
                             android:layout_toRightOf="@id/pickTime"
                             android:layout_weight="2"
-                            android:textSize="18dp"
                             android:visibility="visible"
                             >
                     </TextView>
@@ -259,6 +259,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:textSize="18dp"
                     android:text="@string/text_chooseType"
                     android:layout_span="5"
                     />
