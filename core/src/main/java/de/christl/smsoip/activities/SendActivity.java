@@ -272,12 +272,14 @@ public class SendActivity extends AllActivity {
 
     private void setDateTimePickerDialog() {
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
+        View timeShiftDescr = findViewById(R.id.timeShiftDescr);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
         final Button pickDay = (Button) findViewById(R.id.pickDay);
         final Button pickHour = (Button) findViewById(R.id.pickHour);
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
         if (smSoIPPlugin.isTimeShiftCapable(spinnerText)) {
             timeShiftLayout.setVisibility(View.VISIBLE);
+            timeShiftDescr.setVisibility(View.VISIBLE);
             if (dateTime != null) {
                 TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
                 dateTime.setMinuteStepSize(timeShiftSupplier.getMinuteStepSize());
@@ -358,6 +360,7 @@ public class SendActivity extends AllActivity {
 
         } else {
             timeShiftLayout.setVisibility(View.GONE);
+            timeShiftDescr.setVisibility(View.GONE);
             timeText.setOnClickListener(null);
             timeText.setText(R.string.text_now);
             pickHour.setVisibility(View.GONE);
