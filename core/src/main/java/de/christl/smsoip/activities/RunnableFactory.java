@@ -158,31 +158,4 @@ public class RunnableFactory {
         };
     }
 
-    public void updateInfoTextInBackground() {
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-                ErrorReporterStack.put("updateInfoTextInBackground");
-                SMSActionResult actionResult = sendActivity.refreshInformationText(false);
-                if (actionResult.isSuccess()) {
-                    final String infoText = actionResult.getMessage();
-                    Runnable runnable = new Runnable() {
-                        public void run() {
-                            sendActivity.updateInfoTextAndRefreshButton(infoText);
-                        }
-                    };
-                    updateUIHandler.post(runnable);
-                } else {
-                    updateUIHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            sendActivity.updateInfoTextAndRefreshButton(null);
-
-                        }
-                    });
-                }
-
-            }
-        });
-        thread.start();
-    }
 }

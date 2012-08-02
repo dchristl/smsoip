@@ -27,6 +27,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -44,6 +45,7 @@ import de.christl.smsoip.activities.send.Mode;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.constant.FireSMSResult;
@@ -113,6 +115,7 @@ public class SendActivity extends AllActivity {
     private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
     private DateTimeObject dateTime;
+    private AsyncTask<Void, Void, SMSActionResult> backgroundUpdateTask;
 
     @Override
     protected void onResume() {
@@ -395,8 +398,11 @@ public class SendActivity extends AllActivity {
             refreshButton.setEnabled(false);
             infoText.setText(R.string.text_notyetrefreshed);
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
-            RunnableFactory factory = new RunnableFactory(this, null);
-            factory.updateInfoTextInBackground();
+            if (backgroundUpdateTask != null) {
+                backgroundUpdateTask.cancel(true);
+                findViewById(R.id.refreshButton).setEnabled(true);
+            }
+            backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
 
         } else {
             infoText.setText(R.string.text_notyetrefreshed);
@@ -1253,6 +1259,10 @@ public class SendActivity extends AllActivity {
             // open and  no supplier means FC
             lastDialog.dismiss();
         }
+        //cancel the update if running
+        if (backgroundUpdateTask != null) {
+            backgroundUpdateTask.cancel(true);
+        }
         if (smSoIPPlugin != null) { //only save instance if provider is already chosen
             outState.putString(SAVED_INSTANCE_SUPPLIER, smSoIPPlugin.getSupplierClassName());
             outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
@@ -1321,4 +1331,7 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    public SMSoIPPlugin getSmSoIPPlugin() {
+        return smSoIPPlugin;
+    }
 }
