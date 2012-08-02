@@ -203,43 +203,55 @@
                     />
         </TableRow>
         <TableRow android:id="@+id/tblTimeShiftRow">
-            <RelativeLayout android:layout_span="5" android:gravity="center">
-                <CheckBox
-                        android:id="@+id/pickTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        >
-                </CheckBox>
-                <TextView
-                        android:id="@+id/timeText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/text_now"
-                        android:layout_marginLeft="20dp"
-                        android:layout_centerInParent="true"
-                        android:layout_toRightOf="@id/pickTime"
+            <LinearLayout android:layout_span="5" android:gravity="center" android:weightSum="3"
+                          android:paddingLeft="20dp" android:paddingRight="20dp" android:id="@+id/timeShiftLayout">
+                <LinearLayout android:layout_weight="1" android:layout_width="wrap_content"
+                              android:layout_height="wrap_content" android:gravity="center">
+                    <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/pickTime"
+                            >
+                    </CheckBox>
+                </LinearLayout>
 
-                        >
-                </TextView>
-                <Button
-                        android:id="@+id/pickDay"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_toRightOf="@id/pickTime"
-                        android:visibility="gone"
-                        >
-                </Button>
-                <Button
-                        android:id="@+id/pickHour"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_toRightOf="@id/pickDay"
-                        android:visibility="gone"
-                        >
-                </Button>
-            </RelativeLayout>
+                <LinearLayout android:layout_width="wrap_content" android:gravity="center"
+                              android:layout_height="wrap_content" android:layout_weight="2">
+                    <TextView
+                            android:id="@+id/timeText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_now"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/pickTime"
+                            android:layout_weight="2"
+                            android:textSize="18dp"
+                            android:visibility="visible"
+                            >
+                    </TextView>
+                    <Button
+                            android:id="@+id/pickDay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/pickTime"
+                            android:visibility="invisible"
+                            android:layout_weight="1"
+                            >
+                    </Button>
+                    <Button
+                            android:id="@+id/pickHour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/pickDay"
+                            android:visibility="gone"
+                            android:layout_weight="1"
+                            >
+                    </Button>
+                </LinearLayout>
+
+            </LinearLayout>
         </TableRow>
         <TableRow android:id="@+id/tblSendingTypeDescr">
             <TextView

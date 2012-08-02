@@ -271,7 +271,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setDateTimePickerDialog() {
-        View timeShiftLayout = findViewById(R.id.tblTimeShiftRow);
+        View timeShiftLayout = findViewById(R.id.timeShiftLayout);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
         final Button pickDay = (Button) findViewById(R.id.pickDay);
         final Button pickHour = (Button) findViewById(R.id.pickHour);
@@ -349,7 +349,7 @@ public class SendActivity extends AllActivity {
                         timeText.setText(R.string.text_now);
                         timeText.setVisibility(View.VISIBLE);
                         pickHour.setVisibility(View.GONE);
-                        pickDay.setVisibility(View.GONE);
+                        pickDay.setVisibility(View.INVISIBLE);
                         dateTime = null;
                     }
 
@@ -361,7 +361,7 @@ public class SendActivity extends AllActivity {
             timeText.setOnClickListener(null);
             timeText.setText(R.string.text_now);
             pickHour.setVisibility(View.GONE);
-            pickDay.setVisibility(View.GONE);
+            pickDay.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -705,7 +705,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void resetDateTimePicker() {
-        View timeShiftLayout = findViewById(R.id.tblTimeShiftRow);
+        View timeShiftLayout = findViewById(R.id.timeShiftLayout);
         if (timeShiftLayout.getVisibility() == View.VISIBLE) {
             dateTime = null;
             CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
