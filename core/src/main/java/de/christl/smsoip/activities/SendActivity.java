@@ -40,6 +40,7 @@ import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.send.Mode;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
@@ -49,6 +50,7 @@ import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
 import de.christl.smsoip.picker.DateTimeObject;
@@ -60,7 +62,6 @@ import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
-import org.acra.ErrorReporter;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -79,6 +80,7 @@ public class SendActivity extends AllActivity {
     private CharSequence signsconstant;
     private ProgressDialog progressDialog;
 
+    private Mode mode = Mode.NORMAL;
 
     private Toast toast;
     private SMSoIPPlugin smSoIPPlugin;
@@ -101,6 +103,7 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_RECEIVERS = "receivers";
     private static final String SAVED_INSTANCE_SPINNER = "spinner";
     private static final String SAVED_INSTANCE_INFO = "info";
+    private static final String SAVED_INSTANCE_MODE = "mode";
     private static final String SAVED_INSTANCE_ACCOUNT_ID = "account";
     private static final String SAVED_INSTANCE_DATE_TIME = "datetime";
 
@@ -114,7 +117,7 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "onResume");
+        ErrorReporterStack.put("onResume");
         //this is for performance cases and can cause issues in some case:
         // if options are called a refresh will be forced because settings can change
         // if activity is killed a new instance will be creeated automatically (and options are "fresh")
@@ -137,7 +140,6 @@ public class SendActivity extends AllActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
@@ -147,6 +149,7 @@ public class SendActivity extends AllActivity {
         progressDialog.setCancelable(false);
         smssigns = (TextView) findViewById(R.id.smssigns);
         smssigns.setText(String.format(signsconstant.toString(), 0, 0));
+        mode = settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_COMPACT_MODE, false) ? Mode.COMPACT : Mode.NORMAL;
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         //disable inputs on field
         inputField.setKeyListener(null);
@@ -163,6 +166,7 @@ public class SendActivity extends AllActivity {
         setPreselectedContact();
         setLastInfoButton();
         setLastMessagesButton();
+        addModeSwitcher();
         if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
             smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             setFullTitle();
@@ -177,6 +181,7 @@ public class SendActivity extends AllActivity {
             if (spinner.getVisibility() == View.VISIBLE) { //if the spinner is visible, the  spinner item is selected, too
                 spinner.setSelection(savedInstanceState.getInt(SAVED_INSTANCE_SPINNER, 0), false);
             }
+            mode = Mode.values()[savedInstanceState.getInt(SAVED_INSTANCE_MODE)];
             setDateTimePickerDialog();
             inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
@@ -201,11 +206,69 @@ public class SendActivity extends AllActivity {
         }
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "onCreate");
+        setViewByMode(mode);
+        ErrorReporterStack.put("onCreate");
+    }
+
+    private void addModeSwitcher() {
+        View toggleUp = findViewById(R.id.viewToggleUp);
+        View toggleDown = findViewById(R.id.viewToggleDown);
+        View.OnClickListener l = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toogleView();
+            }
+        };
+        toggleDown.setOnClickListener(l);
+        toggleUp.setOnClickListener(l);
+    }
+
+    private void toogleView() {
+        switch (mode) {
+            case NORMAL:
+                mode = Mode.COMPACT;
+                setViewByMode(mode);
+                break;
+            case COMPACT:
+                mode = Mode.NORMAL;
+                setViewByMode(mode);
+                break;
+        }
+    }
+
+    private void setViewByMode(Mode mode) {
+        View but1 = findViewById(R.id.tblButton1);
+        View but2 = findViewById(R.id.tblButton2);
+        View tsRow = findViewById(R.id.tblTimeShiftRow);
+        View tsDescr = findViewById(R.id.tblSendingTimeDescr);
+        View stRow = findViewById(R.id.tblSendingTypeSpinner);
+        View stDescr = findViewById(R.id.tblSendingTypeDescr);
+        View infoTextUpper = findViewById(R.id.infoTextUpper);
+
+        switch (mode) {
+            case NORMAL:
+                but1.setVisibility(View.VISIBLE);
+                but2.setVisibility(View.VISIBLE);
+                tsRow.setVisibility(View.VISIBLE);
+                tsDescr.setVisibility(View.VISIBLE);
+                stRow.setVisibility(View.VISIBLE);
+                stDescr.setVisibility(View.VISIBLE);
+                infoTextUpper.setVisibility(View.GONE);
+                break;
+            case COMPACT:
+                infoTextUpper.setVisibility(View.VISIBLE);
+                but1.setVisibility(View.GONE);
+                but2.setVisibility(View.GONE);
+                tsRow.setVisibility(View.GONE);
+                tsDescr.setVisibility(View.GONE);
+                stRow.setVisibility(View.GONE);
+                stDescr.setVisibility(View.GONE);
+                break;
+        }
     }
 
     private void setDateTimePickerDialog() {
-        View timeShiftLayout = findViewById(R.id.timeShiftLayout);
+        View timeShiftLayout = findViewById(R.id.tblTimeShiftRow);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
         final Button pickDay = (Button) findViewById(R.id.pickDay);
         final Button pickHour = (Button) findViewById(R.id.pickHour);
@@ -300,7 +363,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void showProvidersDialog() {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "showProvidersDialog");
+        ErrorReporterStack.put("showProvidersDialog");
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
         if (smSoIPPlugin == null) {   //add all if current provider not set
@@ -323,26 +386,30 @@ public class SendActivity extends AllActivity {
     }
 
     private void updateInfoTextSilent() {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "updateInfoTextSilent");
+        ErrorReporterStack.put("updateInfoTextSilent");
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
+        final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
-            final View refreshButton = findViewById(R.id.resfreshButton);
+            final View refreshButton = findViewById(R.id.refreshButton);
             refreshButton.setEnabled(false);
             infoText.setText(R.string.text_notyetrefreshed);
+            infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
             RunnableFactory factory = new RunnableFactory(this, null);
             factory.updateInfoTextInBackground();
 
         } else {
             infoText.setText(R.string.text_notyetrefreshed);
+            infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
         }
     }
 
     public void updateInfoTextAndRefreshButton(String info) {
         if (info != null) {
             ((TextView) findViewById(R.id.infoText)).setText(info);
+            ((TextView) findViewById(R.id.infoTextUpper)).setText(info + " " + getString(R.string.text_click));
         }
-        findViewById(R.id.resfreshButton).setEnabled(true);
+        findViewById(R.id.refreshButton).setEnabled(true);
     }
 
     private void setLastInfoButton() {
@@ -366,7 +433,7 @@ public class SendActivity extends AllActivity {
 
     private void setPreselectedContact() {
         Uri data = getIntent().getData();
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "setPreselectedContact");
+        ErrorReporterStack.put("setPreselectedContact");
         if (data != null) {
             DatabaseHandler dbHandler = new DatabaseHandler(this);
             String givenNumber = data.getSchemeSpecificPart();
@@ -409,7 +476,7 @@ public class SendActivity extends AllActivity {
         showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ErrorReporter.getInstance().putCustomData("LAST ACTION", "lastMessagesButtonClicked");
+                ErrorReporterStack.put("lastMessagesButtonClicked");
                 final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
                 lastMessageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -459,7 +526,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setContactsByNumberInput() {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "setContactsByNumberInput");
+        ErrorReporterStack.put("setContactsByNumberInput");
         addContactbyNumber = findViewById(R.id.addcontactbynumber);
 
         addContactbyNumber.setOnClickListener(new View.OnClickListener() {
@@ -482,7 +549,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void showChosenContactsDialog() {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "showChosenContactsDialog");
+        ErrorReporterStack.put("showChosenContactsDialog");
         chosenContactsDialog = new ChosenContactsDialog(this, receiverList);
         chosenContactsDialog.setOwnerActivity(this);
         chosenContactsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -583,16 +650,20 @@ public class SendActivity extends AllActivity {
     }
 
     private void setRefreshButton() {
-        ImageButton refreshButon = (ImageButton) findViewById(R.id.resfreshButton);
+        View refreshButon = findViewById(R.id.refreshButton);
+        View infoTextUpper = findViewById(R.id.infoTextUpper);
         final CharSequence progressText = getText(R.string.text_pleaseWait);
-        refreshButon.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener l = new View.OnClickListener() {
             public void onClick(View view) {
-                ErrorReporter.getInstance().putCustomData("LAST ACTION", "Refresh clicked");
+                ErrorReporterStack.put("Refresh clicked");
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
                 new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
             }
-        });
+        };
+        refreshButon.setOnClickListener(l);
+        infoTextUpper.setOnClickListener(l);
+
 
     }
 
@@ -628,7 +699,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void resetDateTimePicker() {
-        View timeShiftLayout = findViewById(R.id.timeShiftLayout);
+        View timeShiftLayout = findViewById(R.id.tblTimeShiftRow);
         if (timeShiftLayout.getVisibility() == View.VISIBLE) {
             dateTime = null;
             CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
@@ -644,8 +715,10 @@ public class SendActivity extends AllActivity {
      */
     void updateInfoTextThroughRefresh(SMSActionResult smsActionResult) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
+        TextView infoViewUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (smsActionResult.isSuccess()) {
             infoView.setText(smsActionResult.getMessage());
+            infoViewUpper.setText(smsActionResult.getMessage() + " " + getString(R.string.text_click));
         } else {     //on error show the ImageDialog
             lastInfoDialog = new EmoImageDialog(this, FireSMSResultList.getAllInOneResult(smsActionResult, receiverList), smsActionResult.getMessage());
             lastInfoDialog.setOwnerActivity(this);
@@ -759,7 +832,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     FireSMSResultList sendByThread() {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "sendByThread" + smSoIPPlugin.getProviderName());
+        ErrorReporterStack.put("sendByThread" + smSoIPPlugin.getProviderName());
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
         if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
             return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
@@ -776,7 +849,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     SMSActionResult refreshInformationText(boolean afterMessageSuccessfulSent) {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "refreshInformationText" + smSoIPPlugin.getProviderName());
+        ErrorReporterStack.put("refreshInformationText" + smSoIPPlugin.getProviderName());
         ExtendedSMSSupplier supplier = smSoIPPlugin.getSupplier();
         return afterMessageSuccessfulSent ? supplier.refreshInfoTextAfterMessageSuccessfulSent() : supplier.refreshInfoTextOnRefreshButtonPressed();
     }
@@ -842,7 +915,7 @@ public class SendActivity extends AllActivity {
 
 
     private void addToReceiverList(Receiver receiver, String receiverNumber) {
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "addToReceiverList");
+        ErrorReporterStack.put("addToReceiverList");
         int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
             receiver.setReceiverNumber(receiverNumber);
@@ -1131,7 +1204,7 @@ public class SendActivity extends AllActivity {
 
     private void changeSupplier(String supplierClassName) {
         smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
-        ErrorReporter.getInstance().putCustomData("LAST ACTION", "changeSupplier" + smSoIPPlugin.getProviderName());
+        ErrorReporterStack.put("changeSupplier" + smSoIPPlugin.getProviderName());
         setFullTitle();
         //reset all not needed informations
         updateSMScounter();
@@ -1140,6 +1213,7 @@ public class SendActivity extends AllActivity {
         updateAfterReceiverCountChanged();
         updateInfoTextSilent();
         invalidateOptionsMenu();
+        setViewByMode(mode);
     }
 
     public void updateAfterReceiverCountChanged() {
@@ -1185,6 +1259,7 @@ public class SendActivity extends AllActivity {
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
+            outState.putInt(SAVED_INSTANCE_MODE, mode.ordinal());
             Integer currentAccountIndex = smSoIPPlugin.getProvider().getCurrentAccountIndex();
             if (currentAccountIndex != null) {
                 outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, currentAccountIndex);
@@ -1207,8 +1282,10 @@ public class SendActivity extends AllActivity {
      */
     public void showReturnMessage(FireSMSResultList fireSMSResults, String infoText) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
+        TextView infoViewUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
             infoView.setText(infoText);
+            infoViewUpper.setText(infoText + " " + getString(R.string.text_click));
         }
         StringBuilder resultMessage = new StringBuilder();
         if (fireSMSResults.size() == 1) {  // nobody cares about extra Infos if only one message was sent

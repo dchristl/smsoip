@@ -24,8 +24,8 @@ import android.os.Handler;
 import android.util.Log;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.ui.BreakingProgressDialog;
-import org.acra.ErrorReporter;
 
 import java.util.concurrent.*;
 
@@ -55,7 +55,7 @@ public class RunnableFactory {
         return new Runnable() {
             @Override
             public void run() {
-                ErrorReporter.getInstance().putCustomData("LAST ACTION", "getFireSMSAndUpdateUIRunnable");
+                ErrorReporterStack.put("getFireSMSAndUpdateUIRunnable");
                 ExecutorService executorService = Executors.newFixedThreadPool(2);
                 Callable<FireSMSResultList> runnable = new Callable<FireSMSResultList>() {
                     @Override
@@ -132,7 +132,7 @@ public class RunnableFactory {
     private Runnable getUpdateUIRunnable(final FireSMSResultList fireSMSResults, final String infoText) {
         return new Runnable() {
             public void run() {
-                ErrorReporter.getInstance().putCustomData("LAST ACTION", "getUpdateUIRunnable");
+                ErrorReporterStack.put("getUpdateUIRunnable");
                 RunnableFactory.this.sendActivity.showReturnMessage(fireSMSResults, infoText);
             }
         };
@@ -145,7 +145,7 @@ public class RunnableFactory {
     public Runnable getRefreshAndUpdateUIRunnable() {
         return new Runnable() {
             public void run() {
-                ErrorReporter.getInstance().putCustomData("LAST ACTION", "getRefreshAndUpdateUIRunnable");
+                ErrorReporterStack.put("getRefreshAndUpdateUIRunnable");
                 final SMSActionResult result = RunnableFactory.this.sendActivity.refreshInformationText(false);
                 Runnable runnable = new Runnable() {
                     public void run() {
@@ -161,7 +161,7 @@ public class RunnableFactory {
     public void updateInfoTextInBackground() {
         Thread thread = new Thread(new Runnable() {
             public void run() {
-                ErrorReporter.getInstance().putCustomData("LAST ACTION", "updateInfoTextInBackground");
+                ErrorReporterStack.put("updateInfoTextInBackground");
                 SMSActionResult actionResult = sendActivity.refreshInformationText(false);
                 if (actionResult.isSuccess()) {
                     final String infoText = actionResult.getMessage();

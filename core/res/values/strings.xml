@@ -50,6 +50,7 @@
     <string name="text_user_cancelled">User canceled</string>
     <string name="text_loginSuccessful">Login successful</string>
     <string name="text_notyetrefreshed">Not yet refreshed</string>
+    <string name="text_click">(Click)</string>
     <string name="description">Sending SMS by several providers</string>
     <string name="text_pleaseWait">Please wait</string>
     <string name="text_noNumberInput">No number entered!</string>
@@ -144,4 +145,6 @@
     <string name="text_now">Now</string>
     <string name="text_sending_time">Sending time</string>
     <string name="text_time_in_past">Sending time is in past!</string>
+    <string name="text_enable_compact_mode">Compact mode</string>
+    <string name="text_enable_compact_mode_description">Use the compact mode by default (on startup)</string>
 </resources>

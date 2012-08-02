@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright (c) Danny Christl 2012.
+  ~ Copyright (c) Danny Christl 2012. 
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -17,34 +17,26 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <ScrollView
-        android:id="@+id/scrollbarSend"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:fillViewport="true"
         android:background="@drawable/background_holo_dark"
         xmlns:android="http://schemas.android.com/apk/res/android"
         >
-    <LinearLayout
+    <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:stretchColumns="0"
             >
-        <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:weightSum="1.0"
-                >
+        <TableRow>
             <EditText
                     android:id="@+id/numberInput"
                     android:lines="1"
                     android:scrollbars="vertical"
-                    android:layout_width="0dp"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_targetnumber"
-                    android:layout_weight="1"
                     >
             </EditText>
             <ImageButton
@@ -52,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_showchosencontactsdialog"
-                    android:visibility="gone"
+                    android:layout_span="1"
                     >
             </ImageButton>
             <ImageButton
@@ -60,6 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_addcontactbysearch"
+                    android:layout_span="1"
                     >
             </ImageButton>
             <ImageButton
@@ -67,144 +60,154 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_addcontactbynumber"
+                    android:layout_span="1"
                     >
             </ImageButton>
+        </TableRow>
+        <TableRow>
+            <RelativeLayout android:layout_span="5">
+                <TextView
+                        android:id="@+id/infoTextUpper"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="@string/text_notyetrefreshed"
+                        android:visibility="invisible"
+                        />
+                <TextView
+                        android:id="@+id/smssigns"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right|bottom"
+                        />
+            </RelativeLayout>
+        </TableRow>
+        <TableRow android:layout_weight="1.0">
+            <RelativeLayout android:layout_span="5"
+                    >
+                <EditText
+                        android:id="@+id/textInput"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:minLines="3"
+                        android:hint="@string/hint_smsText"
+                        android:textSize="15dp"
+                        android:gravity="top|left"
+                        >
+                </EditText>
+                <ImageView
+                        android:id="@+id/viewToggleUp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_alignBottom="@id/textInput"
+                        android:src="@drawable/expander_ic_maximized"
+                        android:padding="6dp"
+                        >
+                </ImageView>
 
+            </RelativeLayout>
 
-        </LinearLayout>
-        <TextView
-                android:id="@+id/smssigns"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                />
-        <EditText
-                android:id="@+id/textInput"
-                android:layout_width="fill_parent"
-                android:layout_height="125dp"
-                android:hint="@string/hint_smsText"
-                android:textSize="15dp"
-                android:gravity="top|left"
-                >
-        </EditText>
-        <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center"
-                >
-            <ImageButton
-                    android:id="@+id/shortTextButton"
+        </TableRow>
+        <TableRow android:layout_marginTop="-7dp">
+            <ImageView
+                    android:id="@+id/viewToggleDown"
+                    android:layout_span="5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:src="@drawable/btn_shorttext"
+                    android:src="@drawable/expander_ic_minimized"
+                    android:layout_gravity="center"
                     >
-            </ImageButton>
-            <ImageButton
-                    android:id="@+id/insertSmileyButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:src="@drawable/btn_emoticons"
-                    >
-            </ImageButton>
-            <ImageButton
-                    android:id="@+id/showHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:src="@drawable/ic_menu_start_conversation"
-                    >
-            </ImageButton>
-            <RelativeLayout android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                    >
+            </ImageView>
+
+        </TableRow>
+        <TableRow android:id="@+id/tblButton1">
+            <RelativeLayout android:layout_span="5">
+                <ImageButton
+                        android:id="@+id/shortTextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/btn_shorttext"
+                        >
+                </ImageButton>
+                <ImageButton
+                        android:id="@+id/insertSmileyButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/btn_emoticons"
+                        android:layout_toRightOf="@id/shortTextButton"
+                        >
+                </ImageButton>
+                <ImageButton
+                        android:id="@+id/showHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_start_conversation"
+                        android:layout_toRightOf="@id/insertSmileyButton"
+                        >
+                </ImageButton>
                 <ImageButton
                         android:id="@+id/insertSigButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
+                        android:layout_gravity="right"
                         android:src="@drawable/btn_insertsig"
-                        android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-
                         >
                 </ImageButton>
             </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                >
-            <ImageButton
-                    android:id="@+id/clearButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:src="@drawable/btn_clear"
-                    >
-            </ImageButton>
-            <ImageButton
-                    android:id="@+id/resfreshButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:src="@drawable/btn_refresh"
-                    >
-            </ImageButton>
-
-            <TextView
-                    android:id="@+id/infoText"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_notyetrefreshed"
-                    >
-            </TextView>
-
-            <RelativeLayout android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                    >
+        </TableRow>
+        <TableRow android:id="@+id/tblButton2">
+            <RelativeLayout android:layout_span="5">
+                <ImageButton
+                        android:id="@+id/clearButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/btn_clear"
+                        >
+                </ImageButton>
+                <ImageButton
+                        android:id="@+id/refreshButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/btn_refresh"
+                        android:layout_toRightOf="@id/clearButton"
+                        >
+                </ImageButton>
+                <TextView
+                        android:id="@+id/infoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_notyetrefreshed"
+                        android:layout_toRightOf="@id/refreshButton"
+                        android:layout_centerInParent="true"
+                        >
+                </TextView>
                 <ImageButton
                         android:id="@+id/showInfoButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_menu_info_details"
-                        android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         />
-
             </RelativeLayout>
-
-        </LinearLayout>
-
-        <TableLayout android:layout_width="fill_parent"
-                     android:layout_height="fill_parent"
-                     android:padding="5dp"
-                     android:id="@+id/timeShiftLayout"
-                     android:gravity="center"
-                >
-
+        </TableRow>
+        <TableRow android:id="@+id/tblSendingTimeDescr">
             <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:layout_span="5"
                     android:text="@string/text_sending_time"
                     />
-            <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    >
+        </TableRow>
+        <TableRow android:id="@+id/tblTimeShiftRow">
+            <RelativeLayout android:layout_span="5" android:gravity="center">
                 <CheckBox
                         android:id="@+id/pickTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
                         >
                 </CheckBox>
                 <TextView
@@ -212,56 +215,69 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_now"
-                        android:paddingLeft="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_centerInParent="true"
+                        android:layout_toRightOf="@id/pickTime"
+
                         >
                 </TextView>
                 <Button
                         android:id="@+id/pickDay"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/pickTime"
+                        android:visibility="gone"
                         >
                 </Button>
                 <Button
                         android:id="@+id/pickHour"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/pickDay"
+                        android:visibility="gone"
                         >
                 </Button>
-            </TableRow>
-        </TableLayout>
-
-        <TextView
-                android:id="@+id/typeText"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/text_chooseType"
-                />
-
-        <Spinner
-                android:id="@+id/typeSpinner"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-
-                >
-        </Spinner>
-        <com.mobclix.android.sdk.MobclixMMABannerXLAdView
-                android:id="@+id/banner_adview"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"/>
-
-        <Button
-                android:id="@+id/sendButton"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/button_send"
-                >
-        </Button>
-
-    </LinearLayout>
+            </RelativeLayout>
+        </TableRow>
+        <TableRow android:id="@+id/tblSendingTypeDescr">
+            <TextView
+                    android:id="@+id/typeText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/text_chooseType"
+                    android:layout_span="5"
+                    />
+        </TableRow>
+        <TableRow android:id="@+id/tblSendingTypeSpinner">
+            <Spinner
+                    android:id="@+id/typeSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_span="5"
+                    >
+            </Spinner>
+        </TableRow>
+        <TableRow>
+            <com.mobclix.android.sdk.MobclixMMABannerXLAdView
+                    android:id="@+id/banner_adview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_span="5"
+                    />
+        </TableRow>
+        <TableRow>
+            <Button
+                    android:id="@+id/sendButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_send"
+                    android:layout_span="5"
+                    >
+            </Button>
+        </TableRow>
+    </TableLayout>
 </ScrollView>

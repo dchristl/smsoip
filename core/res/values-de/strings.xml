@@ -51,6 +51,7 @@
     <string name="text_user_cancelled">Abbruch durch Nutzer</string>
     <string name="text_loginSuccessful">Login erfolgreich</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
+    <string name="text_click">(Klick)</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
     <string name="text_pleaseWait">Bitte warten</string>
     <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
@@ -149,4 +150,7 @@
     <string name="text_now">Sofort</string>
     <string name="text_sending_time">Sendezeitpunkt</string>
     <string name="text_time_in_past">Sendezeitpunkt ist in der Vergangenheit!</string>
+    <string name="text_enable_compact_mode">Kompaktmodus</string>
+    <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
+    </string>
 </resources>
