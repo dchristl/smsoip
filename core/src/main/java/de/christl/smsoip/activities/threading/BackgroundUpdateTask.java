@@ -19,6 +19,7 @@
 package de.christl.smsoip.activities.threading;
 
 import android.os.AsyncTask;
+import de.christl.smsoip.R;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
@@ -37,7 +38,20 @@ public class BackgroundUpdateTask extends AsyncTask<Void, Void, SMSActionResult>
     @Override
     protected SMSActionResult doInBackground(Void... params) {
         ErrorReporterStack.put("background update started");
+        publishProgress();
         return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+    }
+
+    @Override
+    protected void onProgressUpdate(Void... values) {
+        sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + "...");
+    }
+
+
+    @Override
+    protected void onCancelled() {
+        sendActivity.updateInfoTextAndRefreshButton(null);
+        super.onCancelled();
     }
 
     @Override
