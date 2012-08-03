@@ -403,6 +403,7 @@ public class SendActivity extends AllActivity {
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
             if (backgroundUpdateTask != null) {
                 backgroundUpdateTask.cancel(true);
+                ErrorReporterStack.put("background update canceled and restarted");
                 findViewById(R.id.refreshButton).setEnabled(true);
             }
             backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
@@ -667,6 +668,9 @@ public class SendActivity extends AllActivity {
                 ErrorReporterStack.put("Refresh clicked");
                 progressDialog.setMessage(progressText);
                 progressDialog.show();
+                if (backgroundUpdateTask != null) {
+                    backgroundUpdateTask.cancel(true);
+                }
                 new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
             }
         };

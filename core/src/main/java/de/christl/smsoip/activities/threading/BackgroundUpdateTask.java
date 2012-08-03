@@ -21,13 +21,10 @@ package de.christl.smsoip.activities.threading;
 import android.os.AsyncTask;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.models.ErrorReporterStack;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Danny
- * Date: 02.08.12
- * Time: 19:24
- * To change this template use File | Settings | File Templates.
+ * Update the informations in background
  */
 public class BackgroundUpdateTask extends AsyncTask<Void, Void, SMSActionResult> {
     private SendActivity sendActivity;
@@ -39,6 +36,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, Void, SMSActionResult>
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
+        ErrorReporterStack.put("background update started");
         return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
     }
 
@@ -50,5 +48,6 @@ public class BackgroundUpdateTask extends AsyncTask<Void, Void, SMSActionResult>
         } else {
             sendActivity.updateInfoTextAndRefreshButton(null);
         }
+        ErrorReporterStack.put("background update on post execute");
     }
 }

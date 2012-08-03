@@ -23,7 +23,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -32,6 +31,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
+import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 /**
@@ -45,7 +45,6 @@ public class MultipleAccountsPreference extends ListPreference {
     private AccountModelsList accountModels = new AccountModelsList();
     private MultipleAccountsPreferenceAdapter listAdapter;
     private ProviderPreferences providerPreferences;
-    private Handler updateUIHandler = new Handler();
     private SharedPreferences.Editor editor;
 
     public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences) {
@@ -122,6 +121,7 @@ public class MultipleAccountsPreference extends ListPreference {
             editor.commit();
             setDefaultAccountInSummary();
         }
+        ErrorReporterStack.put("showUserNamePasswordDialog closed");
     }
 
 
@@ -154,11 +154,8 @@ public class MultipleAccountsPreference extends ListPreference {
         return providerPreferences.getSmsSupplier();
     }
 
-    public Handler getHandler() {
-        return updateUIHandler;
-    }
-
     public void showUserNamePasswordDialog(final AccountModel accountModel) {
+        ErrorReporterStack.put("showUserNamePasswordDialog");
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.userpassinputs);
         dialog.setTitle(R.string.text_account_add_account);

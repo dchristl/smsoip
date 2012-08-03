@@ -19,8 +19,6 @@
 package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +27,9 @@ import android.widget.CheckedTextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
-import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.activities.threading.BackgroundCheckLoginTask;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 
 /**
@@ -79,7 +76,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             removeAccountBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ErrorReporterStack.put( "removeAccount onClick");
+                    ErrorReporterStack.put("removeAccount onClick");
                     remove(getItem(position));
                     if (position == defaultAccount) {
                         defaultAccount = 0; //set back to the first one
@@ -93,7 +90,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             editAccount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ErrorReporterStack.put( "editAccount onclick");
+                    ErrorReporterStack.put("editAccount onclick");
                     dialogPreference.showUserNamePasswordDialog(item);
                 }
             });
@@ -118,32 +115,8 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             @Override
             public void onClick(View v) {
                 ErrorReporterStack.put("checkCredentials onClick");
-                final ProgressDialog progressDialog = new ProgressDialog(dialogPreference.getContext());
-                progressDialog.setMessage(getContext().getString(R.string.text_checkCredentials));
                 final AccountModel accountModel = getItem(position);
-                progressDialog.show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ExtendedSMSSupplier supplier = dialogPreference.getSupplier();
-                        final String text;
-                        SMSActionResult smsActionResult = supplier.checkCredentials(accountModel.getUserName(), accountModel.getPass());
-                        text = smsActionResult.getMessage();
-                        Runnable runnable = new Runnable() {
-                            public void run() {
-                                progressDialog.setMessage(text);
-                            }
-                        };
-                        dialogPreference.getHandler().post(runnable);
-                        try {
-                            Thread.sleep(2000);
-                            progressDialog.cancel();
-                        } catch (InterruptedException e) {
-                            Log.e(MultipleAccountsPreferenceAdapter.class.getCanonicalName(), "", e);
-                        }
-                    }
-                }).start();
-
+                new BackgroundCheckLoginTask(dialogPreference).execute(accountModel);
             }
         };
     }
