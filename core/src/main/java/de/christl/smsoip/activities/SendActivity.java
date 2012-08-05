@@ -115,7 +115,7 @@ public class SendActivity extends AllActivity {
     private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
     private DateTimeObject dateTime;
-    private AsyncTask<Void, Void, SMSActionResult> backgroundUpdateTask;
+    private AsyncTask<Void, String, SMSActionResult> backgroundUpdateTask;
 
     @Override
     protected void onResume() {
@@ -192,7 +192,7 @@ public class SendActivity extends AllActivity {
             receiverList.addAll(tmpReceiverList);
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
-            updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO));
+            updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO), true);
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
@@ -414,12 +414,17 @@ public class SendActivity extends AllActivity {
         }
     }
 
-    public void updateInfoTextAndRefreshButton(String info) {
+    public void updateInfoTextAndRefreshButton(String info, boolean reenableRefreshButton) {
         if (info != null) {
             ((TextView) findViewById(R.id.infoText)).setText(info);
             ((TextView) findViewById(R.id.infoTextUpper)).setText(info + " " + getString(R.string.text_click));
+        } else {
+            ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
+            ((TextView) findViewById(R.id.infoTextUpper)).setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
         }
-        findViewById(R.id.refreshButton).setEnabled(true);
+        if (reenableRefreshButton) {
+            findViewById(R.id.refreshButton).setEnabled(true);
+        }
     }
 
     private void setLastInfoButton() {

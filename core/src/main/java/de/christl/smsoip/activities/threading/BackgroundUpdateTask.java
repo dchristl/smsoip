@@ -24,11 +24,15 @@ import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Update the informations in background
  */
-public class BackgroundUpdateTask extends AsyncTask<Void, Void, SMSActionResult> {
+public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResult> {
     private SendActivity sendActivity;
+    private Timer timer;
 
     public BackgroundUpdateTask(SendActivity sendActivity) {
         this.sendActivity = sendActivity;
@@ -38,29 +42,61 @@ public class BackgroundUpdateTask extends AsyncTask<Void, Void, SMSActionResult>
     @Override
     protected SMSActionResult doInBackground(Void... params) {
         ErrorReporterStack.put("background update started");
-        publishProgress();
+        TimerTask task = new TimerTask() {
+            private String dots = ".";
+
+            @Override
+            public void run() {
+                if (dots.length() == 3) {
+                    dots = ".";
+                } else {
+                    dots += ".";
+                }
+                publishProgress(dots);
+            }
+
+            @Override
+            public boolean cancel() {
+                publishProgress(null);
+                return super.cancel();
+            }
+        };
+
+        timer = new Timer();
+        timer.schedule(task, 0, 500);
         return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + "...");
+    protected void onProgressUpdate(String... dots) {
+        if (dots != null) {
+            sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + dots[0], false);
+        } else {
+            sendActivity.updateInfoTextAndRefreshButton(null, false);
+        }
+
     }
 
 
     @Override
     protected void onCancelled() {
-        sendActivity.updateInfoTextAndRefreshButton(null);
+        if (timer != null) {
+            timer.cancel();
+        }
+        sendActivity.updateInfoTextAndRefreshButton(null, true);
         super.onCancelled();
     }
 
     @Override
     protected void onPostExecute(SMSActionResult actionResult) {
+        if (timer != null) {
+            timer.cancel();
+        }
         if (actionResult != null && actionResult.isSuccess()) {
             final String infoText = actionResult.getMessage();
-            sendActivity.updateInfoTextAndRefreshButton(infoText);
+            sendActivity.updateInfoTextAndRefreshButton(infoText, true);
         } else {
-            sendActivity.updateInfoTextAndRefreshButton(null);
+            sendActivity.updateInfoTextAndRefreshButton(null, true);
         }
         ErrorReporterStack.put("background update on post execute");
     }
