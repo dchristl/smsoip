@@ -667,16 +667,13 @@ public class SendActivity extends AllActivity {
     private void setRefreshButton() {
         View refreshButon = findViewById(R.id.refreshButton);
         View infoTextUpper = findViewById(R.id.infoTextUpper);
-        final CharSequence progressText = getText(R.string.text_pleaseWait);
         View.OnClickListener l = new View.OnClickListener() {
             public void onClick(View view) {
-                ErrorReporterStack.put("Refresh clicked");
-                progressDialog.setMessage(progressText);
-                progressDialog.show();
+                ErrorReporterStack.put("Refresh upper clicked");
                 if (backgroundUpdateTask != null) {
                     backgroundUpdateTask.cancel(true);
                 }
-                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getRefreshAndUpdateUIRunnable()).start();
+                backgroundUpdateTask = new BackgroundUpdateTask(SendActivity.this).execute(null, null);
             }
         };
         refreshButon.setOnClickListener(l);
@@ -1344,6 +1341,15 @@ public class SendActivity extends AllActivity {
             receiverList.removeAll(fireSMSResults.getSuccessList());
             updateViewOnChangedReceivers();
         }
+    }
+
+    @Override
+    public boolean isChangingConfigurations() {
+        if (backgroundUpdateTask != null) {
+            backgroundUpdateTask.cancel(true);
+            backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
+        }
+        return super.isChangingConfigurations();
     }
 
     public SMSoIPPlugin getSmSoIPPlugin() {
