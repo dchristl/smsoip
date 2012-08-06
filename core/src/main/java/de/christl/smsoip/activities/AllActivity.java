@@ -240,6 +240,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
         builder.setMessage(getString(R.string.text_no_providers)).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
     }
 

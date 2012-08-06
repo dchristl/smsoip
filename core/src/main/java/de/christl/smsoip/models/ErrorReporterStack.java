@@ -20,17 +20,16 @@ package de.christl.smsoip.models;
 
 import org.acra.ErrorReporter;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
 
 /**
  * abstract class for errorreporting aka action log
  */
 public abstract class ErrorReporterStack {
-    private static Deque<String> stack = new ArrayDeque<String>();
+    private static ArrayList<String> stack = new ArrayList<String>();
 
     public static void put(String action) {
-        stack.push(action);
+        stack.add(action);
         updateErrorReport();
     }
 
