@@ -70,9 +70,9 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
     @Override
     protected void onProgressUpdate(String... dots) {
         if (dots != null) {
-            sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + dots[0], false);
+            sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + dots[0]);
         } else {
-            sendActivity.updateInfoTextAndRefreshButton(null, false);
+            sendActivity.updateInfoTextAndRefreshButton(null);
         }
 
     }
@@ -83,7 +83,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
         if (timer != null) {
             timer.cancel();
         }
-        sendActivity.updateInfoTextAndRefreshButton(null, true);
+        sendActivity.updateInfoTextAndRefreshButton(null);
         super.onCancelled();
     }
 
@@ -94,9 +94,9 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
         }
         if (actionResult != null && actionResult.isSuccess()) {
             final String infoText = actionResult.getMessage();
-            sendActivity.updateInfoTextAndRefreshButton(infoText, true);
+            sendActivity.updateInfoTextAndRefreshButton(infoText);
         } else {
-            sendActivity.updateInfoTextAndRefreshButton(null, true);
+            sendActivity.updateInfoTextAndRefreshButton(null);
         }
         ErrorReporterStack.put("background update on post execute");
     }

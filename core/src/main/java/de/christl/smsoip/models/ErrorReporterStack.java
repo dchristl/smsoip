@@ -35,8 +35,9 @@ public abstract class ErrorReporterStack {
 
     private static void updateErrorReport() {
         int z = 0;
-        for (String next : stack) {
-            ErrorReporter.getInstance().putCustomData("action_" + z, next);
+        int size = stack.size();
+        for (int i = size; i > 0; i--) {
+            ErrorReporter.getInstance().putCustomData("action_" + z, stack.get(i - 1));
             z++;
             if (z >= 10) {
                 break;

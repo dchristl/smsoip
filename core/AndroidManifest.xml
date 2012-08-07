@@ -15,7 +15,7 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="22" android:versionName="2.3.1" package="de.christl.smsoip">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="23" android:versionName="2.4.0" package="de.christl.smsoip">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -36,6 +36,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:scheme="sms"/>
                 <data android:scheme="smsto"/>
+                <data android:scheme="smsoip"/>
             </intent-filter>
         </activity>
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name=".activities.settings.GlobalPreferences" android:noHistory="true"/>

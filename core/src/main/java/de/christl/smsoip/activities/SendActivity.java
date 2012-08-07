@@ -192,7 +192,7 @@ public class SendActivity extends AllActivity {
             receiverList.addAll(tmpReceiverList);
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
-            updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO), true);
+            updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO));
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
@@ -398,13 +398,11 @@ public class SendActivity extends AllActivity {
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             final View refreshButton = findViewById(R.id.refreshButton);
-            refreshButton.setEnabled(false);
             infoText.setText(R.string.text_notyetrefreshed);
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
             if (backgroundUpdateTask != null) {
                 backgroundUpdateTask.cancel(true);
                 ErrorReporterStack.put("background update canceled and restarted");
-                findViewById(R.id.refreshButton).setEnabled(true);
             }
             backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
 
@@ -414,16 +412,13 @@ public class SendActivity extends AllActivity {
         }
     }
 
-    public void updateInfoTextAndRefreshButton(String info, boolean reenableRefreshButton) {
+    public void updateInfoTextAndRefreshButton(String info) {
         if (info != null) {
             ((TextView) findViewById(R.id.infoText)).setText(info);
             ((TextView) findViewById(R.id.infoTextUpper)).setText(info + " " + getString(R.string.text_click));
         } else {
             ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
             ((TextView) findViewById(R.id.infoTextUpper)).setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
-        }
-        if (reenableRefreshButton) {
-            findViewById(R.id.refreshButton).setEnabled(true);
         }
     }
 
