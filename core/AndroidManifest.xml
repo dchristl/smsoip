@@ -15,7 +15,7 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="23" android:versionName="2.3.2" package="de.christl.smsoip">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="23" android:versionName="2.4.0" package="de.christl.smsoip">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <application android:description="@string/description" android:hardwareAccelerated="true" android:icon="@drawable/icon" android:label="@string/applicationName" android:name=".application.SMSoIPApplication">
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name=".activities.SendActivity" android:theme="@style/Theme.Sherlock">
@@ -48,5 +49,11 @@
         <meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14f930decd44ce"/>
         <activity android:hardwareAccelerated="true" android:name="com.mobclix.android.sdk.MobclixBrowserActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:excludeFromRecents="true" android:finishOnTaskLaunch="true" android:launchMode="singleInstance" android:name="org.acra.CrashReportDialog" android:theme="@android:style/Theme.Dialog"/>
+        <receiver android:exported="true" android:name="de.christl.smsoip.receiver.SMSReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED">
+                </action>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

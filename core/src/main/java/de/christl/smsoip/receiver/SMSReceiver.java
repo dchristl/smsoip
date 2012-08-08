@@ -16,7 +16,7 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.service.receiver;
+package de.christl.smsoip.receiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import de.christl.smsoip.R;
 
 /**
  * Simple receiver to listen on incoming sms and shows notfication, with the possibility to start SMSoiP
