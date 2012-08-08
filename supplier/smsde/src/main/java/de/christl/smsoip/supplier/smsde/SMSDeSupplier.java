@@ -271,6 +271,9 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             String number = receiverNumber.substring(7);
             try {
                 UrlConnectionFactory factory;
+                if (sendIndex == TYPE_FREE) {
+                    smsText += " / sms.de";
+                }
                 String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING));
                 boolean flagSet = provider.getSettings().getBoolean(InputPatcher.SHOW_RETURN_FROM_SERVER, false);
                 switch (sendIndex) {
