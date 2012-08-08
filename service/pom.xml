@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) Danny Christl 2012.
+  ~ Copyright (c) Danny Christl 2012. 
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -22,16 +22,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <parent>
-        <groupId>de.christl.SMSoIP</groupId>
-        <artifactId>supplier</artifactId>
+        <groupId>de.christl</groupId>
+        <artifactId>SMSoIP</artifactId>
         <version>2.3.2</version>
     </parent>
 
-    <groupId>de.christl.SMSoIP.supplier</groupId>
-    <artifactId>cherrysms</artifactId>
+    <groupId>de.christl.SMSoIP</groupId>
+    <artifactId>service</artifactId>
+    <version>1.0.0</version>
     <packaging>apk</packaging>
-    <version>1.0.1</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+        </dependency>
+    </dependencies>
 </project>

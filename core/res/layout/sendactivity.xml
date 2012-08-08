@@ -37,6 +37,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_targetnumber"
+                    android:layout_weight="1"
+                    android:layout_span="2"
                     >
             </EditText>
             <ImageButton
@@ -195,12 +197,12 @@
         </TableRow>
         <TableRow android:id="@+id/tblSendingTimeDescr">
             <TextView android:id="@+id/timeShiftDescr"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_span="5"
-                    android:textSize="18dp"
-                    android:text="@string/text_sending_time"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:gravity="center"
+                      android:layout_span="5"
+                      android:textSize="18dp"
+                      android:text="@string/text_sending_time"
                     />
         </TableRow>
         <TableRow android:id="@+id/tblTimeShiftRow">
