@@ -833,6 +833,7 @@ public class SendActivity extends AllActivity {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
         smSoIPPlugin.getProvider().createSpinner(this, spinner);
         findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
+        spinner.setSelection(spinner.getSelectedItemPosition(), true);
     }
 
 
