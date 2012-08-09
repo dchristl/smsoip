@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -81,41 +82,7 @@ public class DatabaseHandler {
     }
 
     public Receiver findContactByNumber(String givenNumber) {
-        Receiver out = null;
-        String name;
-        String[] projection = new String[]{
-                ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
-
-        String encodedNumber = Uri.encode(givenNumber);
-        if (!encodedNumber.equals("")) {
-            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
-            try {
-                Cursor query = parentActivity.getContentResolver().query(uri, projection, null, null, null);
-                if (query.moveToFirst()) {
-                    name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-                    if (name == null || name.equals("")) {
-                        name = (String) parentActivity.getText(R.string.text_unknown);
-                    }
-                    String id = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup._ID));
-                    if (id == null || id.equals("")) {
-                        id = "-1";
-                    }
-                    int photoId = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
-                    out = new Receiver(id, name, photoId);
-                    out.addNumber(givenNumber, "");
-                }
-                query.close();
-            } catch (IllegalArgumentException e) {
-                Log.e(this.getClass().getCanonicalName(), "This is caused by findContactByNumber", e);
-                ErrorReporter instance = ErrorReporter.getInstance();
-                instance.putCustomData("uri", uri.toString());
-                instance.putCustomData("projection", Arrays.toString(projection));
-
-                instance.handleSilentException(e);
-            }
-        }
-        return out;
+        return findContactByNumber(givenNumber, null);
     }
 
 
@@ -206,5 +173,44 @@ public class DatabaseHandler {
             Log.e(this.getClass().getCanonicalName(), "", e);
             ErrorReporter.getInstance().handleSilentException(e);
         }
+    }
+
+    public Receiver findContactByNumber(String givenNumber, Context context) {
+        Receiver out = null;
+        String name;
+        String[] projection = new String[]{
+                ContactsContract.PhoneLookup.DISPLAY_NAME,
+                ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
+
+        String encodedNumber = Uri.encode(givenNumber);
+        if (!encodedNumber.equals("")) {
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
+            try {
+                ContentResolver contentResolver = context == null ? parentActivity.getContentResolver() : context.getContentResolver();
+                Cursor query = contentResolver.query(uri, projection, null, null, null);
+                if (query.moveToFirst()) {
+                    name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                    if (name == null || name.equals("")) {
+                        name = context == null ? parentActivity.getString(R.string.text_unknown) : context.getString(R.string.text_unknown);
+                    }
+                    String id = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup._ID));
+                    if (id == null || id.equals("")) {
+                        id = "-1";
+                    }
+                    int photoId = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+                    out = new Receiver(id, name, photoId);
+                    out.addNumber(givenNumber, "");
+                }
+                query.close();
+            } catch (IllegalArgumentException e) {
+                Log.e(this.getClass().getCanonicalName(), "This is caused by findContactByNumber", e);
+                ErrorReporter instance = ErrorReporter.getInstance();
+                instance.putCustomData("uri", uri.toString());
+                instance.putCustomData("projection", Arrays.toString(projection));
+
+                instance.handleSilentException(e);
+            }
+        }
+        return out;
     }
 }

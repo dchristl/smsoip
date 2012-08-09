@@ -1300,6 +1300,7 @@ public class SendActivity extends AllActivity {
      */
     public void showReturnMessage(FireSMSResultList fireSMSResults, String infoText) {
         TextView infoView = (TextView) findViewById(R.id.infoText);
+
         TextView infoViewUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
             infoView.setText(infoText);
@@ -1337,6 +1338,12 @@ public class SendActivity extends AllActivity {
             receiverList.removeAll(fireSMSResults.getSuccessList());
             updateViewOnChangedReceivers();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setPreselectedContact();
     }
 
     @Override

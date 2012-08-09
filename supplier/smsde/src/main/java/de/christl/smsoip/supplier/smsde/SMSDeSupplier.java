@@ -155,7 +155,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             String userNamePasswordBody = "username=" + userName + "&passwd=" + password;
             con = factory.writeBody(userNamePasswordBody);
             headerFields = con.getHeaderFields();
-            if (headerFields == null) {
+            if (headerFields == null || sessionCookies.size() == 0) {
                 return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             //get the login cookie

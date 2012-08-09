@@ -28,6 +28,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.database.DatabaseHandler;
 
 /**
  * Simple receiver to listen on incoming sms and shows notfication, with the possibility to start SMSoiP
@@ -44,11 +46,15 @@ public class SMSReceiver extends BroadcastReceiver {
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
 
-        Notification notification = new Notification(R.drawable.icon, messages.getMessageBody(), System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.bar_icon, messages.getMessageBody(), System.currentTimeMillis());
         notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
-        CharSequence contentTitle = String.format(context.getString(R.string.text_answer_directly), messages.getOriginatingAddress());
-        CharSequence contentText = messages.getMessageBody();
-        //TODO check if activity exists
+        DatabaseHandler dbHandler = new DatabaseHandler(null);
+        CharSequence contentTitle = messages.getOriginatingAddress();
+        Receiver contactByNumber = dbHandler.findContactByNumber(messages.getOriginatingAddress(), context);
+        if (contactByNumber != null) {
+            contentTitle = contactByNumber.getName();
+        }
+        CharSequence contentText = messages.getDisplayMessageBody();
         Uri inboxQuery = Uri.parse("smsoip:" + messages.getOriginatingAddress());
         Intent sendIntent = new Intent(Intent.ACTION_MAIN);
         sendIntent.setData(inboxQuery);

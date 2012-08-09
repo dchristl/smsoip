@@ -19,10 +19,12 @@
 package de.christl.smsoip.activities.threading;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
+import org.acra.ErrorReporter;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -64,7 +66,13 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
 
         timer = new Timer();
         timer.schedule(task, 0, 500);
-        return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+        try {
+            return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+        } catch (Exception e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            ErrorReporter.getInstance().handleSilentException(e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
     }
 
     @Override
