@@ -153,5 +153,4 @@
     <string name="text_enable_compact_mode">Kompaktmodus</string>
     <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
     </string>
-    <string name="text_answer_directly">Antworte an: %1$s mit SMSoIP</string>
 </resources>

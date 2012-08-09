@@ -27,9 +27,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.models.ErrorReporterStack;
+import org.acra.ErrorReporter;
 
 /**
  * Simple receiver to listen on incoming sms and shows notfication, with the possibility to start SMSoiP
@@ -40,27 +43,34 @@ public class SMSReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle pudsBundle = intent.getExtras();
-        Object[] pdus = (Object[]) pudsBundle.get("pdus");
-        SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
+        try {
+            ErrorReporterStack.put("message received by receiver");
+            Bundle pudsBundle = intent.getExtras();
+            Object[] pdus = (Object[]) pudsBundle.get("pdus");
+            SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
+            String ns = Context.NOTIFICATION_SERVICE;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
 
-        Notification notification = new Notification(R.drawable.bar_icon, messages.getMessageBody(), System.currentTimeMillis());
-        notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
-        DatabaseHandler dbHandler = new DatabaseHandler(null);
-        CharSequence contentTitle = messages.getOriginatingAddress();
-        Receiver contactByNumber = dbHandler.findContactByNumber(messages.getOriginatingAddress(), context);
-        if (contactByNumber != null) {
-            contentTitle = contactByNumber.getName();
+            Notification notification = new Notification(R.drawable.bar_icon, messages.getMessageBody(), System.currentTimeMillis());
+            notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
+            DatabaseHandler dbHandler = new DatabaseHandler(null);
+            CharSequence contentTitle = messages.getOriginatingAddress();
+            Receiver contactByNumber = dbHandler.findContactByNumber(messages.getOriginatingAddress(), context);
+            if (contactByNumber != null) {
+                contentTitle = contactByNumber.getName();
+            }
+            CharSequence contentText = messages.getDisplayMessageBody();
+            Uri inboxQuery = Uri.parse("smsoip:" + messages.getOriginatingAddress());
+            Intent sendIntent = new Intent(Intent.ACTION_MAIN);
+            sendIntent.setData(inboxQuery);
+            sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
+            notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+            mNotificationManager.notify(ID++, notification);
+            abortBroadcast();//TODO better remove
+        } catch (Exception e) {
+            Log.e(this.getClass().getCanonicalName(), "", e); //TODO remove after stability
+            ErrorReporter.getInstance().handleSilentException(e);
         }
-        CharSequence contentText = messages.getDisplayMessageBody();
-        Uri inboxQuery = Uri.parse("smsoip:" + messages.getOriginatingAddress());
-        Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-        sendIntent.setData(inboxQuery);
-        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
-        notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-        mNotificationManager.notify(ID++, notification);
     }
 }

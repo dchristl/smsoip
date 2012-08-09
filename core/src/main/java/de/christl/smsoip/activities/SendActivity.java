@@ -166,7 +166,7 @@ public class SendActivity extends AllActivity {
         setTextArea();
         setSendButton();
         setContactsByNumberInput();
-        setPreselectedContact();
+        setPreselectedContact(getIntent().getData());
         setLastInfoButton();
         setLastMessagesButton();
         addModeSwitcher();
@@ -441,10 +441,9 @@ public class SendActivity extends AllActivity {
         setTitle(userName);
     }
 
-    private void setPreselectedContact() {
-        Uri data = getIntent().getData();
-        ErrorReporterStack.put("setPreselectedContact");
+    private void setPreselectedContact(Uri data) {
         if (data != null) {
+            ErrorReporterStack.put("setPreselectedContact");
             DatabaseHandler dbHandler = new DatabaseHandler(this);
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = dbHandler.findContactByNumber(givenNumber);
@@ -454,11 +453,7 @@ public class SendActivity extends AllActivity {
             }
             String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
             contactByNumber.setReceiverNumber(number);
-            if (receiverList.addWithAlreadyInsertedCheck(contactByNumber)) {
-                toast.setText(R.string.text_receiver_added_twice);
-                toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-                toast.show();
-            }
+            addReceiver(contactByNumber);
         }
     }
 
@@ -931,16 +926,21 @@ public class SendActivity extends AllActivity {
         int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
         if (receiverList.size() < maxReceiverCount) {
             receiver.setReceiverNumber(receiverNumber);
-            if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
-                toast.setText(R.string.text_receiver_added_twice);
-                toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-            updateViewOnChangedReceivers();
+            addReceiver(receiver);
+
         } else {
             toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
+        }
+    }
+
+    private void addReceiver(Receiver receiver) {
+        if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
+            toast.setText(R.string.text_receiver_added_twice);
+            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+            toast.show();
+            updateViewOnChangedReceivers();
         }
     }
 
@@ -1343,7 +1343,7 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setPreselectedContact();
+        setPreselectedContact(intent.getData());
     }
 
     @Override

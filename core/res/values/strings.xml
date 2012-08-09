@@ -147,5 +147,4 @@
     <string name="text_time_in_past">Sending time is in past!</string>
     <string name="text_enable_compact_mode">Compact mode</string>
     <string name="text_enable_compact_mode_description">Use the compact mode by default (on startup)</string>
-    <string name="text_answer_directly">Answer to: %1$s with SMSoIP</string>
 </resources>
