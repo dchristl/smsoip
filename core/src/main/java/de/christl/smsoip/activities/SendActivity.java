@@ -397,7 +397,6 @@ public class SendActivity extends AllActivity {
         final TextView infoText = (TextView) findViewById(R.id.infoText);
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
-            final View refreshButton = findViewById(R.id.refreshButton);
             infoText.setText(R.string.text_notyetrefreshed);
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
             if (backgroundUpdateTask != null) {
@@ -442,7 +441,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setPreselectedContact(Uri data) {
-        if (data != null && smSoIPPlugin != null) {
+        if (data != null) {
             ErrorReporterStack.put("setPreselectedContact");
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
@@ -450,9 +449,7 @@ public class SendActivity extends AllActivity {
                 contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                 contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
             }
-            String number = contactByNumber.getFixedNumberByRawNumber(givenNumber);
-            contactByNumber.setReceiverNumber(number);
-            addReceiver(contactByNumber);
+            addToReceiverList(contactByNumber, contactByNumber.getFixedNumberByRawNumber(givenNumber), smSoIPPlugin != null);
         }
     }
 
@@ -493,7 +490,7 @@ public class SendActivity extends AllActivity {
                                 contactByNumber.addNumber(receiverNumber, getText(R.string.text_unknown).toString());
                             }
                             String number = contactByNumber.getFixedNumberByRawNumber(receiverNumber);
-                            addToReceiverList(contactByNumber, number);
+                            addToReceiverList(contactByNumber, number, true);
                         }
                     }
                 });
@@ -870,7 +867,7 @@ public class SendActivity extends AllActivity {
 
                 final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
                 if (numberTypeMap.size() == 1) { //only one number, so choose this
-                    addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0]);
+                    addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0], true);
 
                 } else { //more than one number for contact
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -891,7 +888,7 @@ public class SendActivity extends AllActivity {
                                     break;
                                 }
                             }
-                            addToReceiverList(pickedReceiver, key);
+                            addToReceiverList(pickedReceiver, key, true);
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -918,26 +915,25 @@ public class SendActivity extends AllActivity {
     }
 
 
-    private void addToReceiverList(Receiver receiver, String receiverNumber) {
+    private void addToReceiverList(Receiver receiver, String receiverNumber, boolean updateView) {
         ErrorReporterStack.put("addToReceiverList");
-        int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
-        if (receiverList.size() < maxReceiverCount) {
+        if (smSoIPPlugin == null || receiverList.size() < smSoIPPlugin.getProvider().getMaxReceiverCount()) {  //check only if smsoipPlugin is already set
             receiver.setReceiverNumber(receiverNumber);
-            addReceiver(receiver);
+            addReceiver(receiver, updateView);
 
         } else {
-            toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), maxReceiverCount));
+            toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
     }
 
-    private void addReceiver(Receiver receiver) {
+    private void addReceiver(Receiver receiver, boolean updateView) {
         if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
             toast.setText(R.string.text_receiver_added_twice);
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
-        } else {
+        } else if (updateView) {
             updateViewOnChangedReceivers();
         }
     }
@@ -1162,7 +1158,7 @@ public class SendActivity extends AllActivity {
                                 contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());
                             }
                             String number = contactByNumber.getFixedNumberByRawNumber(rawNumber);
-                            addToReceiverList(contactByNumber, number);
+                            addToReceiverList(contactByNumber, number, true);
                         }
                         input.setText("");
                         dialog.dismiss();
@@ -1338,6 +1334,9 @@ public class SendActivity extends AllActivity {
     }
 
     @Override
+    /**
+     * entry point if application is already open
+     */
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setPreselectedContact(intent.getData());
