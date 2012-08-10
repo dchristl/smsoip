@@ -166,7 +166,6 @@ public class SendActivity extends AllActivity {
         setTextArea();
         setSendButton();
         setContactsByNumberInput();
-        setPreselectedContact(getIntent().getData());
         setLastInfoButton();
         setLastMessagesButton();
         addModeSwitcher();
@@ -207,6 +206,7 @@ public class SendActivity extends AllActivity {
             }
             updateInfoTextSilent();
         }
+        setPreselectedContact(getIntent().getData());
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
         setViewByMode(mode);
@@ -442,7 +442,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setPreselectedContact(Uri data) {
-        if (data != null) {
+        if (data != null && smSoIPPlugin != null) {
             ErrorReporterStack.put("setPreselectedContact");
             DatabaseHandler dbHandler = new DatabaseHandler(this);
             String givenNumber = data.getSchemeSpecificPart();
@@ -940,6 +940,7 @@ public class SendActivity extends AllActivity {
             toast.setText(R.string.text_receiver_added_twice);
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
+        } else {
             updateViewOnChangedReceivers();
         }
     }

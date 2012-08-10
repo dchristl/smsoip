@@ -67,7 +67,7 @@ public class SMSReceiver extends BroadcastReceiver {
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
             notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
             mNotificationManager.notify(ID++, notification);
-            abortBroadcast();//TODO better remove
+            abortBroadcast();
         } catch (Exception e) {
             Log.e(this.getClass().getCanonicalName(), "", e); //TODO remove after stability
             ErrorReporter.getInstance().handleSilentException(e);
