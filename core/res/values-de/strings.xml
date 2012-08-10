@@ -153,4 +153,25 @@
     <string name="text_enable_compact_mode">Kompaktmodus</string>
     <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
     </string>
+    <string name="text_sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
+    <string name="text_react_on_incoming_sms">Überwachung empf. SMS</string>
+    <string name="text_react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten in
+        der Benachrichtigungsleiste.
+    </string>
+    <string name="text_receiver_activated">Aktiviere Überwachung</string>
+    <string name="text_receiver_activated_description">Aktiviere die Benachrichtigung durch SMSoIP bei
+        empfangenen SMS. Damit kann direkt auf die Nachricht mit SMSoIP geantwortet werden.
+    </string>
+    <string name="text_only_one_notfication">Nur einmal benachrichtigen</string>
+    <string name="text_only_one_notfication_description">Bei mehreren eingehenden SMS gleichzeitig
+        wird nur einmal benachrichtigt. Es kann dann nur auf die zuletzt eingegangene SMS geantwortet werden.
+    </string>
+    <string name="text_abort_broadcast">Verhindere andere Benachrichtigungen</string>
+    <string name="text_abort_broadcast_description">Alle weiteren Benachrichtigungen anderer Apps (wie etwa die
+        Standard-SMS-App) geben keine Benachrichtigungen.
+    </string>
+    <string name="text_warning">Warnung</string>
+    <string name="text_warning_disable_notification">Dies Option kann Probleme mit Apps verursachen, die ebenfalls auf
+        empfangene SMS reagieren. Bei Problemen diese Option wieder deaktiviern.
+    </string>
 </resources>

@@ -93,7 +93,18 @@ public class GlobalPreferences extends PreferenceActivity {
         defaultAreaCode.setSummary(R.string.text_area_code_description);
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
-
+        PreferenceScreen receiverIntent = getPreferenceManager().createPreferenceScreen(this);
+        receiverIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent pref = new Intent(GlobalPreferences.this, SMSReceiverPreference.class);
+                startActivity(pref);
+                return true;
+            }
+        });
+        receiverIntent.setTitle(R.string.text_react_on_incoming_sms);
+        receiverIntent.setSummary(R.string.text_react_on_incoming_sms_description);
+        root.addPreference(receiverIntent);
         CheckBoxPreference enableNetworkCheck = new CheckBoxPreference(this);
         enableNetworkCheck.setDefaultValue(true);
         enableNetworkCheck.setKey(GLOBAL_ENABLE_NETWORK_CHECK);
@@ -123,7 +134,7 @@ public class GlobalPreferences extends PreferenceActivity {
         final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
         enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
         enableProviderOutput.setDefaultValue(false);
-        enableProviderOutput.setEnabled(writeToDatabaseAvailable);
+        enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(GLOBAL_WRITE_TO_DATABASE, false));
         enableProviderOutput.setTitle(R.string.text_enable_provider_output);
         enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
         root.addPreference(enableProviderOutput);

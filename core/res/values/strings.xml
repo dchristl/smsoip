@@ -147,4 +147,25 @@
     <string name="text_time_in_past">Sending time is in past!</string>
     <string name="text_enable_compact_mode">Compact mode</string>
     <string name="text_enable_compact_mode_description">Use the compact mode by default (on startup)</string>
+    <string name="text_sms_receiver_settings">Message listener settings</string>
+    <string name="text_react_on_incoming_sms">Message listener settings</string>
+    <string name="text_react_on_incoming_sms_description">Change settings for the listener of incoming
+        messages in the notification bar.
+    </string>
+    <string name="text_receiver_activated">Activate notification</string>
+    <string name="text_receiver_activated_description">Enable the notification on incoming messages. Then you can answer
+        directly to this message.
+    </string>
+    <string name="text_only_one_notfication">Only one notification</string>
+    <string name="text_only_one_notfication_description">The notification will only be shown once on more than one
+        message at the same time. You can answer only to the last received message then.
+    </string>
+    <string name="text_abort_broadcast">Prevent further notfications</string>
+    <string name="text_abort_broadcast_description">On incoming messages only SMSoIP will show notifcations. Default
+        message app will not show any message.
+    </string>
+    <string name="text_warning">Warning</string>
+    <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
+        incoming messages, too. If you have problems disable this option.
+    </string>
 </resources>
