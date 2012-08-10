@@ -53,9 +53,8 @@ public class SMSReceiver extends BroadcastReceiver {
 
             Notification notification = new Notification(R.drawable.bar_icon, messages.getMessageBody(), System.currentTimeMillis());
             notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
-            DatabaseHandler dbHandler = new DatabaseHandler(null);
             CharSequence contentTitle = messages.getOriginatingAddress();
-            Receiver contactByNumber = dbHandler.findContactByNumber(messages.getOriginatingAddress(), context);
+            Receiver contactByNumber = DatabaseHandler.findContactByNumber(messages.getOriginatingAddress(), context);
             if (contactByNumber != null) {
                 contentTitle = contactByNumber.getName();
             }

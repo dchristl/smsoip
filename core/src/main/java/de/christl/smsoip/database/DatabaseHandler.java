@@ -38,20 +38,15 @@ import java.util.*;
 /**
  * Handling class for all stuff for internal database
  */
-public class DatabaseHandler {
+public abstract class DatabaseHandler {
 
-    private Activity parentActivity;
 
-    public DatabaseHandler(Activity parentActivity) {
-        this.parentActivity = parentActivity;
-    }
-
-    public Receiver getPickedContactData(Uri contactData) {
+    public static Receiver getPickedContactData(Uri contactData, Activity activity) {
         String pickedId = null;
         boolean hasPhone = false;
         String name = null;
         Receiver out;
-        Cursor contactCur = parentActivity.managedQuery(contactData, null, null, null, null);
+        Cursor contactCur = activity.managedQuery(contactData, null, null, null, null);
         int photoId = 0;
         if (contactCur.moveToFirst()) {
             pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
@@ -61,7 +56,7 @@ public class DatabaseHandler {
         }
         out = new Receiver(pickedId, name, photoId);
         if (pickedId != null && hasPhone) {
-            Cursor phones = parentActivity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            Cursor phones = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                     new String[]{pickedId}, null);
@@ -73,7 +68,7 @@ public class DatabaseHandler {
             }
             phones.close();
             for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
-                String numberType = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(parentActivity.getResources(), currEntry.getValue(), parentActivity.getText(R.string.text_no_phone_type_label));
+                String numberType = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(activity.getResources(), currEntry.getValue(), activity.getText(R.string.text_no_phone_type_label));
                 out.addNumber(currEntry.getKey(), numberType);
             }
 
@@ -81,13 +76,9 @@ public class DatabaseHandler {
         return out;
     }
 
-    public Receiver findContactByNumber(String givenNumber) {
-        return findContactByNumber(givenNumber, null);
-    }
 
-
-    public byte[] loadLocalContactPhotoBytes(int photoId) {
-        ContentResolver cr = parentActivity.getContentResolver();
+    public static byte[] loadLocalContactPhotoBytes(int photoId, Context context) {
+        ContentResolver cr = context.getContentResolver();
         Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId);
         Cursor c = cr.query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
         if (c.moveToFirst()) {
@@ -96,12 +87,12 @@ public class DatabaseHandler {
         return null;
     }
 
-    public Map<Receiver, String> findLastMessage() {
+    public static Map<Receiver, String> findLastMessage(Activity activity) {
         Map<Receiver, String> out = new HashMap<Receiver, String>(1);
         Uri inboxQuery = Uri.parse("content://sms/inbox");    //only inbox will be queried
-        Cursor cursor = parentActivity.getContentResolver().query(inboxQuery,
+        Cursor cursor = activity.getContentResolver().query(inboxQuery,
                 new String[]{"address", "body"}, null, null, "date desc limit 1");
-        parentActivity.startManagingCursor(cursor);
+        activity.startManagingCursor(cursor);
         String[] columns = new String[]{"address", "body"};
         if (cursor.getCount() > 0) {
             String count = Integer.toString(cursor.getCount());
@@ -109,9 +100,9 @@ public class DatabaseHandler {
             if (cursor.moveToFirst()) {
                 String number = cursor.getString(cursor.getColumnIndex(columns[0]));
                 String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
-                Receiver receiver = findContactByNumber(number);
+                Receiver receiver = findContactByNumber(number, activity);
                 if (receiver == null) {
-                    String text = (String) parentActivity.getText(R.string.text_unknown);
+                    String text = activity.getString(R.string.text_unknown);
                     receiver = new Receiver("-1", text, 0);
                     receiver.addNumber(number, text);
 
@@ -136,9 +127,10 @@ public class DatabaseHandler {
      * be very slow on phones with much messages
      *
      * @param receiver
+     * @param context
      * @return
      */
-    public LinkedList<Message> findConversation(Receiver receiver) {
+    public static LinkedList<Message> findConversation(Receiver receiver, Context context) {
         String receiverNumber = receiver.getReceiverNumber();
 
         LinkedList<Message> out = new LinkedList<Message>();
@@ -147,7 +139,7 @@ public class DatabaseHandler {
         //replace all non numeric chars and get a number
         String selection = receiverNumber + "  like ('%' || replacedAddress) and type in (1,2)";
         String[] projection = {"cast(replace(replace(replace(replace(replace(address,'+',''),'-',''),')',''),'(',''),' ','') as int) as replacedAddress", "body", "date", "type"};
-        Cursor cursor = parentActivity.getContentResolver().query(smsQuery,
+        Cursor cursor = context.getContentResolver().query(smsQuery,
                 projection, selection, null, "date desc limit 10");
         while (cursor.moveToNext()) {
             String message = cursor.getString(1);
@@ -158,7 +150,7 @@ public class DatabaseHandler {
         return out;
     }
 
-    public void writeSMSInDatabase(List<Receiver> receiverList, String message, DateTimeObject time) {
+    public static void writeSMSInDatabase(List<Receiver> receiverList, String message, DateTimeObject time, Context context) {
         try {
             for (Receiver receiver : receiverList) {
                 ContentValues values = new ContentValues();
@@ -167,15 +159,15 @@ public class DatabaseHandler {
                 if (time != null) {
                     values.put("date", time.getCalendar().getTime().getTime());
                 }
-                parentActivity.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
+                context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
             }
         } catch (Exception e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
+            Log.e(DatabaseHandler.class.getCanonicalName(), "", e);
             ErrorReporter.getInstance().handleSilentException(e);
         }
     }
 
-    public Receiver findContactByNumber(String givenNumber, Context context) {
+    public static Receiver findContactByNumber(String givenNumber, Context context) {
         Receiver out = null;
         String name;
         String[] projection = new String[]{
@@ -186,12 +178,12 @@ public class DatabaseHandler {
         if (!encodedNumber.equals("")) {
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
             try {
-                ContentResolver contentResolver = context == null ? parentActivity.getContentResolver() : context.getContentResolver();
+                ContentResolver contentResolver = context.getContentResolver();
                 Cursor query = contentResolver.query(uri, projection, null, null, null);
                 if (query.moveToFirst()) {
                     name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
                     if (name == null || name.equals("")) {
-                        name = context == null ? parentActivity.getString(R.string.text_unknown) : context.getString(R.string.text_unknown);
+                        name = context.getString(R.string.text_unknown);
                     }
                     String id = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup._ID));
                     if (id == null || id.equals("")) {
@@ -203,7 +195,7 @@ public class DatabaseHandler {
                 }
                 query.close();
             } catch (IllegalArgumentException e) {
-                Log.e(this.getClass().getCanonicalName(), "This is caused by findContactByNumber", e);
+                Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
                 ErrorReporter instance = ErrorReporter.getInstance();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));

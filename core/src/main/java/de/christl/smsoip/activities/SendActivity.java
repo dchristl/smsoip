@@ -444,9 +444,8 @@ public class SendActivity extends AllActivity {
     private void setPreselectedContact(Uri data) {
         if (data != null && smSoIPPlugin != null) {
             ErrorReporterStack.put("setPreselectedContact");
-            DatabaseHandler dbHandler = new DatabaseHandler(this);
             String givenNumber = data.getSchemeSpecificPart();
-            Receiver contactByNumber = dbHandler.findContactByNumber(givenNumber);
+            Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
             if (contactByNumber == null) {
                 contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                 contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
@@ -488,8 +487,7 @@ public class SendActivity extends AllActivity {
                     public void onDismiss(DialogInterface dialog) {
                         String receiverNumber = lastMessageDialog.getReceiverNumber();
                         if (receiverNumber != null) {
-                            DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
-                            Receiver contactByNumber = dbHandler.findContactByNumber(receiverNumber);
+                            Receiver contactByNumber = DatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
                             if (contactByNumber == null) {
                                 contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                                 contactByNumber.addNumber(receiverNumber, getText(R.string.text_unknown).toString());
@@ -758,8 +756,7 @@ public class SendActivity extends AllActivity {
                 message.append("): ");
             }
             message.append(textField.getText());
-            DatabaseHandler handler = new DatabaseHandler(this);
-            handler.writeSMSInDatabase(receiverList, message.toString(), dateTime);
+            DatabaseHandler.writeSMSInDatabase(receiverList, message.toString(), dateTime, this);
         }
     }
 
@@ -866,7 +863,7 @@ public class SendActivity extends AllActivity {
                                     Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
             Uri contactData = data.getData();
-            final Receiver pickedReceiver = new DatabaseHandler(this).getPickedContactData(contactData);
+            final Receiver pickedReceiver = DatabaseHandler.getPickedContactData(contactData, this);
 
             if (!pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
                 //always one contact, so it will be filled always
@@ -1159,8 +1156,7 @@ public class SendActivity extends AllActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String rawNumber = input.getText().toString();
                         if (!rawNumber.equals("")) {
-                            DatabaseHandler dbHandler = new DatabaseHandler(SendActivity.this);
-                            Receiver contactByNumber = dbHandler.findContactByNumber(rawNumber);
+                            Receiver contactByNumber = DatabaseHandler.findContactByNumber(rawNumber, SendActivity.this);
                             if (contactByNumber == null) {
                                 contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
                                 contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());

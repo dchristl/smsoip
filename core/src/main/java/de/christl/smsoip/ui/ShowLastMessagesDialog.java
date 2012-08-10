@@ -44,14 +44,14 @@ import java.util.Map;
  * Class for a popup show the last message and all last conversations with picked contact
  */
 public class ShowLastMessagesDialog extends Dialog {
-    private DatabaseHandler dbHandler;
+    private Context context;
     private ArrayList<Receiver> receiverList;
     private String receiverNumber = null;
 
     public ShowLastMessagesDialog(Context context, ArrayList<Receiver> receiverList) {
         super(context);
+        this.context = context;
         this.receiverList = receiverList;
-        dbHandler = new DatabaseHandler(((Activity) context));
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
@@ -60,7 +60,7 @@ public class ShowLastMessagesDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showlastmessagesdialog);
 
-        Map<Receiver, String> lastMessage = dbHandler.findLastMessage();
+        Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage((Activity) context);
         if (lastMessage.size() > 0) {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
                 final Receiver receiver = receiverStringEntry.getKey();
@@ -93,7 +93,7 @@ public class ShowLastMessagesDialog extends Dialog {
         LinearLayout layout = (LinearLayout) findViewById(R.id.conversationLayout);
         /* Create a new row to be added. */
         for (final Receiver receiver : receiverList) {
-            LinkedList<Message> conversation = dbHandler.findConversation(receiver);
+            LinkedList<Message> conversation = DatabaseHandler.findConversation(receiver, context);
             TextView receiverView = new TextView(getContext());
             receiverView.setTextColor(Color.parseColor("#C0F0C0"));
             receiverView.setPadding(5, 5, 5, 0);
