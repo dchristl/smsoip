@@ -75,7 +75,7 @@
     <string name="text_visit_project_page">Visit Homepage</string>
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
     <string name="text_visit_plugin_page">Find plugins</string>
-    <string name="text_visit_plugin_page_description">Find additional plugins at Play Store</string>
+    <string name="text_visit_plugin_page_description">Find additional plugins at Google Play</string>
     <string name="text_area_code">Default international area code</string>
     <string name="text_area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
         will be automatically prepended to receiver number if needed.
@@ -147,8 +147,8 @@
     <string name="text_time_in_past">Sending time is in past!</string>
     <string name="text_enable_compact_mode">Compact mode</string>
     <string name="text_enable_compact_mode_description">Use the compact mode by default (on startup)</string>
-    <string name="text_sms_receiver_settings">Message listener settings</string>
-    <string name="text_react_on_incoming_sms">Message listener settings</string>
+    <string name="text_sms_receiver_settings">Message notifcation settings</string>
+    <string name="text_react_on_incoming_sms">Message notification</string>
     <string name="text_react_on_incoming_sms_description">Change settings for the listener of incoming
         messages in the notification bar.
     </string>

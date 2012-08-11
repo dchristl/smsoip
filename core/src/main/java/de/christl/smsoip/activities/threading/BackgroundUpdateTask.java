@@ -68,7 +68,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
         timer.schedule(task, 0, 500);
         try {
             return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
-        } catch (Exception e) {
+        } catch (Exception e) {    //TODO remove after stability improvements
             Log.e(this.getClass().getCanonicalName(), "", e);
             ErrorReporter.getInstance().handleSilentException(e);
             return SMSActionResult.UNKNOWN_ERROR();
