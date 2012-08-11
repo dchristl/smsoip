@@ -59,7 +59,8 @@ public class SMSReceiver extends BroadcastReceiver {
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
 
                 Notification notification = new Notification(R.drawable.bar_icon, messages.getMessageBody(), System.currentTimeMillis());
-                notification.flags |= Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
+                notification.defaults = Notification.DEFAULT_ALL;
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
                 CharSequence contentTitle = messages.getOriginatingAddress();
                 Receiver contactByNumber = DatabaseHandler.findContactByNumber(messages.getOriginatingAddress(), context);
                 if (contactByNumber != null) {

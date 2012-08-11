@@ -173,7 +173,7 @@ fileName: strings.xml
     </string>
     <string name="text_warning">Warning</string>
     <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
-        incoming messages, too. If you have problems disable this option.
+        incoming messages, too. If you have problems please disable this option.
     </string>
 </resources>
 

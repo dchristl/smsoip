@@ -154,9 +154,9 @@
     <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
     </string>
     <string name="text_sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
-    <string name="text_react_on_incoming_sms">Überwachung empf. SMS</string>
-    <string name="text_react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten in
-        der Benachrichtigungsleiste.
+    <string name="text_react_on_incoming_sms">SMS-Überwachung</string>
+    <string name="text_react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten und
+        Hinweis in der Benachrichtigungsleiste.
     </string>
     <string name="text_receiver_activated">Aktiviere Überwachung</string>
     <string name="text_receiver_activated_description">Aktiviere die Benachrichtigung durch SMSoIP bei

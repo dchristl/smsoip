@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application android:description="@string/description" android:hardwareAccelerated="true"
                  android:icon="@drawable/icon" android:label="@string/applicationName"
