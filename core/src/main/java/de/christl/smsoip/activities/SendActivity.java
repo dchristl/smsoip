@@ -31,11 +31,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.text.*;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -70,7 +72,7 @@ import java.util.regex.Pattern;
 
 public class SendActivity extends AllActivity {
 
-    private EditText inputField;
+    private EditText receiverField;
     private EditText textField;
     private TextView smssigns;
     private Spinner spinner;
@@ -89,13 +91,11 @@ public class SendActivity extends AllActivity {
     private static final int DIALOG_SMILEYS = 32;
     private static final int DIALOG_PROVIDER = 33;
     private static final int GLOBAL_OPTION = 34;
-    private static final int DIALOG_NUMBER_INPUT = 35;
-    private static final int OPTION_SWITCH_ACCOUNT = 36;
-    private static final int DIALOG_SWITCH_ACCOUNT = 37;
+    private static final int OPTION_SWITCH_ACCOUNT = 35;
+    private static final int DIALOG_SWITCH_ACCOUNT = 36;
 
     private SharedPreferences settings;
     private CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
-    private View addContactbyNumber;
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
     private static final String SAVED_INSTANCE_SUPPLIER = "supplier";
@@ -147,7 +147,7 @@ public class SendActivity extends AllActivity {
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         signsconstant = getText(R.string.text_smssigns);
-        inputField = (EditText) findViewById(R.id.numberInput);
+        receiverField = (MultiAutoCompleteTextView) findViewById(R.id.receiverField);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         smssigns = (TextView) findViewById(R.id.smssigns);
@@ -155,7 +155,6 @@ public class SendActivity extends AllActivity {
         mode = settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_COMPACT_MODE, false) ? Mode.COMPACT : Mode.NORMAL;
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         //disable inputs on field
-        inputField.setKeyListener(null);
         setSearchButton();
         setClearButton();
         setRefreshButton();
@@ -165,7 +164,6 @@ public class SendActivity extends AllActivity {
         setSmileyButton();
         setTextArea();
         setSendButton();
-        setContactsByNumberInput();
         setLastInfoButton();
         setLastMessagesButton();
         addModeSwitcher();
@@ -185,7 +183,7 @@ public class SendActivity extends AllActivity {
             }
             mode = Mode.values()[savedInstanceState.getInt(SAVED_INSTANCE_MODE)];
             setDateTimePickerDialog();
-            inputField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
+            receiverField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
             receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
             receiverList.addAll(tmpReceiverList);
@@ -522,18 +520,6 @@ public class SendActivity extends AllActivity {
         return string;
     }
 
-    private void setContactsByNumberInput() {
-        ErrorReporterStack.put("setContactsByNumberInput");
-        addContactbyNumber = findViewById(R.id.addcontactbynumber);
-
-        addContactbyNumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog(DIALOG_NUMBER_INPUT);
-            }
-        });
-
-    }
 
     private void setShowChosenContactsDialog() {
         ImageButton chosenContactsdialogButton = (ImageButton) findViewById(R.id.showChosenContacts);
@@ -954,13 +940,13 @@ public class SendActivity extends AllActivity {
             builder.append(receiver.getName());
             builder.append(i + 1 == receiverListSize ? "" : " ; ");
         }
-        inputField.setText(builder.toString());
+        receiverField.setText(builder.toString());
         //update the marking of textfield
         View viewById = findViewById(R.id.showChosenContacts);
-        inputField.setOnClickListener(null);
+        receiverField.setOnClickListener(null);
         if (receiverList.size() > 0) {
             viewById.setVisibility(View.VISIBLE);
-            inputField.setOnClickListener(new View.OnClickListener() {
+            receiverField.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showChosenContactsDialog();
@@ -971,10 +957,8 @@ public class SendActivity extends AllActivity {
         }
         smSoIPPlugin.getProvider().getMaxReceiverCount();
         if (receiverList.size() >= smSoIPPlugin.getProvider().getMaxReceiverCount()) {
-            addContactbyNumber.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
         } else {
-            addContactbyNumber.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
         }
         setInfoButtonVisibility();
@@ -1132,41 +1116,6 @@ public class SendActivity extends AllActivity {
                 builder.setCancelable(providerEntries.size() != filteredProvidersSize); //only cancelable on switch providers
                 dialog = builder.create();
                 break;
-            case DIALOG_NUMBER_INPUT:
-                final EditText input = new EditText(this);
-                builder = new AlertDialog.Builder(this) {
-
-                    @Override
-                    public AlertDialog create() {
-                        AlertDialog dialog = super.create();
-                        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                        return dialog;
-                    }
-                };
-                builder.setMessage(getText(R.string.text_add_contact_by_number_dialog));
-
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                input.setSingleLine();
-                builder.setView(input);
-                builder.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String rawNumber = input.getText().toString();
-                        if (!rawNumber.equals("")) {
-                            Receiver contactByNumber = DatabaseHandler.findContactByNumber(rawNumber, SendActivity.this);
-                            if (contactByNumber == null) {
-                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
-                                contactByNumber.addNumber(rawNumber, getText(R.string.text_unknown).toString());
-                            }
-                            String number = contactByNumber.getFixedNumberByRawNumber(rawNumber);
-                            addToReceiverList(contactByNumber, number, true);
-                        }
-                        input.setText("");
-                        dialog.dismiss();
-                    }
-                });
-                dialog = builder.create();
-                break;
             case DIALOG_SWITCH_ACCOUNT:
                 OptionProvider provider = smSoIPPlugin.getProvider();
                 Map<Integer, AccountModel> accounts = provider.getAccounts();
@@ -1274,7 +1223,7 @@ public class SendActivity extends AllActivity {
         cancelUpdateTask();
         if (smSoIPPlugin != null) { //only save instance if provider is already chosen
             outState.putString(SAVED_INSTANCE_SUPPLIER, smSoIPPlugin.getSupplierClassName());
-            outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
+            outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, receiverField.getText());
             outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);

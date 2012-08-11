@@ -30,17 +30,17 @@
             android:stretchColumns="0"
             >
         <TableRow>
-            <EditText
-                    android:id="@+id/numberInput"
+            <MultiAutoCompleteTextView
+                    android:id="@+id/receiverField"
                     android:lines="1"
                     android:scrollbars="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_targetnumber"
+                    android:hint="@string/hint_receiverField"
                     android:layout_weight="1"
-                    android:layout_span="2"
+                    android:layout_span="3"
                     >
-            </EditText>
+            </MultiAutoCompleteTextView>
             <ImageButton
                     android:id="@+id/showChosenContacts"
                     android:layout_width="wrap_content"
@@ -54,14 +54,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_addcontactbysearch"
-                    android:layout_span="1"
-                    >
-            </ImageButton>
-            <ImageButton
-                    android:id="@+id/addcontactbynumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/btn_addcontactbynumber"
                     android:layout_span="1"
                     >
             </ImageButton>

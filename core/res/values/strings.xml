@@ -31,7 +31,7 @@
     <string name="text_signature">Signature</string>
     <string name="text_signature_description">Signature, that can be appended to message.</string>
     <string name="button_save">Save</string>
-    <string name="hint_targetnumber">Receivers</string>
+    <string name="hint_receiverField">Name or Number</string>
     <string name="hint_smsText">Message</string>
     <string name="hint_sendernumber">Sender</string>
     <string name="text_chooseType">Sending type</string>
