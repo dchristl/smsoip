@@ -82,7 +82,7 @@ fileName: strings.xml
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
     <string name="text_visit_plugin_page">Plugins suchen</string>
-    <string name="text_visit_plugin_page_description">Finde weitere Plugins im Play Store</string>
+    <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play</string>
     <string name="text_area_code">Standardländercode</string>
     <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -159,7 +159,7 @@ fileName: strings.xml
     <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
     </string>
     <string name="text_sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
-    <string name="text_react_on_incoming_sms">SMS-Überwachung</string>
+    <string name="text_react_on_incoming_sms">SMS-Benachrichtigung</string>
     <string name="text_react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten und
         Hinweis in der Benachrichtigungsleiste.
     </string>

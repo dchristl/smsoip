@@ -58,7 +58,6 @@ import de.christl.smsoip.patcher.InputPatcher;
 import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
@@ -399,11 +398,7 @@ public class SendActivity extends AllActivity {
         if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             infoText.setText(R.string.text_notyetrefreshed);
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
-            if (backgroundUpdateTask != null) {
-                backgroundUpdateTask.cancel(true);
-                ErrorReporterStack.put("background update canceled and restarted");
-            }
-            backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
+            refreshInformationText();
 
         } else {
             infoText.setText(R.string.text_notyetrefreshed);
@@ -420,6 +415,7 @@ public class SendActivity extends AllActivity {
             ((TextView) findViewById(R.id.infoTextUpper)).setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
         }
     }
+
 
     private void setLastInfoButton() {
         View showInfoButton = findViewById(R.id.showInfoButton);
@@ -655,10 +651,7 @@ public class SendActivity extends AllActivity {
         View.OnClickListener l = new View.OnClickListener() {
             public void onClick(View view) {
                 ErrorReporterStack.put("Refresh upper clicked");
-                if (backgroundUpdateTask != null) {
-                    backgroundUpdateTask.cancel(true);
-                }
-                backgroundUpdateTask = new BackgroundUpdateTask(SendActivity.this).execute(null, null);
+                refreshInformationText();
             }
         };
         refreshButon.setOnClickListener(l);
@@ -835,6 +828,9 @@ public class SendActivity extends AllActivity {
     FireSMSResultList sendByThread() {
         ErrorReporterStack.put("sendByThread" + smSoIPPlugin.getProviderName());
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
+        if (backgroundUpdateTask != null) {
+            backgroundUpdateTask.cancel(true);
+        }
         if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
             return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
         } else {
@@ -846,13 +842,14 @@ public class SendActivity extends AllActivity {
     /**
      * since API Level 14
      *
-     * @param afterMessageSuccessfulSent
      * @return
      */
-    SMSActionResult refreshInformationText(boolean afterMessageSuccessfulSent) {
+    void refreshInformationText() {
         ErrorReporterStack.put("refreshInformationText" + smSoIPPlugin.getProviderName());
-        ExtendedSMSSupplier supplier = smSoIPPlugin.getSupplier();
-        return afterMessageSuccessfulSent ? supplier.refreshInfoTextAfterMessageSuccessfulSent() : supplier.refreshInfoTextOnRefreshButtonPressed();
+        if (backgroundUpdateTask != null) {
+            backgroundUpdateTask.cancel(true);
+        }
+        backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
     }
 
 
@@ -1289,16 +1286,9 @@ public class SendActivity extends AllActivity {
      * since API level 14
      *
      * @param fireSMSResults
-     * @param infoText
      */
-    public void showReturnMessage(FireSMSResultList fireSMSResults, String infoText) {
-        TextView infoView = (TextView) findViewById(R.id.infoText);
+    public void showReturnMessage(FireSMSResultList fireSMSResults) {
 
-        TextView infoViewUpper = (TextView) findViewById(R.id.infoTextUpper);
-        if (infoText != null) {   //previous operation(s) was successful (send and/or refresh)
-            infoView.setText(infoText);
-            infoViewUpper.setText(infoText + " " + getString(R.string.text_click));
-        }
         StringBuilder resultMessage = new StringBuilder();
         if (fireSMSResults.size() == 1) {  // nobody cares about extra Infos if only one message was sent
             resultMessage.append(fireSMSResults.get(0).getResult().getMessage());

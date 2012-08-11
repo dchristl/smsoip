@@ -41,9 +41,9 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
@@ -54,7 +54,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String HOME_PAGE = "http://www.sms.de/index.php";
     private static final String SEND_FREE_PAGE = "http://www.sms.de/sms/sms_send.php";
     private static final String SEND_POWER_PAGE = "http://www.sms.de/sms/sms_send_power.php";
-    private List<String> sessionCookies;
+    private Vector<String> sessionCookies;
     private static final String ENCODING = "ISO-8859-1";
 
 
@@ -132,7 +132,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
         //FIRST STEP
-        sessionCookies = new ArrayList<String>();
+        Vector<String> tmpSessionCookies = new Vector<String>();
         try {
             UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_FIRST_STEP_URL, UrlConnectionFactory.METHOD_GET);
             //first get the login cookie
@@ -147,21 +147,21 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             if (smsDeCookie == null) {
                 return SMSActionResult.NETWORK_ERROR(); //not possible if network available
             }
-            sessionCookies.add(smsDeCookie.replaceAll(";.*", ""));
+            tmpSessionCookies.add(smsDeCookie.replaceAll(";.*", ""));
             //now we have the login idependent id cookie
             factory = new UrlConnectionFactory(LOGIN_SECOND_STEP_URL);
-            factory.setCookies(sessionCookies);
+            factory.setCookies(tmpSessionCookies);
             factory.setFollowRedirects(false);
             String userNamePasswordBody = "username=" + userName + "&passwd=" + password;
             con = factory.writeBody(userNamePasswordBody);
             headerFields = con.getHeaderFields();
-            if (headerFields == null || sessionCookies.size() == 0) {
+            if (headerFields == null || tmpSessionCookies.size() == 0) {
                 return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             //get the login cookie
-            String tmpSessionCookie = sessionCookies.get(0);
+            String tmpSessionCookie = tmpSessionCookies.get(0);
             tmpSessionCookie = tmpSessionCookie.replaceAll("=.*", "");
-            sessionCookies = new ArrayList<String>();
+            sessionCookies = new Vector<String>();
             String cSmsdeUid = "C_SMSDE_UID";
             String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, cSmsdeUid);
             if (c_smsde_uid_cookie == null) {

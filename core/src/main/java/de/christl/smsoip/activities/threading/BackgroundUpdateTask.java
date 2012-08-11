@@ -36,10 +36,18 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
     private SendActivity sendActivity;
     private Timer timer;
 
+    private int retryCount = 0;
+
+    public static final int MAX_RETRIES = 3;
+
     public BackgroundUpdateTask(SendActivity sendActivity) {
         this.sendActivity = sendActivity;
     }
 
+    public BackgroundUpdateTask(SendActivity sendActivity, int retryCount) {
+        this.sendActivity = sendActivity;
+        this.retryCount = retryCount;
+    }
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
@@ -105,7 +113,22 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
             sendActivity.updateInfoTextAndRefreshButton(infoText);
         } else {
             sendActivity.updateInfoTextAndRefreshButton(null);
+            if (!isCancelled()) {
+                this.cancel(true);
+                if (timer != null) {
+                    timer.cancel();
+                }
+                if (retryCount <= MAX_RETRIES) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                    }
+                    new BackgroundUpdateTask(sendActivity, retryCount + 1).execute(null, null);
+                }
+            }
         }
         ErrorReporterStack.put("background update on post execute");
     }
+
 }
