@@ -29,6 +29,13 @@ public class SMSActionResult {
     private boolean success;
     private String message;
     private BreakingProgressDialog builder;
+    private boolean retryMakesSense = false;
+
+    private SMSActionResult(boolean success, boolean retryMakesSense, int messageId) {
+        this.success = success;
+        this.retryMakesSense = retryMakesSense;
+        message = getDefaultText(messageId);
+    }
 
     public SMSActionResult(boolean success, String message) {
         this.success = success;
@@ -92,11 +99,11 @@ public class SMSActionResult {
     }
 
     public static SMSActionResult TIMEOUT_ERROR() {
-        return new SMSActionResult(R.string.text_timeOutReached);
+        return new SMSActionResult(false, true, R.string.text_timeOutReached);
     }
 
     public static SMSActionResult UNKNOWN_ERROR() {
-        return new SMSActionResult(R.string.text_unknown_error);
+        return new SMSActionResult(false, true, R.string.text_unknown_error);
     }
 
     public static SMSActionResult NO_ERROR(String message) {
@@ -104,7 +111,13 @@ public class SMSActionResult {
     }
 
     public static SMSActionResult UNKNOWN_ERROR(String message) {
-        return new SMSActionResult(message);
+        SMSActionResult smsActionResult = new SMSActionResult(message);
+        smsActionResult.setRetryMakesSense(true);
+        return smsActionResult;
+    }
+
+    public static SMSActionResult NO_CREDENTIALS() {
+        return new SMSActionResult(R.string.text_noCredentials);
     }
 
     /**
@@ -122,5 +135,13 @@ public class SMSActionResult {
 
     public boolean isDialogResult() {
         return builder != null;
+    }
+
+    public void setRetryMakesSense(boolean retryMakesSense) {
+        this.retryMakesSense = retryMakesSense;
+    }
+
+    public boolean isRetryMakesSense() {
+        return retryMakesSense;
     }
 }

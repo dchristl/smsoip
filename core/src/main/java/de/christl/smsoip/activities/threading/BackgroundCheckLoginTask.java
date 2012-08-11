@@ -52,7 +52,14 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
         ErrorReporterStack.put("BackgroundCheckLoginTask running");
         ExtendedSMSSupplier supplier = multiPreference.getSupplier();
         AccountModel accountModel = accountModels[0];
-        SMSActionResult smsActionResult = supplier.checkCredentials(accountModel.getUserName(), accountModel.getPass());
+        String userName = accountModel.getUserName();
+        String pass = accountModel.getPass();
+        SMSActionResult smsActionResult;
+        if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+            smsActionResult = SMSActionResult.NO_CREDENTIALS();
+        } else {
+            smsActionResult = supplier.checkCredentials(userName, pass);
+        }
         if (progressDialog != null && progressDialog.isShowing()) {
             publishProgress(smsActionResult.getMessage());
             try {

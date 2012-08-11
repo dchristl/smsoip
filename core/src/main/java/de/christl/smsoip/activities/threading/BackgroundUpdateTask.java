@@ -75,7 +75,14 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
         timer = new Timer();
         timer.schedule(task, 0, 500);
         try {
-            return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+            String userName = sendActivity.getSmSoIPPlugin().getProvider().getUserName();
+            String pass = sendActivity.getSmSoIPPlugin().getProvider().getPassword();
+            if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+                timer.cancel();
+                return SMSActionResult.NO_CREDENTIALS();
+            } else {
+                return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+            }
         } catch (Exception e) {    //TODO remove after stability improvements
             Log.e(this.getClass().getCanonicalName(), "", e);
             ErrorReporter.getInstance().handleSilentException(e);
@@ -108,25 +115,25 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
         if (timer != null) {
             timer.cancel();
         }
-        if (actionResult != null && actionResult.isSuccess()) {
+        if (actionResult != null && actionResult.isSuccess() && !isCancelled()) {
             final String infoText = actionResult.getMessage();
             sendActivity.updateInfoTextAndRefreshButton(infoText);
-        } else {
-            sendActivity.updateInfoTextAndRefreshButton(null);
+        } else if (actionResult != null) {
             if (!isCancelled()) {
                 this.cancel(true);
                 if (timer != null) {
                     timer.cancel();
                 }
-                if (retryCount <= MAX_RETRIES) {
+                if (actionResult.isRetryMakesSense() && retryCount <= MAX_RETRIES) {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         Log.e(this.getClass().getCanonicalName(), "", e);
                     }
                     new BackgroundUpdateTask(sendActivity, retryCount + 1).execute(null, null);
                 }
             }
+            sendActivity.updateInfoTextAndRefreshButton(actionResult.getMessage());
         }
         ErrorReporterStack.put("background update on post execute");
     }

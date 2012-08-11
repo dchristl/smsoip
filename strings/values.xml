@@ -70,6 +70,7 @@ fileName: strings.xml
     <string name="text_yesOption">Yes</string>
     <string name="text_noOption">No</string>
     <string name="text_checkCredentials">Pass will be checked.</string>
+    <string name="text_noCredentials">Credentials incomplete</string>
     <string name="button_openNetworkSettings">Networksettings</string>
     <string name="button_activateWLAN">Activate Wireless LAN</string>
     <string name="text_not_yet_allowed">Not yet allowed</string>

@@ -117,6 +117,8 @@ public abstract class OptionProvider {
             password = accountModel.getPass();
         } else {  // this can happen if default account is removed in preferences and application was killed
             initOptions();
+            userName = null;
+            password = null;
         }
 
     }

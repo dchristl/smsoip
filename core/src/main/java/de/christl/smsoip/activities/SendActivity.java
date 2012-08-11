@@ -33,7 +33,6 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.*;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -109,12 +108,12 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_DATE_TIME = "datetime";
 
     private Dialog lastDialog;
-    private static final String TAG = SendActivity.class.getCanonicalName();
     private boolean optionsCalled = false;
     private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
     private DateTimeObject dateTime;
     private AsyncTask<Void, String, SMSActionResult> backgroundUpdateTask;
+    private Integer currentAccountIndex;
 
     @Override
     protected void onResume() {
@@ -129,9 +128,11 @@ public class SendActivity extends AllActivity {
             smSoIPPlugin.getProvider().refresh();
             settings = PreferenceManager.getDefaultSharedPreferences(this);
             setFullTitle();
+            if (currentAccountIndex != null) { //set back the current account
+                smSoIPPlugin.getProvider().setCurrentAccountId(currentAccountIndex);
+                setFullTitle();
+            }
             optionsCalled = false;
-        } else if (smSoIPPlugin == null) {
-            Log.e(TAG, "SMSSupplier is null on resume");
         }
         if (providerOptionsCalled) {
             updateInfoTextSilent();
@@ -828,13 +829,17 @@ public class SendActivity extends AllActivity {
     FireSMSResultList sendByThread() {
         ErrorReporterStack.put("sendByThread" + smSoIPPlugin.getProviderName());
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
-        if (backgroundUpdateTask != null) {
-            backgroundUpdateTask.cancel(true);
-        }
-        if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
-            return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
+        String userName = smSoIPPlugin.getProvider().getUserName();
+        String pass = smSoIPPlugin.getProvider().getPassword();
+        if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_CREDENTIALS(), receiverList);
         } else {
-            return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
+            cancelUpdateTask();
+            if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
+                return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
+            } else {
+                return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
+            }
         }
     }
 
@@ -844,11 +849,10 @@ public class SendActivity extends AllActivity {
      *
      * @return
      */
+
     void refreshInformationText() {
         ErrorReporterStack.put("refreshInformationText" + smSoIPPlugin.getProviderName());
-        if (backgroundUpdateTask != null) {
-            backgroundUpdateTask.cancel(true);
-        }
+        cancelUpdateTask();
         backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
     }
 
@@ -1201,14 +1205,23 @@ public class SendActivity extends AllActivity {
     }
 
     private void switchAccount(Integer accountId) {
+        cancelUpdateTask();
         smSoIPPlugin.getProvider().setCurrentAccountId(accountId);
         setFullTitle();
         updateInfoTextSilent();
     }
 
+    private void cancelUpdateTask() {
+        if (backgroundUpdateTask != null) {
+            backgroundUpdateTask.cancel(true);
+        }
+    }
+
     private void changeSupplier(String supplierClassName) {
+        cancelUpdateTask();
         smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
         ErrorReporterStack.put("changeSupplier" + smSoIPPlugin.getProviderName());
+        smSoIPPlugin.getProvider().refresh();//refresh the provider to set back to the default account
         setFullTitle();
         //reset all not needed informations
         updateSMScounter();
@@ -1258,9 +1271,7 @@ public class SendActivity extends AllActivity {
             lastDialog.dismiss();
         }
         //cancel the update if running
-        if (backgroundUpdateTask != null) {
-            backgroundUpdateTask.cancel(true);
-        }
+        cancelUpdateTask();
         if (smSoIPPlugin != null) { //only save instance if provider is already chosen
             outState.putString(SAVED_INSTANCE_SUPPLIER, smSoIPPlugin.getSupplierClassName());
             outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, inputField.getText());
@@ -1268,7 +1279,7 @@ public class SendActivity extends AllActivity {
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
             outState.putInt(SAVED_INSTANCE_MODE, mode.ordinal());
-            Integer currentAccountIndex = smSoIPPlugin.getProvider().getCurrentAccountIndex();
+            currentAccountIndex = smSoIPPlugin.getProvider().getCurrentAccountIndex();
             if (currentAccountIndex != null) {
                 outState.putInt(SAVED_INSTANCE_ACCOUNT_ID, currentAccountIndex);
             }
