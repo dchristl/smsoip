@@ -62,7 +62,9 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
                 } else {
                     dots += ".";
                 }
-                publishProgress(dots);
+                if (!isCancelled()) {
+                    publishProgress(dots);
+                }
             }
 
             @Override
