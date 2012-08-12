@@ -78,7 +78,7 @@ public abstract class NumberUtils {
         return getValidatedString(text, new MultiAutoCompleteTextView.CommaTokenizer(), new NameNumberValidator());
     }
 
-    public static boolean isJustNumbers(CharSequence text) {
+    public static boolean isCorrectNumberInInternationalStyle(CharSequence text) {
         Matcher matcher = NUMBER_INPUT.matcher(text);
         return matcher.matches();
     }
@@ -89,13 +89,13 @@ public abstract class NumberUtils {
     }
 
     private static class NameNumberValidator implements AutoCompleteTextView.Validator {
-        private final Pattern JUST_NUMBERS = Pattern.compile("[0-9]+");
+        private final Pattern JUST_NUMBERS_OR_STARTED_WITH_PLUS = Pattern.compile("\\+?[0-9]+");
 
         @Override
         public boolean isValid(CharSequence text) {
             boolean matches = isCorrectNameNumber(text);
             if (!matches) {
-                matches = isJustNumbers(text);
+                matches = isCorrectNumberInInternationalStyle(text);
             }
             return matches;
         }
@@ -103,7 +103,7 @@ public abstract class NumberUtils {
 
         @Override
         public CharSequence fixText(CharSequence invalidText) {
-            Matcher matcher = JUST_NUMBERS.matcher(invalidText);
+            Matcher matcher = JUST_NUMBERS_OR_STARTED_WITH_PLUS.matcher(invalidText);
             boolean matches = matcher.matches();
             if (matches) {
                 String fixedNumber = NumberUtils.fixNumber(invalidText.toString());

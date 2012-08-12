@@ -91,7 +91,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
         for (String s : split) {
             String currentPart = s.trim();
             String unknown = getContext().getString(R.string.text_unknown);
-            if (NumberUtils.isJustNumbers(currentPart)) {
+            if (NumberUtils.isCorrectNumberInInternationalStyle(currentPart)) {
                 currentPart = NumberUtils.fixNumber(currentPart);
                 Receiver receiver = DatabaseHandler.findContactByNumber(currentPart, getContext());
                 if (receiver == null) {
