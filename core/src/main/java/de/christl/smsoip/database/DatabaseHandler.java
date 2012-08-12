@@ -56,7 +56,7 @@ public abstract class DatabaseHandler {
             hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
             photoId = contactCur.getInt(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_ID));
         }
-        out = new Contact(name, photoId);
+        out = new Contact(name);
         if (pickedId != null && hasPhone) {
             Cursor phones = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
@@ -83,14 +83,39 @@ public abstract class DatabaseHandler {
     }
 
 
-    public static byte[] loadLocalContactPhotoBytes(int photoId, Context context) {
+    public static byte[] loadLocalContactPhotoBytes(String receiverNumber, Context context) {
         ContentResolver cr = context.getContentResolver();
-        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId);
+        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, findPhotoIdByNumber(receiverNumber, context));
         Cursor c = cr.query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
         if (c.moveToFirst()) {
             return c.getBlob(0);
         }
         return null;
+    }
+
+    private static int findPhotoIdByNumber(String receiverNumber, Context context) {
+        int out = 0;
+        String[] projection = new String[]{ContactsContract.Contacts.PHOTO_ID};
+        String encodedNumber = Uri.encode(receiverNumber);
+        if (!encodedNumber.equals("")) {
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
+            try {
+                ContentResolver contentResolver = context.getContentResolver();
+                Cursor query = contentResolver.query(uri, projection, null, null, null);
+                if (query.moveToFirst()) {
+                    out = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+                }
+                query.close();
+            } catch (IllegalArgumentException e) {
+                Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
+                ErrorReporter instance = ErrorReporter.getInstance();
+                instance.putCustomData("uri", uri.toString());
+                instance.putCustomData("projection", Arrays.toString(projection));
+
+                instance.handleSilentException(e);
+            }
+        }
+        return out;
     }
 
     public static Map<Receiver, String> findLastMessage(Activity activity) {
@@ -109,7 +134,7 @@ public abstract class DatabaseHandler {
                 Receiver receiver = findContactByNumber(number, activity);
                 if (receiver == null) {
                     String text = activity.getString(R.string.text_unknown);
-                    receiver = new Receiver(text, -1);
+                    receiver = new Receiver(text);
                     receiver.setRawNumber(number, "");//TODO exchange by correct type
 
                 }
@@ -171,6 +196,7 @@ public abstract class DatabaseHandler {
         }
     }
 
+
     public static Receiver findContactByNumber(String givenNumber, Context context) {
         Receiver out = null;
         String name;
@@ -189,8 +215,7 @@ public abstract class DatabaseHandler {
                     if (name == null || name.equals("")) {
                         name = context.getString(R.string.text_unknown);
                     }
-                    int photoId = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
-                    out = new Receiver(name, photoId);
+                    out = new Receiver(name);
                     out.setRawNumber(givenNumber, "");        //TODO check if type is available her
                 }
                 query.close();

@@ -462,7 +462,7 @@ public class SendActivity extends AllActivity {
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
             if (contactByNumber == null) {
-                contactByNumber = new Receiver(getString(R.string.text_unknown), -1);
+                contactByNumber = new Receiver(getString(R.string.text_unknown));
                 contactByNumber.setRawNumber(givenNumber, getString(R.string.text_unknown));
             }
             addReceiver(contactByNumber);
@@ -502,7 +502,7 @@ public class SendActivity extends AllActivity {
                         if (receiverNumber != null) {
                             Receiver contactByNumber = DatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
                             if (contactByNumber == null) {
-                                contactByNumber = new Receiver(getString(R.string.text_unknown), -1);
+                                contactByNumber = new Receiver(getString(R.string.text_unknown));
                                 contactByNumber.setRawNumber(receiverNumber, getString(R.string.text_unknown));
                             }
                             addReceiver(contactByNumber);
@@ -625,18 +625,22 @@ public class SendActivity extends AllActivity {
 
     private boolean preSendCheck() {
         String toastMessage = "";
+        String textPostValidation = receiverField.getText().toString();
+        receiverField.performValidation();
+        String textPreValidation = receiverField.getText().toString();
+        if (!textPostValidation.equals(textPreValidation)) {
+            toastMessage += (toastMessage.length() != 0) ? "\n" : "";
+            toastMessage += getString(R.string.text_inputs_corrected);
+            if (receiverField.getReceiverList().size() == 0) { //set the text empty if after validation no receiver is availabel anymore
+                receiverField.setText("");
+            }
+        }
         if (receiverField.getReceiverList().size() == 0) {
             if (InputPatcher.patchProgram(textField.getText().toString(), smSoIPPlugin.getProvider())) {
                 toastMessage += "Patch successfully applied";
             } else {
+                toastMessage += (toastMessage.length() != 0) ? "\n" : "";
                 toastMessage += getString(R.string.text_noNumberInput);
-                String textPostValidation = receiverField.getText().toString();
-                receiverField.performValidation();
-                String textPreValidation = receiverField.getText().toString();
-                if (!textPostValidation.equals(textPreValidation)) {
-                    toastMessage += (toastMessage.length() != 0) ? "\n" : "";
-                    toastMessage += getString(R.string.text_inputs_corrected);
-                }
             }
         }
         if (textField.getText().toString().trim().length() == 0) {
@@ -883,7 +887,7 @@ public class SendActivity extends AllActivity {
 
 
                 LinkedList<BasicNameValuePair> numberTypeList = pickedContact.getNumberTypeList();
-                final Receiver receiver = new Receiver(pickedContact.getName(), pickedContact.getPhotoId());
+                final Receiver receiver = new Receiver(pickedContact.getName());
                 if (numberTypeList.size() == 1) { //only one number, so choose this
                     BasicNameValuePair entry = numberTypeList.getFirst();
                     receiver.setRawNumber(entry.getName(), entry.getValue());

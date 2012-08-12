@@ -86,7 +86,7 @@ public class ChosenContactsDialog extends Dialog {
                     LayoutParams.FILL_PARENT));
             ImageView imageView = new ImageView(this.getContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            byte[] bytes = DatabaseHandler.loadLocalContactPhotoBytes(receiver.getPhotoId(), this.getOwnerActivity());
+            byte[] bytes = DatabaseHandler.loadLocalContactPhotoBytes(receiver.getReceiverNumber(), this.getOwnerActivity());
             Bitmap bmp;
             if (bytes == null) { //no contact picture
                 bmp = BitmapFactory.decodeResource(getContext().getResources(),

@@ -27,13 +27,10 @@ import java.util.LinkedList;
  */
 public class Contact {
     private final String name;
-    private final int photoId;
     private LinkedList<BasicNameValuePair> numberTypeList = new LinkedList<BasicNameValuePair>();
 
-    public Contact(String name, int photoId) {
-        //To change body of created methods use File | Settings | File Templates.
+    public Contact(String name) {
         this.name = name;
-        this.photoId = photoId;
     }
 
     public void addNumber(String number, String numberType) {
@@ -48,7 +45,4 @@ public class Contact {
         return name;
     }
 
-    public int getPhotoId() {
-        return photoId;
-    }
 }

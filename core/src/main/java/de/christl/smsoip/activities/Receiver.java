@@ -29,18 +29,11 @@ import java.io.Serializable;
  */
 public class Receiver implements Serializable, Parcelable {
     private final String name;
-    private int photoId;
     private String receiverNumber;
     private String numberType;
     private String rawNumber;
     private boolean enabled;
 
-
-    public Receiver(String name, int photoId) {
-        this.name = name;
-        this.photoId = photoId;
-        this.enabled = true;
-    }
 
     public Receiver(String name) {
         this.name = name;
@@ -85,9 +78,6 @@ public class Receiver implements Serializable, Parcelable {
         receiverNumber = NumberUtils.fixNumber(rawNumber);
     }
 
-    public int getPhotoId() {
-        return photoId;
-    }
 
     @Override
     public int describeContents() {
@@ -98,7 +88,6 @@ public class Receiver implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeString(name);
-        dest.writeInt(photoId);
         dest.writeString(numberType);
         dest.writeString(rawNumber);
         dest.writeByte((byte) (enabled ? 1 : 0));
@@ -112,11 +101,10 @@ public class Receiver implements Serializable, Parcelable {
         @Override
         public Receiver createFromParcel(Parcel source) {
             String name = source.readString();
-            int photoId = source.readInt();
             String numberType = source.readString();
             String rawNumber = source.readString();
             byte enabled = source.readByte();
-            Receiver out = new Receiver(name, photoId);
+            Receiver out = new Receiver(name);
             out.setRawNumber(rawNumber, numberType);
             out.setEnabled(enabled == 1);
             return out;
