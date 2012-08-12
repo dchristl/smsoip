@@ -1336,14 +1336,6 @@ public class SendActivity extends AllActivity {
         setPreselectedContact(intent.getData());
     }
 
-    @Override
-    public boolean isChangingConfigurations() {
-        if (backgroundUpdateTask != null) {
-            backgroundUpdateTask.cancel(true);
-            backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
-        }
-        return super.isChangingConfigurations();
-    }
 
     public SMSoIPPlugin getSmSoIPPlugin() {
         return smSoIPPlugin;
