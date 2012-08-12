@@ -18,12 +18,9 @@
 
 package de.christl.smsoip.activities;
 
-import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
-import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.autosuggest.NumberUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -90,7 +87,7 @@ public class Receiver implements Serializable, Parcelable {
     }
 
     public void addNumber(String rawNumber, String type) {
-        String fixedNumber = fixNumber(rawNumber);
+        String fixedNumber = NumberUtils.fixNumber(rawNumber);
         fixedRawNumberMapping.put(fixedNumber, rawNumber);
         numberTypeMap.put(fixedNumber, type);
     }
@@ -98,20 +95,6 @@ public class Receiver implements Serializable, Parcelable {
 
     public Map<String, String> getNumberTypeMap() {
         return numberTypeMap;
-    }
-
-    private String fixNumber(String rawNumber) {
-        String out = rawNumber;
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
-        if (!out.startsWith("+") && !out.startsWith("00")) {   //area code not already added
-            out = out.replaceFirst("^0", "");        //replace leading zero
-            String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
-            String prefix = "00" + areaCode;
-            out = prefix + out;
-        } else {
-            out = out.replaceFirst("\\+", "00");  //replace plus if there
-        }
-        return out.replaceAll("[^0-9]", "");   //clean up not numbervalues
     }
 
 

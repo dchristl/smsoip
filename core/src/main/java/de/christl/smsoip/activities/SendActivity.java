@@ -49,6 +49,7 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.autosuggest.NameNumberSuggestField;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
@@ -72,7 +73,7 @@ import java.util.regex.Pattern;
 
 public class SendActivity extends AllActivity {
 
-    private EditText receiverField;
+    private NameNumberSuggestField receiverField;
     private EditText textField;
     private TextView smssigns;
     private Spinner spinner;
@@ -147,7 +148,7 @@ public class SendActivity extends AllActivity {
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         signsconstant = getText(R.string.text_smssigns);
-        receiverField = (MultiAutoCompleteTextView) findViewById(R.id.receiverField);
+        setAutoSuggestField();
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         smssigns = (TextView) findViewById(R.id.smssigns);
@@ -209,6 +210,31 @@ public class SendActivity extends AllActivity {
         showChangelogIfNeeded();
         setViewByMode(mode);
         ErrorReporterStack.put("onCreate");
+    }
+
+    private void setAutoSuggestField() {
+
+        receiverField = (NameNumberSuggestField) findViewById(R.id.receiverField);
+        receiverField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                String validatedString = NumberUtils.getValidatedString(s.toString());
+//                if (!validatedString.equals(s.toString())){
+//                     receiverField.setText(validatedString);
+//                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+//                Log.e("christl,", "text changed"  + s);
+            }
+        });
+
     }
 
     private void addModeSwitcher() {
@@ -921,13 +947,13 @@ public class SendActivity extends AllActivity {
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         } else if (updateView) {
+            receiverField.append(receiver);
             updateViewOnChangedReceivers();
         }
     }
 
 
     private void updateViewOnChangedReceivers() {
-        StringBuilder builder = new StringBuilder();
         //remove all disabled providers
         for (Iterator<Receiver> iterator = receiverList.iterator(); iterator.hasNext(); ) {
             Receiver next = iterator.next();
@@ -935,23 +961,10 @@ public class SendActivity extends AllActivity {
                 iterator.remove();
             }
         }
-        for (int i = 0, receiverListSize = receiverList.size(); i < receiverListSize; i++) {
-            Receiver receiver = receiverList.get(i);
-            builder.append(receiver.getName());
-            builder.append(i + 1 == receiverListSize ? "" : " ; ");
-        }
-        receiverField.setText(builder.toString());
         //update the marking of textfield
         View viewById = findViewById(R.id.showChosenContacts);
-        receiverField.setOnClickListener(null);
         if (receiverList.size() > 0) {
             viewById.setVisibility(View.VISIBLE);
-            receiverField.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showChosenContactsDialog();
-                }
-            });
         } else {
             viewById.setVisibility(View.GONE);
         }

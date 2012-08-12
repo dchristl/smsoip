@@ -29,6 +29,8 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.autosuggest.NameNumberEntry;
+import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.models.Message;
 import de.christl.smsoip.picker.DateTimeObject;
 import org.acra.ErrorReporter;
@@ -64,16 +66,20 @@ public abstract class DatabaseHandler {
             while (phones.moveToNext()) {
                 phoneNumber.put(phones.getString(
                         phones.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER)), phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA2)));
+                                ContactsContract.CommonDataKinds.Phone.NUMBER)), phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
             }
             phones.close();
             for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
-                String numberType = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(activity.getResources(), currEntry.getValue(), activity.getText(R.string.text_no_phone_type_label));
+                String numberType = translateTypeToString(activity, currEntry.getValue());
                 out.addNumber(currEntry.getKey(), numberType);
             }
 
         }
         return out;
+    }
+
+    private static String translateTypeToString(Context context, int value) {
+        return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.text_no_phone_type_label));
     }
 
 
@@ -203,6 +209,29 @@ public abstract class DatabaseHandler {
                 instance.handleSilentException(e);
             }
         }
+        return out;
+    }
+
+    public static List<NameNumberEntry> getAllContactsWithPhoneNumber(Context context) {
+        List<NameNumberEntry> out = new ArrayList<NameNumberEntry>();
+        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        while (cursor.moveToNext()) {
+            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+            String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+            boolean hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0;
+            if (hasPhone) {
+                //add contact to list if has number
+
+                Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                while (phones.moveToNext()) {
+                    String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    int phoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                    out.add(new NameNumberEntry(contactName, NumberUtils.fixNumber(phoneNumber), translateTypeToString(context, phoneType)));
+                }
+                phones.close();
+            }
+        }
+        cursor.close();
         return out;
     }
 }

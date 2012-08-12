@@ -30,7 +30,7 @@
             android:stretchColumns="0"
             >
         <TableRow>
-            <MultiAutoCompleteTextView
+            <de.christl.smsoip.autosuggest.NameNumberSuggestField
                     android:id="@+id/receiverField"
                     android:lines="1"
                     android:scrollbars="vertical"
@@ -38,9 +38,10 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_receiverField"
                     android:layout_weight="1"
+                    android:textSize="15dp"
                     android:layout_span="3"
                     >
-            </MultiAutoCompleteTextView>
+            </de.christl.smsoip.autosuggest.NameNumberSuggestField>
             <ImageButton
                     android:id="@+id/showChosenContacts"
                     android:layout_width="wrap_content"
