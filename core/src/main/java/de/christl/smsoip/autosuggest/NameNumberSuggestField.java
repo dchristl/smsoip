@@ -90,15 +90,14 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
         boolean tooMuchReceivers = false;
         for (String s : split) {
             String currentPart = s.trim();
-            String unknown = getContext().getString(R.string.text_unknown);
             if (NumberUtils.isCorrectNumberInInternationalStyle(currentPart)) {
                 currentPart = NumberUtils.fixNumber(currentPart);
                 Receiver receiver = DatabaseHandler.findContactByNumber(currentPart, getContext());
                 if (receiver == null) {
-                    receiver = new Receiver(unknown);
-                    receiver.setReceiverNumber(currentPart, unknown);
+                    receiver = new Receiver(getContext().getString(R.string.text_unknown));
+                    receiver.setReceiverNumber(currentPart, getContext().getString(R.string.text_no_phone_type_label));
                 }
-                if (tmpList.size()  < maxReceiverCount) {
+                if (tmpList.size() < maxReceiverCount) {
                     addedTwice |= tmpList.addWithAlreadyInsertedCheck(receiver);
                 } else {
                     tooMuchReceivers |= true;
@@ -107,7 +106,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
                 String name = currentPart.replaceAll(" \\(.*", "");
                 String number = currentPart.replaceAll(".* \\(", "");
                 Receiver receiver = new Receiver(name);
-                receiver.setRawNumber(number, unknown); //number will be fixed automatically
+                receiver.setRawNumber(number, getContext().getString(R.string.text_no_phone_type_label)); //number will be fixed automatically
                 if (tmpList.size() < maxReceiverCount) {
                     addedTwice |= tmpList.addWithAlreadyInsertedCheck(receiver);
                 } else {
@@ -120,7 +119,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
         synchronized (lock) {
             receiverList = tmpList;
         }
-        if (tooMuchReceivers){
+        if (tooMuchReceivers) {
             updateTextContent();
         }
         for (ReceiverChangedListener receiverChangedListener : listenerList) {

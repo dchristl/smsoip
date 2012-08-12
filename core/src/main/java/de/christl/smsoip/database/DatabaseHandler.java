@@ -49,12 +49,10 @@ public abstract class DatabaseHandler {
         String name = null;
         Contact out;
         Cursor contactCur = activity.managedQuery(contactData, null, null, null, null);
-        int photoId = 0;
         if (contactCur.moveToFirst()) {
             pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
             name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
-            photoId = contactCur.getInt(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_ID));
         }
         out = new Contact(name);
         if (pickedId != null && hasPhone) {
@@ -135,7 +133,7 @@ public abstract class DatabaseHandler {
                 if (receiver == null) {
                     String text = activity.getString(R.string.text_unknown);
                     receiver = new Receiver(text);
-                    receiver.setRawNumber(number, "");//TODO exchange by correct type
+                    receiver.setRawNumber(number, activity.getString(R.string.text_unknown));//TODO exchange by correct type
 
                 }
                 out.put(receiver, msg);
@@ -216,7 +214,7 @@ public abstract class DatabaseHandler {
                         name = context.getString(R.string.text_unknown);
                     }
                     out = new Receiver(name);
-                    out.setRawNumber(givenNumber, "");        //TODO check if type is available her
+                    out.setRawNumber(givenNumber, context.getString(R.string.text_unknown));        //TODO check if type is available her
                 }
                 query.close();
             } catch (IllegalArgumentException e) {

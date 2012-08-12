@@ -463,7 +463,7 @@ public class SendActivity extends AllActivity {
             Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
             if (contactByNumber == null) {
                 contactByNumber = new Receiver(getString(R.string.text_unknown));
-                contactByNumber.setRawNumber(givenNumber, getString(R.string.text_unknown));
+                contactByNumber.setRawNumber(givenNumber, getString(R.string.text_no_phone_type_label));
             }
             addReceiver(contactByNumber);
         }
@@ -503,7 +503,7 @@ public class SendActivity extends AllActivity {
                             Receiver contactByNumber = DatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
                             if (contactByNumber == null) {
                                 contactByNumber = new Receiver(getString(R.string.text_unknown));
-                                contactByNumber.setRawNumber(receiverNumber, getString(R.string.text_unknown));
+                                contactByNumber.setRawNumber(receiverNumber, getString(R.string.text_no_phone_type_label));
                             }
                             addReceiver(contactByNumber);
                         }
@@ -912,7 +912,7 @@ public class SendActivity extends AllActivity {
                                     break;
                                 }
                             }
-                            receiver.setRawNumber(key, ""); //TODO check if we can get back the type
+                            receiver.setRawNumber(key, getString(R.string.text_no_phone_type_label)); //TODO check if we can get back the type
                             addReceiver(receiver);
                         }
                     });
