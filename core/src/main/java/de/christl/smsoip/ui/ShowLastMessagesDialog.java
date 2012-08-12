@@ -61,6 +61,7 @@ public class ShowLastMessagesDialog extends Dialog {
         setContentView(R.layout.showlastmessagesdialog);
 
         Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage((Activity) context);
+        String defaultUnknownText = context.getString(R.string.text_unknown);
         if (lastMessage.size() > 0) {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
                 final Receiver receiver = receiverStringEntry.getKey();
@@ -74,7 +75,9 @@ public class ShowLastMessagesDialog extends Dialog {
                 String message = receiverStringEntry.getValue();
                 TextView contact = (TextView) findViewById(R.id.contact);
                 contact.setTypeface(null, Typeface.ITALIC);
-                SpannableString content = new SpannableString(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
+
+                String name = receiver.getName();
+                SpannableString content = new SpannableString(name.equals(defaultUnknownText) ? receiver.getRawNumber() : name);
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                 contact.setText(content);
                 contact.setOnClickListener(onClickListener);
@@ -99,7 +102,8 @@ public class ShowLastMessagesDialog extends Dialog {
             receiverView.setPadding(5, 5, 5, 0);
             receiverView.setGravity(Gravity.CENTER);
             receiverView.setTypeface(null, Typeface.ITALIC);
-            SpannableString content = new SpannableString(receiver.isUnknown() ? receiver.getRawNumber() : receiver.getName());
+            String name = receiver.getName();
+            SpannableString content = new SpannableString(name.equals(defaultUnknownText) ? receiver.getRawNumber() : name);
             content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
             receiverView.setText(content);
             layout.addView(receiverView);

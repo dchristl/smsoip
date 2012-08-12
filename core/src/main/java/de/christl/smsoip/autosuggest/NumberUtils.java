@@ -22,8 +22,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
+import de.christl.smsoip.R;
+import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.database.DatabaseHandler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +35,9 @@ import java.util.regex.Pattern;
  * little helper for number mapping
  */
 public abstract class NumberUtils {
+
+    private static final Pattern NAME_NUMBER_INPUT = Pattern.compile(".+ \\(00[0-9]+\\)");
+    private static final Pattern NUMBER_INPUT = Pattern.compile("00[0-9]+");
 
     public static String fixNumber(String rawNumber) {
         String out = rawNumber;
@@ -72,29 +78,42 @@ public abstract class NumberUtils {
         return getValidatedString(text, new MultiAutoCompleteTextView.CommaTokenizer(), new NameNumberValidator());
     }
 
-    private static class NameNumberValidator implements AutoCompleteTextView.Validator {
+    public static boolean isJustNumbers(CharSequence text) {
+        Matcher matcher = NUMBER_INPUT.matcher(text);
+        return matcher.matches();
+    }
 
-        private final Pattern NAME_NUMBER_INPUT = Pattern.compile(".+ \\(00[0-9]+\\)");
-        private final Pattern NUMBER_INPUT = Pattern.compile("00[0-9]+");
+    public static boolean isCorrectNameNumber(CharSequence text) {
+        Matcher matcher = NAME_NUMBER_INPUT.matcher(text);
+        return matcher.matches();
+    }
+
+    private static class NameNumberValidator implements AutoCompleteTextView.Validator {
         private final Pattern JUST_NUMBERS = Pattern.compile("[0-9]+");
 
         @Override
         public boolean isValid(CharSequence text) {
-            Matcher matcher = NAME_NUMBER_INPUT.matcher(text);
-            boolean matches = matcher.matches();
+            boolean matches = isCorrectNameNumber(text);
             if (!matches) {
-                matcher = NUMBER_INPUT.matcher(text);
-                matches = matcher.matches();
+                matches = isJustNumbers(text);
             }
             return matches;
         }
+
 
         @Override
         public CharSequence fixText(CharSequence invalidText) {
             Matcher matcher = JUST_NUMBERS.matcher(invalidText);
             boolean matches = matcher.matches();
             if (matches) {
-                return fixNumber(invalidText.toString());
+                String fixedNumber = NumberUtils.fixNumber(invalidText.toString());
+                Receiver receiver = DatabaseHandler.findContactByNumber(fixedNumber, SMSoIPApplication.getApp().getBaseContext());
+                String textUnknown = SMSoIPApplication.getApp().getString(R.string.text_unknown);
+                NameNumberEntry tmpEntry = new NameNumberEntry(textUnknown, fixedNumber, textUnknown);
+                if (receiver != null) {
+                    tmpEntry = new NameNumberEntry(receiver.getName(), receiver.getReceiverNumber(), receiver.getNumberType());
+                }
+                return tmpEntry.getFieldRepresantation();
             } else {
                 return "";
             }

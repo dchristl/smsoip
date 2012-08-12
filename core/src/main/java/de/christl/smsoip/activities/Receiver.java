@@ -23,55 +23,37 @@ import android.os.Parcelable;
 import de.christl.smsoip.autosuggest.NumberUtils;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class for one receiver
  */
 public class Receiver implements Serializable, Parcelable {
-    private final String pickedId;
     private final String name;
     private int photoId;
-    private String receiverNumber = null;
+    private String receiverNumber;
+    private String numberType;
+    private String rawNumber;
     private boolean enabled;
-    private HashMap<String, String> fixedRawNumberMapping = new HashMap<String, String>();
-    private HashMap<String, String> numberTypeMap = new HashMap<String, String>();
 
-    public Receiver(String pickedId, String name, int photoId) {
-        this.pickedId = pickedId;
+
+    public Receiver(String name, int photoId) {
         this.name = name;
         this.photoId = photoId;
         this.enabled = true;
     }
 
-    public Receiver(String pickedId, String name) {
-        this.pickedId = pickedId;
+    public Receiver(String name) {
         this.name = name;
         this.enabled = true;
     }
 
-    public void setNumberTypeMap(HashMap<String, String> numberTypeMap) {
-        this.numberTypeMap = numberTypeMap;
-    }
-
-    public void setFixedRawNumberMapping(HashMap<String, String> fixedRawNumberMapping) {
-        this.fixedRawNumberMapping = fixedRawNumberMapping;
-    }
 
     public String getName() {
         return name;
     }
 
-    public String getPickedId() {
-        return pickedId;
-    }
-
-    public void setReceiverNumber(String receiverNumber) {
-        if (!numberTypeMap.containsKey(receiverNumber)) {
-            throw new IllegalArgumentException(); //for insurance
-        }
-        this.receiverNumber = receiverNumber;
+    public String getRawNumber() {
+        return rawNumber;
     }
 
     public String getReceiverNumber() {
@@ -86,29 +68,21 @@ public class Receiver implements Serializable, Parcelable {
         this.enabled = enabled;
     }
 
-    public void addNumber(String rawNumber, String type) {
-        String fixedNumber = NumberUtils.fixNumber(rawNumber);
-        fixedRawNumberMapping.put(fixedNumber, rawNumber);
-        numberTypeMap.put(fixedNumber, type);
+
+    public String getNumberType() {
+        return numberType;
     }
 
-
-    public Map<String, String> getNumberTypeMap() {
-        return numberTypeMap;
+    public void setReceiverNumber(String receiverNumber, String numberType) {
+        this.receiverNumber = receiverNumber;
+        this.numberType = numberType;
+        this.rawNumber = receiverNumber;
     }
 
-
-    public String getRawNumber() {
-        return fixedRawNumberMapping.get(receiverNumber);
-    }
-
-    public String getFixedNumberByRawNumber(String rawNumber) {
-        for (Map.Entry<String, String> stringStringEntry : fixedRawNumberMapping.entrySet()) {
-            if (stringStringEntry.getValue().equals(rawNumber)) {
-                return stringStringEntry.getKey();
-            }
-        }
-        return null;
+    public void setRawNumber(String rawNumber, String numberType) {
+        this.rawNumber = rawNumber;
+        this.numberType = numberType;
+        receiverNumber = NumberUtils.fixNumber(rawNumber);
     }
 
     public int getPhotoId() {
@@ -123,12 +97,10 @@ public class Receiver implements Serializable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
-        dest.writeString(pickedId);
         dest.writeString(name);
         dest.writeInt(photoId);
-        dest.writeSerializable(fixedRawNumberMapping);
-        dest.writeSerializable(numberTypeMap);
-        dest.writeString(receiverNumber);
+        dest.writeString(numberType);
+        dest.writeString(rawNumber);
         dest.writeByte((byte) (enabled ? 1 : 0));
 
     }
@@ -139,19 +111,14 @@ public class Receiver implements Serializable, Parcelable {
 
         @Override
         public Receiver createFromParcel(Parcel source) {
-            String pickedId = source.readString();
             String name = source.readString();
             int photoId = source.readInt();
-            Receiver out = new Receiver(pickedId, name, photoId);
-
-            HashMap<String, String> fixedRawNumberMapping = (HashMap<String, String>) source.readSerializable();
-            HashMap<String, String> numberTypeMap = (HashMap<String, String>) source.readSerializable();
-            out.setFixedRawNumberMapping(fixedRawNumberMapping);
-            out.setNumberTypeMap(numberTypeMap);
-            String receiverNumber = source.readString();
-            out.setReceiverNumber(receiverNumber);
-            boolean enabled = source.readByte() == 1;
-            out.setEnabled(enabled);
+            String numberType = source.readString();
+            String rawNumber = source.readString();
+            byte enabled = source.readByte();
+            Receiver out = new Receiver(name, photoId);
+            out.setRawNumber(rawNumber, numberType);
+            out.setEnabled(enabled == 1);
             return out;
         }
 
@@ -161,20 +128,5 @@ public class Receiver implements Serializable, Parcelable {
         }
     };
 
-    @Override
-    public String toString() {
-        return "Receiver{" +
-                "pickedId='" + pickedId + '\'' +
-                ", name='" + name + '\'' +
-                ", photoId=" + photoId +
-                ", receiverNumber='" + receiverNumber + '\'' +
-                ", enabled=" + enabled +
-                ", fixedRawNumberMapping=" + fixedRawNumberMapping +
-                ", numberTypeMap=" + numberTypeMap +
-                '}';
-    }
 
-    public boolean isUnknown() {
-        return pickedId.equals("-1");
-    }
 }

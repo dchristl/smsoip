@@ -53,6 +53,7 @@ import de.christl.smsoip.autosuggest.NameNumberSuggestField;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.database.Contact;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
@@ -65,6 +66,7 @@ import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -96,7 +98,7 @@ public class SendActivity extends AllActivity {
     private static final int DIALOG_SWITCH_ACCOUNT = 36;
 
     private SharedPreferences settings;
-    private CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
+    //    private CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
     private static final String SAVED_INSTANCE_SUPPLIER = "supplier";
@@ -186,8 +188,9 @@ public class SendActivity extends AllActivity {
             setDateTimePickerDialog();
             receiverField.setText(savedInstanceState.getCharSequence(SAVED_INSTANCE_INPUTFIELD));
             ArrayList<Receiver> tmpReceiverList = savedInstanceState.getParcelableArrayList(SAVED_INSTANCE_RECEIVERS);
-            receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
+            CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList(); //simple copy, cause of unknown compile error
             receiverList.addAll(tmpReceiverList);
+            receiverField.setReceiverList(receiverList);
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
             updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO));
@@ -215,23 +218,15 @@ public class SendActivity extends AllActivity {
     private void setAutoSuggestField() {
 
         receiverField = (NameNumberSuggestField) findViewById(R.id.receiverField);
-        receiverField.addTextChangedListener(new TextWatcher() {
+        receiverField.addReceiverChangedListener(new NameNumberSuggestField.ReceiverChangedListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                String validatedString = NumberUtils.getValidatedString(s.toString());
-//                if (!validatedString.equals(s.toString())){
-//                     receiverField.setText(validatedString);
-//                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-//                Log.e("christl,", "text changed"  + s);
+            public void onReceiverChanged(boolean addedTwice, boolean tooMuchReceivers) {
+                setVisibilityByCurrentReceivers();
+                if (tooMuchReceivers) {
+                    showTooMuchReceiversToast();
+                } else if (addedTwice) {
+                    showAddedTwiceToast();
+                }
             }
         });
 
@@ -467,10 +462,10 @@ public class SendActivity extends AllActivity {
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
             if (contactByNumber == null) {
-                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
-                contactByNumber.addNumber(givenNumber, getText(R.string.text_unknown).toString());
+                contactByNumber = new Receiver(getString(R.string.text_unknown), -1);
+                contactByNumber.setRawNumber(givenNumber, getString(R.string.text_unknown));
             }
-            addToReceiverList(contactByNumber, contactByNumber.getFixedNumberByRawNumber(givenNumber), smSoIPPlugin != null);
+            addReceiver(contactByNumber);
         }
     }
 
@@ -499,7 +494,7 @@ public class SendActivity extends AllActivity {
             @Override
             public void onClick(View v) {
                 ErrorReporterStack.put("lastMessagesButtonClicked");
-                final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverList);
+                final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverField.getReceiverList());
                 lastMessageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
@@ -507,11 +502,10 @@ public class SendActivity extends AllActivity {
                         if (receiverNumber != null) {
                             Receiver contactByNumber = DatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
                             if (contactByNumber == null) {
-                                contactByNumber = new Receiver("-1", getText(R.string.text_unknown).toString(), 0);
-                                contactByNumber.addNumber(receiverNumber, getText(R.string.text_unknown).toString());
+                                contactByNumber = new Receiver(getString(R.string.text_unknown), -1);
+                                contactByNumber.setRawNumber(receiverNumber, getString(R.string.text_unknown));
                             }
-                            String number = contactByNumber.getFixedNumberByRawNumber(receiverNumber);
-                            addToReceiverList(contactByNumber, number, true);
+                            addReceiver(contactByNumber);
                         }
                     }
                 });
@@ -559,7 +553,7 @@ public class SendActivity extends AllActivity {
 
     private void showChosenContactsDialog() {
         ErrorReporterStack.put("showChosenContactsDialog");
-        chosenContactsDialog = new ChosenContactsDialog(this, receiverList);
+        chosenContactsDialog = new ChosenContactsDialog(this, receiverField.getReceiverList());
         chosenContactsDialog.setOwnerActivity(this);
         chosenContactsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -631,11 +625,18 @@ public class SendActivity extends AllActivity {
 
     private boolean preSendCheck() {
         String toastMessage = "";
-        if (receiverList.size() == 0) {
+        if (receiverField.getReceiverList().size() == 0) {
             if (InputPatcher.patchProgram(textField.getText().toString(), smSoIPPlugin.getProvider())) {
                 toastMessage += "Patch successfully applied";
             } else {
                 toastMessage += getString(R.string.text_noNumberInput);
+                String textPostValidation = receiverField.getText().toString();
+                receiverField.performValidation();
+                String textPreValidation = receiverField.getText().toString();
+                if (!textPostValidation.equals(textPreValidation)) {
+                    toastMessage += (toastMessage.length() != 0) ? "\n" : "";
+                    toastMessage += getString(R.string.text_inputs_corrected);
+                }
             }
         }
         if (textField.getText().toString().trim().length() == 0) {
@@ -655,6 +656,7 @@ public class SendActivity extends AllActivity {
             toast.show();
             return false;
         }
+
         return true;
     }
 
@@ -698,7 +700,7 @@ public class SendActivity extends AllActivity {
 
 
     private void clearAllInputs() {
-        receiverList.clear();
+        receiverField.clearReceiverList();
         textField.setText("");
         resetDateTimePicker();
         updateViewOnChangedReceivers();
@@ -726,7 +728,7 @@ public class SendActivity extends AllActivity {
             infoView.setText(smsActionResult.getMessage());
             infoViewUpper.setText(smsActionResult.getMessage() + " " + getString(R.string.text_click));
         } else {     //on error show the ImageDialog
-            lastInfoDialog = new EmoImageDialog(this, FireSMSResultList.getAllInOneResult(smsActionResult, receiverList), smsActionResult.getMessage());
+            lastInfoDialog = new EmoImageDialog(this, FireSMSResultList.getAllInOneResult(smsActionResult, receiverField.getReceiverList()), smsActionResult.getMessage());
             lastInfoDialog.setOwnerActivity(this);
             lastInfoDialog.show();
             killDialogAfterAWhile(lastInfoDialog);
@@ -840,6 +842,7 @@ public class SendActivity extends AllActivity {
      */
     FireSMSResultList sendByThread() {
         ErrorReporterStack.put("sendByThread" + smSoIPPlugin.getProviderName());
+        CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
         String userName = smSoIPPlugin.getProvider().getUserName();
         String pass = smSoIPPlugin.getProvider().getPassword();
@@ -873,23 +876,27 @@ public class SendActivity extends AllActivity {
                                     Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
             Uri contactData = data.getData();
-            final Receiver pickedReceiver = DatabaseHandler.getPickedContactData(contactData, this);
+            final Contact pickedContact = DatabaseHandler.getPickedContactData(contactData, this);
 
-            if (!pickedReceiver.getNumberTypeMap().isEmpty()) { //nothing picked or no number
+            if (!pickedContact.getNumberTypeList().isEmpty()) { //nothing picked or no number
                 //always one contact, so it will be filled always
 
-                final Map<String, String> numberTypeMap = pickedReceiver.getNumberTypeMap();
-                if (numberTypeMap.size() == 1) { //only one number, so choose this
-                    addToReceiverList(pickedReceiver, (String) numberTypeMap.keySet().toArray()[0], true);
+
+                LinkedList<BasicNameValuePair> numberTypeList = pickedContact.getNumberTypeList();
+                final Receiver receiver = new Receiver(pickedContact.getName(), pickedContact.getPhotoId());
+                if (numberTypeList.size() == 1) { //only one number, so choose this
+                    BasicNameValuePair entry = numberTypeList.getFirst();
+                    receiver.setRawNumber(entry.getName(), entry.getValue());
+                    addReceiver(receiver);
 
                 } else { //more than one number for contact
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                    builder.setTitle(String.format(getText(R.string.text_pickNumber).toString(), pickedReceiver.getName()));
+                    builder.setTitle(String.format(getString(R.string.text_pickNumber), pickedContact.getName()));
                     //build a map of string on screen with corresponding number for layout
                     final Map<String, String> presentationMap = new HashMap<String, String>();
-                    for (Map.Entry<String, String> numberTypes : numberTypeMap.entrySet()) {
-                        presentationMap.put(numberTypes.getKey() + " (" + numberTypes.getValue() + ")", numberTypes.getKey());
+                    for (BasicNameValuePair basicNameValuePair : numberTypeList) {
+                        presentationMap.put(basicNameValuePair.getName() + " (" + basicNameValuePair.getValue() + ")", basicNameValuePair.getName());
                     }
                     final String[] items = presentationMap.keySet().toArray(new String[presentationMap.size()]);
                     builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -901,7 +908,8 @@ public class SendActivity extends AllActivity {
                                     break;
                                 }
                             }
-                            addToReceiverList(pickedReceiver, key, true);
+                            receiver.setRawNumber(key, ""); //TODO check if we can get back the type
+                            addReceiver(receiver);
                         }
                     });
                     AlertDialog alert = builder.create();
@@ -911,7 +919,7 @@ public class SendActivity extends AllActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 
-                builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedReceiver.getName()))
+                builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedContact.getName()))
                         .setCancelable(false)
                         .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -927,13 +935,21 @@ public class SendActivity extends AllActivity {
 
     }
 
-
-    private void addToReceiverList(Receiver receiver, String receiverNumber, boolean updateView) {
-        ErrorReporterStack.put("addToReceiverList");
+    /**
+     * add a receiver and check all prerequisites for adding
+     *
+     * @param receiver
+     */
+    private void addReceiver(Receiver receiver) {
+        ErrorReporterStack.put("addToReceiver");
+        CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         if (smSoIPPlugin == null || receiverList.size() < smSoIPPlugin.getProvider().getMaxReceiverCount()) {  //check only if smsoipPlugin is already set
-            receiver.setReceiverNumber(receiverNumber);
-            addReceiver(receiver, updateView);
-
+            if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
+                showAddedTwiceToast();
+            } else if (smSoIPPlugin != null) { //update only if plugin already set
+                receiverField.updateTextContent();//is already added by addWithAlreadyInsertedCheck
+                updateViewOnChangedReceivers();
+            }
         } else {
             toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
@@ -941,28 +957,33 @@ public class SendActivity extends AllActivity {
         }
     }
 
-    private void addReceiver(Receiver receiver, boolean updateView) {
-        if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
-            toast.setText(R.string.text_receiver_added_twice);
-            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-            toast.show();
-        } else if (updateView) {
-            receiverField.append(receiver);
-            updateViewOnChangedReceivers();
-        }
+    private void showAddedTwiceToast() {
+        toast.setText(R.string.text_receiver_added_twice);
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
 
     private void updateViewOnChangedReceivers() {
         //remove all disabled providers
+        CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         for (Iterator<Receiver> iterator = receiverList.iterator(); iterator.hasNext(); ) {
             Receiver next = iterator.next();
             if (!next.isEnabled()) {
                 iterator.remove();
             }
         }
+        receiverField.setMaxReceivers(smSoIPPlugin.getProvider().getMaxReceiverCount());
+        receiverField.updateTextContent();//if some is removed
         //update the marking of textfield
+        setVisibilityByCurrentReceivers();
+        setInfoButtonVisibility();
+        setDateTimePickerDialog();
+    }
+
+    private void setVisibilityByCurrentReceivers() {
         View viewById = findViewById(R.id.showChosenContacts);
+        List receiverList = receiverField.getReceiverList();
         if (receiverList.size() > 0) {
             viewById.setVisibility(View.VISIBLE);
         } else {
@@ -974,8 +995,6 @@ public class SendActivity extends AllActivity {
         } else {
             searchButton.setVisibility(View.VISIBLE);
         }
-        setInfoButtonVisibility();
-        setDateTimePickerDialog();
     }
 
     private void setInfoButtonVisibility() {
@@ -1170,6 +1189,7 @@ public class SendActivity extends AllActivity {
         cancelUpdateTask();
         smSoIPPlugin.getProvider().setCurrentAccountId(accountId);
         setFullTitle();
+        receiverField.setMaxReceivers(smSoIPPlugin.getProvider().getMaxReceiverCount());
         updateInfoTextSilent();
     }
 
@@ -1184,6 +1204,7 @@ public class SendActivity extends AllActivity {
         smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
         ErrorReporterStack.put("changeSupplier" + smSoIPPlugin.getProviderName());
         smSoIPPlugin.getProvider().refresh();//refresh the provider to set back to the default account
+        receiverField.setMaxReceivers(smSoIPPlugin.getProvider().getMaxReceiverCount());
         setFullTitle();
         //reset all not needed informations
         updateSMScounter();
@@ -1197,19 +1218,24 @@ public class SendActivity extends AllActivity {
 
     public void updateAfterReceiverCountChanged() {
         int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
+        CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         if (receiverList.size() > maxReceiverCount) {
             CheckForDuplicatesArrayList newReceiverList = new CheckForDuplicatesArrayList();
             for (int i = 0; i < maxReceiverCount; i++) {
                 newReceiverList.add(receiverList.get(i));
 
             }
-            receiverList = newReceiverList;
+            receiverField.setReceiverList(newReceiverList);
             updateViewOnChangedReceivers();
-            toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), maxReceiverCount));
-            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-            toast.show();
+            showTooMuchReceiversToast();
         }
         updateViewOnChangedReceivers();
+    }
+
+    private void showTooMuchReceiversToast() {
+        toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
 
@@ -1237,7 +1263,7 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin != null) { //only save instance if provider is already chosen
             outState.putString(SAVED_INSTANCE_SUPPLIER, smSoIPPlugin.getSupplierClassName());
             outState.putCharSequence(SAVED_INSTANCE_INPUTFIELD, receiverField.getText());
-            outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverList);
+            outState.putParcelableArrayList(SAVED_INSTANCE_RECEIVERS, receiverField.getReceiverList());
             CharSequence infoText = ((TextView) findViewById(R.id.infoText)).getText();
             outState.putCharSequence(SAVED_INSTANCE_INFO, infoText);
             outState.putInt(SAVED_INSTANCE_MODE, mode.ordinal());
@@ -1291,7 +1317,7 @@ public class SendActivity extends AllActivity {
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
             clearAllInputs();
         } else {
-            receiverList.removeAll(fireSMSResults.getSuccessList());
+            receiverField.getReceiverList().removeAll(fireSMSResults.getSuccessList());
             updateViewOnChangedReceivers();
         }
     }

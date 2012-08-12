@@ -169,4 +169,8 @@
     <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
         incoming messages, too. If you have problems please disable this option.
     </string>
+    <string name="text_inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
+        correctness and send again.
+    </string>
+    <string name="text_false_inputs_corrected">Wrong receiver inputs removed!</string>
 </resources>

@@ -43,11 +43,11 @@ import java.util.*;
 public abstract class DatabaseHandler {
 
 
-    public static Receiver getPickedContactData(Uri contactData, Activity activity) {
+    public static Contact getPickedContactData(Uri contactData, Activity activity) {
         String pickedId = null;
         boolean hasPhone = false;
         String name = null;
-        Receiver out;
+        Contact out;
         Cursor contactCur = activity.managedQuery(contactData, null, null, null, null);
         int photoId = 0;
         if (contactCur.moveToFirst()) {
@@ -56,7 +56,7 @@ public abstract class DatabaseHandler {
             hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
             photoId = contactCur.getInt(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_ID));
         }
-        out = new Receiver(pickedId, name, photoId);
+        out = new Contact(name, photoId);
         if (pickedId != null && hasPhone) {
             Cursor phones = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
@@ -109,12 +109,10 @@ public abstract class DatabaseHandler {
                 Receiver receiver = findContactByNumber(number, activity);
                 if (receiver == null) {
                     String text = activity.getString(R.string.text_unknown);
-                    receiver = new Receiver("-1", text, 0);
-                    receiver.addNumber(number, text);
+                    receiver = new Receiver(text, -1);
+                    receiver.setRawNumber(number, "");//TODO exchange by correct type
 
                 }
-                String fixedNumber = receiver.getFixedNumberByRawNumber(number);
-                receiver.setReceiverNumber(fixedNumber);
                 out.put(receiver, msg);
 
             }
@@ -191,13 +189,9 @@ public abstract class DatabaseHandler {
                     if (name == null || name.equals("")) {
                         name = context.getString(R.string.text_unknown);
                     }
-                    String id = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup._ID));
-                    if (id == null || id.equals("")) {
-                        id = "-1";
-                    }
                     int photoId = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
-                    out = new Receiver(id, name, photoId);
-                    out.addNumber(givenNumber, "");
+                    out = new Receiver(name, photoId);
+                    out.setRawNumber(givenNumber, "");        //TODO check if type is available her
                 }
                 query.close();
             } catch (IllegalArgumentException e) {

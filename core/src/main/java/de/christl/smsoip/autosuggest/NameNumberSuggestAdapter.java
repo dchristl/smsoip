@@ -69,6 +69,11 @@ public class NameNumberSuggestAdapter extends ArrayAdapter<NameNumberEntry> {
         return position;
     }
 
+
+    public List<NameNumberEntry> getFilteredItems() {
+        return filteredItems;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
