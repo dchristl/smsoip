@@ -18,7 +18,6 @@
 
 package de.christl.smsoip.database;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -43,20 +42,21 @@ import java.util.*;
 public abstract class DatabaseHandler {
 
 
-    public static Contact getPickedContactData(Uri contactData, Activity activity) {
+    public static Contact getPickedContactData(Uri contactData, Context context) {
         String pickedId = null;
         boolean hasPhone = false;
         String name = null;
         Contact out;
-        Cursor contactCur = activity.managedQuery(contactData, null, null, null, null);
+        Cursor contactCur = context.getContentResolver().query(contactData, null, null, null, null);
         if (contactCur.moveToFirst()) {
             pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
             name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
         }
+        contactCur.close();
         out = new Contact(name);
         if (pickedId != null && hasPhone) {
-            Cursor phones = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     null,
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                     new String[]{pickedId}, null);
@@ -68,7 +68,7 @@ public abstract class DatabaseHandler {
             }
             phones.close();
             for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
-                String numberType = translateTypeToString(activity, currEntry.getValue());
+                String numberType = translateTypeToString(context, currEntry.getValue());
                 out.addNumber(currEntry.getKey(), numberType);
             }
 
@@ -88,6 +88,7 @@ public abstract class DatabaseHandler {
         if (c.moveToFirst()) {
             return c.getBlob(0);
         }
+        c.close();
         return null;
     }
 
@@ -116,30 +117,28 @@ public abstract class DatabaseHandler {
         return out;
     }
 
-    public static Map<Receiver, String> findLastMessage(Activity activity) {
+    public static Map<Receiver, String> findLastMessage(Context context) {
         Map<Receiver, String> out = new HashMap<Receiver, String>(1);
         Uri inboxQuery = Uri.parse("content://sms/inbox");    //only inbox will be queried
-        Cursor cursor = activity.getContentResolver().query(inboxQuery,
+        Cursor cursor = context.getContentResolver().query(inboxQuery,
                 new String[]{"address", "body"}, null, null, "date desc limit 1");
-        activity.startManagingCursor(cursor);
         String[] columns = new String[]{"address", "body"};
         if (cursor.getCount() > 0) {
-            String count = Integer.toString(cursor.getCount());
-            Log.e("Count", count);
             if (cursor.moveToFirst()) {
                 String number = cursor.getString(cursor.getColumnIndex(columns[0]));
                 String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
-                Receiver receiver = findContactByNumber(number, activity);
+                Receiver receiver = findContactByNumber(number, context);
                 if (receiver == null) {
-                    String text = activity.getString(R.string.text_unknown);
+                    String text = context.getString(R.string.text_unknown);
                     receiver = new Receiver(text);
-                    receiver.setRawNumber(number, activity.getString(R.string.text_unknown));//TODO exchange by correct type
+                    receiver.setRawNumber(number, context.getString(R.string.text_unknown));//TODO exchange by correct type
 
                 }
                 out.put(receiver, msg);
 
             }
         }
+        cursor.close();
         return out;
     }
 
@@ -174,6 +173,7 @@ public abstract class DatabaseHandler {
             int type = cursor.getInt(3);
             out.add(new Message(message, type == 2, date));
         }
+        cursor.close();
         return out;
     }
 
