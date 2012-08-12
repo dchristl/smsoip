@@ -240,11 +240,18 @@ public abstract class DatabaseHandler {
                 //add contact to list if has number
 
                 Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                List<NameNumberEntry> addAfterMobileList = new ArrayList<NameNumberEntry>();
                 while (phones.moveToNext()) {
                     String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                     int phoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                    out.add(new NameNumberEntry(contactName, NumberUtils.fixNumber(phoneNumber), translateTypeToString(context, phoneType)));
+                    NameNumberEntry nameNumberEntry = new NameNumberEntry(contactName, NumberUtils.fixNumber(phoneNumber), translateTypeToString(context, phoneType));
+                    if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
+                        out.add(nameNumberEntry);
+                    } else {
+                        addAfterMobileList.add(nameNumberEntry);
+                    }
                 }
+                out.addAll(addAfterMobileList);
                 phones.close();
             }
         }
