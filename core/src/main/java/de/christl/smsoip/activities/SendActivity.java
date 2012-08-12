@@ -950,8 +950,9 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin == null || receiverList.size() < smSoIPPlugin.getProvider().getMaxReceiverCount()) {  //check only if smsoipPlugin is already set
             if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
                 showAddedTwiceToast();
-            } else if (smSoIPPlugin != null) { //update only if plugin already set
-                receiverField.updateTextContent();//is already added by addWithAlreadyInsertedCheck
+            }
+            receiverField.updateTextContent();//is already added by addWithAlreadyInsertedCheck
+            if (smSoIPPlugin != null) { //update only if plugin already set
                 updateViewOnChangedReceivers();
             }
         } else {
