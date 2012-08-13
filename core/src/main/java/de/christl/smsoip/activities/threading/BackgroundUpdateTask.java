@@ -39,6 +39,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
     private int retryCount = 0;
 
     public static final int MAX_RETRIES = 3;
+    private boolean update = true;
 
     public BackgroundUpdateTask(SendActivity sendActivity) {
         this.sendActivity = sendActivity;
@@ -62,14 +63,14 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
                 } else {
                     dots += ".";
                 }
-                if (!isCancelled()) {
+                if (!BackgroundUpdateTask.this.isCancelled()) {
                     publishProgress(dots);
                 }
             }
 
             @Override
             public boolean cancel() {
-                publishProgress(null);
+                publishProgress(null, null);
                 return super.cancel();
             }
         };
@@ -94,10 +95,12 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
 
     @Override
     protected void onProgressUpdate(String... dots) {
-        if (dots != null) {
-            sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + dots[0]);
-        } else {
-            sendActivity.updateInfoTextAndRefreshButton(null);
+        if (update) {
+            if (dots != null) {
+                sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + dots[0]);
+            } else {
+                sendActivity.updateInfoTextAndRefreshButton(null);
+            }
         }
 
     }
@@ -114,6 +117,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
 
     @Override
     protected void onPostExecute(SMSActionResult actionResult) {
+        update = false;
         if (timer != null) {
             timer.cancel();
         }
