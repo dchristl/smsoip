@@ -68,7 +68,9 @@ public abstract class NumberUtils {
             if (!v.isValid(token)) {
                 toAppend = v.fixText(toAppend);
             }
-            builder.append(tokenizer.terminateToken(toAppend));
+            if (toAppend.length() != 0) {
+                builder.append(tokenizer.terminateToken(toAppend));
+            }
 
         }
         return builder.toString();
