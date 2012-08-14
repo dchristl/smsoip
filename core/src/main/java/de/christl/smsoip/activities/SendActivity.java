@@ -994,8 +994,7 @@ public class SendActivity extends AllActivity {
         } else {
             viewById.setVisibility(View.GONE);
         }
-        smSoIPPlugin.getProvider().getMaxReceiverCount();
-        if (receiverList.size() >= smSoIPPlugin.getProvider().getMaxReceiverCount()) {
+        if (smSoIPPlugin != null && receiverList.size() >= smSoIPPlugin.getProvider().getMaxReceiverCount()) {
             searchButton.setVisibility(View.GONE);
         } else {
             searchButton.setVisibility(View.VISIBLE);

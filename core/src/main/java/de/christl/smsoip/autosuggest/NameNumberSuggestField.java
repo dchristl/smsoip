@@ -43,7 +43,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
     List<ReceiverChangedListener> listenerList = new ArrayList<ReceiverChangedListener>();
 
     private final Object lock = new Object();
-    private int maxReceiverCount;
+    private int maxReceiverCount = 1;
 
     public NameNumberSuggestField(Context context) {
         super(context);
