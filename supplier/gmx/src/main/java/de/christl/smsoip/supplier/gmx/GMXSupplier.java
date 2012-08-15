@@ -27,6 +27,7 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import org.acra.ErrorReporter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -351,22 +352,18 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
         sessionId = null;
         HttpURLConnection con;
+        String inputStream = "null";
         try {
             con = factory.create();
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return SMSActionResult.NETWORK_ERROR();
-        }
-        //no network
-        Map<String, List<String>> headerFields = con.getHeaderFields();
-        if (headerFields == null) {
-            return SMSActionResult.NETWORK_ERROR();
-        }
-        try {
-            Document document = Jsoup.parse(con.getInputStream(), ENCODING, "");
+
+            //no network
+            Map<String, List<String>> headerFields = con.getHeaderFields();
+            if (headerFields == null) {
+                return SMSActionResult.NETWORK_ERROR();
+            }
+            //TODO remove after its stable
+            inputStream = UrlConnectionFactory.inputStream2DebugString(con.getInputStream());
+            Document document = Jsoup.parse(inputStream);
             Elements scripts = document.select("script");
             for (Element script : scripts) {
                 String data = script.data();
@@ -390,8 +387,16 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 lastParsedDocument = document;
                 return SMSActionResult.LOGIN_SUCCESSFUL();
             }
+        } catch (SocketTimeoutException stoe) {
+            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
+            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+            return SMSActionResult.NETWORK_ERROR();
+        } catch (Exception e) {            //TODO remove after its stable
+            ErrorReporter.getInstance().putCustomData("inputstream", inputStream);
+            ErrorReporter.getInstance().handleSilentException(e);
+            return SMSActionResult.UNKNOWN_ERROR();
         }
 
 
