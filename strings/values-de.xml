@@ -149,7 +149,7 @@ fileName: strings.xml
         führt, hilf bitte mit diesen zu beheben, indem du den Fehlerreport an den Entwickler schickst. Alles was du
         tun musst ist \'OK\' klicken. Es werden keinerlei privaten Daten übertragen.
     </string>
-    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare zum Problem hinzufügen:</string>
+    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare und wenn du kontaktiert werden möchtest auch deine E-Mail-Adresse zum Problem hinzufügen:</string>
     <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
         behoben.
     </string>

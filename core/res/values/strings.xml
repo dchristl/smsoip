@@ -141,7 +141,9 @@
         If this will not work, please help the developer to improve SMSoIP by sending error data,
         all you have to do is click \'OK\'. No private data will be send.
     </string>
-    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
+    <string name="crash_dialog_comment_prompt">You might add your comments about the problem and if you want to be
+        contacted your mail address below:
+    </string>
     <string name="crash_dialog_ok_toast">Thank you for your support! Error will be fixed as soon as possible.</string>
     <string name="text_now">Now</string>
     <string name="text_sending_time">Sending time</string>
