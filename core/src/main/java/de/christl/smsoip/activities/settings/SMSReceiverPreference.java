@@ -20,11 +20,9 @@ package de.christl.smsoip.activities.settings;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceScreen;
+import android.preference.*;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 
@@ -36,6 +34,10 @@ public class SMSReceiverPreference extends PreferenceActivity {
     public static final String RECEIVER_ACTIVATED = "receiver.activated";
     public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
     public static final String RECEIVER_ABORT_BROADCAST = "receiver.abort.broadcast";
+    public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
+
+
+    private static final int SET_RINGTONE = 40;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,14 @@ public class SMSReceiverPreference extends PreferenceActivity {
         showOnlyOneNotification.setSummary(R.string.text_only_one_notfication_description);
         boolean enabled = getPreferenceManager().getSharedPreferences().getBoolean(RECEIVER_ACTIVATED, true);
         showOnlyOneNotification.setEnabled(enabled);
+        final RingtonePreference ringtonePreference = new RingtonePreference(this);
+        ringtonePreference.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
+        ringtonePreference.setDefaultValue(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
+        ringtonePreference.setTitle(R.string.text_choose_ringtone);
+        ringtonePreference.setSummary(R.string.text_choose_ringtone_description);
+        ringtonePreference.setKey(RECEIVER_RINGTONE_URI);
+        ringtonePreference.setEnabled(enabled);
+
         final CheckBoxPreference abortBroadcast = new CheckBoxPreference(this);
         abortBroadcast.setDefaultValue(false);
         abortBroadcast.setKey(RECEIVER_ABORT_BROADCAST);
@@ -98,6 +108,7 @@ public class SMSReceiverPreference extends PreferenceActivity {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 showOnlyOneNotification.setEnabled((Boolean) newValue);
                 abortBroadcast.setEnabled((Boolean) newValue);
+                ringtonePreference.setEnabled((Boolean) newValue);
                 return true;
             }
         });
@@ -105,8 +116,10 @@ public class SMSReceiverPreference extends PreferenceActivity {
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
         root.addPreference(showOnlyOneNotification);
+        root.addPreference(ringtonePreference);
         root.addPreference(abortBroadcast);
         return root;
     }
+
 
 }

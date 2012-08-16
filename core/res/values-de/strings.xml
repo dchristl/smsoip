@@ -144,7 +144,9 @@
         führt, hilf bitte mit diesen zu beheben, indem du den Fehlerreport an den Entwickler schickst. Alles was du
         tun musst ist \'OK\' klicken. Es werden keinerlei privaten Daten übertragen.
     </string>
-    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare und wenn du kontaktiert werden möchtest auch deine E-Mail-Adresse zum Problem hinzufügen:</string>
+    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare und wenn du kontaktiert werden
+        möchtest auch deine E-Mail-Adresse zum Problem hinzufügen:
+    </string>
     <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
         behoben.
     </string>
@@ -167,6 +169,8 @@
     <string name="text_only_one_notfication_description">Bei mehreren eingehenden SMS gleichzeitig
         wird nur einmal benachrichtigt. Es kann dann nur auf die zuletzt eingegangene SMS geantwortet werden.
     </string>
+    <string name="text_choose_ringtone">Benachrichtigungston</string>
+    <string name="text_choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
     <string name="text_abort_broadcast">Verhindere andere Benachrichtigungen</string>
     <string name="text_abort_broadcast_description">Alle weiteren Benachrichtigungen anderer Apps (wie etwa die
         Standard-SMS-App) geben keine Benachrichtigungen.

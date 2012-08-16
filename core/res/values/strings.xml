@@ -167,6 +167,8 @@
     <string name="text_abort_broadcast_description">On incoming messages only SMSoIP will show notifcations. Default
         message app will not show any message.
     </string>
+    <string name="text_choose_ringtone">Ringtone</string>
+    <string name="text_choose_ringtone_description">Choose your ringtone for notification.</string>
     <string name="text_warning">Warning</string>
     <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
         incoming messages, too. If you have problems please disable this option.
