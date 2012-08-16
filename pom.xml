@@ -53,7 +53,7 @@
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>ALIGN APK</id>
@@ -211,11 +211,6 @@
                 <artifactId>android</artifactId>
                 <version>4.0.3</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.android</groupId>
-                <artifactId>support-v4</artifactId>
-                <version>r10</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

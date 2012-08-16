@@ -67,7 +67,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
 
                 Log.e("christl", "defaults = " + ringtoneUri);
-                if (ringtoneUri != null /*&& new File(ringtoneUri).exists()*/) {
+                if (ringtoneUri != null && !ringtoneUri.equals("")) {
                     Log.e(this.getClass().getCanonicalName(), "SMSReceiver.onReceive");
                     Uri parse = Uri.parse(ringtoneUri);
                     try {
@@ -92,7 +92,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
                 builder.setContentIntent(contentIntent);
-                Notification notification = builder.build();
+                Notification notification = builder.getNotification();
                 String ns = Context.NOTIFICATION_SERVICE;
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
                 boolean onlyOneNotfctn = preferences.getBoolean(SMSReceiverPreference.RECEIVER_ONLY_ONE_NOTFICATION, false);
