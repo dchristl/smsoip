@@ -98,7 +98,6 @@ public class SendActivity extends AllActivity {
     private static final int DIALOG_SWITCH_ACCOUNT = 36;
 
     private SharedPreferences settings;
-    //    private CheckForDuplicatesArrayList receiverList = new CheckForDuplicatesArrayList();
     private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
     private static final String SAVED_INSTANCE_SUPPLIER = "supplier";
