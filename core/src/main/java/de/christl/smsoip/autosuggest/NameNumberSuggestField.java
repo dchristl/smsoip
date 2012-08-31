@@ -61,8 +61,9 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
     }
 
     private void init() {
-        List<NameNumberEntry> allContactsWithPhoneNumber = DatabaseHandler.getAllContactsWithPhoneNumber(getContext());
-        setAdapter(new NameNumberSuggestAdapter(getContext(), allContactsWithPhoneNumber));
+        setEnabled(false);
+        FillAutoSuggestTask fillAutoSuggestTask = new FillAutoSuggestTask(this);
+        fillAutoSuggestTask.execute();
         setTokenizer(tokenizer);
         setValidator(NumberUtils.getNumberValidator());
         addTextChangedListener(new TextWatcher() {
