@@ -200,4 +200,16 @@ public abstract class OptionProvider {
     }
 
     public abstract Drawable getIconDrawable();
+
+    /**
+     * get the count of the sms if they have not all the same size,
+     * e.g. first sms is 160 signs and the second has only 150 signs
+     * is only used for cherry sms, cause they have control characters will increase the size of the 2nd, 3rd,... message
+     *
+     * @param textLength
+     * @return
+     */
+    public int getLengthDependentSMSCount(int textLength) {
+        return 0;
+    }
 }

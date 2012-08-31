@@ -794,7 +794,7 @@ public class SendActivity extends AllActivity {
 
     public void updateSMScounter() {
         Editable charSequence = textField.getText();
-        int smsCount = 0;
+
         //save the default color of textview
         ColorStateList defaultColor = new TextView(this).getTextColors();
         OptionProvider provider = smSoIPPlugin.getProvider();
@@ -805,9 +805,13 @@ public class SendActivity extends AllActivity {
         fArray[0] = new InputFilter.LengthFilter(maxMessageCount * messageLength);
         textField.setFilters(fArray);
 
-        if (charSequence.length() != 0) {
-            smsCount = Math.round((charSequence.length() / messageLength));
-            smsCount = charSequence.length() % messageLength == 0 ? smsCount : smsCount + 1;
+        int textLength = charSequence.length();
+        int smsCount = provider.getLengthDependentSMSCount(textLength);
+        if (textLength != 0) {
+            if (smsCount == 0) {
+                smsCount = Math.round((textLength / messageLength));
+                smsCount = textLength % messageLength == 0 ? smsCount : smsCount + 1;
+            }
             if (smsCount > maxMessageCount) {
                 smssigns.setTextColor(Color.rgb(255, 0, 0));
             } else {
@@ -816,7 +820,7 @@ public class SendActivity extends AllActivity {
         } else {
             smssigns.setTextColor(defaultColor);
         }
-        smssigns.setText(String.format(signsconstant.toString(), charSequence.length(), smsCount));
+        smssigns.setText(String.format(signsconstant.toString(), textLength, smsCount));
     }
 
     private void setSearchButton() {
@@ -1022,7 +1026,7 @@ public class SendActivity extends AllActivity {
             switchSupplier.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1) {
-            MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM,R.string.text_changeAccount);
+            MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, R.string.text_changeAccount);
             switchAccount.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         if (smSoIPPlugin != null) {

@@ -108,4 +108,18 @@ public class CherrySMSOptionProvider extends OptionProvider {
 
         return hexString.toString();
     }
+
+    @Override
+    public int getLengthDependentSMSCount(int textLength) {
+        if (textLength < 161) {
+            return 0;  //will be claimed usual way
+        } else if (textLength < 307) {
+            return 2;
+        } else {
+            textLength -= 306;
+            int smsCount = Math.round((textLength / 153));
+            smsCount = textLength % 153 == 0 ? smsCount : smsCount + 1;
+            return smsCount + 2;
+        }
+    }
 }

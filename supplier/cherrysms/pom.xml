@@ -32,6 +32,6 @@
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>cherrysms</artifactId>
     <packaging>apk</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
 </project>
