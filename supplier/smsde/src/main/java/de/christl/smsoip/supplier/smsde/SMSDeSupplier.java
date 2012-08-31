@@ -130,7 +130,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) {
+    public synchronized SMSActionResult checkCredentials(String userName, String password) {
         //FIRST STEP
         Vector<String> tmpSessionCookies = new Vector<String>();
         try {
