@@ -1,6 +1,25 @@
+/*
+ * Copyright (c) Danny Christl 2012.
+ *     This file is part of SMSoIP.
+ *
+ *     SMSoIP is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     SMSoIP is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.christl.smsoip.supplier.smsde;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
@@ -15,13 +34,13 @@ import java.util.List;
 
 public class SMSDeOptionProvider extends OptionProvider {
 
-    private static final String providerName = "SMS.de";
+    private static final String PROVIDER_NAME = "SMS.de";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private int messageLength = 142;
     private int maxReceivers = 1;
 
     public SMSDeOptionProvider() {
-        super(providerName);
+        super(PROVIDER_NAME);
     }
 
     @Override
@@ -52,11 +71,11 @@ public class SMSDeOptionProvider extends OptionProvider {
                     case 1:    //power sms 160
                     case 2:
                         messageLength = 160;
-                        maxReceivers = Integer.MAX_VALUE;
+                        maxReceivers = 5;
                         break;
                     default:                  //power sms 300
                         messageLength = 300;
-                        maxReceivers = Integer.MAX_VALUE;
+                        maxReceivers = 5;
                         break;
                 }
                 sendActivity.updateSMScounter();
@@ -69,6 +88,7 @@ public class SMSDeOptionProvider extends OptionProvider {
             }
         });
         int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
+        defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
         spinner.setSelection(defaultPosition);
     }
 
@@ -89,5 +109,13 @@ public class SMSDeOptionProvider extends OptionProvider {
         return out;
     }
 
+    @Override
+    public int getMaxMessageCount() {
+        return 1;
+    }
 
+    @Override
+    public Drawable getIconDrawable() {
+        return getDrawble(R.drawable.icon);
+    }
 }

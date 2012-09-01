@@ -1,0 +1,32 @@
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<html>
+ <head></head>
+ <body>
+  <ajax-response>
+   <component id="feedback-panel" encoding="wicket1">
+    &lt;div id=&quot;feedback-panel&quot;&gt; &lt;ul class=&quot;feedbackPanel&quot;&gt; &lt;li class=&quot;feedbackPanelERROR&quot;&gt; &lt;span class=&quot;feedbackPanelERROR&quot;&gt;[SMS/MMS-Versand in dieses Land nicht m&ouml;glich]^ Leider kann derzeit keine SMS/MMS ins gew&auml;hlte Land gesendet werden.&lt;/span&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/div&gt;
+   </component>
+   <evaluate>
+    messageRetriever('#feedback-panel');
+   </evaluate>
+  </ajax-response>
+ </body>
+</html>

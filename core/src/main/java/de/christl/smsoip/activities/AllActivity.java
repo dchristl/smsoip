@@ -1,8 +1,28 @@
+/*
+ * Copyright (c) Danny Christl 2012.
+ *     This file is part of SMSoIP.
+ *
+ *     SMSoIP is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     SMSoIP is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.christl.smsoip.activities;
+
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,74 +33,58 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.provider.SMSSupplier;
+import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.application.changelog.ChangeLog;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
  */
-public class AllActivity extends Activity {
-    public static final String PUBLISHER_ID = "a14f930decd44ce";
+public abstract class AllActivity extends SherlockFragmentActivity {
     public static final int EXIT = 0;
-    static Vector<Activity> registeredActivities = new Vector<Activity>();
+    private static List<Activity> registeredActivities = new ArrayList<Activity>();
 
     static final int DIALOG_NO_NETWORK_ID = 0;
     private static boolean nwSettingsAlreadyShown = false;
-    private boolean reloadProviders = false;
+    private boolean notLoadedDialogAlreadyShown = false;
+
+    private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
+    private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
+    private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
+    private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
+    private static AllActivity context;
+
+    protected AllActivity() {
+        context = this;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add(0, EXIT, 0, getString(R.string.text_exit));
-        item.setIcon(R.drawable.closebutton);
-        return true;
-    }
-
-    @Override
-    public void setContentView(int layoutResID) {
-        super.setContentView(layoutResID);
-        View view = ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0);
-        view.getRootView().setBackgroundDrawable(getResources().getDrawable(R.drawable.icon));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == EXIT) {
-            killAll();
-            return true;
-        }
-        return true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         registeredActivities.add(this);
-        if (reloadProviders) {
-            SMSoIPApplication.getApp().initProviders();
-            reloadProviders = false;
-        }
-        if (SMSoIPApplication.getApp().getDeprecatedPlugins().size() > 0) {
-            showDeprecatedProvidersDialog();
-        } else if (SMSoIPApplication.getApp().getProviderEntries().size() == 0) {
+        SMSoIPApplication app = SMSoIPApplication.getApp();
+        app.initProviders();
+        if (app.getPluginsToOld().size() > 0) {
+            showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.text_deprecated_providers));
+        } else if (app.getPluginsToNew().size() > 0) {
+            showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.text_too_new_providers));
+        } else if (app.getProviderEntries().size() == 0) {
             showNoProvidersDialog();
         } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferences.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
-
             ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -95,9 +99,39 @@ public class AllActivity extends Activity {
                 }
             }
         }
+        if (savedInstanceState != null) {
+            notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
+            nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
+        }
     }
 
-    private void showDeprecatedProvidersDialog() {
+    protected void showChangelogIfNeeded() {
+        ChangeLog cl = new ChangeLog(this);
+        if (cl.firstRun()) {
+            cl.getLogDialog().show();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem item = menu.add(0, EXIT, Menu.CATEGORY_SECONDARY, getString(R.string.text_exit));
+        item.setIcon(R.drawable.ic_menu_close_clear_cancel);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == EXIT) {
+            killAll();
+            return true;
+        }
+        return true;
+    }
+
+    private void showNotLoadedProvidersDialog(HashMap<String, SMSoIPPlugin> suppliers, String headline) {
+        if (notLoadedDialogAlreadyShown) {
+            return;
+        }
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -107,13 +141,13 @@ public class AllActivity extends Activity {
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String string = getString(R.string.text_deprecated_providers);
-        string += "\n";
-        for (SMSSupplier smsSupplier : SMSoIPApplication.getApp().getDeprecatedPlugins()) {
-            string += smsSupplier.getProvider().getProviderName() + "\n";
+        StringBuilder message = new StringBuilder(headline);
+        message.append("\n");
+        for (SMSoIPPlugin smsSupplier : suppliers.values()) {
+            message.append(smsSupplier.getProviderName()).append("\n");
         }
-        builder.setMessage(string).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
-
+        builder.setMessage(message).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+        notLoadedDialogAlreadyShown = true;
     }
 
     public static void killAll() {
@@ -193,29 +227,44 @@ public class AllActivity extends Activity {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String APP_MARKET_URL = "market://search?q=pub:Danny Christl";
 
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
-                AllActivity.this.startActivity(intent);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+                    AllActivity.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //Market not available on device
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
+                    AllActivity.this.startActivity(intent);
+                }
                 killAll();
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
         builder.setMessage(getString(R.string.text_no_providers)).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
-        reloadProviders = true;
     }
 
-    public static void insertAds(LinearLayout layout, Activity activity) {
-
-        // Create the adView
-        AdView adView = new AdView(activity, AdSize.BANNER, PUBLISHER_ID);
-
-        // Add the adView to it
-        layout.addView(adView);
-
-        AdRequest adRequest = new AdRequest();
-        adRequest.addTestDevice("9405EE5055BF04AE898858A2515B3588");
-        adView.loadAd(adRequest);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, notLoadedDialogAlreadyShown);
+        outState.putBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, nwSettingsAlreadyShown);
     }
 
+    public static void insertAds(int adviewId, Activity activity) {
+        MobclixAdView adView = (MobclixAdView) activity.findViewById(adviewId);
+        adView.setRefreshTime(10000);
+        adView.addMobclixAdViewListener(new AdViewListener());
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            adView.setVisibility(View.VISIBLE);
+            adView.pause();
+        } else {
+            adView.setVisibility(View.GONE);
+        }
+
+    }
+
+    public static Context getActivity() {
+        return context;
+    }
 }

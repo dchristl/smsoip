@@ -1,17 +1,35 @@
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <!--String resources for:
 project: SMSoIP-core
 values folder: values
 fileName: strings.xml
 -->
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <resources>
     <string name="button_send">Send</string>
-    <string name="text_changeProvider">Change Provider</string>
+    <string name="text_changeProvider">Provider</string>
     <string name="text_chooseProvider">Choose Provider</string>
     <string name="text_provider_settings">Provider settings</string>
     <string name="text_program_settings">Program settings</string>
-    <string name="text_provider_settings_short">Provider</string>
-    <string name="text_program_settings_short">Program</string>
     <string name="text_mainmenu">Main menu</string>
     <string name="text_exit">Quit</string>
     <string name="text_optionTitle">Options for</string>
@@ -20,23 +38,26 @@ fileName: strings.xml
     <string name="text_signature">Signature</string>
     <string name="text_signature_description">Signature, that can be appended to message.</string>
     <string name="button_save">Save</string>
-    <string name="hint_targetnumber">Receivers</string>
+    <string name="hint_receiverField">Name or Number</string>
     <string name="hint_smsText">Message</string>
     <string name="hint_sendernumber">Sender</string>
-    <string name="text_chooseType">Choose type</string>
+    <string name="text_chooseType">Sending type</string>
     <string name="text_smssigns">%1$s characters (%2$s SMS)</string>
     <string name="text_pickNumber">Choose number for %1$s</string>
     <string name="text_noNumber">No number for %1$s found</string>
     <string name="text_smscomitted">Message will be sent</string>
     <string name="text_ok">OK</string>
-    <string name="text_no">Cancel</string>
+    <string name="text_cancel">Cancel</string>
     <string name="text_wantClear">All inputs will be deleted!</string>
     <string name="text_error">Error</string>
     <string name="text_success">Success</string>
-    <string name="text_noNetwork">Networkerror</string>
+    <string name="text_noNetwork">Network error</string>
     <string name="text_unknown_error">Unknown error</string>
     <string name="text_loginFailed">Pass invalid!</string>
+    <string name="text_user_cancelled">User canceled</string>
+    <string name="text_loginSuccessful">Login successful</string>
     <string name="text_notyetrefreshed">Not yet refreshed</string>
+    <string name="text_click">(Click)</string>
     <string name="description">Sending SMS by several providers</string>
     <string name="text_pleaseWait">Please wait</string>
     <string name="text_noNumberInput">No number entered!</string>
@@ -49,8 +70,8 @@ fileName: strings.xml
     <string name="text_yesOption">Yes</string>
     <string name="text_noOption">No</string>
     <string name="text_checkCredentials">Pass will be checked.</string>
+    <string name="text_noCredentials">Credentials incomplete</string>
     <string name="button_openNetworkSettings">Networksettings</string>
-    <string name="button_cancel">Cancel</string>
     <string name="button_activateWLAN">Activate Wireless LAN</string>
     <string name="text_not_yet_allowed">Not yet allowed</string>
     <string name="text_no_providers">No providers for sending SMS available.\nPlease add one.\nProgram will exit!
@@ -61,6 +82,8 @@ fileName: strings.xml
     <string name="text_no_default_Provider">None (ask everytime)</string>
     <string name="text_visit_project_page">Visit Homepage</string>
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
+    <string name="text_visit_plugin_page">Find plugins</string>
+    <string name="text_visit_plugin_page_description">Find additional plugins at Google Play</string>
     <string name="text_area_code">Default international area code</string>
     <string name="text_area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
         will be automatically prepended to receiver number if needed.
@@ -68,13 +91,20 @@ fileName: strings.xml
     <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
     <string name="text_checkLogin">Check credentials</string>
     <string name="text_deprecated_providers">Following plugins could not be loaded. Please update:</string>
+    <string name="text_too_new_providers">Following plugins are too new and could not be loaded. Please update
+        application:
+    </string>
     <string name="text_enable_network_check">Enable network check</string>
     <string name="text_enable_network_check_description">Enable the check on startup if network is available and shows
         you additional options, like enabling W-LAN.
     </string>
+    <string name="text_enable_info_update">Auto update</string>
+    <string name="text_enable_info_update_description">On app startup the provider informations like free messages will
+        be updated.
+    </string>
     <string name="text_enable_provider_output">Enable output of provider</string>
     <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP
-        -> GMX\')
+        (GMX)\')
     </string>
     <string name="name_heading">name</string>
     <string name="number_heading">number</string>
@@ -93,6 +123,67 @@ fileName: strings.xml
     <string name="text_not_supported_on_device">Not supported on this device</string>
     <string name="text_pick_for_disabling">Tap for removing</string>
     <string name="text_receiver_added_twice">Receiver number added twice!</string>
+    <string name="text_account_list">Account management</string>
+    <string name="text_account_list_description">Manage accounts and choose the default one. Current default account is:
+        &lt;%1$s&gt;
+    </string>
+    <string name="text_account_add_account">Add account</string>
+    <string name="text_account_no_account">Not set</string>
+    <string name="text_changeAccount">Account</string>
+    <string name="text_chooseAccount">Choose Account</string>
+    <string name="text_partial_success">Partial success</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="text_lastMessage">Last message</string>
+    <string name="text_lastConversation">Last conversation</string>
+    <string name="text_clickToAdd">(Click to add as receiver)</string>
+    <string name="crash_toast_text">Ooooops! This shoud not happen, please send crash report to developer!
+    </string>
+    <string name="crash_notif_ticker_text">Unexpected error in SMSoIP, please send a report…</string>
+    <string name="crash_notif_title">SMSoIP has crashed…</string>
+    <string name="crash_notif_text">Please click here to help fix the issue.</string>
+
+    <string name="crash_dialog_title">SMSoIP has crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the
+        application to stop. Please make sure you have the latest version of SMSoIP and your used plugins installed.
+        If this will not work, please help the developer to improve SMSoIP by sending error data,
+        all you have to do is click \'OK\'. No private data will be send.
+    </string>
+    <string name="crash_dialog_comment_prompt">You might add your comments about the problem and if you want to be
+        contacted your mail address below:
+    </string>
+    <string name="crash_dialog_ok_toast">Thank you for your support! Error will be fixed as soon as possible.</string>
+    <string name="text_now">Now</string>
+    <string name="text_sending_time">Sending time</string>
+    <string name="text_time_in_past">Sending time is in past!</string>
+    <string name="text_enable_compact_mode">Compact mode</string>
+    <string name="text_enable_compact_mode_description">Use the compact mode by default (on startup)</string>
+    <string name="text_sms_receiver_settings">Message notifcation settings</string>
+    <string name="text_react_on_incoming_sms">Message notification</string>
+    <string name="text_react_on_incoming_sms_description">Change settings for the listener of incoming
+        messages in the notification bar.
+    </string>
+    <string name="text_receiver_activated">Activate notification</string>
+    <string name="text_receiver_activated_description">Enable the notification on incoming messages. Then you can answer
+        directly to this message.
+    </string>
+    <string name="text_only_one_notfication">Only one notification</string>
+    <string name="text_only_one_notfication_description">The notification will only be shown once on more than one
+        message at the same time. You can answer only to the last received message then.
+    </string>
+    <string name="text_abort_broadcast">Prevent further notfications</string>
+    <string name="text_abort_broadcast_description">On incoming messages only SMSoIP will show notifcations. Default
+        message app will not show any message.
+    </string>
+    <string name="text_choose_ringtone">Ringtone</string>
+    <string name="text_choose_ringtone_description">Choose your ringtone for notification.</string>
+    <string name="text_warning">Warning</string>
+    <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
+        incoming messages, too. If you have problems please disable this option.
+    </string>
+    <string name="text_inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
+        correctness and send again.
+    </string>
+    <string name="text_false_inputs_corrected">Wrong receiver inputs removed!</string>
 </resources>
 
 <!--String resources for:
@@ -101,6 +192,24 @@ values folder: values
 fileName: strings.xml
 -->
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <resources>
     <string name="text_check_no_free_available">Check for no free messages</string>
     <string name="text_check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
@@ -112,11 +221,34 @@ project: goodmails
 values folder: values
 fileName: strings.xml
 -->
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <resources>
     <string name="text_alternate_not_allowed_yet">not yet allowed</string>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_refresh_informations">"Credits: %s"</string>
+    <string-array name="array_spinner">
+        <item>FREE (0 Credits)</item>
+        <item>STANDARD (10 Credits)</item>
+        <item>FAKE (12 Credits)</item>
+    </string-array>
 </resources>
 <!--String resources for:
 project: freenet
@@ -124,8 +256,28 @@ values folder: values
 fileName: strings.xml
 -->
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <resources>
     <string name="text_refresh_informations">All: %1$d Paid: %2$d</string>
+    <string name="text_save_in_sent">Save messages in "sent" folder</string>
+    <string name="text_save_in_sent_long">Text messages will be saved in "Sent" - folder of mail account.</string>
 </resources>
 <!--String resources for:
 project: smsde
@@ -133,6 +285,24 @@ values folder: values
 fileName: strings.xml
 -->
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <resources>
     <string-array name="array_spinner">
         <item>Free-SMS (0 Credits)</item>
@@ -143,4 +313,58 @@ fileName: strings.xml
     </string-array>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_wrong_number">Wrong number</string>
+</resources>
+<!--String resources for:
+project: cherrysms
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string-array name="array_spinner">
+        <item>Without source identifier (1 Credit/SMS)</item>
+        <item>With source identifier (2 Credits/SMS)</item>
+    </string-array>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_need_account">No account yet?</string>
+    <string name="text_need_account_long">You want to create a new account and want to support further development of
+        SMSoIP. Please create an account by this link.
+    </string>
+    <string name="text_refresh_informations">Remaining credits: %1$d</string>
+    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+        like \'00491721234567\'
+    </string>
+    <string name="text_return_10">Recipent number is not correct</string>
+    <string name="text_return_20">Sender ID is not correct</string>
+    <string name="text_return_30">Message text is not correct</string>
+    <string name="text_return_31">Message type is not correct</string>
+    <string name="text_return_40">Route message incorrect</string>
+    <string name="text_return_50">Identification failed</string>
+    <string name="text_return_60">Not enough credits</string>
+    <string name="text_return_70">Grid is not covered by Route</string>
+    <string name="text_return_71">Feature not possible on this route</string>
+    <string name="text_return_80">Transfer to SMS-C failed</string>
+    <string name="text_return_90">Shipping available</string>
+    <string name="text_return_100">Message was succesfully sent for %1$s credits</string>
+    <string name="text_unknown_error">Unknown error code: %1$d</string>
 </resources>

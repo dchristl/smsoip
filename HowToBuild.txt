@@ -1,0 +1,6 @@
+1. Install all libraries (instal-XX-projects) to your local repository (currently not available in global repos)
+        - call "mvn" in every folder (install-XXX)
+2. Build project in your project folder by calling maven with some parameters:
+        - call "mvn clean install -Dcertificate.pass=<certificate_password> -Dcertificate.store=<path_to_your_certificate> -Djayway.sdk.path=<folder_to_your_android_sdks> -Doutput.folder=<your_output_folder> -DskipTests"
+3. If you want to execute JUnit-tests, add your plugin credentials (and remove skipTests), for example
+         - "mvn ... -DsmsdeUser=<smsde-User> -DsmsdePass=<smsde-Password>"

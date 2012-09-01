@@ -1,8 +1,32 @@
+/*
+ * Copyright (c) Danny Christl 2012.
+ *     This file is part of SMSoIP.
+ *
+ *     SMSoIP is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     SMSoIP is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.christl.smsoip.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Handler;
-import de.christl.smsoip.constant.Result;
+import android.util.Log;
+import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.models.ErrorReporterStack;
+import de.christl.smsoip.ui.BreakingProgressDialog;
+
+import java.util.concurrent.*;
 
 /**
  * little helper for building updating the ui after sending or refreshing informations
@@ -13,55 +37,96 @@ public class RunnableFactory {
     private ProgressDialog progressDialog;
     private Handler updateUIHandler;
 
+
     RunnableFactory(SendActivity sendActivity, ProgressDialog progressDialog) {
         this.sendActivity = sendActivity;
         this.progressDialog = progressDialog;
         updateUIHandler = new Handler();
     }
 
-    private Runnable getUpdateUIRunnable(final CharSequence resultMessage, final CharSequence infoText) {
-        return new Runnable() {
-            public void run() {
-                RunnableFactory.this.sendActivity.showReturnMessage(resultMessage, infoText);
-            }
-        };
-    }
 
-    public Runnable getSendAndUpdateUIRunnable() {
+    /**
+     * available since API level 14
+     *
+     * @return
+     */
+    public Runnable getFireSMSAndUpdateUIRunnable() {
         return new Runnable() {
+            @Override
             public void run() {
-                Result sendResult = RunnableFactory.this.sendActivity.send();
-                CharSequence resultMessage = sendResult.getUserText();
-                CharSequence infoText = null;
-                boolean successfulSent = sendResult.equals(Result.NO_ERROR);
-                boolean successfulRefreshed;
-                if (successfulSent) {
-                    Result refreshResult = RunnableFactory.this.sendActivity.refreshInformations(true);
-                    successfulRefreshed = refreshResult.equals(Result.NO_ERROR);
-                    if (successfulRefreshed) {
-                        infoText = refreshResult.getUserText();
+                ErrorReporterStack.put("getFireSMSAndUpdateUIRunnable");
+                ExecutorService executorService = Executors.newFixedThreadPool(2);
+                Callable<FireSMSResultList> runnable = new Callable<FireSMSResultList>() {
+                    @Override
+                    public FireSMSResultList call() throws Exception {
+                        return RunnableFactory.this.sendActivity.sendByThread();
                     }
+                };
+
+                Future<FireSMSResultList> future = executorService.submit(runnable);
+
+                FireSMSResultList fireSMSResults = null;
+                try {
+                    fireSMSResults = future.get();
+                } catch (InterruptedException e) {
+                    Log.e("christl", "", e);
+                } catch (ExecutionException e) {
+                    Log.e("christl", "", e);
                 }
-                updateUIHandler.post(getUpdateUIRunnable(resultMessage, infoText));
-                RunnableFactory.this.progressDialog.cancel();
+
+                if (fireSMSResults != null) {
+
+                    if (fireSMSResults.getResult().equals(FireSMSResultList.SendResult.DIALOG)) {
+                        final BreakingProgressDialog builder = fireSMSResults.getBuilder();
+                        updateUIHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                builder.setListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
+                                        //wait until the sending has finished
+                                        FireSMSResultList fireSMSResultList = builder.getFireSMSResults();
+                                        FireSMSResultList.SendResult sendResult = fireSMSResultList.getResult();
+                                        if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
+                                            RunnableFactory.this.sendActivity.refreshInformationText();
+                                        }
+                                        updateUIHandler.post(getUpdateUIRunnable(fireSMSResultList));
+                                        RunnableFactory.this.progressDialog.cancel();
+                                    }
+                                });
+
+                                builder.show();
+                            }
+                        });
+                    } else {
+                        FireSMSResultList.SendResult sendResult = fireSMSResults.getResult();
+                        if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
+                            RunnableFactory.this.sendActivity.refreshInformationText();
+                        }
+                        updateUIHandler.post(getUpdateUIRunnable(fireSMSResults));
+                        RunnableFactory.this.progressDialog.cancel();
+                    }
+
+                }
+
             }
         };
     }
 
-    public Runnable getRefreshInfosAndUpdateUIRunnable() {
+    /**
+     * since API level 14
+     *
+     * @param fireSMSResults
+     * @return
+     */
+    private Runnable getUpdateUIRunnable(final FireSMSResultList fireSMSResults) {
         return new Runnable() {
             public void run() {
-                Result result = RunnableFactory.this.sendActivity.refreshInformations(false);
-                CharSequence infoText = null;
-                CharSequence messageText = null;
-                if (result.equals(Result.NO_ERROR)) {
-                    infoText = result.getUserText();
-                } else {
-                    messageText = result.getUserText();
-                }
-                updateUIHandler.post(getUpdateUIRunnable(messageText, infoText));
-                progressDialog.cancel();
+                ErrorReporterStack.put("getUpdateUIRunnable");
+                RunnableFactory.this.sendActivity.showReturnMessage(fireSMSResults);
             }
         };
     }
+
+
 }

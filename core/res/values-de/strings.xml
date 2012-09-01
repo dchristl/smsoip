@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <resources>
     <string name="button_send">Senden</string>
-    <string name="text_changeProvider">Anbieter wechseln</string>
+    <string name="text_changeProvider">Anbieter</string>
     <string name="text_chooseProvider">Anbieter auswählen</string>
     <string name="text_provider_settings">Anbietereinstellungen</string>
     <string name="text_program_settings">Programmeinstellungen</string>
-    <string name="text_provider_settings_short">Anbieter</string>
-    <string name="text_program_settings_short">Programm</string>
     <string name="text_mainmenu">Hauptmenü</string>
     <string name="text_exit">Beenden</string>
     <string name="text_optionTitle">Optionen für</string>
@@ -16,23 +32,26 @@
     <string name="text_signature_description">Die Signatur, die zur Nachricht hinzugefügt werden kann.
     </string>
     <string name="button_save">Speichern</string>
-    <string name="hint_targetnumber">Empfänger</string>
+    <string name="hint_receiverField">Name oder Nummmer</string>
     <string name="hint_smsText">Nachricht</string>
     <string name="hint_sendernumber">Absender</string>
-    <string name="text_chooseType">Typ wählen</string>
+    <string name="text_chooseType">Sendetyp</string>
     <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
     <string name="text_pickNumber">Nummer für %1$s auswählen:</string>
     <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
     <string name="text_smscomitted">SMS wird gesendet</string>
     <string name="text_ok">OK</string>
-    <string name="text_no">Abbrechen</string>
+    <string name="text_cancel">Abbrechen</string>
     <string name="text_wantClear">Alle eingegebenen Daten werden gelöscht!</string>
     <string name="text_error">Fehler</string>
     <string name="text_success">Erfolg</string>
     <string name="text_noNetwork">Netzwerkfehler</string>
     <string name="text_unknown_error">Unbekannter Fehler</string>
     <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="text_user_cancelled">Abbruch durch Nutzer</string>
+    <string name="text_loginSuccessful">Login erfolgreich</string>
     <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
+    <string name="text_click">(Klick)</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
     <string name="text_pleaseWait">Bitte warten</string>
     <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
@@ -45,8 +64,8 @@
     <string name="text_yesOption">Ja</string>
     <string name="text_noOption">Nein</string>
     <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
+    <string name="text_noCredentials">Zugangsdaten unvollständig</string>
     <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
-    <string name="button_cancel">Abbrechen</string>
     <string name="button_activateWLAN">W-LAN aktivieren</string>
     <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
     <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!
@@ -58,6 +77,8 @@
     <string name="text_no_default_Provider">Keiner (jedesmal fragen)</string>
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
+    <string name="text_visit_plugin_page">Plugins suchen</string>
+    <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play</string>
     <string name="text_area_code">Standardländercode</string>
     <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -65,13 +86,20 @@
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
     <string name="text_checkLogin">Zugangsdaten überprüfen</string>
     <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="text_too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
+        Applikation updaten:
+    </string>
     <string name="text_enable_network_check">Netzwerküberprüfung aktivieren</string>
     <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
+    <string name="text_enable_info_update">Auto Aktualisierung</string>
+    <string name="text_enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie
+        kostenlose SMS automatisch aktualisiert.
+    </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
-        versehen (z.B. \'SMSoIP -> GMX\')
+        versehen (z.B. \'SMSoIP (GMX)\')
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
@@ -90,4 +118,69 @@
     <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
     <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
+    <string name="text_account_list">Account-Verwaltung</string>
+    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
+        &lt;%1$s&gt;
+    </string>
+    <string name="text_account_add_account">Account hinzufügen</string>
+    <string name="text_account_no_account">Nicht gesetzt</string>
+    <string name="text_changeAccount">Account</string>
+    <string name="text_chooseAccount">Account auswählen</string>
+    <string name="text_partial_success">Teilweiser Erfolg</string>
+    <string name="changelog_title">Was ist neu</string>
+    <string name="text_lastMessage">Letzte Nachricht</string>
+    <string name="text_lastConversation">Letzte Konversationen</string>
+    <string name="text_clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>
+    <string name="crash_toast_text">Uuups! Das sollte nicht passieren, bitte sende einen Fehlerbericht an den
+        Entwickler!
+    </string>
+    <string name="crash_notif_ticker_text">Unerwarteter Fehler in SMSoIP, bitte sende den Fehlerbericht…</string>
+    <string name="crash_notif_title">SMSoIP wurde beendet…</string>
+    <string name="crash_notif_text">Bitte klicke hier, um das Problem zu beheben.</string>
+
+    <string name="crash_dialog_title">SMSoIP wurde beendet</string>
+    <string name="crash_dialog_text">Ein unerwarteter Fehler hat dazu geführt, dass die App beendet wurde. Bitte stelle
+        sicher, dass SMSoIP und alle installierten Plugins auf dem neuesten Stand sind. Wenn dies weiterhin zum Fehler
+        führt, hilf bitte mit diesen zu beheben, indem du den Fehlerreport an den Entwickler schickst. Alles was du
+        tun musst ist \'OK\' klicken. Es werden keinerlei privaten Daten übertragen.
+    </string>
+    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare und wenn du kontaktiert werden
+        möchtest auch deine E-Mail-Adresse zum Problem hinzufügen:
+    </string>
+    <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
+        behoben.
+    </string>
+    <string name="text_now">Sofort</string>
+    <string name="text_sending_time">Sendezeitpunkt</string>
+    <string name="text_time_in_past">Sendezeitpunkt ist in der Vergangenheit!</string>
+    <string name="text_enable_compact_mode">Kompaktmodus</string>
+    <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
+    </string>
+    <string name="text_sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
+    <string name="text_react_on_incoming_sms">SMS-Benachrichtigung</string>
+    <string name="text_react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten und
+        Hinweis in der Benachrichtigungsleiste.
+    </string>
+    <string name="text_receiver_activated">Aktiviere Überwachung</string>
+    <string name="text_receiver_activated_description">Aktiviere die Benachrichtigung durch SMSoIP bei
+        empfangenen SMS. Damit kann direkt auf die Nachricht mit SMSoIP geantwortet werden.
+    </string>
+    <string name="text_only_one_notfication">Nur einmal benachrichtigen</string>
+    <string name="text_only_one_notfication_description">Bei mehreren eingehenden SMS gleichzeitig
+        wird nur einmal benachrichtigt. Es kann dann nur auf die zuletzt eingegangene SMS geantwortet werden.
+    </string>
+    <string name="text_choose_ringtone">Benachrichtigungston</string>
+    <string name="text_choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
+    <string name="text_abort_broadcast">Verhindere andere Benachrichtigungen</string>
+    <string name="text_abort_broadcast_description">Alle weiteren Benachrichtigungen anderer Apps (wie etwa die
+        Standard-SMS-App) geben keine Benachrichtigungen.
+    </string>
+    <string name="text_warning">Warnung</string>
+    <string name="text_warning_disable_notification">Dies Option kann Probleme mit Apps verursachen, die ebenfalls auf
+        empfangene SMS reagieren. Bei Problemen diese Option bitte wieder deaktivieren.
+    </string>
+    <string name="text_inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
+        Korrektheit und sende noch einmal.
+    </string>
+    <string name="text_false_inputs_corrected">Fehlerhafte Empfängereingaben entfernt!</string>
 </resources>

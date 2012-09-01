@@ -1,11 +1,30 @@
+/*
+ * Copyright (c) Danny Christl 2012.
+ *     This file is part of SMSoIP.
+ *
+ *     SMSoIP is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     SMSoIP is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.christl.smsoip.supplier.goodmails;
 
-import android.text.Editable;
 import android.util.Log;
-import de.christl.smsoip.constant.Result;
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.constant.FireSMSResult;
+import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.SMSSupplier;
-import de.christl.smsoip.supplier.goodmails.constant.Constants;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -20,17 +39,17 @@ import java.util.regex.Pattern;
 /**
  *
  */
-public class GoodmailsSupplier implements SMSSupplier {
+public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
 
     private static final String LOGIN_URL = "http://www.goodmails.de/index.php?action=login";
     public static final String HOME_PAGE = "http://www.goodmails.de/index.php?action=userfrontpage";
     private static final String TARGET_URL = "http://www.goodmails.de/sms.php?action=sendSMS";
     private String sessionCookie;
-    private String encoding = "ISO-8859-1";
+    private static final String ENCODING = "UTF-8";
 
     private boolean found = false;
-    OptionProvider provider;
+    private OptionProvider provider;
 
     static final String NOT_ALLOWED_YET = "NOT ALLOWED YET"; ///special case on resend
     static final String MESSAGE_SENT_SUCCESSFUL = "Die SMS wurde erfolgreich verschickt.";
@@ -43,88 +62,95 @@ public class GoodmailsSupplier implements SMSSupplier {
     }
 
 
-    //    POST /sms.php?action=sendSMS&sid=9jno2qh83lt1nl8md76p2c6ns6 HTTP/1.1
-//    Host: www.goodmails.de
-//    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0
-//    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-//    Accept-Language: de-de,de;q=0.8,en-us;q=0.5,en;q=0.3
-//    Accept-Encoding: gzip, deflate
-//    Proxy-Connection: keep-alive
-//    Referer: http://www.goodmails.de/sms.php?sid=9jno2qh83lt1nl8md76p2c6ns6&action=compose&type=2
-//    Cookie: sessionSecret_39pl3t9p8bgt0ip990buos3jr5=681e359d8aec81c0dfd270dc2b3eb7d8; sessionSecret_cqjink2rqid28h21rfamo3jhe2=c2eccf2c5b9436b670cbf383d7a0922b; sessionSecret_9jno2qh83lt1nl8md76p2c6ns6=2bb048c513937f5a5417ec83a90977de
-//    Content-Type: application/x-www-form-urlencoded
-//    Content-Length: 109
-//
-//    type=standardsms&to=454564654&smsText=bla+bla+blubbsklyajdjkshdhsdhjksd%0D%0A%0D%0Asadasdsd%0D%0Af%0D%0Asdf
-
     @Override
-    public Result fireSMS(Editable smsText, List<Editable> receivers, String spinnerText) {
-        Result result = login(provider.getUserName(), provider.getPassword());
-        if (!result.equals(Result.NO_ERROR())) {
-            return result;
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
         }
+        int sendIndex = findSendMethod(spinnerText);
         HttpURLConnection urlConn;
         InputStream is = null;
         String tmpUrl = TARGET_URL + "&sid=" + getSIDParamater();
-        StringBuilder builder = new StringBuilder();
-        try {
-            URL myUrl = new URL(tmpUrl);
-            urlConn = (HttpURLConnection) myUrl.openConnection();
-            urlConn.setDoOutput(true);
-            urlConn.setReadTimeout(SMSSupplier.TIMEOUT);
-            urlConn.setRequestProperty("Cookie", sessionCookie);
-            urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
-            OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
-            String headerFields = "&to=" + receivers.get(0) + "&smsText=" + URLEncoder.encode(smsText.toString(), encoding);
-            if (spinnerText.equals(Constants.FREE)) {
-                headerFields += "&type=freesms";
-                lastSentType = "FREE";
-            } else if (spinnerText.equals(Constants.STANDARD)) {
-                headerFields += "&type=standardsms";
-                lastSentType = "STANDARD";
-            } else if (spinnerText.equals(Constants.FAKE)) {
-                headerFields += "&type=aksms";
-                lastSentType = "FAKE";
-            }
-            writer.write(headerFields);
-            writer.flush();
-            is = urlConn.getInputStream();
-            Outer:
-            for (Map.Entry<String, List<String>> header : urlConn.getHeaderFields().entrySet()) {
-                if (header.getKey().equals("content-type")) {
-                    for (String entry : header.getValue()) {
-                        String charset = "charset";
-                        if (entry.contains(charset)) {
-                            encoding = entry.substring(entry.indexOf(charset) + charset.length() + 1);
-                            break Outer;
-                        }
-                    }
-                }
-            }
-            String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
-
-            while ((line = reader.readLine()) != null) {
-                builder.append(processLine(line));
-            }
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
-        } finally {
+        FireSMSResultList out = new FireSMSResultList();
+        for (Receiver receiver : receivers) {
+            StringBuilder builder = new StringBuilder();
+            OutputStreamWriter writer = null;
+            BufferedReader reader = null;
             try {
-                is.close();
+                URL myUrl = new URL(tmpUrl);
+                urlConn = (HttpURLConnection) myUrl.openConnection();
+                urlConn.setDoOutput(true);
+                urlConn.setReadTimeout(TIMEOUT);
+                urlConn.setConnectTimeout(TIMEOUT);
+                urlConn.setRequestProperty("Cookie", sessionCookie);
+                urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
+                writer = new OutputStreamWriter(urlConn.getOutputStream());
+                String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, ENCODING);
+                switch (sendIndex) {
+                    case 0: //free
+                        headerFields += "&type=freesms";
+                        lastSentType = "FREE";
+                        break;
+                    case 1:  //standard
+                        headerFields += "&type=standardsms";
+                        lastSentType = "STANDARD";
+                        break;
+                    default:  //fake
+                        headerFields += "&type=aksms";
+                        lastSentType = "FAKE";
+                        break;
+                }
+                writer.write(headerFields);
+                writer.flush();
+                is = urlConn.getInputStream();
+                Map<String, List<String>> urlConnHeaderFields = urlConn.getHeaderFields();
+                if (urlConnHeaderFields == null) {   //normally not reachable cause will be an IOException in getInputStream
+                    out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+                    continue;
+                }
+                String line;
+                reader = new BufferedReader(new InputStreamReader(is, ENCODING));
+
+                while ((line = reader.readLine()) != null) {
+                    builder.append(processLine(line));
+                }
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+                continue;
+            } finally {
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                    if (is != null) {
+                        is.close();
+                    }
+                    if (writer != null) {
+                        writer.close();
+                    }
+                } catch (IOException e) {
+                    Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                }
             }
-        }
-        String alternateText = builder.toString();
-        if (messageSuccessful(builder)) {
-            if (alternateText.equals("NOT ALLOWED YET")) {
-                alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
+
+            String alternateText = builder.toString();
+            if (messageSuccessful(builder)) {
+                if (alternateText.equals("NOT ALLOWED YET")) {
+                    alternateText = provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet);
+                }
+                SMSActionResult actionResult = SMSActionResult.UNKNOWN_ERROR();
+                if (!alternateText.equals("")) {
+                    actionResult = SMSActionResult.UNKNOWN_ERROR(alternateText);
+                }
+                out.add(new FireSMSResult(receiver, actionResult));
+                continue;
             }
-            return Result.UNKNOWN_ERROR().setAlternateText(alternateText);
+            out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(alternateText)));
         }
-        return Result.NO_ERROR().setAlternateText(alternateText);
+
+        return out;
     }
 
     private boolean messageSuccessful(StringBuilder builder) {
@@ -133,19 +159,19 @@ public class GoodmailsSupplier implements SMSSupplier {
 
 
     @Override
-    public Result refreshInformationOnRefreshButtonPressed() {
-        return refreshInformations(false);
-    }
-
-    @Override
-    public Result refreshInformationAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
         return refreshInformations(true);
     }
 
-    private Result refreshInformations(boolean afterMessageSentSuccessful) {
+    @Override
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+        return refreshInformations(false);
+    }
+
+    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
-            Result result = login(provider.getUserName(), provider.getPassword());
-            if (!result.equals(Result.NO_ERROR())) {
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
                 return result;
             }
         }
@@ -154,16 +180,19 @@ public class GoodmailsSupplier implements SMSSupplier {
         InputStream is = null;
         String credits = null;
         String tmpUrl = HOME_PAGE + "&sid=" + getSIDParamater();
+        BufferedReader reader = null;
         try {
             URL myUrl = new URL(tmpUrl);
             urlConn = (HttpURLConnection) myUrl.openConnection();
-            urlConn.setReadTimeout(SMSSupplier.TIMEOUT);
+            urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
+            urlConn.setConnectTimeout(TIMEOUT);
+            urlConn.setConnectTimeout(TIMEOUT);
             urlConn.setDoOutput(true);
             urlConn.setRequestProperty("Cookie", sessionCookie);
-            urlConn.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
+            urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
             is = urlConn.getInputStream();
             String line;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
+            reader = new BufferedReader(new InputStreamReader(is, ENCODING));
             while ((line = reader.readLine()) != null) {
                 if (line.contains("name=\"glf_password\"")) {
                     Pattern p = Pattern.compile("value=\"[0-9]+[\\.+[0-9]+]*\"");
@@ -177,13 +206,16 @@ public class GoodmailsSupplier implements SMSSupplier {
             }
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
 
         } finally {
             try {
+                if (reader != null) {
+                    reader.close();
+                }
                 if (is != null) {
                     is.close();
                 }
@@ -192,7 +224,7 @@ public class GoodmailsSupplier implements SMSSupplier {
             }
         }
 
-        return Result.NO_ERROR().setAlternateText(String.format(tmpText, credits));
+        return SMSActionResult.NO_ERROR(String.format(tmpText, credits));
     }
 
     private String getSIDParamater() {
@@ -224,11 +256,6 @@ public class GoodmailsSupplier implements SMSSupplier {
         return "";
     }
 
-    @Override
-    public String getProviderInfo() {
-        return "GM -> " + lastSentType;
-    }
-
 
     @Override
     public OptionProvider getProvider() {
@@ -236,39 +263,56 @@ public class GoodmailsSupplier implements SMSSupplier {
     }
 
     @Override
-    public Result login(String userName, String password) {
-        String tmpUrl = LOGIN_URL + "&glf_username=" + userName + "&glf_password=" +
-                password + "&email_domain=goodmails.de&language=deutsch&do=login";
+    public SMSActionResult checkCredentials(String userName, String password) {
+        String tmpUrl;
+        try {
+            tmpUrl = LOGIN_URL + "&glf_username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&glf_password=" +
+                    URLEncoder.encode(password == null ? "" : password, ENCODING) + "&email_domain=goodmails.de&language=deutsch&do=login";
+        } catch (UnsupportedEncodingException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
         HttpURLConnection con;
         try {
             con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setReadTimeout(SMSSupplier.TIMEOUT);
-            con.setRequestProperty("User-Agent", SMSSupplier.TARGET_AGENT);
+            con.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
+            con.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
             con.setRequestMethod("GET");
             con.setInstanceFollowRedirects(false);
             Map<String, List<String>> headerFields = con.getHeaderFields();
             if (headerFields == null || headerFields.size() == 0) {
-                return Result.NETWORK_ERROR();
+                return SMSActionResult.NETWORK_ERROR();
             }
             for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
                 String cookie = stringListEntry.getKey();
-                if (cookie.equalsIgnoreCase("set-cookie")) {
+                if (cookie != null && cookie.equalsIgnoreCase("set-cookie")) {
                     for (String s : stringListEntry.getValue()) {
                         if (s.startsWith("sessionSecret")) {
                             sessionCookie = s;
-                            return Result.NO_ERROR();
+                            return SMSActionResult.LOGIN_SUCCESSFUL();
                         }
                     }
                 }
             }
         } catch (SocketTimeoutException stoe) {
             Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return Result.TIMEOUT_ERROR();
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return Result.NETWORK_ERROR();
+            return SMSActionResult.NETWORK_ERROR();
         }
 
-        return Result.LOGIN_FAILED_ERROR();
+        return SMSActionResult.LOGIN_FAILED_ERROR();
+    }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                return i;
+            }
+        }
+        return 0;
     }
 }
