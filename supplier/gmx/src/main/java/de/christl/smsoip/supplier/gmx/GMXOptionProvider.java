@@ -59,4 +59,18 @@ public class GMXOptionProvider extends OptionProvider {
     public Drawable getIconDrawable() {
         return getDrawble(R.drawable.icon);
     }
+
+    @Override
+    public int getLengthDependentSMSCount(int textLength) {
+        if (textLength < 161) {
+            return 0;  //will be claimed usual way
+        } else if (textLength < 305) {
+            return 2;
+        } else {
+            textLength -= 304;
+            int smsCount = Math.round((textLength / 152));
+            smsCount = textLength % 152 == 0 ? smsCount : smsCount + 1;
+            return smsCount + 2;
+        }
+    }
 }
