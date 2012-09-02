@@ -1,3 +1,9 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -15,14 +21,6 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: strings.xml
--->
-<?xml version="1.0" encoding="utf-8"?>
-
 
 <resources>
     <string name="button_send">Send</string>
@@ -177,9 +175,6 @@ fileName: strings.xml
     <string name="text_choose_ringtone">Ringtone</string>
     <string name="text_choose_ringtone_description">Choose your ringtone for notification.</string>
     <string name="text_warning">Warning</string>
-    <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
-        incoming messages, too. If you have problems please disable this option.
-    </string>
     <string name="text_inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>
@@ -367,4 +362,31 @@ fileName: strings.xml
     <string name="text_return_90">Shipping available</string>
     <string name="text_return_100">Message was succesfully sent for %1$s credits</string>
     <string name="text_unknown_error">Unknown error code: %1$d</string>
+</resources>
+<!--String resources for:
+project: o2
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
 </resources>

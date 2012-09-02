@@ -98,10 +98,6 @@ public class SMSReceiver extends BroadcastReceiver {
                 boolean onlyOneNotfctn = preferences.getBoolean(SMSReceiverPreference.RECEIVER_ONLY_ONE_NOTFICATION, false);
                 int id = onlyOneNotfctn ? ID : ID++;
                 mNotificationManager.notify(id, notification);
-
-                if (preferences.getBoolean(SMSReceiverPreference.RECEIVER_ABORT_BROADCAST, false)) {
-                    abortBroadcast();
-                }
             }
         } catch (Exception e) {
             Log.e(this.getClass().getCanonicalName(), "", e); //TODO remove after stability

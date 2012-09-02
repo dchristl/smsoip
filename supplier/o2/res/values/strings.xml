@@ -18,14 +18,5 @@
   -->
 
 <resources>
-    <string-array name="array_spinner">
-        <item>Free-SMS (0 Credits)</item>
-        <item>Power-SMS 160 (10 Credits)</item>
-        <item>Power-SMS 160 with SI (15 Credits)</item>
-        <item>Power-SMS 300 (0 Credits) (20 Credits)</item>
-        <item>Power-SMS 300 with SI (30 Credits)</item>
-    </string-array>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_wrong_number">Wrong number</string>
+
 </resources>

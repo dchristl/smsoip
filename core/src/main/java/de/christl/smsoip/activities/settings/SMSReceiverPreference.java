@@ -18,8 +18,6 @@
 
 package de.christl.smsoip.activities.settings;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.preference.*;
@@ -33,7 +31,6 @@ public class SMSReceiverPreference extends PreferenceActivity {
 
     public static final String RECEIVER_ACTIVATED = "receiver.activated";
     public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
-    public static final String RECEIVER_ABORT_BROADCAST = "receiver.abort.broadcast";
     public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
 
 
@@ -69,45 +66,11 @@ public class SMSReceiverPreference extends PreferenceActivity {
         ringtonePreference.setKey(RECEIVER_RINGTONE_URI);
         ringtonePreference.setEnabled(enabled);
 
-        final CheckBoxPreference abortBroadcast = new CheckBoxPreference(this);
-        abortBroadcast.setDefaultValue(false);
-        abortBroadcast.setKey(RECEIVER_ABORT_BROADCAST);
-        abortBroadcast.setTitle(R.string.text_abort_broadcast);
-        abortBroadcast.setSummary(R.string.text_abort_broadcast_description);
-        abortBroadcast.setEnabled(enabled);
-        abortBroadcast.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (abortBroadcast.isChecked()) {
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SMSReceiverPreference.this);
-                    alertDialog.setTitle(R.string.text_warning);
-                    alertDialog.setMessage(getString(R.string.text_warning_disable_notification));
-                    alertDialog.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            abortBroadcast.setChecked(true);
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog.setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            abortBroadcast.setChecked(false);
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog.show();
-                    return true;
-                }
-                return false;
-            }
 
-        });
         receiverActive.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 showOnlyOneNotification.setEnabled((Boolean) newValue);
-                abortBroadcast.setEnabled((Boolean) newValue);
                 ringtonePreference.setEnabled((Boolean) newValue);
                 return true;
             }
@@ -117,7 +80,6 @@ public class SMSReceiverPreference extends PreferenceActivity {
         root.addPreference(adPreference);
         root.addPreference(showOnlyOneNotification);
         root.addPreference(ringtonePreference);
-        root.addPreference(abortBroadcast);
         return root;
     }
 

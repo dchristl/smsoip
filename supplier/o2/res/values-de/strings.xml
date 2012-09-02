@@ -18,14 +18,5 @@
   -->
 
 <resources>
-    <array name="array_spinner">
-        <item>Free-SMS (0 Credits)</item>
-        <item>Power-SMS 160 (10 Credits)</item>
-        <item>Power-SMS 160 mit AK (15 Credits)</item>
-        <item>Power-SMS 300 (0 Credits) (20 Credits)</item>
-        <item>Power-SMS 300 mit AK (30 Credits)</item>
-    </array>
-    <string name="text_default_type">Standard Absendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_wrong_number">Falsche Nummer</string>
+
 </resources>
