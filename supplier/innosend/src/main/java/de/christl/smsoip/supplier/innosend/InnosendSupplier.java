@@ -16,7 +16,7 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.o2;
+package de.christl.smsoip.supplier.innosend;
 
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
@@ -27,14 +27,14 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import java.util.List;
 
 /**
- * o2 functionality
+ * Innosend functionality
  */
-public class O2Supplier implements ExtendedSMSSupplier {
+public class InnosendSupplier implements ExtendedSMSSupplier {
 
-    private final O2OptionProvider provider;
+    private final InnosendOptionProvider provider;
 
-    public O2Supplier() {
-        provider = new O2OptionProvider();
+    public InnosendSupplier() {
+        provider = new InnosendOptionProvider();
     }
 
     @Override

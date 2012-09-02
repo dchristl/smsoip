@@ -16,19 +16,19 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.o2;
+package de.christl.smsoip.supplier.innosend;
 
 import android.graphics.drawable.Drawable;
 import de.christl.smsoip.option.OptionProvider;
 
 /**
- * O2 options
+ * Innosend options
  */
-public class O2OptionProvider extends OptionProvider {
+public class InnosendOptionProvider extends OptionProvider {
 
-    private static final String PROVIDER_NAME = "O2";
+    private static final String PROVIDER_NAME = "Innosend";
 
-    public O2OptionProvider() {
+    public InnosendOptionProvider() {
         super(PROVIDER_NAME);
     }
 

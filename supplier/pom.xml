@@ -39,7 +39,7 @@
         <module>freenet</module>
         <module>smsde</module>
         <module>cherrysms</module>
-        <module>o2</module>
+        <module>innosend</module>
     </modules>
 
     <dependencies>
