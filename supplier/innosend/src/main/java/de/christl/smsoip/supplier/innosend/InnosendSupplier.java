@@ -115,12 +115,46 @@ public class InnosendSupplier implements ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
-        return null;
+        return refreshInformations(false);
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
-        return null;
+        return refreshInformations(true);
+    }
+
+    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) {
+        if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
+                return result;
+            }
+        }
+
+        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
+        try {
+            String tmpUrl = CHECK_URL + "id=" + URLEncoder.encode(provider.getUserName(), ENCODING) + "&pw=" + URLEncoder.encode(provider.getPassword(), ENCODING);
+            UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+            HttpURLConnection httpURLConnection = factory.create();
+            String returnValue = UrlConnectionFactory.inputStream2DebugString(httpURLConnection.getInputStream(), ENCODING);
+            if (returnValue.contains(",")) { //its floating point number so credits will be replied
+                return SMSActionResult.NO_ERROR(String.format(tmpText, returnValue));
+            } else {
+                //no floating point so check for error code
+                int returnInt = Integer.parseInt(returnValue);
+                return SMSActionResult.UNKNOWN_ERROR(getErrorMessageByResult(returnInt));
+            }
+        } catch (UnsupportedEncodingException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        } catch (IOException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.NETWORK_ERROR();
+        } catch (NumberFormatException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+
     }
 
     @Override

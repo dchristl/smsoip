@@ -29,4 +29,5 @@
     <string name="text_return_129">Falscher Empfänger</string>
     <string name="text_return_130">Gateway Probleme</string>
     <string name="text_return_unknown">Unbekannter Fehler</string>
+    <string name="text_refresh_informations">Guthaben: %1$s</string>
 </resources>

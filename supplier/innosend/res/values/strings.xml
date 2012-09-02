@@ -29,4 +29,5 @@
     <string name="text_return_129">Wrong receiver</string>
     <string name="text_return_130">Gateway problems</string>
     <string name="text_return_unknown">Unknown problem</string>
+    <string name="text_refresh_informations">Balance: %1$s</string>
 </resources>
