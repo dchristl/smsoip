@@ -18,5 +18,15 @@
   -->
 
 <resources>
-
+    <string name="text_return_100">SMS gesendet</string>
+    <string name="text_return_101">MMS gesendet</string>
+    <string name="text_return_111">IP Sperre aktiv</string>
+    <string name="text_return_112">Falsche Zugangsdaten</string>
+    <string name="text_return_120">Absender fehlt</string>
+    <string name="text_return_121">Sendetyp fehlt</string>
+    <string name="text_return_122">Text fehlt</string>
+    <string name="text_return_123">Empfänger fehlt</string>
+    <string name="text_return_129">Falscher Empfänger</string>
+    <string name="text_return_130">Gateway Probleme</string>
+    <string name="text_return_unknown">Unbekannter Fehler</string>
 </resources>

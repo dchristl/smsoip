@@ -364,7 +364,7 @@ fileName: strings.xml
     <string name="text_unknown_error">Unknown error code: %1$d</string>
 </resources>
 <!--String resources for:
-project: o2
+project: innosend
 values folder: values
 fileName: strings.xml
 -->
@@ -388,5 +388,16 @@ fileName: strings.xml
   -->
 
 <resources>
-
+    <string name="text_return_100">SMS sent</string>
+    <string name="text_return_101">MMS sent</string>
+    <string name="text_return_111">IP ban active</string>
+    <string name="text_return_112">Wrong credentials</string>
+    <string name="text_return_120">Sender missing</string>
+    <string name="text_return_121">Sending type missing</string>
+    <string name="text_return_122">Text missing</string>
+    <string name="text_return_123">Receiver missing</string>
+    <string name="text_return_129">Wrong receiver</string>
+    <string name="text_return_130">Gateway problems</string>
+    <string name="text_return_unknown">Unknown problem</string>
 </resources>
+
