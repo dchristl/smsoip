@@ -1319,8 +1319,10 @@ public class SendActivity extends AllActivity {
         }
         lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
-        lastInfoDialog.show();
-        killDialogAfterAWhile(lastInfoDialog);
+        if (!this.isFinishing()) {
+            lastInfoDialog.show();
+            killDialogAfterAWhile(lastInfoDialog);
+        }
         writeSMSInDatabase(fireSMSResults.getSuccessList());
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
             clearAllInputs();
