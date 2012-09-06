@@ -44,6 +44,7 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_ENABLE_COMPACT_MODE = "global.compact.mode";
     public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
+    public static final String GLOBAL_FONT_SIZE_FACTOR = "global.font.size.factor";
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
 
@@ -57,7 +58,117 @@ public class GlobalPreferences extends PreferenceActivity {
 
     private PreferenceScreen initPreferences() {
 
+
         PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
+        addBaseSettings(root);
+        addBehaviourSettings(root);
+        addLayoutSettings(root);
+        addMiscellaneousSettings(root);
+        return root;
+    }
+
+    private void addMiscellaneousSettings(PreferenceScreen root) {
+        PreferenceCategory miscCategory = new PreferenceCategory(this);
+        miscCategory.setTitle(R.string.text_category_stuff);
+        root.addPreference(miscCategory);
+        PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
+        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version" : "https://sites.google.com/site/smsoip/home";
+        intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
+                .setData(Uri.parse(uriString)));
+        intentPref.setTitle(R.string.text_visit_project_page);
+        intentPref.setSummary(R.string.text_visit_project_page_description);
+        root.addPreference(intentPref);
+
+        PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
+        pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+                    GlobalPreferences.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //Market not available on device
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
+                    GlobalPreferences.this.startActivity(intent);
+                }
+                return true;
+            }
+        });
+        pluginIntent.setTitle(R.string.text_visit_plugin_page);
+        pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
+        root.addPreference(pluginIntent);
+    }
+
+    private void addLayoutSettings(PreferenceScreen root) {
+        PreferenceCategory layoutCategory = new PreferenceCategory(this);
+        layoutCategory.setTitle(R.string.text_category_layout);
+        root.addPreference(layoutCategory);
+        CheckBoxPreference enableCompactMode = new CheckBoxPreference(this);
+        enableCompactMode.setDefaultValue(false);
+        enableCompactMode.setKey(GLOBAL_ENABLE_COMPACT_MODE);
+        enableCompactMode.setTitle(R.string.text_enable_compact_mode);
+        enableCompactMode.setSummary(R.string.text_enable_compact_mode_description);
+        root.addPreference(enableCompactMode);
+    }
+
+    private void addBehaviourSettings(PreferenceScreen root) {
+        PreferenceCategory behaviourCategory = new PreferenceCategory(this);
+        behaviourCategory.setTitle(R.string.text_category_behaviour);
+        root.addPreference(behaviourCategory);
+        PreferenceScreen receiverIntent = getPreferenceManager().createPreferenceScreen(this);
+        receiverIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent pref = new Intent(GlobalPreferences.this, SMSReceiverPreference.class);
+                startActivity(pref);
+                return true;
+            }
+        });
+
+        receiverIntent.setTitle(R.string.text_react_on_incoming_sms);
+        receiverIntent.setSummary(R.string.text_react_on_incoming_sms_description);
+        root.addPreference(receiverIntent);
+        CheckBoxPreference enableNetworkCheck = new CheckBoxPreference(this);
+        enableNetworkCheck.setDefaultValue(true);
+        enableNetworkCheck.setKey(GLOBAL_ENABLE_NETWORK_CHECK);
+        enableNetworkCheck.setTitle(R.string.text_enable_network_check);
+        enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
+        root.addPreference(enableNetworkCheck);
+        CheckBoxPreference enableInfoOnStartup = new CheckBoxPreference(this);
+        enableInfoOnStartup.setDefaultValue(false);
+        enableInfoOnStartup.setKey(GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP);
+        enableInfoOnStartup.setTitle(R.string.text_enable_info_update);
+        enableInfoOnStartup.setSummary(R.string.text_enable_info_update_description);
+        root.addPreference(enableInfoOnStartup);
+        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
+        writeToDataBase.setKey(GLOBAL_WRITE_TO_DATABASE);
+        writeToDataBase.setDefaultValue(writeToDatabaseAvailable);
+        writeToDataBase.setEnabled(writeToDatabaseAvailable);
+        writeToDataBase.setTitle(R.string.text_write_to_database);
+        writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.text_write_to_database_description : R.string.text_not_supported_on_device);
+        root.addPreference(writeToDataBase);
+        final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
+        enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
+        enableProviderOutput.setDefaultValue(false);
+        enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(GLOBAL_WRITE_TO_DATABASE, false));
+        enableProviderOutput.setTitle(R.string.text_enable_provider_output);
+        enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
+        root.addPreference(enableProviderOutput);
+
+        writeToDataBase.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                enableProviderOutput.setEnabled(((Boolean) newValue));
+                return true;
+            }
+        });
+    }
+
+    private void addBaseSettings(PreferenceScreen root) {
+        PreferenceCategory mainCategory = new PreferenceCategory(this);
+        mainCategory.setTitle(R.string.text_category_base);
+        root.addPreference(mainCategory);
         EditTextPreference editTextPref = new EditTextPreference(this);
         editTextPref.setDialogTitle(R.string.text_signature);
         editTextPref.setKey(GLOBAL_SIGNATURE);
@@ -93,85 +204,6 @@ public class GlobalPreferences extends PreferenceActivity {
         defaultAreaCode.setSummary(R.string.text_area_code_description);
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
-        PreferenceScreen receiverIntent = getPreferenceManager().createPreferenceScreen(this);
-        receiverIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent pref = new Intent(GlobalPreferences.this, SMSReceiverPreference.class);
-                startActivity(pref);
-                return true;
-            }
-        });
-        receiverIntent.setTitle(R.string.text_react_on_incoming_sms);
-        receiverIntent.setSummary(R.string.text_react_on_incoming_sms_description);
-        root.addPreference(receiverIntent);
-        CheckBoxPreference enableNetworkCheck = new CheckBoxPreference(this);
-        enableNetworkCheck.setDefaultValue(true);
-        enableNetworkCheck.setKey(GLOBAL_ENABLE_NETWORK_CHECK);
-        enableNetworkCheck.setTitle(R.string.text_enable_network_check);
-        enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
-        root.addPreference(enableNetworkCheck);
-        CheckBoxPreference enableInfoOnStartup = new CheckBoxPreference(this);
-        enableInfoOnStartup.setDefaultValue(false);
-        enableInfoOnStartup.setKey(GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP);
-        enableInfoOnStartup.setTitle(R.string.text_enable_info_update);
-        enableInfoOnStartup.setSummary(R.string.text_enable_info_update_description);
-        root.addPreference(enableInfoOnStartup);
-        CheckBoxPreference enableCompactMode = new CheckBoxPreference(this);
-        enableCompactMode.setDefaultValue(false);
-        enableCompactMode.setKey(GLOBAL_ENABLE_COMPACT_MODE);
-        enableCompactMode.setTitle(R.string.text_enable_compact_mode);
-        enableCompactMode.setSummary(R.string.text_enable_compact_mode_description);
-        root.addPreference(enableCompactMode);
-        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
-        CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
-        writeToDataBase.setKey(GLOBAL_WRITE_TO_DATABASE);
-        writeToDataBase.setDefaultValue(writeToDatabaseAvailable);
-        writeToDataBase.setEnabled(writeToDatabaseAvailable);
-        writeToDataBase.setTitle(R.string.text_write_to_database);
-        writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.text_write_to_database_description : R.string.text_not_supported_on_device);
-        root.addPreference(writeToDataBase);
-        final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
-        enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
-        enableProviderOutput.setDefaultValue(false);
-        enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(GLOBAL_WRITE_TO_DATABASE, false));
-        enableProviderOutput.setTitle(R.string.text_enable_provider_output);
-        enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
-        root.addPreference(enableProviderOutput);
-        writeToDataBase.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                enableProviderOutput.setEnabled(((Boolean) newValue));
-                return true;
-            }
-        });
-        PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
-        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version" : "https://sites.google.com/site/smsoip/home";
-        intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
-                .setData(Uri.parse(uriString)));
-        intentPref.setTitle(R.string.text_visit_project_page);
-        intentPref.setSummary(R.string.text_visit_project_page_description);
-        root.addPreference(intentPref);
-
-        PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
-        pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
-                    GlobalPreferences.this.startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    //Market not available on device
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
-                    GlobalPreferences.this.startActivity(intent);
-                }
-                return true;
-            }
-        });
-        pluginIntent.setTitle(R.string.text_visit_plugin_page);
-        pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
-        root.addPreference(pluginIntent);
-        return root;
     }
 
     private Preference.OnPreferenceChangeListener getListener() {

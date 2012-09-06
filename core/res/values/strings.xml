@@ -174,4 +174,8 @@
         correctness and send again.
     </string>
     <string name="text_false_inputs_corrected">Wrong receiver inputs removed!</string>
+    <string name="text_category_base">Base settings</string>
+    <string name="text_category_layout">Layout settings</string>
+    <string name="text_category_behaviour">Behaviour settings</string>
+    <string name="text_category_stuff">Miscellaneous/Help</string>
 </resources>

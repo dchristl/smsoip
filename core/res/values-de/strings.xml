@@ -180,4 +180,8 @@
         Korrektheit und sende noch einmal.
     </string>
     <string name="text_false_inputs_corrected">Fehlerhafte Empfängereingaben entfernt!</string>
+    <string name="text_category_base">Grundeinstellungen</string>
+    <string name="text_category_layout">Aussehen</string>
+    <string name="text_category_behaviour">Verhalten</string>
+    <string name="text_category_stuff">Sonstiges/Hilfe</string>
 </resources>
