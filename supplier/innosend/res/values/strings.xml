@@ -30,7 +30,8 @@
     <string name="text_return_130">Gateway problems</string>
     <string name="text_return_140">No balance</string>
     <string name="text_return_150">SMS blacklist</string>
-    <string name="text_return_161">Free messages not yet possible</string>
+    <string name="text_return_161">Free messages not yet available</string>
+    <string name="text_return_162">No free messages left</string>
     <string name="text_return_170">Wrong date</string>
     <string name="text_return_171">Date in past</string>
     <string name="text_return_172">Too many numbers</string>

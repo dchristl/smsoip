@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,9 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             //no floating point so check for error code
             int returnInt = returnValue.equals("") ? 0 : Integer.parseInt(returnValue);
             return getErrorMessageByResult(returnInt);
+        } catch (SocketTimeoutException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.NETWORK_ERROR();
@@ -134,6 +138,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_150));
             case 161:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_161));
+            case 162:
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_162));
             case 170:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_170));
             case 171:
@@ -183,11 +189,15 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             String freeSMS = "";
             for (Element element : select) {
                 freeSMS = element.text();
+                if (freeSMS.equals("SMS")) {
+                    freeSMS = "0 " + freeSMS;
+                }
             }
             Elements strongElements = parse.select("div.modulecont div div p strong");
             for (Element strongElement : strongElements) {
-                if (strongElement.text().contains(":")) {
-                    freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.text_next), strongElement.text());
+                String nextText = strongElement.text();
+                if (nextText.contains(":") && !nextText.equals(":")) {
+                    freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.text_next), nextText);
                     break;
                 }
             }
@@ -202,6 +212,9 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             }
 
             return SMSActionResult.NO_ERROR(String.format(tmpText, freeSMS, balance));
+        } catch (SocketTimeoutException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return SMSActionResult.TIMEOUT_ERROR();
         } catch (UnsupportedEncodingException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.UNKNOWN_ERROR();
@@ -254,6 +267,9 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             String returnValue = UrlConnectionFactory.inputStream2DebugString(httpURLConnection.getInputStream(), ENCODING);
             int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms
             return FireSMSResultList.getAllInOneResult(getErrorMessageByResult(returnInt), receivers);
+        } catch (SocketTimeoutException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receivers);
         } catch (UnsupportedEncodingException e) {
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         } catch (IOException e) {

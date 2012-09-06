@@ -31,6 +31,7 @@
     <string name="text_return_140">Kein Guthaben</string>
     <string name="text_return_150">SMS-Sperre</string>
     <string name="text_return_161">Kostenlose SMS noch nicht möglich</string>
+    <string name="text_return_162">Keine kostenlosen SMS verfügbar</string>
     <string name="text_return_170">Falsches Datum</string>
     <string name="text_return_171">Datum in der Vergangenheit</string>
     <string name="text_return_172">Zu viele Nummern</string>
