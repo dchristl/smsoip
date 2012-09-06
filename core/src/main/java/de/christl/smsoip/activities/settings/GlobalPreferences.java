@@ -27,6 +27,7 @@ import android.preference.*;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
+import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 
@@ -103,6 +104,7 @@ public class GlobalPreferences extends PreferenceActivity {
         PreferenceCategory layoutCategory = new PreferenceCategory(this);
         layoutCategory.setTitle(R.string.text_category_layout);
         root.addPreference(layoutCategory);
+        root.addPreference(new FontSizePreference(this));
         CheckBoxPreference enableCompactMode = new CheckBoxPreference(this);
         enableCompactMode.setDefaultValue(false);
         enableCompactMode.setKey(GLOBAL_ENABLE_COMPACT_MODE);
