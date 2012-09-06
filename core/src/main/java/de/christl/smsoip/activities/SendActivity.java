@@ -838,6 +838,7 @@ public class SendActivity extends AllActivity {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
         smSoIPPlugin.getProvider().createSpinner(this, spinner);
         findViewById(R.id.typeText).setVisibility(spinner.getVisibility());
+        //force set again with animated = true to force a repaint
         spinner.setSelection(spinner.getSelectedItemPosition(), true);
     }
 

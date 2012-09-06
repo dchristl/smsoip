@@ -28,6 +28,21 @@
     <string name="text_return_123">Empfänger fehlt</string>
     <string name="text_return_129">Falscher Empfänger</string>
     <string name="text_return_130">Gateway Probleme</string>
-    <string name="text_return_unknown">Unbekannter Fehler</string>
-    <string name="text_refresh_informations">Guthaben: %1$s</string>
+    <string name="text_return_140">Kein Guthaben</string>
+    <string name="text_return_150">SMS-Sperre</string>
+    <string name="text_return_161">Kostenlose SMS noch nicht möglich</string>
+    <string name="text_return_170">Falsches Datum</string>
+    <string name="text_return_171">Datum in der Vergangenheit</string>
+    <string name="text_return_172">Zu viele Nummern</string>
+    <string name="text_return_unknown">Unbekannter Fehler:</string>
+    <string name="text_refresh_informations">Free: %1$s\nGuthaben: %2$s</string>
+    <string name="text_default_type">Standardsendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+    <string name="text_next">Nächste: %1$s</string>
+    <string-array name="array_spinner">
+        <item>FREE (ohne AK)</item>
+        <item>SPEED (ohne AK 0,03€)</item>
+        <item>POWER (mit AK, 0,06€)</item>
+        <item>TURBO (mit AK 0,079€)</item>
+    </string-array>
 </resources>

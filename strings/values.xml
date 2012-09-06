@@ -398,6 +398,24 @@ fileName: strings.xml
     <string name="text_return_123">Receiver missing</string>
     <string name="text_return_129">Wrong receiver</string>
     <string name="text_return_130">Gateway problems</string>
-    <string name="text_return_unknown">Unknown problem</string>
+    <string name="text_return_140">No balance</string>
+    <string name="text_return_150">SMS blacklist</string>
+    <string name="text_return_161">Free messages not yet possible</string>
+    <string name="text_return_170">Wrong date</string>
+    <string name="text_return_171">Date in past</string>
+    <string name="text_return_172">Too many numbers</string>
+    <string name="text_return_unknown">Unknown problem:</string>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
+    <string name="text_next">Next: %1$s</string>
+
+
+    <string-array name="array_spinner">
+        <item>FREE (without SI)</item>
+        <item>SPEED (without SI 0,03€)</item>
+        <item>POWER (with SI, 0,06€)</item>
+        <item>TURBO (with SI 0,079€)</item>
+    </string-array>
 </resources>
 
