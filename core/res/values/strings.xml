@@ -178,4 +178,7 @@
     <string name="text_category_layout">Layout settings</string>
     <string name="text_category_behaviour">Behaviour settings</string>
     <string name="text_category_stuff">Miscellaneous/Help</string>
+    <string name="text_font_size">Change font size</string>
+    <string name="text_font_size_description">Change the font size of the message input field.</string>
+    <string name="text_font_size_dialog_description">Hint: Click on the sample text to reset to the default value.</string>
 </resources>

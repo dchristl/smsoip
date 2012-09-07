@@ -184,4 +184,9 @@
     <string name="text_category_layout">Aussehen</string>
     <string name="text_category_behaviour">Verhalten</string>
     <string name="text_category_stuff">Sonstiges/Hilfe</string>
+    <string name="text_font_size">Schriftgröße ändern</string>
+    <string name="text_font_size_description">Ändere die Schriftgröße des Nachrichtentextes.</string>
+    <string name="text_font_size_dialog_description">Hinweis: Klicke auf den Beispieltext, um auf die
+        Standardeinstellungen zurückzusetzen.
+    </string>
 </resources>

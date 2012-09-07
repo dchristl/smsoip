@@ -43,6 +43,10 @@ public class FontSizePreference extends DialogPreference {
         setDefaultValue("1.0");
         setKey(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR);
         setDialogLayoutResource(R.layout.fontsizepreference);
+        setTitle(R.string.text_font_size);
+        setSummary(R.string.text_font_size_description);
+        setDialogTitle(R.string.text_font_size);
+        setDialogMessage(R.string.text_font_size_dialog_description);
         setPersistent(false);
     }
 
@@ -51,6 +55,13 @@ public class FontSizePreference extends DialogPreference {
         super.onBindDialogView(view);
         currentValue = getSharedPreferences().getFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, 1.0f);
         sampleView = (TextView) view.findViewById(R.id.sample);
+        sampleView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentValue = 1.0f;
+                updateSample();
+            }
+        });
         updateSample();
 
         View increaseButton = view.findViewById(R.id.increase);

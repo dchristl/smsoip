@@ -134,6 +134,9 @@ public class SendActivity extends AllActivity {
                 smSoIPPlugin.getProvider().setCurrentAccountId(currentAccountIndex);
                 setFullTitle();
             }
+            float fontSize = settings.getFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
+            ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
+
             optionsCalled = false;
         }
         if (providerOptionsCalled) {
@@ -772,6 +775,8 @@ public class SendActivity extends AllActivity {
 
     private void setTextArea() {
         textField = (EditText) findViewById(R.id.textInput);
+        float fontSize = settings.getFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
+        ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
         textField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
