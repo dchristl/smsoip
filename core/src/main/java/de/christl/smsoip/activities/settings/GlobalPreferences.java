@@ -20,17 +20,24 @@ package de.christl.smsoip.activities.settings;
 
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.*;
+import android.provider.MediaStore;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import org.acra.ErrorReporter;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -47,15 +54,36 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
     public static final String GLOBAL_FONT_SIZE_FACTOR = "global.font.size.factor";
+    public static final String GLOBAL_BACKGROUND_DRAWABLE_URI = "global.background.drawable.uri";
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
+    private static final int ACTIVITY_SELECT_IMAGE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawableResource(R.drawable.background_holo_dark);
+        getWindow().setBackgroundDrawable(getBackgroundImage(this));
+
+    }
+
+    public static Drawable getBackgroundImage(Context context) {
+        String backgroundImageUri = PreferenceManager.getDefaultSharedPreferences(context).getString(GLOBAL_BACKGROUND_DRAWABLE_URI, null);
+        Drawable out = context.getResources().getDrawable(R.drawable.background_holo_dark);
+        if (backgroundImageUri != null) {
+            InputStream imageStream;
+            try {
+                imageStream = context.getContentResolver().openInputStream(Uri.parse(backgroundImageUri));
+                out = Drawable.createFromStream(imageStream, "");
+            } catch (FileNotFoundException e) {
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                editor.remove(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI);
+                editor.commit();
+            }
+
+        }
+        return out;
     }
 
     private PreferenceScreen initPreferences() {
@@ -131,6 +159,19 @@ public class GlobalPreferences extends PreferenceActivity {
         enableCompactMode.setTitle(R.string.text_enable_compact_mode);
         enableCompactMode.setSummary(R.string.text_enable_compact_mode_description);
         root.addPreference(enableCompactMode);
+        PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
+        backgroundImageIntent.setTitle(R.string.text_background_image);
+        backgroundImageIntent.setSummary(R.string.text_background_image_description);
+        backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, ACTIVITY_SELECT_IMAGE);
+                return true;
+            }
+        });
+        root.addPreference(backgroundImageIntent);
     }
 
     private void addBehaviourSettings(PreferenceScreen root) {
@@ -254,6 +295,24 @@ public class GlobalPreferences extends PreferenceActivity {
         };
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch (requestCode) {
+            case ACTIVITY_SELECT_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri selectedImage = imageReturnedIntent.getData();
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                        editor.putString(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI, selectedImage.toString());
+                        editor.commit();
+                        getWindow().setBackgroundDrawable(getBackgroundImage(this));
+                    } catch (Exception e) {
+                        ErrorReporter.getInstance().handleSilentException(e);//TODO remove when stable
+                    }
+                }
+        }
+    }
 }
 
 

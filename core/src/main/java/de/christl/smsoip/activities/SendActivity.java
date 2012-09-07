@@ -144,6 +144,7 @@ public class SendActivity extends AllActivity {
             invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
+        getWindow().setBackgroundDrawable(GlobalPreferences.getBackgroundImage(this));
     }
 
     @Override

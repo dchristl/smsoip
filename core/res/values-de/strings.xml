@@ -72,13 +72,13 @@
     </string>
     <string name="text_default_provider">Standardanbieter</string>
     <string name="text_default_provider_description">Der Standardanbieter der automatisch beim Starten der App
-        ausgewählt ist
+        ausgewählt ist.
     </string>
     <string name="text_no_default_Provider">Keiner (jedesmal fragen)</string>
     <string name="text_visit_project_page">Homepage besuchen</string>
-    <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
+    <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen.</string>
     <string name="text_visit_plugin_page">Plugins suchen</string>
-    <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play</string>
+    <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play.</string>
     <string name="text_area_code">Standardländercode</string>
     <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -99,7 +99,7 @@
     </string>
     <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
     <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
-        versehen (z.B. \'SMSoIP (GMX)\')
+        versehen (z.B. \'SMSoIP (GMX)\').
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
@@ -113,14 +113,14 @@
     <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
     <string name="text_no_phone_type_label">Andere</string>
     <string name="text_write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
-    <string name="text_write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes
+    <string name="text_write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes.
     </string>
     <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
     <string name="text_pick_for_disabling">Klick zum Entfernen</string>
     <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
     <string name="text_account_list">Account-Verwaltung</string>
     <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
-        &lt;%1$s&gt;
+        &lt;%1$s&gt;.
     </string>
     <string name="text_account_add_account">Account hinzufügen</string>
     <string name="text_account_no_account">Nicht gesetzt</string>
@@ -171,10 +171,6 @@
     </string>
     <string name="text_choose_ringtone">Benachrichtigungston</string>
     <string name="text_choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
-    <string name="text_abort_broadcast">Verhindere andere Benachrichtigungen</string>
-    <string name="text_abort_broadcast_description">Alle weiteren Benachrichtigungen anderer Apps (wie etwa die
-        Standard-SMS-App) geben keine Benachrichtigungen.
-    </string>
     <string name="text_warning">Warnung</string>
     <string name="text_inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
         Korrektheit und sende noch einmal.
@@ -192,5 +188,9 @@
     <string name="text_youtube_video">Erklärungsvideo anschauen</string>
     <string name="text_youtube_video_description">Öffne Youtube, um ein kurzes Erklärungsvideo zu SMSoIP auf Youtube
         anzuschauen.
+    </string>
+    <string name="text_background_image">Hintergrundbild</string>
+    <string name="text_background_image_description">Tausche das Hintergrundbild von SMSoIP durch ein Bild aus der
+        Galerie aus.
     </string>
 </resources>

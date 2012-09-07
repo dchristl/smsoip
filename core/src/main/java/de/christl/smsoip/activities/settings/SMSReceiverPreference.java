@@ -41,7 +41,7 @@ public class SMSReceiverPreference extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_sms_receiver_settings));
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawableResource(R.drawable.background_holo_dark);
+        getWindow().setBackgroundDrawable(GlobalPreferences.getBackgroundImage(this));
     }
 
     private PreferenceScreen initPreferences() {

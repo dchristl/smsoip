@@ -71,7 +71,7 @@
     </string>
     <string name="applicationName">SMSoIP</string>
     <string name="text_default_provider">Default provider</string>
-    <string name="text_default_provider_description">Choose your default provider when app is starting</string>
+    <string name="text_default_provider_description">Choose your default provider on app startup.</string>
     <string name="text_no_default_Provider">None (ask everytime)</string>
     <string name="text_visit_project_page">Visit Homepage</string>
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
@@ -97,7 +97,7 @@
     </string>
     <string name="text_enable_provider_output">Enable output of provider</string>
     <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP
-        (GMX)\')
+        (GMX)\').
     </string>
     <string name="name_heading">name</string>
     <string name="number_heading">number</string>
@@ -111,14 +111,14 @@
     <string name="text_add_contact_by_number_dialog">Add phone number</string>
     <string name="text_no_phone_type_label">other</string>
     <string name="text_write_to_database">Write to internal messages outbox</string>
-    <string name="text_write_to_database_description">Write successful messages to your in-device message outbox
+    <string name="text_write_to_database_description">Write successful messages to your in-device message outbox.
     </string>
     <string name="text_not_supported_on_device">Not supported on this device</string>
     <string name="text_pick_for_disabling">Tap for removing</string>
     <string name="text_receiver_added_twice">Receiver number added twice!</string>
     <string name="text_account_list">Account management</string>
     <string name="text_account_list_description">Manage accounts and choose the default one. Current default account is:
-        &lt;%1$s&gt;
+        &lt;%1$s&gt;.
     </string>
     <string name="text_account_add_account">Add account</string>
     <string name="text_account_no_account">Not set</string>
@@ -163,10 +163,6 @@
     <string name="text_only_one_notfication_description">The notification will only be shown once on more than one
         message at the same time. You can answer only to the last received message then.
     </string>
-    <string name="text_abort_broadcast">Prevent further notfications</string>
-    <string name="text_abort_broadcast_description">On incoming messages only SMSoIP will show notifcations. Default
-        message app will not show any message.
-    </string>
     <string name="text_choose_ringtone">Ringtone</string>
     <string name="text_choose_ringtone_description">Choose your ringtone for notification.</string>
     <string name="text_warning">Warning</string>
@@ -184,5 +180,8 @@
     </string>
     <string name="text_youtube_video">Watch introduction video</string>
     <string name="text_youtube_video_description">Watch a short introduction and explanation of SMSoIP at Youtube.
+    </string>
+    <string name="text_background_image">Background image</string>
+    <string name="text_background_image_description">Change the background of SMSoIP to an image of your gallery.
     </string>
 </resources>
