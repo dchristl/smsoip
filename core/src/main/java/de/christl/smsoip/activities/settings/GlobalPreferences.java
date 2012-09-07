@@ -19,10 +19,8 @@
 package de.christl.smsoip.activities.settings;
 
 
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.content.*;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -65,11 +63,10 @@ public class GlobalPreferences extends PreferenceActivity {
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
         setPreferenceScreen(initPreferences());
         getWindow().setBackgroundDrawable(getBackgroundImage(this));
-
     }
 
     public static Drawable getBackgroundImage(Context context) {
-        String backgroundImageUri = PreferenceManager.getDefaultSharedPreferences(context).getString(GLOBAL_BACKGROUND_DRAWABLE_URI, null);
+        String backgroundImageUri = getBackgroundImageUri(context);
         Drawable out = context.getResources().getDrawable(R.drawable.background_holo_dark);
         if (backgroundImageUri != null) {
             InputStream imageStream;
@@ -84,6 +81,10 @@ public class GlobalPreferences extends PreferenceActivity {
 
         }
         return out;
+    }
+
+    private static String getBackgroundImageUri(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(GLOBAL_BACKGROUND_DRAWABLE_URI, null);
     }
 
     private PreferenceScreen initPreferences() {
@@ -165,9 +166,29 @@ public class GlobalPreferences extends PreferenceActivity {
         backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, ACTIVITY_SELECT_IMAGE);
+                if (getBackgroundImageUri(GlobalPreferences.this) != null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GlobalPreferences.this);
+                    builder.setTitle(R.string.text_background_image);
+                    builder.setMessage(R.string.text_background_image_dialog);
+                    builder.setPositiveButton(R.string.text_background_image_dialog_pick, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startImagePicker();
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.text_background_image_dialog_reset, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            writeImageUriAndUpdateBackground(null);
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    startImagePicker();
+                }
+
                 return true;
             }
         });
@@ -226,6 +247,12 @@ public class GlobalPreferences extends PreferenceActivity {
                 return true;
             }
         });
+    }
+
+    private void startImagePicker() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, ACTIVITY_SELECT_IMAGE);
     }
 
     private void addBaseSettings(PreferenceScreen root) {
@@ -302,16 +329,24 @@ public class GlobalPreferences extends PreferenceActivity {
             case ACTIVITY_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        Uri selectedImage = imageReturnedIntent.getData();
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-                        editor.putString(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI, selectedImage.toString());
-                        editor.commit();
-                        getWindow().setBackgroundDrawable(getBackgroundImage(this));
+                        String selectedImage = imageReturnedIntent.getData().toString();
+                        writeImageUriAndUpdateBackground(selectedImage);
                     } catch (Exception e) {
                         ErrorReporter.getInstance().handleSilentException(e);//TODO remove when stable
                     }
                 }
         }
+    }
+
+    private void writeImageUriAndUpdateBackground(String selectedImage) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        if (selectedImage == null) {
+            editor.remove(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI);
+        } else {
+            editor.putString(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI, selectedImage);
+        }
+        editor.commit();
+        getWindow().setBackgroundDrawable(getBackgroundImage(this));
     }
 }
 

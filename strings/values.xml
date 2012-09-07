@@ -186,9 +186,13 @@ fileName: strings.xml
     <string name="text_youtube_video">Watch introduction video</string>
     <string name="text_youtube_video_description">Watch a short introduction and explanation of SMSoIP at Youtube.
     </string>
-    <string name="text_background_image">Background image</string>
+    <string name="text_background_image">Set background image</string>
     <string name="text_background_image_description">Change the background of SMSoIP to an image of your gallery.
     </string>
+    <string name="text_background_image_dialog">Select an image from the gallery or set background back to default.
+    </string>
+    <string name="text_background_image_dialog_pick">Pick from gallery</string>
+    <string name="text_background_image_dialog_reset">Reset to default</string>
 </resources>
 
 <!--String resources for:

@@ -194,10 +194,15 @@ fileName: strings.xml
     <string name="text_youtube_video_description">Öffne Youtube, um ein kurzes Erklärungsvideo zu SMSoIP auf Youtube
         anzuschauen.
     </string>
-    <string name="text_background_image">Hintergrundbild</string>
+    <string name="text_background_image">Hintergrundbild setzen</string>
     <string name="text_background_image_description">Tausche das Hintergrundbild von SMSoIP durch ein Bild aus der
         Galerie aus.
     </string>
+    <string name="text_background_image_dialog">Wähle ein Bild aus der Galerie oder setze den Bildschirmhintergrund
+        zurück.
+    </string>
+    <string name="text_background_image_dialog_pick">Wähle aus Galerie</string>
+    <string name="text_background_image_dialog_reset">Standardhintergrund</string>
 </resources>
 
 <!--String resources for:
