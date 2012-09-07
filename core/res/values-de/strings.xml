@@ -189,4 +189,8 @@
     <string name="text_font_size_dialog_description">Hinweis: Klicke auf den Beispieltext, um auf die
         Standardeinstellungen zurückzusetzen.
     </string>
+    <string name="text_youtube_video">Erklärungsvideo anschauen</string>
+    <string name="text_youtube_video_description">Öffne Youtube, um ein kurzes Erklärungsvideo zu SMSoIP auf Youtube
+        anzuschauen.
+    </string>
 </resources>

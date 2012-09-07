@@ -37,6 +37,7 @@ import java.util.Map;
 
 public class GlobalPreferences extends PreferenceActivity {
 
+
     public static final String GLOBAL_SIGNATURE = "global.signature";
     public static final String GLOBAL_DEFAULT_PROVIDER = "global.default.provider";
     public static final String GLOBAL_AREA_CODE = "global.area.code";
@@ -79,6 +80,25 @@ public class GlobalPreferences extends PreferenceActivity {
         intentPref.setTitle(R.string.text_visit_project_page);
         intentPref.setSummary(R.string.text_visit_project_page_description);
         root.addPreference(intentPref);
+
+        PreferenceScreen youtubeIntent = getPreferenceManager().createPreferenceScreen(this);
+        youtubeIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:tcr87tEPUao"));
+                    GlobalPreferences.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //Youtube app not installed on device
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=tcr87tEPUao"));
+                    GlobalPreferences.this.startActivity(intent);
+                }
+                return true;
+            }
+        });
+        youtubeIntent.setTitle(R.string.text_youtube_video);
+        youtubeIntent.setSummary(R.string.text_youtube_video_description);
+        root.addPreference(youtubeIntent);
 
         PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
         pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

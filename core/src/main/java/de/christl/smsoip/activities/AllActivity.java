@@ -207,13 +207,10 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                         dialog.dismiss();
                     }
                 });
-
-                Button cancel = (Button) dialog.findViewById(R.id.cancel);
-                cancel.setOnClickListener(new View.OnClickListener() {
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onDismiss(DialogInterface dialog) {
                         nwSettingsAlreadyShown = true;
-                        dialog.dismiss();
                     }
                 });
                 break;

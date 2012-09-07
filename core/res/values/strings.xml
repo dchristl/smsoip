@@ -180,5 +180,9 @@
     <string name="text_category_stuff">Miscellaneous/Help</string>
     <string name="text_font_size">Change font size</string>
     <string name="text_font_size_description">Change the font size of the message input field.</string>
-    <string name="text_font_size_dialog_description">Hint: Click on the sample text to reset to the default value.</string>
+    <string name="text_font_size_dialog_description">Hint: Click on the sample text to reset to the default value.
+    </string>
+    <string name="text_youtube_video">Watch introduction video</string>
+    <string name="text_youtube_video_description">Watch a short introduction and explanation of SMSoIP at Youtube.
+    </string>
 </resources>
