@@ -576,6 +576,7 @@ public class SendActivity extends AllActivity {
         if (chosenContactsDialog != null && chosenContactsDialog.isShowing()) {
             chosenContactsDialog.redraw();
         }
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
     }
 
     private void setSmileyButton() {
@@ -1087,6 +1088,9 @@ public class SendActivity extends AllActivity {
 
     private void startGlobalOptionActivity() {
         Intent pref = new Intent(this, GlobalPreferences.class);
+        View rootLayout = findViewById(R.id.rootLayout);
+        int height = getWindow().getDecorView().getHeight() - rootLayout.getHeight();
+        pref.putExtra(GlobalPreferences.EXTRA_ADJUSTMENT, height);
         startActivity(pref);
         optionsCalled = true;
     }
@@ -1353,4 +1357,6 @@ public class SendActivity extends AllActivity {
     public SMSoIPPlugin getSmSoIPPlugin() {
         return smSoIPPlugin;
     }
+
+
 }

@@ -20,12 +20,11 @@ package de.christl.smsoip.util;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import de.christl.smsoip.R;
@@ -41,8 +40,6 @@ public class BitmapProcessor {
     private static final String BACKGROUND_IMAGE_PATH_PORTRAIT = "background_portrait";
     private static final String BACKGROUND_IMAGE_PATH_LANDSCAPE = "background_landscape";
 
-    private static final int MAX_WIDTH = 480;
-    private static final int MAX_HEIGHT = 800;
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -60,30 +57,36 @@ public class BitmapProcessor {
         return scaledSize;
     }
 
-    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight) {
-
-        // First decodeAndSaveImage with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
-    }
-
-    public static boolean decodeAndSaveImage(String imagePath) {
+    public static boolean decodeAndSaveImages(String imagePath, int adjustment) {
         if (imagePath == null) {
             removeBackgroundImages();
             return true;
         }
         WindowManager wm = (WindowManager) SMSoIPApplication.getApp().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        int width = display.getWidth();
-        int height = display.getHeight();
+        int widthPortrait = display.getWidth();
+        int heightPortrait = display.getHeight() - adjustment;
+        int widthLandscape = display.getHeight();
+        int heightLandscape = display.getWidth() - adjustment;
+        ByteArrayInputStream portrait;
+        ByteArrayInputStream landscape;
+        if (widthPortrait < heightPortrait) { //its a "normal" screen
+            portrait = decodeImage(imagePath, widthPortrait, heightPortrait);
+            landscape = decodeImage(imagePath, widthLandscape, heightLandscape);
+        } else {
+            landscape = decodeImage(imagePath, widthPortrait, heightPortrait);
+            portrait = decodeImage(imagePath, widthLandscape, heightLandscape);
+        }
+        boolean out = false;
+        if (portrait != null && landscape != null) {
+            out = saveImage(portrait, BACKGROUND_IMAGE_PATH_PORTRAIT);
+            out &= saveImage(landscape, BACKGROUND_IMAGE_PATH_LANDSCAPE);
+        }
+        return out;
+    }
+
+    private static ByteArrayInputStream decodeImage(String imagePath, int width, int height) {
+
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -92,7 +95,7 @@ public class BitmapProcessor {
         try {
             inputStream = SMSoIPApplication.getApp().getContentResolver().openInputStream(parse);
         } catch (FileNotFoundException e) {
-            return false;
+            return null;
         }
         BitmapFactory.decodeStream(inputStream, null, options);
 
@@ -104,25 +107,63 @@ public class BitmapProcessor {
         try {
             inputStream = SMSoIPApplication.getApp().getContentResolver().openInputStream(parse);
         } catch (FileNotFoundException e) {
-            return false;
+            return null;
         }
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+        Bitmap bitmap = calculateRatio(width, height, BitmapFactory.decodeStream(inputStream, null, options), options);
         boolean success = false;
         if (bitmap != null) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-            ByteArrayInputStream out = new ByteArrayInputStream(bos.toByteArray());
-            success = saveImage(out, BACKGROUND_IMAGE_PATH_PORTRAIT);
-            //rotate the image by 90 degrees
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90f);
-            Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            ByteArrayOutputStream landscapeBos = new ByteArrayOutputStream();
-            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 0, landscapeBos);
-            ByteArrayInputStream landscapeBis = new ByteArrayInputStream(bos.toByteArray());
-            success &= saveImage(landscapeBis, BACKGROUND_IMAGE_PATH_LANDSCAPE);
+            return new ByteArrayInputStream(bos.toByteArray());
         }
-        return success;
+        return null;
+    }
+
+    private static Bitmap calculateRatio(int screenWidth, int screenHeight, Bitmap origin, BitmapFactory.Options options) {
+        float screenRatio = (float) screenHeight / screenWidth;
+        int newImageWidth = options.outWidth;
+        int newImageHeight = options.outHeight;
+        int horAdjustment = 0;
+        int verAdjustment = 0;
+        if (screenRatio < 1) {
+            verAdjustment = -1;
+            while (verAdjustment < 0) {
+                newImageHeight = (int) (newImageWidth * screenRatio);
+                verAdjustment = (options.outHeight - newImageHeight) / 2;
+                if (verAdjustment < 0) {
+                    if (newImageWidth - 50 > 0) {
+                        newImageWidth -= 50;
+                        horAdjustment = (options.outWidth - newImageWidth) / 2;
+                    } else {
+                        return null; //some strange bitmap
+                    }
+                }
+            }
+        } else {
+            horAdjustment = -1;
+
+            while (horAdjustment < 0) {
+                screenRatio = (float) screenWidth / screenHeight;
+                newImageWidth = (int) (newImageHeight * screenRatio);
+                horAdjustment = (options.outWidth - newImageWidth) / 2;
+                if (horAdjustment < 0) {
+                    if (newImageHeight - 50 > 0) {
+                        newImageHeight -= 50;
+                        verAdjustment = (options.outHeight - newImageHeight) / 2;
+                    } else {
+                        return null; //some strange bitmap
+                    }
+                }
+            }
+        }
+        Log.e("christl", "verAdjustment = " + verAdjustment);
+        Log.e("christl", "horAdjustment = " + horAdjustment);
+        Log.e("christl", "newImageHeight = " + newImageHeight);
+        Log.e("christl", "newImageWidth = " + newImageWidth);
+        Log.e("christl", "screenRatio = " + screenRatio);
+        Log.e("christl", "screenWidth = " + screenWidth);
+        Log.e("christl", "screenHeight = " + screenHeight);
+        return Bitmap.createBitmap(origin, horAdjustment, verAdjustment, newImageWidth, newImageHeight);
     }
 
     private static void removeBackgroundImages() {

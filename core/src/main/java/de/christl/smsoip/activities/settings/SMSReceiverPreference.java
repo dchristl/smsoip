@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.content.res.Configuration;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.preference.*;
@@ -84,5 +85,9 @@ public class SMSReceiverPreference extends PreferenceActivity {
         return root;
     }
 
-
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
+    }
 }

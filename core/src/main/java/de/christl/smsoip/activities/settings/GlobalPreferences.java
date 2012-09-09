@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.*;
@@ -57,12 +58,22 @@ public class GlobalPreferences extends PreferenceActivity {
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
+    private ProcessImageAndSetBackgroundTask processImageAndSetBackgroundTask;
+
+
+    public static final String EXTRA_ADJUSTMENT = "extra.adjustment";
+    private Integer adjustment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
         setPreferenceScreen(initPreferences());
+        if (savedInstanceState != null) {
+            adjustment = savedInstanceState.getInt(EXTRA_ADJUSTMENT, 0);
+        } else {
+            adjustment = (Integer) getIntent().getExtras().get(EXTRA_ADJUSTMENT);
+        }
         getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
     }
 
@@ -319,10 +330,26 @@ public class GlobalPreferences extends PreferenceActivity {
     }
 
     private void writeImageUriAndUpdateBackground(String selectedImage) {
-        Toast toast = Toast.makeText(this,R.string.text_background_will_be_set,Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, R.string.text_background_will_be_set, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
         toast.show();
-        new ProcessImageAndSetBackgroundTask(this).execute(selectedImage);
+        if (processImageAndSetBackgroundTask != null) {
+            processImageAndSetBackgroundTask.cancel(true);
+        }
+        processImageAndSetBackgroundTask = new ProcessImageAndSetBackgroundTask(this);
+        processImageAndSetBackgroundTask.execute(selectedImage, String.valueOf(adjustment));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_ADJUSTMENT, adjustment);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
     }
 }
 

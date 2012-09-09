@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -80,5 +81,11 @@ public class ProviderPreferences extends PreferenceActivity {
 
     public ExtendedSMSSupplier getSmsSupplier() {
         return smsSupplier.getSupplier();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
     }
 }

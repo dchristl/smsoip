@@ -34,16 +34,12 @@ public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Bo
 
     @Override
     protected Boolean doInBackground(String... params) {
-        boolean out = false;
-        for (String param : params) {
-            out = BitmapProcessor.decodeAndSaveImage(param);
-        }
-        return out;
+        return BitmapProcessor.decodeAndSaveImages(params[0], Integer.valueOf(params[1]));
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (aBoolean && activity != null && !activity.isFinishing()) {
+        if (aBoolean && activity != null && !activity.isFinishing() && !isCancelled()) {
             activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));
         }
     }
