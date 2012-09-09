@@ -30,6 +30,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.util.BitmapProcessor;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ProviderPreferences extends PreferenceActivity {
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
         preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawable(GlobalPreferences.getBackgroundImage(this));
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
     }
 
     private PreferenceScreen initPreferences() {

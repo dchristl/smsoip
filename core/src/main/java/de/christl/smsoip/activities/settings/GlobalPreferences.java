@@ -20,22 +20,24 @@ package de.christl.smsoip.activities.settings;
 
 
 import android.app.AlertDialog;
-import android.content.*;
-import android.graphics.drawable.Drawable;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.*;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
+import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.util.BitmapProcessor;
 import org.acra.ErrorReporter;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -52,7 +54,6 @@ public class GlobalPreferences extends PreferenceActivity {
     public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
     public static final String GLOBAL_FONT_SIZE_FACTOR = "global.font.size.factor";
-    public static final String GLOBAL_BACKGROUND_DRAWABLE_URI = "global.background.drawable.uri";
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
@@ -62,30 +63,9 @@ public class GlobalPreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawable(getBackgroundImage(this));
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
     }
 
-    public static Drawable getBackgroundImage(Context context) {
-        String backgroundImageUri = getBackgroundImageUri(context);
-        Drawable out = context.getResources().getDrawable(R.drawable.background_holo_dark);
-        if (backgroundImageUri != null) {
-            InputStream imageStream;
-            try {
-                imageStream = context.getContentResolver().openInputStream(Uri.parse(backgroundImageUri));
-                out = Drawable.createFromStream(imageStream, "");
-            } catch (FileNotFoundException e) {
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                editor.remove(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI);
-                editor.commit();
-            }
-
-        }
-        return out;
-    }
-
-    private static String getBackgroundImageUri(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(GLOBAL_BACKGROUND_DRAWABLE_URI, null);
-    }
 
     private PreferenceScreen initPreferences() {
 
@@ -166,7 +146,7 @@ public class GlobalPreferences extends PreferenceActivity {
         backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (getBackgroundImageUri(GlobalPreferences.this) != null) {
+                if (BitmapProcessor.isBackgroundImageSet()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(GlobalPreferences.this);
                     builder.setTitle(R.string.text_background_image);
                     builder.setMessage(R.string.text_background_image_dialog);
@@ -339,14 +319,10 @@ public class GlobalPreferences extends PreferenceActivity {
     }
 
     private void writeImageUriAndUpdateBackground(String selectedImage) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        if (selectedImage == null) {
-            editor.remove(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI);
-        } else {
-            editor.putString(GlobalPreferences.GLOBAL_BACKGROUND_DRAWABLE_URI, selectedImage);
-        }
-        editor.commit();
-        getWindow().setBackgroundDrawable(getBackgroundImage(this));
+        Toast toast = Toast.makeText(this,R.string.text_background_will_be_set,Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+        toast.show();
+        new ProcessImageAndSetBackgroundTask(this).execute(selectedImage);
     }
 }
 

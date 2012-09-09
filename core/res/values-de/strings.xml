@@ -193,9 +193,10 @@
     <string name="text_background_image_description">Tausche das Hintergrundbild von SMSoIP durch ein Bild aus der
         Galerie aus.
     </string>
-    <string name="text_background_image_dialog">Wähle ein Bild aus der Galerie oder setze den Bildschirmhintergrund
+    <string name="text_background_image_dialog">Wähle ein Bild aus der Foto-Galerie oder setze den Bildschirmhintergrund
         zurück.
     </string>
-    <string name="text_background_image_dialog_pick">Wähle aus Galerie</string>
-    <string name="text_background_image_dialog_reset">Standardhintergrund</string>
+    <string name="text_background_image_dialog_pick">Galerie</string>
+    <string name="text_background_image_dialog_reset">Standard</string>
+    <string name="text_background_will_be_set">Hintergrundbild wird verarbeitet und gesetzt.</string>
 </resources>

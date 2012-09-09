@@ -191,8 +191,9 @@ fileName: strings.xml
     </string>
     <string name="text_background_image_dialog">Select an image from the gallery or set background back to default.
     </string>
-    <string name="text_background_image_dialog_pick">Pick from gallery</string>
-    <string name="text_background_image_dialog_reset">Reset to default</string>
+    <string name="text_background_image_dialog_pick">Gallery</string>
+    <string name="text_background_image_dialog_reset">Reset</string>
+    <string name="text_background_will_be_set">Image will be processed and set.</string>
 </resources>
 
 <!--String resources for:

@@ -66,6 +66,7 @@ import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
+import de.christl.smsoip.util.BitmapProcessor;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.*;
@@ -144,7 +145,7 @@ public class SendActivity extends AllActivity {
             invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
-        getWindow().setBackgroundDrawable(GlobalPreferences.getBackgroundImage(this));
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
     }
 
     @Override

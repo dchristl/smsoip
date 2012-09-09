@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.*;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
+import de.christl.smsoip.util.BitmapProcessor;
 
 /**
  * managing all broadcast preferences
@@ -41,7 +42,7 @@ public class SMSReceiverPreference extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_sms_receiver_settings));
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawable(GlobalPreferences.getBackgroundImage(this));
+        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
     }
 
     private PreferenceScreen initPreferences() {
