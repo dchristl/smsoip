@@ -44,6 +44,7 @@ public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Bo
             if (aBoolean) {
                 activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));
             } else {
+                BitmapProcessor.removeBackgroundImages(); //for insurance
                 Toast errorToast = Toast.makeText(activity, R.string.text_background_set_error, Toast.LENGTH_LONG);
                 errorToast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
                 errorToast.show();

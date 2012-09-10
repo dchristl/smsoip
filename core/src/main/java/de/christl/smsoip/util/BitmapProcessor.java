@@ -28,6 +28,8 @@ import android.view.Display;
 import android.view.WindowManager;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
 
 import java.io.*;
 
@@ -154,10 +156,26 @@ public class BitmapProcessor {
                 }
             }
         }
-        return Bitmap.createBitmap(origin, horAdjustment, verAdjustment, newImageWidth, newImageHeight);
+        if (newImageHeight > 0 && newImageWidth > 0) { //some too small image
+            try {
+                return Bitmap.createBitmap(origin, horAdjustment, verAdjustment, newImageWidth, newImageHeight);
+            } catch (IllegalArgumentException e) {
+                ErrorReporter errorReporter = ACRA.getErrorReporter();
+                errorReporter.putCustomData("horAdjustment", String.valueOf(horAdjustment));
+                errorReporter.putCustomData("verAdjustment", String.valueOf(verAdjustment));
+                errorReporter.putCustomData("newImageWidth", String.valueOf(newImageWidth));
+                errorReporter.putCustomData("newImageHeight", String.valueOf(newImageHeight));
+                errorReporter.putCustomData("options.outWidth", String.valueOf(options.outWidth));
+                errorReporter.putCustomData("options.outHeight", String.valueOf(options.outHeight));
+                errorReporter.putCustomData("screenHeight", String.valueOf(screenHeight));
+                errorReporter.putCustomData("screenWidth", String.valueOf(screenWidth));
+                errorReporter.handleSilentException(e);
+            }
+        }
+        return null;
     }
 
-    private static void removeBackgroundImages() {
+    public static void removeBackgroundImages() {
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_PORTRAIT);
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_LANDSCAPE);
     }
