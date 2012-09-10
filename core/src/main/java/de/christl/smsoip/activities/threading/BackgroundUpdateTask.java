@@ -24,7 +24,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
-import org.acra.ErrorReporter;
+import org.acra.ACRA;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -88,7 +88,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
             }
         } catch (Exception e) {    //TODO remove after stability improvements
             Log.e(this.getClass().getCanonicalName(), "", e);
-            ErrorReporter.getInstance().handleSilentException(e);
+            ACRA.getErrorReporter().handleSilentException(e);
             return SMSActionResult.UNKNOWN_ERROR();
         }
     }

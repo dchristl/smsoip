@@ -37,7 +37,7 @@ import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.util.BitmapProcessor;
-import org.acra.ErrorReporter;
+import org.acra.ACRA;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -323,7 +323,7 @@ public class GlobalPreferences extends PreferenceActivity {
                         String selectedImage = imageReturnedIntent.getData().toString();
                         writeImageUriAndUpdateBackground(selectedImage);
                     } catch (Exception e) {
-                        ErrorReporter.getInstance().handleSilentException(e);//TODO remove when stable
+                        ACRA.getErrorReporter().handleSilentException(e);//TODO remove when stable
                     }
                 }
         }

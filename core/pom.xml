@@ -50,7 +50,7 @@
             <type>apklib</type>
         </dependency>
         <dependency>
-            <groupId>com.google.acra</groupId>
+            <groupId>ch.acra</groupId>
             <artifactId>acra</artifactId>
         </dependency>
     </dependencies>

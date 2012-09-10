@@ -37,7 +37,7 @@ import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SMSReceiverPreference;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
-import org.acra.ErrorReporter;
+import org.acra.ACRA;
 
 import java.io.FileNotFoundException;
 
@@ -101,7 +101,7 @@ public class SMSReceiver extends BroadcastReceiver {
             }
         } catch (Exception e) {
             Log.e(this.getClass().getCanonicalName(), "", e); //TODO remove after stability
-            ErrorReporter.getInstance().handleSilentException(e);
+            ACRA.getErrorReporter().handleSilentException(e);
         }
     }
 }

@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.models;
 
-import org.acra.ErrorReporter;
+import org.acra.ACRA;
 
 import java.util.ArrayList;
 
@@ -37,7 +37,7 @@ public abstract class ErrorReporterStack {
         int z = 0;
         int size = stack.size();
         for (int i = size; i > 0; i--) {
-            ErrorReporter.getInstance().putCustomData("action_" + z, stack.get(i - 1));
+            ACRA.getErrorReporter().putCustomData("action_" + z, stack.get(i - 1));
             z++;
             if (z >= 10) {
                 break;

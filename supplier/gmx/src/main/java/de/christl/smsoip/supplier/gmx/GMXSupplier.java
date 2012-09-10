@@ -394,8 +394,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return SMSActionResult.NETWORK_ERROR();
         } catch (Exception e) {            //TODO remove after its stable
-            ErrorReporter.getInstance().putCustomData("inputstream", inputStream);
-            ErrorReporter.getInstance().handleSilentException(e);
+            ACRA.getErrorReporter().putCustomData("inputstream", inputStream);
+            ACRA.getErrorReporter().handleSilentException(e);
             return SMSActionResult.UNKNOWN_ERROR();
         }
 

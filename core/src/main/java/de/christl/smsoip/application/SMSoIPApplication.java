@@ -34,14 +34,13 @@ import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
-import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import java.io.IOException;
 import java.util.*;
 
-@ReportsCrashes(formKey = "dG1sVXFvbGprY25rbWQ2WEZ6SzlLaEE6MQ", mode = ReportingInteractionMode.NOTIFICATION,
+@ReportsCrashes(formKey = "dDFEZFF5R1FzTWlNVHkzdnJFaGVDTUE6MQ", mode = ReportingInteractionMode.NOTIFICATION,
         resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
         resNotifTickerText = R.string.crash_notif_ticker_text,
         resNotifTitle = R.string.crash_notif_title,
@@ -101,7 +100,7 @@ public class SMSoIPApplication extends Application {
 //refresh only if not yet done and if a new application is installed
             if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
                 versionNumber = ExtendedSMSSupplier.class.getAnnotation(APIVersion.class).minVersion();
-                ErrorReporter.getInstance().putCustomData("APIVersion", String.valueOf(versionNumber));
+                ACRA.getErrorReporter().putCustomData("APIVersion", String.valueOf(versionNumber));
                 plugins = new ArrayList<SMSoIPPlugin>();
                 for (ApplicationInfo installedApplication : installedApplications) {
                     if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
@@ -204,7 +203,7 @@ public class SMSoIPApplication extends Application {
             }
             builder.append("\n");
         }
-        ErrorReporter.getInstance().putCustomData("PLUGINS", builder.toString());
+        ACRA.getErrorReporter().putCustomData("PLUGINS", builder.toString());
     }
 
     /**

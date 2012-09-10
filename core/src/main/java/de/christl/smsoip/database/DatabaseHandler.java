@@ -32,6 +32,7 @@ import de.christl.smsoip.autosuggest.NameNumberEntry;
 import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.models.Message;
 import de.christl.smsoip.picker.DateTimeObject;
+import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
 import java.util.*;
@@ -107,7 +108,7 @@ public abstract class DatabaseHandler {
                 query.close();
             } catch (IllegalArgumentException e) {
                 Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
-                ErrorReporter instance = ErrorReporter.getInstance();
+                ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
 
@@ -190,7 +191,7 @@ public abstract class DatabaseHandler {
             }
         } catch (Exception e) {
             Log.e(DatabaseHandler.class.getCanonicalName(), "", e);
-            ErrorReporter.getInstance().handleSilentException(e);
+            ACRA.getErrorReporter().handleSilentException(e);
         }
     }
 
@@ -219,7 +220,7 @@ public abstract class DatabaseHandler {
                 query.close();
             } catch (IllegalArgumentException e) {
                 Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
-                ErrorReporter instance = ErrorReporter.getInstance();
+                ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
 
