@@ -738,7 +738,7 @@ public class SendActivity extends AllActivity {
             infoView.setText(smsActionResult.getMessage());
             infoViewUpper.setText(smsActionResult.getMessage() + " " + getString(R.string.text_click));
         } else {     //on error show the ImageDialog
-            lastInfoDialog = new EmoImageDialog(this, FireSMSResultList.getAllInOneResult(smsActionResult, receiverField.getReceiverList()), smsActionResult.getMessage());
+            lastInfoDialog = new EmoImageDialog(getApplication(), FireSMSResultList.getAllInOneResult(smsActionResult, receiverField.getReceiverList()), smsActionResult.getMessage());
             lastInfoDialog.setOwnerActivity(this);
             lastInfoDialog.show();
             killDialogAfterAWhile(lastInfoDialog);
@@ -1329,7 +1329,7 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
+        lastInfoDialog = new EmoImageDialog(getApplication(), fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
         if (!this.isFinishing()) {
             lastInfoDialog.show();
