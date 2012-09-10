@@ -194,6 +194,7 @@ fileName: strings.xml
     <string name="text_background_image_dialog_pick">Gallery</string>
     <string name="text_background_image_dialog_reset">Reset</string>
     <string name="text_background_will_be_set">Image will be processed and set.</string>
+    <string name="text_background_set_error">Error on setting background image.</string>
 </resources>
 
 <!--String resources for:
@@ -255,9 +256,9 @@ fileName: strings.xml
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_refresh_informations">"Credits: %s"</string>
     <string-array name="array_spinner">
-        <item>FREE (0 Credits)</item>
-        <item>STANDARD (10 Credits)</item>
-        <item>FAKE (12 Credits)</item>
+        <item>Free SMS (0 Credits)</item>
+        <item>Default SMS (10 Credits)</item>
+        <item>SMS SI (12 Credits)</item>
     </string-array>
 </resources>
 <!--String resources for:

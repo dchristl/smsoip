@@ -22,8 +22,8 @@
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="text_refresh_informations">"Credits: %s"</string>
     <string-array name="array_spinner">
-        <item>FREE (0 Credits)</item>
-        <item>STANDARD (10 Credits)</item>
-        <item>FAKE (12 Credits)</item>
+        <item>Kostenlose (0 Credits)</item>
+        <item>Standard SMS (10 Credits)</item>
+        <item>SMS AK (12 Credits)</item>
     </string-array>
 </resources>

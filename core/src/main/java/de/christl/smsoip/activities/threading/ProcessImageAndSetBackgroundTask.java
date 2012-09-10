@@ -44,9 +44,8 @@ public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Bo
         ErrorReporterStack.put("ProcessImageAndSetBackgroundTask postExecute");
         Activity activity = SMSoIPApplication.getCurrentActivity();
         if (activity != null && !activity.isFinishing() && !isCancelled()) {
-            if (aBoolean) {
-                activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));
-            } else {
+            activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));
+            if (!aBoolean) {
                 BitmapProcessor.removeBackgroundImages(); //for insurance
                 Toast errorToast = Toast.makeText(activity, R.string.text_background_set_error, Toast.LENGTH_LONG);
                 errorToast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
