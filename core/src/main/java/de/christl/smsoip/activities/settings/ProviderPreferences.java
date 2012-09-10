@@ -47,6 +47,13 @@ public class ProviderPreferences extends PreferenceActivity {
     private PreferenceManager preferenceManager;
     private OptionProvider provider;
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SMSoIPApplication.setCurrentActivity(this);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

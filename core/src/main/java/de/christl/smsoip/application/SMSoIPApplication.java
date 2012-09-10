@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.application;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -62,6 +63,15 @@ public class SMSoIPApplication extends Application {
     private boolean adsEnabled = true;
     private int versionNumber;
     private Integer installedPackages;
+    private static Activity currentActivity;
+
+    public static Activity getCurrentActivity() {
+        return currentActivity;
+    }
+
+    public static void setCurrentActivity(Activity currentActivity) {
+        SMSoIPApplication.currentActivity = currentActivity;
+    }
 
     @Override
     public void onCreate() {

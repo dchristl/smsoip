@@ -189,4 +189,5 @@
     <string name="text_background_image_dialog_pick">Gallery</string>
     <string name="text_background_image_dialog_reset">Reset</string>
     <string name="text_background_will_be_set">Image will be processed and set.</string>
+    <string name="text_background_set_error">Error on setting background image.</string>
 </resources>

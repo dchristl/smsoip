@@ -65,6 +65,12 @@ public class GlobalPreferences extends PreferenceActivity {
     private Integer adjustment = 0;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        SMSoIPApplication.setCurrentActivity(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
@@ -336,7 +342,7 @@ public class GlobalPreferences extends PreferenceActivity {
         if (processImageAndSetBackgroundTask != null) {
             processImageAndSetBackgroundTask.cancel(true);
         }
-        processImageAndSetBackgroundTask = new ProcessImageAndSetBackgroundTask(this);
+        processImageAndSetBackgroundTask = new ProcessImageAndSetBackgroundTask();
         processImageAndSetBackgroundTask.execute(selectedImage, String.valueOf(adjustment));
     }
 

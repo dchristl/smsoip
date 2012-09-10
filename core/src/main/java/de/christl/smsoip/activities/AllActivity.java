@@ -73,6 +73,12 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        SMSoIPApplication.setCurrentActivity(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registeredActivities.add(this);

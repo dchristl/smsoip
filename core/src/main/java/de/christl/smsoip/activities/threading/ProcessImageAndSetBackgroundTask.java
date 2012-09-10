@@ -20,17 +20,17 @@ package de.christl.smsoip.activities.threading;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.Gravity;
+import android.widget.Toast;
+import de.christl.smsoip.R;
+import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.util.BitmapProcessor;
 
 /**
  * calculate the new size of the image and set it as background
  */
 public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Boolean> {
-    private Activity activity;
 
-    public ProcessImageAndSetBackgroundTask(Activity activity) {
-        this.activity = activity;
-    }
 
     @Override
     protected Boolean doInBackground(String... params) {
@@ -39,8 +39,15 @@ public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Bo
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (aBoolean && activity != null && !activity.isFinishing() && !isCancelled()) {
-            activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));
+        Activity activity = SMSoIPApplication.getCurrentActivity();
+        if (activity != null && !activity.isFinishing() && !isCancelled()) {
+            if (aBoolean) {
+                activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));
+            } else {
+                Toast errorToast = Toast.makeText(activity, R.string.text_background_set_error, Toast.LENGTH_LONG);
+                errorToast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+                errorToast.show();
+            }
         }
     }
 }

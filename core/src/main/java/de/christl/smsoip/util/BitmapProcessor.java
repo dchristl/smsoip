@@ -24,7 +24,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import de.christl.smsoip.R;
@@ -110,7 +109,6 @@ public class BitmapProcessor {
             return null;
         }
         Bitmap bitmap = calculateRatio(width, height, BitmapFactory.decodeStream(inputStream, null, options), options);
-        boolean success = false;
         if (bitmap != null) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
@@ -156,13 +154,6 @@ public class BitmapProcessor {
                 }
             }
         }
-        Log.e("christl", "verAdjustment = " + verAdjustment);
-        Log.e("christl", "horAdjustment = " + horAdjustment);
-        Log.e("christl", "newImageHeight = " + newImageHeight);
-        Log.e("christl", "newImageWidth = " + newImageWidth);
-        Log.e("christl", "screenRatio = " + screenRatio);
-        Log.e("christl", "screenWidth = " + screenWidth);
-        Log.e("christl", "screenHeight = " + screenHeight);
         return Bitmap.createBitmap(origin, horAdjustment, verAdjustment, newImageWidth, newImageHeight);
     }
 

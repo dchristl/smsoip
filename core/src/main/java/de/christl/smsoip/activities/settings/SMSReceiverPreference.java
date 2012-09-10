@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.preference.*;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
+import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.util.BitmapProcessor;
 
 /**
@@ -36,7 +37,11 @@ public class SMSReceiverPreference extends PreferenceActivity {
     public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
 
 
-    private static final int SET_RINGTONE = 40;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SMSoIPApplication.setCurrentActivity(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
