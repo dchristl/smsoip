@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
 
 /**
@@ -34,11 +35,13 @@ public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Bo
 
     @Override
     protected Boolean doInBackground(String... params) {
+        ErrorReporterStack.put("ProcessImageAndSetBackgroundTask started");
         return BitmapProcessor.decodeAndSaveImages(params[0], Integer.valueOf(params[1]));
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
+        ErrorReporterStack.put("ProcessImageAndSetBackgroundTask postExecute");
         Activity activity = SMSoIPApplication.getCurrentActivity();
         if (activity != null && !activity.isFinishing() && !isCancelled()) {
             if (aBoolean) {

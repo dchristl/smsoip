@@ -36,6 +36,7 @@ import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
 import org.acra.ACRA;
 
@@ -343,6 +344,7 @@ public class GlobalPreferences extends PreferenceActivity {
             processImageAndSetBackgroundTask.cancel(true);
         }
         processImageAndSetBackgroundTask = new ProcessImageAndSetBackgroundTask();
+        ErrorReporterStack.put("ProcessImageAndSetBackgroundTask created and started");
         processImageAndSetBackgroundTask.execute(selectedImage, String.valueOf(adjustment));
     }
 

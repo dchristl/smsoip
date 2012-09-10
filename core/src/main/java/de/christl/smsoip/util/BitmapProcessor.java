@@ -28,6 +28,7 @@ import android.view.Display;
 import android.view.WindowManager;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.models.ErrorReporterStack;
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
@@ -43,6 +44,7 @@ public class BitmapProcessor {
 
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        ErrorReporterStack.put("calculateInSampleSize");
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -59,6 +61,7 @@ public class BitmapProcessor {
     }
 
     public static boolean decodeAndSaveImages(String imagePath, int adjustment) {
+        ErrorReporterStack.put("decodeAndSaveImages");
         if (imagePath == null) {
             removeBackgroundImages();
             return true;
@@ -87,7 +90,7 @@ public class BitmapProcessor {
     }
 
     private static ByteArrayInputStream decodeImage(String imagePath, int width, int height) {
-
+        ErrorReporterStack.put("decodeImage");
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -120,6 +123,7 @@ public class BitmapProcessor {
     }
 
     private static Bitmap calculateRatio(int screenWidth, int screenHeight, Bitmap origin, BitmapFactory.Options options) {
+        ErrorReporterStack.put("calculateRatio");
         float screenRatio = (float) screenHeight / screenWidth;
         int newImageWidth = options.outWidth;
         int newImageHeight = options.outHeight;
@@ -176,12 +180,14 @@ public class BitmapProcessor {
     }
 
     public static void removeBackgroundImages() {
+        ErrorReporterStack.put("removeBackgroundImages");
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_PORTRAIT);
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_LANDSCAPE);
     }
 
 
     public static Drawable getBackgroundImage(int orientation) {
+        ErrorReporterStack.put("getBackgroundImage");
         SMSoIPApplication app = SMSoIPApplication.getApp();
         Drawable out = app.getResources().getDrawable(R.drawable.background_holo_dark);
         String imageOrientation = BACKGROUND_IMAGE_PATH_PORTRAIT;
@@ -197,6 +203,7 @@ public class BitmapProcessor {
     }
 
     public static boolean isBackgroundImageSet() {
+        ErrorReporterStack.put("isBackgroundImageSet");
         try {
             SMSoIPApplication.getApp().openFileInput(BACKGROUND_IMAGE_PATH_PORTRAIT);
         } catch (FileNotFoundException e) {
@@ -207,6 +214,7 @@ public class BitmapProcessor {
 
 
     private static boolean saveImage(InputStream inputStream, String orientation) {
+        ErrorReporterStack.put("saveImage");
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(SMSoIPApplication.getApp().getFilesDir().getPath() + File.separator + orientation);
