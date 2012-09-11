@@ -726,27 +726,6 @@ public class SendActivity extends AllActivity {
     }
 
 
-    /**
-     * update the info text if refresh was succesful, otherwise a dialog will be shown
-     *
-     * @param smsActionResult
-     */
-    void updateInfoTextThroughRefresh(SMSActionResult smsActionResult) {
-        TextView infoView = (TextView) findViewById(R.id.infoText);
-        TextView infoViewUpper = (TextView) findViewById(R.id.infoTextUpper);
-        if (smsActionResult.isSuccess()) {
-            infoView.setText(smsActionResult.getMessage());
-            infoViewUpper.setText(smsActionResult.getMessage() + " " + getString(R.string.text_click));
-        } else {     //on error show the ImageDialog
-            lastInfoDialog = new EmoImageDialog(getApplication(), FireSMSResultList.getAllInOneResult(smsActionResult, receiverField.getReceiverList()), smsActionResult.getMessage());
-            lastInfoDialog.setOwnerActivity(this);
-            lastInfoDialog.show();
-            killDialogAfterAWhile(lastInfoDialog);
-            setInfoButtonVisibility();
-        }
-
-    }
-
     private void killDialogAfterAWhile(final Dialog dialog) {
         ErrorReporterStack.put("killDialogAfterAWhile");
         new Thread(new Runnable() {
@@ -1329,7 +1308,7 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        lastInfoDialog = new EmoImageDialog(getApplication(), fireSMSResults, resultMessage.toString());
+        lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
         if (!this.isFinishing()) {
             lastInfoDialog.show();

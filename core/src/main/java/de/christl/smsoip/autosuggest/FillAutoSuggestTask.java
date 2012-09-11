@@ -19,7 +19,7 @@
 package de.christl.smsoip.autosuggest;
 
 import android.os.AsyncTask;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.application.SMSoIPApplication;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class FillAutoSuggestTask extends AsyncTask<Void, Void, List<NameNumberEn
 
     @Override
     protected List<NameNumberEntry> doInBackground(Void... params) {
-        return DatabaseHandler.getAllContactsWithPhoneNumber(nameNumberSuggestField.getContext());
+        return ((SMSoIPApplication) nameNumberSuggestField.getContext().getApplicationContext()).getContactsWithPhoneNumberList();
     }
 
     @Override
