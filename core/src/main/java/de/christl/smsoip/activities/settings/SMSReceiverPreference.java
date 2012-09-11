@@ -19,6 +19,7 @@
 package de.christl.smsoip.activities.settings;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.preference.*;
@@ -35,6 +36,7 @@ public class SMSReceiverPreference extends PreferenceActivity {
     public static final String RECEIVER_ACTIVATED = "receiver.activated";
     public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
     public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
+    private Drawable backgroundImage;
 
 
     @Override
@@ -48,7 +50,8 @@ public class SMSReceiverPreference extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_sms_receiver_settings));
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
+        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     private PreferenceScreen initPreferences() {
@@ -93,6 +96,13 @@ public class SMSReceiverPreference extends PreferenceActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
+        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        backgroundImage.setCallback(null);
     }
 }

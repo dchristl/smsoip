@@ -362,7 +362,11 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 return SMSActionResult.NETWORK_ERROR();
             }
             //TODO remove after its stable
-            inputStream = UrlConnectionFactory.inputStream2DebugString(con.getInputStream());
+            InputStream tmpStream = con.getInputStream();
+            if (tmpStream == null) {      //!! not yet deployed
+                return SMSActionResult.NETWORK_ERROR();
+            }
+            inputStream = UrlConnectionFactory.inputStream2DebugString(tmpStream);
             Document document = Jsoup.parse(inputStream);
             Elements scripts = document.select("script");
             for (Element script : scripts) {
@@ -398,8 +402,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             ACRA.getErrorReporter().handleSilentException(e);
             return SMSActionResult.UNKNOWN_ERROR();
         }
-
-
         return SMSActionResult.LOGIN_FAILED_ERROR();
     }
 

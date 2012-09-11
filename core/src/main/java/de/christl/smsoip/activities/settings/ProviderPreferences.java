@@ -19,6 +19,7 @@
 package de.christl.smsoip.activities.settings;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -46,6 +47,7 @@ public class ProviderPreferences extends PreferenceActivity {
     public static final String PROVIDER_DEFAULT_ACCOUNT = "provider.default.number";
     private PreferenceManager preferenceManager;
     private OptionProvider provider;
+    private Drawable backgroundImage;
 
 
     @Override
@@ -66,7 +68,8 @@ public class ProviderPreferences extends PreferenceActivity {
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
         preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
+        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     private PreferenceScreen initPreferences() {
@@ -93,6 +96,13 @@ public class ProviderPreferences extends PreferenceActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
+        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        backgroundImage.setCallback(null);
     }
 }

@@ -21,26 +21,29 @@ package de.christl.smsoip.autosuggest;
 import android.os.AsyncTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
  * extra task for filling all stuff for autosuggest to improve startup of app
  */
 public class FillAutoSuggestTask extends AsyncTask<Void, Void, List<NameNumberEntry>> {
-    private NameNumberSuggestField nameNumberSuggestField;
+    private WeakReference<NameNumberSuggestField> nameNumberSuggestFieldRef;
 
-    public FillAutoSuggestTask(NameNumberSuggestField nameNumberSuggestField) {
-        this.nameNumberSuggestField = nameNumberSuggestField;
+    public FillAutoSuggestTask(NameNumberSuggestField nameNumberSuggestFieldRef) {
+        this.nameNumberSuggestFieldRef = new WeakReference<NameNumberSuggestField>(nameNumberSuggestFieldRef);
     }
 
     @Override
     protected List<NameNumberEntry> doInBackground(Void... params) {
-        return ((SMSoIPApplication) nameNumberSuggestField.getContext().getApplicationContext()).getContactsWithPhoneNumberList();
+        return ((SMSoIPApplication) nameNumberSuggestFieldRef.get().getContext().getApplicationContext()).getContactsWithPhoneNumberList();
     }
 
     @Override
     protected void onPostExecute(List<NameNumberEntry> nameNumberEntries) {
-        nameNumberSuggestField.setAdapter(new NameNumberSuggestAdapter(nameNumberSuggestField.getContext(), nameNumberEntries));
-        nameNumberSuggestField.setEnabled(true);
+        if (nameNumberSuggestFieldRef != null) {
+            nameNumberSuggestFieldRef.get().setAdapter(new NameNumberSuggestAdapter(nameNumberSuggestFieldRef.get().getContext(), nameNumberEntries));
+            nameNumberSuggestFieldRef.get().setEnabled(true);
+        }
     }
 }

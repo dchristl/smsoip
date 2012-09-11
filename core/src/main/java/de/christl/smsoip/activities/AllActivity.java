@@ -26,6 +26,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -46,6 +48,7 @@ import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.application.changelog.ChangeLog;
+import de.christl.smsoip.util.BitmapProcessor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +70,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     private static AllActivity context;
+    private Drawable backgroundImage;
 
     protected AllActivity() {
         context = this;
@@ -76,6 +80,8 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     protected void onResume() {
         super.onResume();
         SMSoIPApplication.setCurrentActivity(this);
+        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     @Override
@@ -269,5 +275,18 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     public static Context getActivity() {
         return context;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        backgroundImage.setCallback(null);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
     }
 }

@@ -33,6 +33,8 @@ import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Helper method for processing bitmaps
@@ -41,6 +43,7 @@ public class BitmapProcessor {
 
     private static final String BACKGROUND_IMAGE_PATH_PORTRAIT = "background_portrait";
     private static final String BACKGROUND_IMAGE_PATH_LANDSCAPE = "background_landscape";
+    private static Map<Integer, Drawable> imageMap = new HashMap<Integer, Drawable>();
 
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -66,6 +69,7 @@ public class BitmapProcessor {
             removeBackgroundImages();
             return true;
         }
+        imageMap.clear();
         WindowManager wm = (WindowManager) SMSoIPApplication.getApp().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         int widthPortrait = display.getWidth();
@@ -183,21 +187,26 @@ public class BitmapProcessor {
         ErrorReporterStack.put("removeBackgroundImages");
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_PORTRAIT);
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_LANDSCAPE);
+        imageMap.clear();
     }
 
 
     public static Drawable getBackgroundImage(int orientation) {
         ErrorReporterStack.put("getBackgroundImage");
-        SMSoIPApplication app = SMSoIPApplication.getApp();
-        Drawable out = app.getResources().getDrawable(R.drawable.background_holo_dark);
-        String imageOrientation = BACKGROUND_IMAGE_PATH_PORTRAIT;
-        try {
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                imageOrientation = BACKGROUND_IMAGE_PATH_LANDSCAPE;
+        Drawable out = imageMap.get(orientation);
+        if (out == null) {
+            SMSoIPApplication app = SMSoIPApplication.getApp();
+            String imageOrientation = BACKGROUND_IMAGE_PATH_PORTRAIT;
+            try {
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    imageOrientation = BACKGROUND_IMAGE_PATH_LANDSCAPE;
+                }
+                FileInputStream fileInputStream = app.openFileInput(imageOrientation);
+                out = Drawable.createFromStream(fileInputStream, "");
+            } catch (FileNotFoundException ignored) {
+                out = app.getResources().getDrawable(R.drawable.background_holo_dark);
             }
-            FileInputStream fileInputStream = app.openFileInput(imageOrientation);
-            out = Drawable.createFromStream(fileInputStream, "");
-        } catch (FileNotFoundException ignored) {
+            imageMap.put(orientation, out);
         }
         return out;
     }

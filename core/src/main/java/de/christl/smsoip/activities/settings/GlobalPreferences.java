@@ -24,6 +24,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.*;
@@ -64,6 +65,7 @@ public class GlobalPreferences extends PreferenceActivity {
 
     public static final String EXTRA_ADJUSTMENT = "extra.adjustment";
     private Integer adjustment = 0;
+    private Drawable backgroundImage;
 
     @Override
     protected void onResume() {
@@ -81,7 +83,8 @@ public class GlobalPreferences extends PreferenceActivity {
         } else {
             adjustment = (Integer) getIntent().getExtras().get(EXTRA_ADJUSTMENT);
         }
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
+        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
 
@@ -357,7 +360,14 @@ public class GlobalPreferences extends PreferenceActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
+        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
+        getWindow().setBackgroundDrawable(backgroundImage);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        backgroundImage.setCallback(null);
     }
 }
 

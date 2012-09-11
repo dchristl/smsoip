@@ -118,6 +118,7 @@ public class SendActivity extends AllActivity {
     private AsyncTask<Void, String, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -145,7 +146,7 @@ public class SendActivity extends AllActivity {
             invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation));
+
     }
 
     @Override
@@ -576,7 +577,7 @@ public class SendActivity extends AllActivity {
         if (chosenContactsDialog != null && chosenContactsDialog.isShowing()) {
             chosenContactsDialog.redraw();
         }
-        getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(newConfig.orientation));
+
     }
 
     private void setSmileyButton() {
