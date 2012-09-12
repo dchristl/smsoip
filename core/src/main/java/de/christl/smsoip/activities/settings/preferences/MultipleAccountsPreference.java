@@ -31,6 +31,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
@@ -39,6 +40,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
  * mechanism with adding number only gt 0 seems stupid on first view, but is caused by compatibilty to older versions
  */
 public class MultipleAccountsPreference extends ListPreference {
+
 
 
     private SharedPreferences preferences;
@@ -121,7 +123,7 @@ public class MultipleAccountsPreference extends ListPreference {
             editor.commit();
             setDefaultAccountInSummary();
         }
-        ErrorReporterStack.put("showUserNamePasswordDialog closed");
+        ErrorReporterStack.put(LogConst.SHOW_USER_NAME_PASSWORD_DIALOG_CLOSED);
     }
 
 
@@ -155,7 +157,7 @@ public class MultipleAccountsPreference extends ListPreference {
     }
 
     public void showUserNamePasswordDialog(final AccountModel accountModel) {
-        ErrorReporterStack.put("showUserNamePasswordDialog");
+        ErrorReporterStack.put(LogConst.SHOW_USER_NAME_PASSWORD_DIALOG);
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.userpassinputs);
         dialog.setTitle(R.string.text_account_add_account);

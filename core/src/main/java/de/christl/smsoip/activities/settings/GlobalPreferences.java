@@ -37,6 +37,7 @@ import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
 import org.acra.ACRA;
@@ -60,6 +61,7 @@ public class GlobalPreferences extends PreferenceActivity {
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
+
     private ProcessImageAndSetBackgroundTask processImageAndSetBackgroundTask;
 
 
@@ -347,7 +349,7 @@ public class GlobalPreferences extends PreferenceActivity {
             processImageAndSetBackgroundTask.cancel(true);
         }
         processImageAndSetBackgroundTask = new ProcessImageAndSetBackgroundTask();
-        ErrorReporterStack.put("ProcessImageAndSetBackgroundTask created and started");
+        ErrorReporterStack.put(LogConst.PROCESS_IMAGE_AND_SET_BACKGROUND_TASK_CREATED_AND_STARTED);
         processImageAndSetBackgroundTask.execute(selectedImage, String.valueOf(adjustment));
     }
 

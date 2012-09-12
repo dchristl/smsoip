@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
 
@@ -33,15 +34,16 @@ import de.christl.smsoip.util.BitmapProcessor;
 public class ProcessImageAndSetBackgroundTask extends AsyncTask<String, Void, Boolean> {
 
 
+
     @Override
     protected Boolean doInBackground(String... params) {
-        ErrorReporterStack.put("ProcessImageAndSetBackgroundTask started");
+        ErrorReporterStack.put(LogConst.PROCESS_IMAGE_AND_SET_BACKGROUND_TASK_STARTED);
         return BitmapProcessor.decodeAndSaveImages(params[0], Integer.valueOf(params[1]));
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        ErrorReporterStack.put("ProcessImageAndSetBackgroundTask postExecute");
+        ErrorReporterStack.put(LogConst.PROCESS_IMAGE_AND_SET_BACKGROUND_TASK_POST_EXECUTE);
         Activity activity = SMSoIPApplication.getCurrentActivity();
         if (activity != null && !activity.isFinishing() && !isCancelled()) {
             activity.getWindow().setBackgroundDrawable(BitmapProcessor.getBackgroundImage(activity.getResources().getConfiguration().orientation));

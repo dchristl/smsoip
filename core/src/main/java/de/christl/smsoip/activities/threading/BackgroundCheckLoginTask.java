@@ -24,6 +24,7 @@ import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
@@ -32,6 +33,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
  * checks the login in background in GlobalPreferences
  */
 public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Void> {
+
     private MultipleAccountsPreference multiPreference;
     private ProgressDialog progressDialog;
 
@@ -42,14 +44,14 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
 
     @Override
     protected void onPreExecute() {
-        ErrorReporterStack.put("BackgroundCheckLoginTask started");
+        ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_STARTED);
         progressDialog.setMessage(multiPreference.getContext().getString(R.string.text_checkCredentials));
         progressDialog.show();
     }
 
     @Override
     protected Void doInBackground(AccountModel... accountModels) {
-        ErrorReporterStack.put("BackgroundCheckLoginTask running");
+        ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_RUNNING);
         ExtendedSMSSupplier supplier = multiPreference.getSupplier();
         AccountModel accountModel = accountModels[0];
         String userName = accountModel.getUserName();
@@ -78,7 +80,7 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
 
     @Override
     protected void onPostExecute(Void nothing) {
-        ErrorReporterStack.put("BackgroundCheckLoginTask onFinish");
+        ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_ON_FINISH);
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.cancel();
         }

@@ -35,6 +35,7 @@ import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SMSReceiverPreference;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
 import org.acra.ACRA;
@@ -46,6 +47,8 @@ import java.io.FileNotFoundException;
  */
 public class SMSReceiver extends BroadcastReceiver {
 
+
+    private static final String PDUS = "pdus";
     public static int ID = 1;
 
 
@@ -54,9 +57,9 @@ public class SMSReceiver extends BroadcastReceiver {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (preferences.getBoolean(SMSReceiverPreference.RECEIVER_ACTIVATED, true)) {  //is activated?
-                ErrorReporterStack.put("message received by receiver");
+                ErrorReporterStack.put(LogConst.MESSAGE_RECEIVED_BY_RECEIVER);
                 Bundle pudsBundle = intent.getExtras();
-                Object[] pdus = (Object[]) pudsBundle.get("pdus");
+                Object[] pdus = (Object[]) pudsBundle.get(PDUS);
                 SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
 
 
@@ -68,7 +71,6 @@ public class SMSReceiver extends BroadcastReceiver {
 
                 Log.e("christl", "defaults = " + ringtoneUri);
                 if (ringtoneUri != null && !ringtoneUri.equals("")) {
-                    Log.e(this.getClass().getCanonicalName(), "SMSReceiver.onReceive");
                     Uri parse = Uri.parse(ringtoneUri);
                     try {
                         context.getContentResolver().openInputStream(parse);
@@ -100,7 +102,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 mNotificationManager.notify(id, notification);
             }
         } catch (Exception e) {
-            Log.e(this.getClass().getCanonicalName(), "", e); //TODO remove after stability
+            //TODO remove after stability
             ACRA.getErrorReporter().handleSilentException(e);
         }
     }

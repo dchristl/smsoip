@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 import org.acra.ACRA;
@@ -33,6 +34,7 @@ import java.util.TimerTask;
  * Update the informations in background
  */
 public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResult> {
+
     private SendActivity sendActivity;
     private Timer timer;
 
@@ -52,7 +54,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
-        ErrorReporterStack.put("background update started");
+        ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_STARTED);
         TimerTask task = new TimerTask() {
             private String dots = ".";
 
@@ -141,7 +143,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
             }
             sendActivity.updateInfoTextAndRefreshButton(actionResult.getMessage());
         }
-        ErrorReporterStack.put("background update on post execute");
+        ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_ON_POST_EXECUTE);
     }
 
 }

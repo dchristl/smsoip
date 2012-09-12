@@ -28,6 +28,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
 import de.christl.smsoip.activities.threading.BackgroundCheckLoginTask;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -76,7 +77,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             removeAccountBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ErrorReporterStack.put("removeAccount onClick");
+                    ErrorReporterStack.put(LogConst.REMOVE_ACCOUNT_ON_CLICK);
                     remove(getItem(position));
                     if (position == defaultAccount) {
                         defaultAccount = 0; //set back to the first one
@@ -90,7 +91,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
             editAccount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ErrorReporterStack.put("editAccount onclick");
+                    ErrorReporterStack.put(LogConst.EDIT_ACCOUNT_ONCLICK);
                     dialogPreference.showUserNamePasswordDialog(item);
                 }
             });
@@ -114,7 +115,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ErrorReporterStack.put("checkCredentials onClick");
+                ErrorReporterStack.put(LogConst.CHECK_CREDENTIALS_ON_CLICK);
                 final AccountModel accountModel = getItem(position);
                 new BackgroundCheckLoginTask(dialogPreference).execute(accountModel);
             }

@@ -52,6 +52,7 @@ import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.autosuggest.NameNumberSuggestField;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.Contact;
 import de.christl.smsoip.database.DatabaseHandler;
@@ -66,7 +67,6 @@ import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
-import de.christl.smsoip.util.BitmapProcessor;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.*;
@@ -75,6 +75,7 @@ import java.util.regex.Pattern;
 
 
 public class SendActivity extends AllActivity {
+
 
     private NameNumberSuggestField receiverField;
     private EditText textField;
@@ -122,7 +123,7 @@ public class SendActivity extends AllActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ErrorReporterStack.put("onResume");
+        ErrorReporterStack.put(LogConst.ON_RESUME);
         //this is for performance cases and can cause issues in some case:
         // if options are called a refresh will be forced because settings can change
         // if activity is killed a new instance will be creeated automatically (and options are "fresh")
@@ -217,7 +218,7 @@ public class SendActivity extends AllActivity {
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
         setViewByMode(mode);
-        ErrorReporterStack.put("onCreate");
+        ErrorReporterStack.put(LogConst.ON_CREATE);
     }
 
     private void setAutoSuggestField() {
@@ -295,7 +296,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setDateTimePickerDialog() {
-        ErrorReporterStack.put("setDateTimePickerDialog");
+        ErrorReporterStack.put(LogConst.SET_DATE_TIME_PICKER_DIALOG);
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
         View timeShiftDescr = findViewById(R.id.timeShiftDescr);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
@@ -394,7 +395,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void showProvidersDialog() {
-        ErrorReporterStack.put("showProvidersDialog");
+        ErrorReporterStack.put(LogConst.SHOW_PROVIDERS_DIALOG);
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
         if (smSoIPPlugin == null) {   //add all if current provider not set
@@ -417,7 +418,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void updateInfoTextSilent() {
-        ErrorReporterStack.put("updateInfoTextSilent");
+        ErrorReporterStack.put(LogConst.UPDATE_INFO_TEXT_SILENT);
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
@@ -464,7 +465,7 @@ public class SendActivity extends AllActivity {
 
     private void setPreselectedContact(Uri data) {
         if (data != null) {
-            ErrorReporterStack.put("setPreselectedContact");
+            ErrorReporterStack.put(LogConst.SET_PRESELECTED_CONTACT);
             String givenNumber = data.getSchemeSpecificPart();
             Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
             if (contactByNumber == null) {
@@ -499,7 +500,7 @@ public class SendActivity extends AllActivity {
         showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ErrorReporterStack.put("lastMessagesButtonClicked");
+                ErrorReporterStack.put(LogConst.LAST_MESSAGES_BUTTON_CLICKED);
                 final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverField.getReceiverList());
                 lastMessageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -558,7 +559,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void showChosenContactsDialog() {
-        ErrorReporterStack.put("showChosenContactsDialog");
+        ErrorReporterStack.put(LogConst.SHOW_CHOSEN_CONTACTS_DIALOG);
         chosenContactsDialog = new ChosenContactsDialog(this, receiverField.getReceiverList());
         chosenContactsDialog.setOwnerActivity(this);
         chosenContactsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -676,7 +677,7 @@ public class SendActivity extends AllActivity {
         View infoTextUpper = findViewById(R.id.infoTextUpper);
         View.OnClickListener l = new View.OnClickListener() {
             public void onClick(View view) {
-                ErrorReporterStack.put("Refresh upper clicked");
+                ErrorReporterStack.put(LogConst.REFRESH_UPPER_CLICKED);
                 refreshInformationText();
             }
         };
@@ -728,7 +729,7 @@ public class SendActivity extends AllActivity {
 
 
     private void killDialogAfterAWhile(final Dialog dialog) {
-        ErrorReporterStack.put("killDialogAfterAWhile");
+        ErrorReporterStack.put(LogConst.KILL_DIALOG_AFTER_A_WHILE);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -838,7 +839,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     FireSMSResultList sendByThread() {
-        ErrorReporterStack.put("sendByThread" + smSoIPPlugin.getProviderName());
+        ErrorReporterStack.put(LogConst.SEND_BY_THREAD + smSoIPPlugin.getProviderName());
         CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
         String userName = smSoIPPlugin.getProvider().getUserName();
@@ -863,7 +864,7 @@ public class SendActivity extends AllActivity {
      */
 
     void refreshInformationText() {
-        ErrorReporterStack.put("refreshInformationText" + smSoIPPlugin.getProviderName());
+        ErrorReporterStack.put(LogConst.REFRESH_INFORMATION_TEXT + smSoIPPlugin.getProviderName());
         cancelUpdateTask();
         backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
     }
@@ -938,7 +939,7 @@ public class SendActivity extends AllActivity {
      * @param receiver
      */
     private void addReceiver(Receiver receiver) {
-        ErrorReporterStack.put("addToReceiver");
+        ErrorReporterStack.put(LogConst.ADD_TO_RECEIVER);
         CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         if (smSoIPPlugin == null || receiverList.size() < smSoIPPlugin.getProvider().getMaxReceiverCount()) {  //check only if smsoipPlugin is already set
             if (receiverList.addWithAlreadyInsertedCheck(receiver)) {
@@ -1098,7 +1099,7 @@ public class SendActivity extends AllActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
-        ErrorReporterStack.put("onCreateDialog " + id);
+        ErrorReporterStack.put(LogConst.ON_CREATE_DIALOG + id);
         switch (id) {
             case DIALOG_SMILEYS:
                 final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};
@@ -1202,7 +1203,7 @@ public class SendActivity extends AllActivity {
     private void changeSupplier(String supplierClassName) {
         cancelUpdateTask();
         smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
-        ErrorReporterStack.put("changeSupplier" + smSoIPPlugin.getProviderName());
+        ErrorReporterStack.put(LogConst.CHANGE_SUPPLIER + smSoIPPlugin.getProviderName());
         smSoIPPlugin.getProvider().refresh();//refresh the provider to set back to the default account
         receiverField.setMaxReceivers(smSoIPPlugin.getProvider().getMaxReceiverCount());
         setFullTitle();

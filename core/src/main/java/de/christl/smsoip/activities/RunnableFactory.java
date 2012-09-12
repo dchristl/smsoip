@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
 import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.ui.BreakingProgressDialog;
 
@@ -32,6 +33,7 @@ import java.util.concurrent.*;
  * little helper for building updating the ui after sending or refreshing informations
  */
 public class RunnableFactory {
+
 
     private SendActivity sendActivity;
     private ProgressDialog progressDialog;
@@ -54,7 +56,7 @@ public class RunnableFactory {
         return new Runnable() {
             @Override
             public void run() {
-                ErrorReporterStack.put("getFireSMSAndUpdateUIRunnable");
+                ErrorReporterStack.put(LogConst.GET_FIRE_SMS_AND_UPDATE_UI_RUNNABLE);
                 ExecutorService executorService = Executors.newFixedThreadPool(2);
                 Callable<FireSMSResultList> runnable = new Callable<FireSMSResultList>() {
                     @Override
@@ -122,7 +124,7 @@ public class RunnableFactory {
     private Runnable getUpdateUIRunnable(final FireSMSResultList fireSMSResults) {
         return new Runnable() {
             public void run() {
-                ErrorReporterStack.put("getUpdateUIRunnable");
+                ErrorReporterStack.put(LogConst.GET_UPDATE_UI_RUNNABLE);
                 RunnableFactory.this.sendActivity.showReturnMessage(fireSMSResults);
             }
         };
