@@ -36,4 +36,8 @@ public abstract class SettingsConst {
     public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
     public static final String GLOBAL_FONT_SIZE_FACTOR = "global.font.size.factor";
     public static final String EXTRA_ADJUSTMENT = "extra.adjustment";
+
+    public static final String RECEIVER_ACTIVATED = "receiver.activated";
+    public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
+    public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
 }

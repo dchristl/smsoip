@@ -33,9 +33,7 @@ import de.christl.smsoip.util.BitmapProcessor;
  */
 public class SMSReceiverPreference extends PreferenceActivity {
 
-    public static final String RECEIVER_ACTIVATED = "receiver.activated";
-    public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
-    public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
+
     private Drawable backgroundImage;
 
 
@@ -58,22 +56,22 @@ public class SMSReceiverPreference extends PreferenceActivity {
         PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
         final CheckBoxPreference receiverActive = new CheckBoxPreference(this);
         receiverActive.setDefaultValue(true);
-        receiverActive.setKey(RECEIVER_ACTIVATED);
+        receiverActive.setKey(SettingsConst.RECEIVER_ACTIVATED);
         receiverActive.setTitle(R.string.text_receiver_activated);
         receiverActive.setSummary(R.string.text_receiver_activated_description);
         final CheckBoxPreference showOnlyOneNotification = new CheckBoxPreference(this);
         showOnlyOneNotification.setDefaultValue(false);
-        showOnlyOneNotification.setKey(RECEIVER_ONLY_ONE_NOTFICATION);
+        showOnlyOneNotification.setKey(SettingsConst.RECEIVER_ONLY_ONE_NOTFICATION);
         showOnlyOneNotification.setTitle(R.string.text_only_one_notfication);
         showOnlyOneNotification.setSummary(R.string.text_only_one_notfication_description);
-        boolean enabled = getPreferenceManager().getSharedPreferences().getBoolean(RECEIVER_ACTIVATED, true);
+        boolean enabled = getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.RECEIVER_ACTIVATED, true);
         showOnlyOneNotification.setEnabled(enabled);
         final RingtonePreference ringtonePreference = new RingtonePreference(this);
         ringtonePreference.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
         ringtonePreference.setDefaultValue(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
         ringtonePreference.setTitle(R.string.text_choose_ringtone);
         ringtonePreference.setSummary(R.string.text_choose_ringtone_description);
-        ringtonePreference.setKey(RECEIVER_RINGTONE_URI);
+        ringtonePreference.setKey(SettingsConst.RECEIVER_RINGTONE_URI);
         ringtonePreference.setEnabled(enabled);
 
 

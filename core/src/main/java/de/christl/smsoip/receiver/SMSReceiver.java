@@ -34,7 +34,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.activities.settings.SMSReceiverPreference;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
@@ -56,7 +56,7 @@ public class SMSReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (preferences.getBoolean(SMSReceiverPreference.RECEIVER_ACTIVATED, true)) {  //is activated?
+            if (preferences.getBoolean(SettingsConst.RECEIVER_ACTIVATED, true)) {  //is activated?
                 ErrorReporterStack.put(LogConst.MESSAGE_RECEIVED_BY_RECEIVER);
                 Bundle pudsBundle = intent.getExtras();
                 Object[] pdus = (Object[]) pudsBundle.get(PDUS);
@@ -66,7 +66,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.bar_icon);
-                String ringtoneUri = preferences.getString(SMSReceiverPreference.RECEIVER_RINGTONE_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
+                String ringtoneUri = preferences.getString(SettingsConst.RECEIVER_RINGTONE_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
                 builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
 
                 if (ringtoneUri != null && !ringtoneUri.equals("")) {
@@ -96,7 +96,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 Notification notification = builder.getNotification();
                 String ns = Context.NOTIFICATION_SERVICE;
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-                boolean onlyOneNotfctn = preferences.getBoolean(SMSReceiverPreference.RECEIVER_ONLY_ONE_NOTFICATION, false);
+                boolean onlyOneNotfctn = preferences.getBoolean(SettingsConst.RECEIVER_ONLY_ONE_NOTFICATION, false);
                 int id = onlyOneNotfctn ? ID : ID++;
                 mNotificationManager.notify(id, notification);
             }

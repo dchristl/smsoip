@@ -43,6 +43,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.send.Mode;
+import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
@@ -1068,7 +1069,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void startGlobalOptionActivity() {
-        Intent pref = new Intent(this, SettingsConst.class);
+        Intent pref = new Intent(this, GlobalPreferences.class);
         View rootLayout = findViewById(R.id.rootLayout);
         int height = getWindow().getDecorView().getHeight() - rootLayout.getHeight();
         pref.putExtra(SettingsConst.EXTRA_ADJUSTMENT, height);
