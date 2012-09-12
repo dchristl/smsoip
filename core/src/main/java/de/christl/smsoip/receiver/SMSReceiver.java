@@ -69,7 +69,6 @@ public class SMSReceiver extends BroadcastReceiver {
                 String ringtoneUri = preferences.getString(SMSReceiverPreference.RECEIVER_RINGTONE_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
                 builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
 
-                Log.e("christl", "defaults = " + ringtoneUri);
                 if (ringtoneUri != null && !ringtoneUri.equals("")) {
                     Uri parse = Uri.parse(ringtoneUri);
                     try {

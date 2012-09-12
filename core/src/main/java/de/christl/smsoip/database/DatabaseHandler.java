@@ -107,7 +107,6 @@ public abstract class DatabaseHandler {
                 }
                 query.close();
             } catch (IllegalArgumentException e) {
-                Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
                 ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
@@ -190,7 +189,6 @@ public abstract class DatabaseHandler {
                 context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
             }
         } catch (Exception e) {
-            Log.e(DatabaseHandler.class.getCanonicalName(), "", e);
             ACRA.getErrorReporter().handleSilentException(e);
         }
     }
@@ -219,7 +217,6 @@ public abstract class DatabaseHandler {
                 }
                 query.close();
             } catch (IllegalArgumentException e) {
-                Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
                 ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));

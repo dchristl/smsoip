@@ -84,15 +84,12 @@ public class ChangeLog {
 
         // get version numbers
         this.lastVersion = sp.getString(VERSION_KEY, "");
-        Log.d(TAG, "lastVersion: " + lastVersion);
         try {
             this.thisVersion = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), 0).versionName;
         } catch (NameNotFoundException e) {
             this.thisVersion = "?";
-            Log.e(TAG, "could not get version name from manifest!");
         }
-        Log.d(TAG, "appVersion: " + this.thisVersion);
 
         // save new version number to preferences
         SharedPreferences.Editor editor = sp.edit();
