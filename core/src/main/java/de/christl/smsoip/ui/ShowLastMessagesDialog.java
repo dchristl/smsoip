@@ -18,7 +18,6 @@
 
 package de.christl.smsoip.ui;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -44,13 +43,13 @@ import java.util.Map;
  * Class for a popup show the last message and all last conversations with picked contact
  */
 public class ShowLastMessagesDialog extends Dialog {
-    private Context context;
+    private Context appContext;
     private ArrayList<Receiver> receiverList;
     private String receiverNumber = null;
 
     public ShowLastMessagesDialog(Context context, ArrayList<Receiver> receiverList) {
         super(context);
-        this.context = context;
+        this.appContext = context.getApplicationContext();
         this.receiverList = receiverList;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
@@ -60,8 +59,8 @@ public class ShowLastMessagesDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showlastmessagesdialog);
 
-        Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage((Activity) context);
-        String defaultUnknownText = context.getString(R.string.text_unknown);
+        Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage(appContext);
+        String defaultUnknownText = appContext.getString(R.string.text_unknown);
         if (lastMessage.size() > 0) {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
                 final Receiver receiver = receiverStringEntry.getKey();
@@ -96,8 +95,8 @@ public class ShowLastMessagesDialog extends Dialog {
         LinearLayout layout = (LinearLayout) findViewById(R.id.conversationLayout);
         /* Create a new row to be added. */
         for (final Receiver receiver : receiverList) {
-            LinkedList<Message> conversation = DatabaseHandler.findConversation(receiver, context);
-            TextView receiverView = new TextView(getContext());
+            LinkedList<Message> conversation = DatabaseHandler.findConversation(receiver, appContext);
+            TextView receiverView = new TextView(appContext);
             receiverView.setTextColor(Color.parseColor("#C0F0C0"));
             receiverView.setPadding(5, 5, 5, 0);
             receiverView.setGravity(Gravity.CENTER);
@@ -109,7 +108,7 @@ public class ShowLastMessagesDialog extends Dialog {
             layout.addView(receiverView);
 
             for (Message message : conversation) {
-                TextView messageView = new TextView(getContext());
+                TextView messageView = new TextView(appContext);
                 messageView.setText(message.getMessage());
                 if (message.isOutgoing()) {
                     messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);

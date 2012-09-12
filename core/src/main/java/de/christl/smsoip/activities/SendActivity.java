@@ -786,7 +786,7 @@ public class SendActivity extends AllActivity {
         Editable charSequence = textField.getText();
 
         //save the default color of textview
-        ColorStateList defaultColor = new TextView(this).getTextColors();
+        ColorStateList defaultColor = new TextView(getApplicationContext()).getTextColors();
         OptionProvider provider = smSoIPPlugin.getProvider();
         int messageLength = provider.getTextMessageLength();
         int maxMessageCount = provider.getMaxMessageCount();
@@ -1311,7 +1311,7 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
+        lastInfoDialog = new EmoImageDialog(getApplicationContext(), fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
         if (!this.isFinishing()) {
             lastInfoDialog.show();
