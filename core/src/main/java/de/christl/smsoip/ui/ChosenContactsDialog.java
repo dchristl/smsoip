@@ -33,6 +33,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.database.DatabaseHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,10 +42,11 @@ import java.util.List;
 public class ChosenContactsDialog extends Dialog {
     private List<Receiver> receiverList;
     private int bmpResolution;
-
+    private List<Bitmap> bitmaps;
 
     public ChosenContactsDialog(Context context, List<Receiver> receiverList) {
         super(context);
+        bitmaps = new ArrayList<Bitmap>(receiverList.size());
         this.receiverList = receiverList;
         setTitle(R.string.text_pick_for_disabling);
         DisplayMetrics metrics = new DisplayMetrics();
@@ -94,7 +96,8 @@ public class ChosenContactsDialog extends Dialog {
             } else {
                 bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             }
-            imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true));
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true);
+            imageView.setImageBitmap(scaledBitmap);
             imageView.setFocusable(true);
             View.OnClickListener checkBoxChangeListener = new View.OnClickListener() {
                 @Override
@@ -122,6 +125,13 @@ public class ChosenContactsDialog extends Dialog {
 
     }
 
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        for (Bitmap bitmap : bitmaps) {
+            bitmap.recycle();
+        }
+    }
 
     public void redraw() {
         this.onCreate(null);

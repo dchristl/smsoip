@@ -24,7 +24,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.database.DatabaseHandler;
 
@@ -44,7 +44,7 @@ public abstract class NumberUtils {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
         if (!out.startsWith("+") && !out.startsWith("00")) {   //area code not already added
             out = out.replaceFirst("^0", "");        //replace leading zero
-            String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
+            String areaCode = settings.getString(SettingsConst.GLOBAL_AREA_CODE, "49");
             String prefix = "00" + areaCode;
             out = prefix + out;
         } else {

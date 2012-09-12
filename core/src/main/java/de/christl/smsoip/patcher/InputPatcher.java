@@ -20,7 +20,7 @@ package de.christl.smsoip.patcher;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -43,7 +43,7 @@ public abstract class InputPatcher {
         } else if (input.equals(SHOW_RETURN_FROM_SERVER)) {
             return addSupplierPreference(ADD_SUPPLIER_PREFERENCE + " " + SHOW_RETURN_FROM_SERVER + " " + "b" + " " + "true", provider);
         } else if (input.equals(ENABLE_AUTO_UPDATE)) {
-            return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP + " " + "b" + " " + "true");
+            return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP + " " + "b" + " " + "true");
         }
         return false;
     }

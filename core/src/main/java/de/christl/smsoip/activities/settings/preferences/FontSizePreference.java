@@ -24,7 +24,7 @@ import android.preference.DialogPreference;
 import android.view.View;
 import android.widget.TextView;
 import de.christl.smsoip.R;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.SettingsConst;
 
 /**
  * Preference for changing the font size in the input field
@@ -41,7 +41,7 @@ public class FontSizePreference extends DialogPreference {
 
     private void init() {
         setDefaultValue("1.0");
-        setKey(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR);
+        setKey(SettingsConst.GLOBAL_FONT_SIZE_FACTOR);
         setDialogLayoutResource(R.layout.fontsizepreference);
         setTitle(R.string.text_font_size);
         setSummary(R.string.text_font_size_description);
@@ -53,7 +53,7 @@ public class FontSizePreference extends DialogPreference {
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
-        currentValue = getSharedPreferences().getFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, 1.0f);
+        currentValue = getSharedPreferences().getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f);
         sampleView = (TextView) view.findViewById(R.id.sample);
         sampleView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +98,7 @@ public class FontSizePreference extends DialogPreference {
 
         if (positiveResult) {
             SharedPreferences.Editor editor = getEditor();
-            editor.putFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, currentValue);
+            editor.putFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, currentValue);
             editor.commit();
 
         }

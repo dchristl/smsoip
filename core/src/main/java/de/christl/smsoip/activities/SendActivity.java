@@ -43,8 +43,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.send.Mode;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.application.SMSoIPApplication;
@@ -137,7 +137,7 @@ public class SendActivity extends AllActivity {
                 smSoIPPlugin.getProvider().setCurrentAccountId(currentAccountIndex);
                 setFullTitle();
             }
-            float fontSize = settings.getFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
+            float fontSize = settings.getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
             ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
 
             optionsCalled = false;
@@ -161,7 +161,7 @@ public class SendActivity extends AllActivity {
         progressDialog.setCancelable(false);
         smssigns = (TextView) findViewById(R.id.smssigns);
         smssigns.setText(String.format(signsconstant.toString(), 0, 0));
-        mode = settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_COMPACT_MODE, false) ? Mode.COMPACT : Mode.NORMAL;
+        mode = settings.getBoolean(SettingsConst.GLOBAL_ENABLE_COMPACT_MODE, false) ? Mode.COMPACT : Mode.NORMAL;
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         //disable inputs on field
         setSearchButton();
@@ -422,7 +422,7 @@ public class SendActivity extends AllActivity {
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
-        if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
+        if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             infoText.setText(R.string.text_notyetrefreshed);
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
             refreshInformationText();
@@ -524,7 +524,7 @@ public class SendActivity extends AllActivity {
 
 
     private String getDefaultSupplier() {
-        String string = settings.getString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, "");
+        String string = settings.getString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, "");
         //check if default provider is installed
         if (!string.equals("")) {
             boolean found = false;
@@ -536,7 +536,7 @@ public class SendActivity extends AllActivity {
             }
             if (!found) { //set back to default (always ask) if none found
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString(GlobalPreferences.GLOBAL_DEFAULT_PROVIDER, null);
+                editor.putString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, null);
                 editor.commit();
                 string = null;
             }
@@ -622,7 +622,7 @@ public class SendActivity extends AllActivity {
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textField.setText(textField.getText() + " " + settings.getString(GlobalPreferences.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
+                textField.setText(textField.getText() + " " + settings.getString(SettingsConst.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
                 int position = textField.length();
                 Editable etext = textField.getText();
                 Selection.setSelection(etext, position);
@@ -744,10 +744,10 @@ public class SendActivity extends AllActivity {
     }
 
     private void writeSMSInDatabase(List<Receiver> receiverList) {
-        boolean writeToDatabaseEnabled = settings.getBoolean(GlobalPreferences.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        boolean writeToDatabaseEnabled = settings.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         if (writeToDatabaseEnabled) {
             StringBuilder message = new StringBuilder();
-            if (settings.getBoolean(GlobalPreferences.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
+            if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
                 message.append(getString(R.string.applicationName)).append(" (").append(smSoIPPlugin.getProviderName());
                 message.append("): ");
             }
@@ -759,7 +759,7 @@ public class SendActivity extends AllActivity {
 
     private void setTextArea() {
         textField = (EditText) findViewById(R.id.textInput);
-        float fontSize = settings.getFloat(GlobalPreferences.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
+        float fontSize = settings.getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
         ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
         textField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1068,10 +1068,10 @@ public class SendActivity extends AllActivity {
     }
 
     private void startGlobalOptionActivity() {
-        Intent pref = new Intent(this, GlobalPreferences.class);
+        Intent pref = new Intent(this, SettingsConst.class);
         View rootLayout = findViewById(R.id.rootLayout);
         int height = getWindow().getDecorView().getHeight() - rootLayout.getHeight();
-        pref.putExtra(GlobalPreferences.EXTRA_ADJUSTMENT, height);
+        pref.putExtra(SettingsConst.EXTRA_ADJUSTMENT, height);
         startActivity(pref);
         optionsCalled = true;
     }

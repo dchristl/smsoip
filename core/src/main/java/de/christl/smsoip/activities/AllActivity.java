@@ -44,7 +44,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.application.changelog.ChangeLog;
@@ -96,7 +96,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.text_too_new_providers));
         } else if (app.getProviderEntries().size() == 0) {
             showNoProvidersDialog();
-        } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(GlobalPreferences.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
+        } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
             ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);

@@ -49,15 +49,6 @@ import java.util.Map;
 public class GlobalPreferences extends PreferenceActivity {
 
 
-    public static final String GLOBAL_SIGNATURE = "global.signature";
-    public static final String GLOBAL_DEFAULT_PROVIDER = "global.default.provider";
-    public static final String GLOBAL_AREA_CODE = "global.area.code";
-    public static final String GLOBAL_ENABLE_NETWORK_CHECK = "global.enable.network.check";
-    public static final String GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP = "global.update.info.startup";
-    public static final String GLOBAL_ENABLE_COMPACT_MODE = "global.compact.mode";
-    public static final String GLOBAL_ENABLE_PROVIDER_OUPUT = "global.enable.provider.output";
-    public static final String GLOBAL_WRITE_TO_DATABASE = "global.write.to.database";
-    public static final String GLOBAL_FONT_SIZE_FACTOR = "global.font.size.factor";
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
@@ -65,7 +56,7 @@ public class GlobalPreferences extends PreferenceActivity {
     private ProcessImageAndSetBackgroundTask processImageAndSetBackgroundTask;
 
 
-    public static final String EXTRA_ADJUSTMENT = "extra.adjustment";
+
     private Integer adjustment = 0;
     private Drawable backgroundImage;
 
@@ -81,9 +72,9 @@ public class GlobalPreferences extends PreferenceActivity {
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
         setPreferenceScreen(initPreferences());
         if (savedInstanceState != null) {
-            adjustment = savedInstanceState.getInt(EXTRA_ADJUSTMENT, 0);
+            adjustment = savedInstanceState.getInt(SettingsConst.EXTRA_ADJUSTMENT, 0);
         } else {
-            adjustment = (Integer) getIntent().getExtras().get(EXTRA_ADJUSTMENT);
+            adjustment = (Integer) getIntent().getExtras().get(SettingsConst.EXTRA_ADJUSTMENT);
         }
         backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
         getWindow().setBackgroundDrawable(backgroundImage);
@@ -159,7 +150,7 @@ public class GlobalPreferences extends PreferenceActivity {
         root.addPreference(new FontSizePreference(this));
         CheckBoxPreference enableCompactMode = new CheckBoxPreference(this);
         enableCompactMode.setDefaultValue(false);
-        enableCompactMode.setKey(GLOBAL_ENABLE_COMPACT_MODE);
+        enableCompactMode.setKey(SettingsConst.GLOBAL_ENABLE_COMPACT_MODE);
         enableCompactMode.setTitle(R.string.text_enable_compact_mode);
         enableCompactMode.setSummary(R.string.text_enable_compact_mode_description);
         root.addPreference(enableCompactMode);
@@ -217,28 +208,28 @@ public class GlobalPreferences extends PreferenceActivity {
         root.addPreference(receiverIntent);
         CheckBoxPreference enableNetworkCheck = new CheckBoxPreference(this);
         enableNetworkCheck.setDefaultValue(true);
-        enableNetworkCheck.setKey(GLOBAL_ENABLE_NETWORK_CHECK);
+        enableNetworkCheck.setKey(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK);
         enableNetworkCheck.setTitle(R.string.text_enable_network_check);
         enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
         root.addPreference(enableNetworkCheck);
         CheckBoxPreference enableInfoOnStartup = new CheckBoxPreference(this);
         enableInfoOnStartup.setDefaultValue(false);
-        enableInfoOnStartup.setKey(GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP);
+        enableInfoOnStartup.setKey(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP);
         enableInfoOnStartup.setTitle(R.string.text_enable_info_update);
         enableInfoOnStartup.setSummary(R.string.text_enable_info_update_description);
         root.addPreference(enableInfoOnStartup);
         boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
-        writeToDataBase.setKey(GLOBAL_WRITE_TO_DATABASE);
+        writeToDataBase.setKey(SettingsConst.GLOBAL_WRITE_TO_DATABASE);
         writeToDataBase.setDefaultValue(writeToDatabaseAvailable);
         writeToDataBase.setEnabled(writeToDatabaseAvailable);
         writeToDataBase.setTitle(R.string.text_write_to_database);
         writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.text_write_to_database_description : R.string.text_not_supported_on_device);
         root.addPreference(writeToDataBase);
         final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
-        enableProviderOutput.setKey(GLOBAL_ENABLE_PROVIDER_OUPUT);
+        enableProviderOutput.setKey(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT);
         enableProviderOutput.setDefaultValue(false);
-        enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(GLOBAL_WRITE_TO_DATABASE, false));
+        enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false));
         enableProviderOutput.setTitle(R.string.text_enable_provider_output);
         enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
         root.addPreference(enableProviderOutput);
@@ -264,7 +255,7 @@ public class GlobalPreferences extends PreferenceActivity {
         root.addPreference(mainCategory);
         EditTextPreference editTextPref = new EditTextPreference(this);
         editTextPref.setDialogTitle(R.string.text_signature);
-        editTextPref.setKey(GLOBAL_SIGNATURE);
+        editTextPref.setKey(SettingsConst.GLOBAL_SIGNATURE);
         editTextPref.setTitle(R.string.text_signature);
         editTextPref.setSummary(R.string.text_signature_description);
         root.addPreference(editTextPref);
@@ -279,7 +270,7 @@ public class GlobalPreferences extends PreferenceActivity {
             listPref.setEntries(providersWithNames.keySet().toArray(new CharSequence[providersWithNames.size()]));
             listPref.setEntryValues(providersWithNames.values().toArray(new CharSequence[providersWithNames.size()]));
             listPref.setDialogTitle(R.string.text_default_provider);
-            listPref.setKey(GLOBAL_DEFAULT_PROVIDER);
+            listPref.setKey(SettingsConst.GLOBAL_DEFAULT_PROVIDER);
             listPref.setTitle(R.string.text_default_provider);
             listPref.setSummary(R.string.text_default_provider_description);
             if (listPref.getValue() == null) {
@@ -291,7 +282,7 @@ public class GlobalPreferences extends PreferenceActivity {
         root.addPreference(adPreference);
         EditTextPreference defaultAreaCode = new EditTextPreference(this);
         defaultAreaCode.setDialogTitle(R.string.text_area_code);
-        defaultAreaCode.setKey(GLOBAL_AREA_CODE);
+        defaultAreaCode.setKey(SettingsConst.GLOBAL_AREA_CODE);
         defaultAreaCode.setTitle(R.string.text_area_code);
         defaultAreaCode.setDefaultValue("49");
         defaultAreaCode.setSummary(R.string.text_area_code_description);
@@ -356,7 +347,7 @@ public class GlobalPreferences extends PreferenceActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(EXTRA_ADJUSTMENT, adjustment);
+        outState.putInt(SettingsConst.EXTRA_ADJUSTMENT, adjustment);
     }
 
     @Override
