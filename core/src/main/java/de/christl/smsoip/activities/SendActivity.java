@@ -1311,7 +1311,7 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        lastInfoDialog = new EmoImageDialog(getApplicationContext(), fireSMSResults, resultMessage.toString());
+        lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
         if (!this.isFinishing()) {
             lastInfoDialog.show();
