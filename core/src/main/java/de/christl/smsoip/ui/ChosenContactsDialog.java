@@ -90,13 +90,16 @@ public class ChosenContactsDialog extends Dialog {
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             byte[] bytes = DatabaseHandler.loadLocalContactPhotoBytes(receiver.getReceiverNumber(), this.getOwnerActivity());
             Bitmap bmp;
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inInputShareable = true;
+            options.inPurgeable = true;
             if (bytes == null) { //no contact picture
-                bmp = BitmapFactory.decodeResource(getContext().getResources(),
-                        R.drawable.ic_contact_picture_2);
+                bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_contact_picture_2, options);
             } else {
-                bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
             }
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true);
+            bmp.recycle();
             imageView.setImageBitmap(scaledBitmap);
             imageView.setFocusable(true);
             View.OnClickListener checkBoxChangeListener = new View.OnClickListener() {

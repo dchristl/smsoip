@@ -25,7 +25,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.autosuggest.NameNumberEntry;
@@ -254,6 +253,7 @@ public abstract class DatabaseHandler {
             }
         }
         cursor.close();
+        ACRA.getErrorReporter().putCustomData("bookSize", String.valueOf(out.size()));
         return out;
     }
 }

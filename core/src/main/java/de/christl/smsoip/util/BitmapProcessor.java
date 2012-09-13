@@ -48,7 +48,7 @@ public class BitmapProcessor {
     private static Map<Integer, Drawable> imageMap = new HashMap<Integer, Drawable>();
 
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         ErrorReporterStack.put(LogConst.CALCULATE_IN_SAMPLE_SIZE);
         // Raw height and width of image
         final int height = options.outHeight;
@@ -62,6 +62,14 @@ public class BitmapProcessor {
                 scaledSize = Math.round((float) width / (float) reqWidth);
             }
         }
+        //now find the next power of two
+        scaledSize--;
+        scaledSize = (scaledSize >> 1) | scaledSize;
+        scaledSize = (scaledSize >> 2) | scaledSize;
+        scaledSize = (scaledSize >> 4) | scaledSize;
+        scaledSize = (scaledSize >> 8) | scaledSize;
+        scaledSize = (scaledSize >> 16) | scaledSize;
+        scaledSize++; // scaledSize is now the next highest power of 2.
         return scaledSize;
     }
 
@@ -101,6 +109,8 @@ public class BitmapProcessor {
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
         Uri parse = Uri.parse(imagePath);
         InputStream inputStream;
         try {
