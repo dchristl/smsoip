@@ -45,6 +45,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.activities.threading.UpdateDeveloperInfoTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.application.changelog.ChangeLog;
@@ -97,11 +98,8 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         } else if (app.getProviderEntries().size() == 0) {
             showNoProvidersDialog();
         } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
-            ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-            if (!wifiInfo.isConnected() && !mobileInfo.isConnected()) {
+            boolean networkEnabled = isNetworkDisabled();
+            if (networkEnabled) {
 
                 if (!nwSettingsAlreadyShown) {
                     showDialog(DIALOG_NO_NETWORK_ID);
@@ -115,10 +113,21 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
             nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
         }
+//        if (!isNetworkDisabled()) {  //TODO comment in
+        new UpdateDeveloperInfoTask().execute();
+//        }
+    }
+
+    private boolean isNetworkDisabled() {
+        ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        return !wifiInfo.isConnected() && !mobileInfo.isConnected();
     }
 
     protected void showChangelogIfNeeded() {
-        ChangeLog cl = new ChangeLog(getApplicationContext());
+        ChangeLog cl = new ChangeLog(this);
         if (cl.firstRun()) {
             cl.getLogDialog().show();
         }
@@ -223,6 +232,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         nwSettingsAlreadyShown = true;
+                        new UpdateDeveloperInfoTask().execute();
                     }
                 });
                 break;
