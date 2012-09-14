@@ -204,6 +204,7 @@ public class SendActivity extends AllActivity {
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             String defaultSupplier = getDefaultSupplier();
+            setPreselectedContact(getIntent().getData());
             if (defaultSupplier != null) {
                 smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(defaultSupplier);
                 setFullTitle();
@@ -215,7 +216,6 @@ public class SendActivity extends AllActivity {
             }
             updateInfoTextSilent();
         }
-        setPreselectedContact(getIntent().getData());
         insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
         setViewByMode(mode);
