@@ -363,7 +363,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
             //TODO remove after its stable
             InputStream tmpStream = con.getInputStream();
-            if (tmpStream == null) {      //!! not yet deployed
+            if (tmpStream == null) {      //!! TODO not yet deployed
                 return SMSActionResult.NETWORK_ERROR();
             }
             inputStream = UrlConnectionFactory.inputStream2DebugString(tmpStream);

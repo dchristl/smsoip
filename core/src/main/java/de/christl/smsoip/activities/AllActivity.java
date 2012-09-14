@@ -113,9 +113,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             notLoadedDialogAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, false);
             nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
         }
-//        if (!isNetworkDisabled()) {  //TODO comment in
-        new UpdateDeveloperInfoTask().execute();
-//        }
+        if (!isNetworkDisabled()) {
+            new UpdateDeveloperInfoTask().execute();
+        }
     }
 
     private boolean isNetworkDisabled() {
