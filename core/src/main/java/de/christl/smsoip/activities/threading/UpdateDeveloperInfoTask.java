@@ -33,19 +33,23 @@ import android.support.v4.app.NotificationCompat;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.patcher.InputPatcher;
+import org.acra.ACRA;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Task for getting server informations and shows information in notification area
  */
-public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Boolean> {
+public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
 
     private static final String NOTIFICATION_LAST_ID = "notification.last.id";
     private static final String NOTIFICATION_LAST_UPDATE = "notification.last.update";
@@ -55,48 +59,61 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Boolean> {
     private static final String NOTIFICATION_URL_DEV = "http://smsoip.funpic.de/messages/dev/info.xml";
 
     private static final int ACTION_LINK = 1; //go to any url
-    private static final int MARKET_LINK = 2; // go to market
-    private static final int INFORM = 3; //just inform, but do nothing else
-    private static final int SHOW_DIALOG = 4; //show a dialog with ok on click
+    private static final int INFORM = 2; //just inform, but do nothing else
+    private static final int SHOW_DIALOG = 3; //show a dialog with ok on click
     private static final int SILENT = 99; //do something silent
 
 
     @Override
-    protected Boolean doInBackground(Void... params) {
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp());
-        boolean isDev = defaultSharedPreferences.getBoolean(NOTIFICATION_IS_DEV, true);//todo exchange
-        long lastUpdateDate = defaultSharedPreferences.getLong(NOTIFICATION_LAST_UPDATE, 0L);
-        //check only once a day
-        long nextUpdateDate = lastUpdateDate + (1000 * 60 * 60 * 24);
-        if (nextUpdateDate <= System.currentTimeMillis()) {
-            int lastId = defaultSharedPreferences.getInt(NOTIFICATION_LAST_ID, 0);
-            String url;
-            if (Locale.getDefault().equals(Locale.GERMANY)) {
-                url = String.format(NOTIFICATION_URL, "de");
-            } else {
-                url = String.format(NOTIFICATION_URL, "en");
-            }
-            if (isDev) {
-                url = NOTIFICATION_URL_DEV;
-            }
-
-            UrlConnectionFactory factory = new UrlConnectionFactory(url, UrlConnectionFactory.METHOD_GET);
-            try {
-                InputStream inputStream = factory.create().getInputStream();
-                if (inputStream != null) {
-                    Document parse = Jsoup.parse(UrlConnectionFactory.inputStream2DebugString(inputStream), "", Parser.xmlParser());
-                    String id = parse.select("id").text();
-                    if (Integer.parseInt(id) > lastId) { //now we have to do something
-                        handleAction(parse);
-
-                        return true;
-                    }
+    protected Void doInBackground(Void... params) {
+        try {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp());
+            boolean isDev = defaultSharedPreferences.getBoolean(NOTIFICATION_IS_DEV, false);
+            long lastUpdateDate = defaultSharedPreferences.getLong(NOTIFICATION_LAST_UPDATE, 0L);
+            //check only once a day
+            Calendar nextUpdateCal = Calendar.getInstance();
+            nextUpdateCal.setTime(new Date(lastUpdateDate));
+            Calendar cal = Calendar.getInstance();
+            if (cal.after(nextUpdateCal)) {
+                int lastId = defaultSharedPreferences.getInt(NOTIFICATION_LAST_ID, 0);
+                String url;
+                if (Locale.getDefault().equals(Locale.GERMANY)) {
+                    url = String.format(NOTIFICATION_URL, "de");
+                } else {
+                    url = String.format(NOTIFICATION_URL, "en");
                 }
-            } catch (IOException ignored) { //do not do anything, its not worth it
-            }
+                if (isDev) {
+                    url = NOTIFICATION_URL_DEV;
+                }
 
+                UrlConnectionFactory factory = new UrlConnectionFactory(url, UrlConnectionFactory.METHOD_GET);
+                try {
+                    InputStream inputStream = factory.create().getInputStream();
+                    if (inputStream != null) {
+                        Document parse = Jsoup.parse(UrlConnectionFactory.inputStream2DebugString(inputStream), "", Parser.xmlParser());
+                        String id = parse.select("id").text();
+                        int newId = Integer.parseInt(id);
+                        if (newId > lastId) { //now we have to do something
+                            handleAction(parse);
+                            SharedPreferences.Editor edit = defaultSharedPreferences.edit();
+                            edit.putInt(NOTIFICATION_LAST_ID, newId);
+                            cal.add(Calendar.DAY_OF_YEAR, 1);
+                            cal.set(Calendar.HOUR_OF_DAY, 0);
+                            cal.set(Calendar.MINUTE, 0);
+                            cal.set(Calendar.SECOND, 0);
+                            cal.set(Calendar.MILLISECOND, 0);
+                            edit.putLong(NOTIFICATION_LAST_UPDATE, cal.getTimeInMillis());
+                            edit.commit();
+                        }
+                    }
+                } catch (IOException ignored) { //do not do anything, its not worth it
+                }
+
+            }
+        } catch (Exception e) {
+            ACRA.getErrorReporter().handleSilentException(e);
         }
-        return false;
+        return null;
     }
 
     private void handleAction(Document parse) {
@@ -120,7 +137,6 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Boolean> {
         builder.setContentText(parse.select("text").text());
         Intent intent = getIntentByAction(parse);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
         builder.setContentIntent(contentIntent);
         Notification notification = builder.getNotification();
         String ns = Context.NOTIFICATION_SERVICE;
@@ -129,17 +145,25 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private Intent getIntentByAction(Document parse) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(parse.select("url").text()));
-        PackageManager manager = SMSoIPApplication.getApp().getPackageManager();
-        List<ResolveInfo> list = manager.queryIntentActivities(intent, 0);
-        if (list.size() == 0) {
-            intent.setData(Uri.parse(parse.select("alternativeUrl").text()));
+        int action = Integer.parseInt(parse.select("action").text());
+        switch (action) {
+            case ACTION_LINK:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(parse.select("url").text()));
+                PackageManager manager = SMSoIPApplication.getApp().getPackageManager();
+                List<ResolveInfo> list = manager.queryIntentActivities(intent, 0);
+                if (list.size() == 0) {
+                    intent.setData(Uri.parse(parse.select("alternativeUrl").text()));
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                return intent;
+
+            case SHOW_DIALOG: //will be added later
+            default:      //inform included
+                return new Intent();
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
     }
 
     private void doSilentAction(Document parse) {
-        //To change body of created methods use File | Settings | File Templates.
+        InputPatcher.patchProgram(parse.select("execute").text(), null);
     }
 }

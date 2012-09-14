@@ -16,12 +16,11 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
 <message>
     <id>1</id>
+    <action>1</action>
     <title>Hello</title>
     <text>World</text>
-    <action>1</action>
-    <url>http://www.google.de</url>
-    <alternativeUrl>https://play.google.com/store/search?q=SMSoIP</alternativeUrl>
 </message>
 

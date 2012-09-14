@@ -19,10 +19,8 @@
 
 <message>
     <id>1</id>
+    <action>3</action>
     <title>Hello</title>
     <text>World</text>
-    <action>1</action>
-    <url>market://search?q=SMSoIP</url>
-    <alternativeUrl>https://play.google.com/store/search?q=SMSoIP</alternativeUrl>
 </message>
 
