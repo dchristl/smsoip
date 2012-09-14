@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.util.BitmapProcessor;
 
 /**
  * Patcher for changing values suring runtime
@@ -34,6 +35,7 @@ public abstract class InputPatcher {
     private static final String ADD_GLOBAL_PREFERENCE = "agp";
     private static final String ENABLE_AUTO_UPDATE = "autoupdateenable";
     public static final String SHOW_RETURN_FROM_SERVER = "iamebenezerscrooge";
+    public static final String REMOVE_BACKGROUND_IMAGES = "rm bg";
 
     public static boolean patchProgram(String input, OptionProvider provider) {
         if (input.startsWith(ADD_SUPPLIER_PREFERENCE)) {
@@ -44,6 +46,9 @@ public abstract class InputPatcher {
             return addSupplierPreference(ADD_SUPPLIER_PREFERENCE + " " + SHOW_RETURN_FROM_SERVER + " " + "b" + " " + "true", provider);
         } else if (input.equals(ENABLE_AUTO_UPDATE)) {
             return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP + " " + "b" + " " + "true");
+        } else if (input.equals(REMOVE_BACKGROUND_IMAGES)) {
+            BitmapProcessor.removeBackgroundImages();
+            return true;
         }
         return false;
     }
