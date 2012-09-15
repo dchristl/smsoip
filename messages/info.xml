@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Test file-->
+
+<messages>
+    <message>
+        <id>13</id>
+        <action>1</action>
+        <title>Developer information</title>
+        <text>New Plugin Version available</text>
+        <url>http://www.web.de</url>
+        <alternativeUrl>https://play.google.com/store/search?q=SMSoIP</alternativeUrl>
+        <plugin>de.christl.smsoip.supplier.goodmails.GoodmailsSupplier</plugin>
+        <!--one lower than the target versio-->
+        <maxPluginVersionCode>12</maxPluginVersionCode>
+    </message>
+    <message>
+        <id>14</id>
+        <action>1</action>
+        <title>Developer information</title>
+        <text>New SMSoIP Version available</text>
+        <url>http://www.google.de</url>
+        <alternativeUrl>https://play.google.com/store/search?q=SMSoIP</alternativeUrl>
+        <!--one lower than the target versiom-->
+        <maxVersionCode>27</maxVersionCode>
+    </message>
+</messages>
+
+

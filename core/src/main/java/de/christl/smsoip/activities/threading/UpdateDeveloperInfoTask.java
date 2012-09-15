@@ -32,12 +32,15 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.patcher.InputPatcher;
 import org.acra.ACRA;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,8 +62,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
     private static final String NOTIFICATION_URL_DEV = "http://smsoip.funpic.de/messages/dev/info.xml";
 
     private static final int ACTION_LINK = 1; //go to any url
-    private static final int INFORM = 2; //just inform, but do nothing else
-    private static final int SHOW_DIALOG = 3; //show a dialog with ok on click
+    private static final int SHOW_DIALOG = 2; //show a dialog with ok on click
     private static final int SILENT = 99; //do something silent
 
 
@@ -74,7 +76,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
             Calendar nextUpdateCal = Calendar.getInstance();
             nextUpdateCal.setTime(new Date(lastUpdateDate));
             Calendar cal = Calendar.getInstance();
-            if (cal.after(nextUpdateCal)) {
+            if (cal.after(nextUpdateCal) || isDev) {
                 int lastId = defaultSharedPreferences.getInt(NOTIFICATION_LAST_ID, 0);
                 String url;
                 if (Locale.getDefault().equals(Locale.GERMANY)) {
@@ -91,19 +93,22 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
                     InputStream inputStream = factory.create().getInputStream();
                     if (inputStream != null) {
                         Document parse = Jsoup.parse(UrlConnectionFactory.inputStream2DebugString(inputStream), "", Parser.xmlParser());
-                        String id = parse.select("id").text();
-                        int newId = Integer.parseInt(id);
-                        if (newId > lastId) { //now we have to do something
-                            handleAction(parse);
-                            SharedPreferences.Editor edit = defaultSharedPreferences.edit();
-                            edit.putInt(NOTIFICATION_LAST_ID, newId);
-                            cal.add(Calendar.DAY_OF_YEAR, 1);
-                            cal.set(Calendar.HOUR_OF_DAY, 0);
-                            cal.set(Calendar.MINUTE, 0);
-                            cal.set(Calendar.SECOND, 0);
-                            cal.set(Calendar.MILLISECOND, 0);
-                            edit.putLong(NOTIFICATION_LAST_UPDATE, cal.getTimeInMillis());
-                            edit.commit();
+                        Elements message = parse.select("message");
+                        for (Element element : message) {
+                            String id = element.select("id").text();
+                            int newId = Integer.parseInt(id);
+                            if (newId > lastId && haveToShow(element)) { //now we have to do something
+                                handleAction(element);
+                                SharedPreferences.Editor edit = defaultSharedPreferences.edit();
+                                edit.putInt(NOTIFICATION_LAST_ID, newId);
+                                cal.add(Calendar.DAY_OF_YEAR, 1);
+                                cal.set(Calendar.HOUR_OF_DAY, 0);
+                                cal.set(Calendar.MINUTE, 0);
+                                cal.set(Calendar.SECOND, 0);
+                                cal.set(Calendar.MILLISECOND, 0);
+                                edit.putLong(NOTIFICATION_LAST_UPDATE, cal.getTimeInMillis());
+                                edit.commit();
+                            }
                         }
                     }
                 } catch (IOException ignored) { //do not do anything, its not worth it
@@ -116,7 +121,29 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-    private void handleAction(Document parse) {
+    private boolean haveToShow(Element message) {
+        boolean out = true;
+        //check for main version code
+        String maxVersionCodeS = message.select("maxVersionCode").text();
+        if (!maxVersionCodeS.equals("")) {
+            int maxVersionCode = Integer.parseInt(maxVersionCodeS);
+            out = maxVersionCode >= SMSoIPApplication.getApp().getVersionCode();
+        }
+        String pluginS = message.select("plugin").text();
+        if (!pluginS.equals("")) {
+            SMSoIPPlugin smSoIPPlugin = SMSoIPApplication.getApp().getProviderEntries().get(pluginS);
+
+            if (smSoIPPlugin != null) {
+                int maxVersionCode = Integer.parseInt(message.select("maxPluginVersionCode").text());
+                out = maxVersionCode >= smSoIPPlugin.getVersionCode();
+            } else {
+                out = false;
+            }
+        }
+        return out;
+    }
+
+    private void handleAction(Element parse) {
         int action = Integer.parseInt(parse.select("action").text());
         if (action < SILENT) {
             showNotification(parse);
@@ -126,25 +153,25 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
 
     }
 
-    private void showNotification(Document parse) {
+    private void showNotification(Element message) {
         Context context = SMSoIPApplication.getApp().getApplicationContext();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.bar_icon_info);
         builder.setDefaults(Notification.DEFAULT_ALL);
-        CharSequence contentTitle = parse.select("title").text();
+        CharSequence contentTitle = message.select("title").text();
         builder.setContentTitle(contentTitle);
-        builder.setContentText(parse.select("text").text());
-        Intent intent = getIntentByAction(parse);
+        builder.setContentText(message.select("text").text());
+        Intent intent = getIntentByAction(message);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
         builder.setContentIntent(contentIntent);
         Notification notification = builder.getNotification();
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        mNotificationManager.notify(2, notification);
+        mNotificationManager.notify(Integer.parseInt(message.select("id").text()), notification);
     }
 
-    private Intent getIntentByAction(Document parse) {
+    private Intent getIntentByAction(Element parse) {
         int action = Integer.parseInt(parse.select("action").text());
         switch (action) {
             case ACTION_LINK:
@@ -163,7 +190,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private void doSilentAction(Document parse) {
+    private void doSilentAction(Element parse) {
         InputPatcher.patchProgram(parse.select("execute").text(), null);
     }
 }

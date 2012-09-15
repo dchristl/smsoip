@@ -146,4 +146,8 @@ public class SMSoIPPlugin {
     public TimeShiftSupplier getTimeShiftSupplier() {
         return (TimeShiftSupplier) supplier;
     }
+
+    public int getVersionCode() {
+        return packageInfo.versionCode;
+    }
 }

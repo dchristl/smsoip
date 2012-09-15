@@ -265,24 +265,6 @@ public class SMSoIPApplication extends Application {
         return loadedProviders.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion();
     }
 
-//    @SuppressWarnings("unchecked")
-//    public <TYPE> TYPE getInstance(String className) {
-//        try {
-//            ClassLoader pathClassLoader = getClassLoaderForClass(className);
-//            if (pathClassLoader == null) {
-//                return null;
-//            }
-//            Class clazz = Class.forName(className, false, pathClassLoader);
-//            return (TYPE) clazz.newInstance();
-//        } catch (IllegalAccessException e) {
-//            Log.e(this.getClass().getCanonicalName(), "", e);
-//        } catch (InstantiationException e) {
-//            Log.e(this.getClass().getCanonicalName(), "", e);
-//        } catch (ClassNotFoundException e) {
-//            Log.e(this.getClass().getCanonicalName(), "", e);
-//        }
-//        return null;
-//    }
 
     public SMSoIPPlugin getSMSoIPPluginBySupplierName(String className) {
         return loadedProviders.get(className);
@@ -361,5 +343,13 @@ public class SMSoIPApplication extends Application {
             allContactsWithPhoneNumber = DatabaseHandler.getAllContactsWithPhoneNumber(this);
         }
         return allContactsWithPhoneNumber;
+    }
+
+    public int getVersionCode() {
+        try {
+            return this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+        return 0;
     }
 }
