@@ -165,7 +165,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
         builder.setContentText(message.select("text").text());
         Intent intent = getIntentByAction(message);
         if (intent != null) {
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, Integer.parseInt(message.select("id").text()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(contentIntent);
             Notification notification = builder.getNotification();
             String ns = Context.NOTIFICATION_SERVICE;
