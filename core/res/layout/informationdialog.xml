@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -17,15 +18,21 @@
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<messages>
-    <message>
-        <id>14</id>
-        <action>2</action>
-        <title>Developer information</title>
-        <text>New Plugin Version available</text>
-        <dialogTitle>My title</dialogTitle>
-        <dialogContent>sdssdsds&lt;br&#47;&gt;nasdghadhsdgsjdgsdfshgdgsazdgausgdzus
-        </dialogContent>
-    </message>
-</messages>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+    <TextView
+            android:id="@+id/content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            >
 
+    </TextView>
+    <Button
+            android:id="@+id/closeButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_ok"/>
+
+</LinearLayout>

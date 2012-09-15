@@ -52,6 +52,7 @@
         <meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14f930decd44ce"/>
         <activity android:hardwareAccelerated="true" android:name="com.mobclix.android.sdk.MobclixBrowserActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:excludeFromRecents="true" android:finishOnTaskLaunch="true" android:launchMode="singleInstance" android:name="org.acra.CrashReportDialog" android:theme="@android:style/Theme.Dialog"/>
+        <activity android:name=".activities.InformationDialogActivity" android:theme="@android:style/Theme.Dialog"/>
         <receiver android:exported="true" android:name="de.christl.smsoip.receiver.SMSReceiver">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED">

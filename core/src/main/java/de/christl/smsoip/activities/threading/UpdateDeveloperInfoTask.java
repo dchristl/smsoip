@@ -31,6 +31,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.InformationDialogActivity;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.connection.UrlConnectionFactory;
@@ -163,12 +164,14 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
         builder.setContentTitle(contentTitle);
         builder.setContentText(message.select("text").text());
         Intent intent = getIntentByAction(message);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        builder.setContentIntent(contentIntent);
-        Notification notification = builder.getNotification();
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        mNotificationManager.notify(Integer.parseInt(message.select("id").text()), notification);
+        if (intent != null) {
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            builder.setContentIntent(contentIntent);
+            Notification notification = builder.getNotification();
+            String ns = Context.NOTIFICATION_SERVICE;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
+            mNotificationManager.notify(Integer.parseInt(message.select("id").text()), notification);
+        }
     }
 
     private Intent getIntentByAction(Element parse) {
@@ -183,10 +186,14 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 return intent;
-
             case SHOW_DIALOG: //will be added later
+                Intent contentIntent = new Intent(SMSoIPApplication.getApp().getApplicationContext(), InformationDialogActivity.class);
+                contentIntent.putExtra(InformationDialogActivity.TITLE, parse.select("dialogTitle").text());
+                contentIntent.putExtra(InformationDialogActivity.CONTENT, parse.select("dialogContent").text());
+                contentIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                return contentIntent;
             default:      //inform included
-                return new Intent();
+                return null;
         }
     }
 
