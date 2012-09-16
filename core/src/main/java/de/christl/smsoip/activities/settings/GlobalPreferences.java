@@ -82,8 +82,6 @@ public class GlobalPreferences extends PreferenceActivity {
 
 
     private PreferenceScreen initPreferences() {
-
-
         PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
         addBaseSettings(root);
         addBehaviourSettings(root);

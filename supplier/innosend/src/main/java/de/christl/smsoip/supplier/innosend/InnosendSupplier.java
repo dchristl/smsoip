@@ -38,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +133,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_129));
             case 130:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_130));
+            case 134:
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_134));
             case 140:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_140));
             case 150:
@@ -241,28 +244,54 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
         int sendMethod = findSendMethod(spinnerText);
-        String tmpUrl = GATEWAY_URL;
+        StringBuilder tmpUrl = new StringBuilder(GATEWAY_URL);
+        if (sendMethod == FREE) {
+            tmpUrl.append(FREE_SUB);
+        } else {
+            tmpUrl.append(SMS_SUB);
+        }
         switch (sendMethod) {
             case TURBO:
+                tmpUrl.append("&type=4");
+                break;
             case SPEED:
+                tmpUrl.append("&type=2");
+                break;
             case POWER:
-                tmpUrl += SMS_SUB;
+                tmpUrl.append("&type=3");
+                break;
             default:
-            case FREE:
-                tmpUrl += FREE_SUB;
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
+        }
+        if (dateTime != null || receivers.size() > 1) {
+            String sender = provider.getSender();
+            if (sender == null || sender.equals("")) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_sender)), receivers);
+            }
+            tmpUrl.append("&absender=").append(sender);
+        }
+        if (dateTime != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            tmpUrl.append("&termin=");
+            tmpUrl.append(sdf.format(dateTime.getCalendar().getTime())).append("-");
+            tmpUrl.append(String.format("%02d", dateTime.getHour())).append(":");
+            tmpUrl.append(String.format("%02d", dateTime.getMinute()));
         }
         StringBuilder receiverListBuilder = new StringBuilder();
         for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
             String receiverNumber = receivers.get(i).getReceiverNumber();
             receiverListBuilder.append(receiverNumber);
             if (i + 1 != receivers.size()) {
-                receiverListBuilder.append(",");
+                receiverListBuilder.append(";");
             }
+        }
+        if (receivers.size() > 1) {
+            tmpUrl.append("&massen=1");
         }
         try {
 
-            tmpUrl += "&" + getIdPwString() + "&text=" + URLEncoder.encode(smsText, ENCODING) + "&empfaenger=" + receiverListBuilder + "&type=3";
-            UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+            tmpUrl.append("&").append(getIdPwString()).append("&text=").append(URLEncoder.encode(smsText, ENCODING)).append("&empfaenger=").append(receiverListBuilder);
+            UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString(), UrlConnectionFactory.METHOD_GET);
             HttpURLConnection httpURLConnection = factory.create();
             String returnValue = UrlConnectionFactory.inputStream2DebugString(httpURLConnection.getInputStream(), ENCODING);
             int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms

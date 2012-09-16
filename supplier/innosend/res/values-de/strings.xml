@@ -18,8 +18,8 @@
   -->
 
 <resources>
-    <string name="text_return_100">SMS gesendet</string>
-    <string name="text_return_101">MMS gesendet</string>
+    <string name="text_return_100">SMS erfolgreich gesendet</string>
+    <string name="text_return_101">MMS erfolgreich gesendet</string>
     <string name="text_return_111">IP Sperre aktiv</string>
     <string name="text_return_112">Falsche Zugangsdaten</string>
     <string name="text_return_120">Absender fehlt</string>
@@ -28,6 +28,7 @@
     <string name="text_return_123">Empfänger fehlt</string>
     <string name="text_return_129">Falscher Empfänger</string>
     <string name="text_return_130">Gateway Probleme</string>
+    <string name="text_return_134">Rufnummer ungültig</string>
     <string name="text_return_140">Kein Guthaben</string>
     <string name="text_return_150">SMS-Sperre</string>
     <string name="text_return_161">Kostenlose SMS noch nicht möglich</string>
@@ -40,6 +41,13 @@
     <string name="text_default_type">Standardsendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="text_next">Nächste: %1$s</string>
+    <string name="text_no_sender">Für das Senden an mehrere Empfänger oder terminierten SMS muss eine Absendernummer
+        hinterlegt werden.\nDies kann in den Anbietereinstellungen getan werden.
+    </string>
+    <string name="text_sender">Absender</string>
+    <string name="text_sender_description">Für das Senden an mehrere Empfänger oder terminierten SMS muss eine
+        Absendernummer hinterlegt werden.
+    </string>
     <string-array name="array_spinner">
         <item>FREE (ohne AK)</item>
         <item>SPEED (ohne AK 0,03€)</item>

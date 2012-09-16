@@ -404,8 +404,8 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_return_100">SMS sent</string>
-    <string name="text_return_101">MMS sent</string>
+    <string name="text_return_100">SMS sucessfully sent</string>
+    <string name="text_return_101">MMS successfully sent</string>
     <string name="text_return_111">IP ban active</string>
     <string name="text_return_112">Wrong credentials</string>
     <string name="text_return_120">Sender missing</string>
@@ -414,6 +414,7 @@ fileName: strings.xml
     <string name="text_return_123">Receiver missing</string>
     <string name="text_return_129">Wrong receiver</string>
     <string name="text_return_130">Gateway problems</string>
+    <string name="text_return_134">Invalid receiver number</string>
     <string name="text_return_140">No balance</string>
     <string name="text_return_150">SMS blacklist</string>
     <string name="text_return_161">Free messages not yet available</string>
@@ -426,7 +427,13 @@ fileName: strings.xml
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
     <string name="text_next">Next: %1$s</string>
-
+    <string name="text_no_sender">For sending to multiple receivers or time-phased messages a sender number
+        have to be maintained.\nThis can be done in the provider settings.
+    </string>
+    <string name="text_sender">Sender</string>
+    <string name="text_sender_description">For sending to multiple receivers or time-phased messages a sender number
+        have to be maintained.
+    </string>
 
     <string-array name="array_spinner">
         <item>FREE (without SI)</item>

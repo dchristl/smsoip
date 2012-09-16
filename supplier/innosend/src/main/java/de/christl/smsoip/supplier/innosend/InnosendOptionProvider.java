@@ -20,6 +20,7 @@ package de.christl.smsoip.supplier.innosend;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
@@ -42,6 +43,7 @@ public class InnosendOptionProvider extends OptionProvider {
     private int messageLength = 160;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private static final String PROVIDER_SENDER = "provider.sender";
     private int maxReceiverCount = 1;
     private int maxMessageCount = 1;
 
@@ -66,14 +68,14 @@ public class InnosendOptionProvider extends OptionProvider {
                         messageLength = 146;
                         break;
                     case 3:   //TURBO
-                        messageLength = 160;
-                        maxReceiverCount = 10;
-                        maxMessageCount = 7;
+                        messageLength = 1000;
+                        maxReceiverCount = 500;
+                        maxMessageCount = 1;       //TODO calculate for own
                         break;
                     default: //OTHER
                         maxMessageCount = 1;
                         messageLength = 160;
-                        maxReceiverCount = 1;
+                        maxReceiverCount = 500;
                         break;
 
                 }
@@ -105,12 +107,23 @@ public class InnosendOptionProvider extends OptionProvider {
         listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
+        EditTextPreference sender = new EditTextPreference(context);
+        sender.setDialogTitle(getTextByResourceId(R.string.text_sender));
+        sender.setKey(PROVIDER_SENDER);
+        sender.setTitle(getTextByResourceId(R.string.text_sender));
+        sender.setSummary(getTextByResourceId(R.string.text_sender_description));
+        out.add(sender);
         return out;
     }
 
     @Override
     public int getMaxReceiverCount() {
         return maxReceiverCount;
+    }
+
+    @Override
+    public int getTextMessageLength() {
+        return messageLength;
     }
 
     @Override
@@ -122,4 +135,22 @@ public class InnosendOptionProvider extends OptionProvider {
     public Drawable getIconDrawable() {
         return getDrawble(R.drawable.icon);
     }
+
+    public String getSender() {
+        return getSettings().getString(PROVIDER_SENDER, null);
+    }
+
+//    @Override
+//    public int getLengthDependentSMSCount(int textLength) {
+//        if (textLength < 161) {
+//            return 0;  //will be claimed usual way
+//        } else if (textLength < 305) {
+//            return 2;
+//        } else {
+//            textLength -= 304;
+//            int smsCount = Math.round((textLength / 152));
+//            smsCount = textLength % 152 == 0 ? smsCount : smsCount + 1;
+//            return smsCount + 2;
+//        }
+//    }
 }
