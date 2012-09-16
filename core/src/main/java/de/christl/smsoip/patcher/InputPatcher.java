@@ -21,6 +21,7 @@ package de.christl.smsoip.patcher;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.activities.threading.UpdateDeveloperInfoTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.util.BitmapProcessor;
@@ -36,6 +37,7 @@ public abstract class InputPatcher {
     private static final String ENABLE_AUTO_UPDATE = "autoupdateenable";
     public static final String SHOW_RETURN_FROM_SERVER = "iamebenezerscrooge";
     public static final String REMOVE_BACKGROUND_IMAGES = "rm bg";
+    public static final String SET_DEV_FLAG = "devenable";
 
     public static boolean patchProgram(String input, OptionProvider provider) {
         if (input.startsWith(ADD_SUPPLIER_PREFERENCE)) {
@@ -49,6 +51,8 @@ public abstract class InputPatcher {
         } else if (input.equals(REMOVE_BACKGROUND_IMAGES)) {
             BitmapProcessor.removeBackgroundImages();
             return true;
+        } else if (input.equals(SET_DEV_FLAG)) {
+            return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + UpdateDeveloperInfoTask.NOTIFICATION_IS_DEV + " " + "b" + " " + "true");
         }
         return false;
     }

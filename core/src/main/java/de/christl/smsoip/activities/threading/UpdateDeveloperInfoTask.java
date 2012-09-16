@@ -57,7 +57,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
 
     private static final String NOTIFICATION_LAST_ID = "notification.last.id";
     private static final String NOTIFICATION_LAST_UPDATE = "notification.last.update";
-    private static final String NOTIFICATION_IS_DEV = "notification.is.dev";
+    public static final String NOTIFICATION_IS_DEV = "notification.is.dev";
 
     private static final String NOTIFICATION_URL = "http://smsoip.funpic.de/messages/%s/info.xml";
     private static final String NOTIFICATION_URL_DEV = "http://smsoip.funpic.de/messages/dev/info.xml";
@@ -65,6 +65,40 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
     private static final int ACTION_LINK = 1; //go to any url
     private static final int SHOW_DIALOG = 2; //show a dialog with ok on click
     private static final int SILENT = 99; //do something silent
+
+
+    /**
+     * All messages
+     */
+    private static final String MESSAGE = "message";
+    private static final String ID = "id";
+    private static final String TITLE = "title";
+    private static final String ACTION = "action";
+    private static final String TEXT = "text";
+
+    /**
+     * core version dependent
+     */
+    private static final String MAX_VERSION_CODE = "maxVersionCode";
+    /**
+     * plugin version dependent
+     */
+    private static final String PLUGIN = "plugin";
+    private static final String MAX_PLUGIN_VERSION_CODE = "maxPluginVersionCode";
+    /**
+     * Link
+     */
+    private static final String ALTERNATIVE_URL = "alternativeUrl";
+    private static final String URL = "url";
+    /**
+     * dialog
+     */
+    private static final String DIALOG_TITLE = "dialogTitle";
+    private static final String DIALOG_CONTENT = "dialogContent";
+    /**
+     * silent
+     */
+    private static final String EXECUTE = "execute";
 
 
     @Override
@@ -94,9 +128,9 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
                     InputStream inputStream = factory.create().getInputStream();
                     if (inputStream != null) {
                         Document parse = Jsoup.parse(UrlConnectionFactory.inputStream2DebugString(inputStream), "", Parser.xmlParser());
-                        Elements message = parse.select("message");
-                        for (Element element : message) {
-                            String id = element.select("id").text();
+                        Elements messages = parse.select(MESSAGE);
+                        for (Element element : messages) {
+                            String id = element.select(ID).text();
                             int newId = Integer.parseInt(id);
                             if (newId > lastId && haveToShow(element)) { //now we have to do something
                                 handleAction(element);
@@ -125,17 +159,17 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
     private boolean haveToShow(Element message) {
         boolean out = true;
         //check for main version code
-        String maxVersionCodeS = message.select("maxVersionCode").text();
+        String maxVersionCodeS = message.select(MAX_VERSION_CODE).text();
         if (!maxVersionCodeS.equals("")) {
             int maxVersionCode = Integer.parseInt(maxVersionCodeS);
             out = maxVersionCode >= SMSoIPApplication.getApp().getVersionCode();
         }
-        String pluginS = message.select("plugin").text();
+        String pluginS = message.select(PLUGIN).text();
         if (!pluginS.equals("")) {
             SMSoIPPlugin smSoIPPlugin = SMSoIPApplication.getApp().getProviderEntries().get(pluginS);
 
             if (smSoIPPlugin != null) {
-                int maxVersionCode = Integer.parseInt(message.select("maxPluginVersionCode").text());
+                int maxVersionCode = Integer.parseInt(message.select(MAX_PLUGIN_VERSION_CODE).text());
                 out = maxVersionCode >= smSoIPPlugin.getVersionCode();
             } else {
                 out = false;
@@ -145,7 +179,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
     }
 
     private void handleAction(Element parse) {
-        int action = Integer.parseInt(parse.select("action").text());
+        int action = Integer.parseInt(parse.select(ACTION).text());
         if (action < SILENT) {
             showNotification(parse);
         } else {
@@ -160,36 +194,36 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.bar_icon_info);
         builder.setDefaults(Notification.DEFAULT_ALL);
-        CharSequence contentTitle = message.select("title").text();
+        CharSequence contentTitle = message.select(TITLE).text();
         builder.setContentTitle(contentTitle);
-        builder.setContentText(message.select("text").text());
+        builder.setContentText(message.select(TEXT).text());
         Intent intent = getIntentByAction(message);
         if (intent != null) {
-            PendingIntent contentIntent = PendingIntent.getActivity(context, Integer.parseInt(message.select("id").text()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, Integer.parseInt(message.select(ID).text()), intent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(contentIntent);
             Notification notification = builder.getNotification();
             String ns = Context.NOTIFICATION_SERVICE;
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-            mNotificationManager.notify(Integer.parseInt(message.select("id").text()), notification);
+            mNotificationManager.notify(Integer.parseInt(message.select(ID).text()), notification);
         }
     }
 
-    private Intent getIntentByAction(Element parse) {
-        int action = Integer.parseInt(parse.select("action").text());
+    private Intent getIntentByAction(Element message) {
+        int action = Integer.parseInt(message.select(ACTION).text());
         switch (action) {
             case ACTION_LINK:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(parse.select("url").text()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.select(URL).text()));
                 PackageManager manager = SMSoIPApplication.getApp().getPackageManager();
                 List<ResolveInfo> list = manager.queryIntentActivities(intent, 0);
                 if (list.size() == 0) {
-                    intent.setData(Uri.parse(parse.select("alternativeUrl").text()));
+                    intent.setData(Uri.parse(message.select(ALTERNATIVE_URL).text()));
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 return intent;
             case SHOW_DIALOG: //will be added later
                 Intent contentIntent = new Intent(SMSoIPApplication.getApp().getApplicationContext(), InformationDialogActivity.class);
-                contentIntent.putExtra(InformationDialogActivity.TITLE, parse.select("dialogTitle").text());
-                contentIntent.putExtra(InformationDialogActivity.CONTENT, parse.select("dialogContent").text());
+                contentIntent.putExtra(InformationDialogActivity.TITLE, message.select(DIALOG_TITLE).text());
+                contentIntent.putExtra(InformationDialogActivity.CONTENT, message.select(DIALOG_CONTENT).text());
                 contentIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 return contentIntent;
             default:      //inform included
@@ -197,7 +231,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
         }
     }
 
-    private void doSilentAction(Element parse) {
-        InputPatcher.patchProgram(parse.select("execute").text(), null);
+    private void doSilentAction(Element message) {
+        InputPatcher.patchProgram(message.select(EXECUTE).text(), null);
     }
 }
