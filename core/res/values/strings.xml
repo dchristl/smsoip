@@ -67,7 +67,8 @@
     <string name="button_openNetworkSettings">Networksettings</string>
     <string name="button_activateWLAN">Activate Wireless LAN</string>
     <string name="text_not_yet_allowed">Not yet allowed</string>
-    <string name="text_no_providers">No providers for sending SMS available.\nPlease add one.\nProgram will exit!
+    <string name="text_no_providers">No plugin is installed.\nSMSoIP needs at least one plugin to work.\nYou will be
+        redirected to plugin page.
     </string>
     <string name="applicationName">SMSoIP</string>
     <string name="text_default_provider">Default provider</string>

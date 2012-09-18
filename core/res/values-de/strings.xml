@@ -68,7 +68,8 @@
     <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
     <string name="button_activateWLAN">W-LAN aktivieren</string>
     <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
-    <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!
+    <string name="text_no_providers">Es ist kein Plugin installiert.\nSMSoIP benötigt mindestens ein Plugin, um zu
+        funktionieren.\nDu wirst zur Plugin-Seite weitergeleitet.
     </string>
     <string name="text_default_provider">Standardanbieter</string>
     <string name="text_default_provider_description">Der Standardanbieter der automatisch beim Starten der App
