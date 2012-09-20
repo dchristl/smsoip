@@ -32,8 +32,6 @@ import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
 import de.christl.smsoip.annotations.APIVersion;
-import de.christl.smsoip.autosuggest.NameNumberEntry;
-import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
@@ -66,7 +64,6 @@ public class SMSoIPApplication extends Application {
     private int versionNumber;
     private Integer installedPackages;
     private static Activity currentActivity;
-    private List<NameNumberEntry> allContactsWithPhoneNumber;
 
     public static Activity getCurrentActivity() {
         return currentActivity;
@@ -336,13 +333,6 @@ public class SMSoIPApplication extends Application {
             return plugin.resolveDrawable(drawableId);
         }
         return null;
-    }
-
-    public List<NameNumberEntry> getContactsWithPhoneNumberList() {
-        if (allContactsWithPhoneNumber == null) {
-            allContactsWithPhoneNumber = DatabaseHandler.getAllContactsWithPhoneNumber(this);
-        }
-        return allContactsWithPhoneNumber;
     }
 
     public int getVersionCode() {

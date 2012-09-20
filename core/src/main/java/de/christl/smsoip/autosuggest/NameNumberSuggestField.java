@@ -19,6 +19,8 @@
 package de.christl.smsoip.autosuggest;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -61,9 +63,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
     }
 
     private void init() {
-        setEnabled(false);
-        FillAutoSuggestTask fillAutoSuggestTask = new FillAutoSuggestTask(this);
-        fillAutoSuggestTask.execute();
+        setAdapter(new DatabaseCursorAdapter(getContext(), DatabaseHandler.getDBCursor(getContext(), null)));
         setTokenizer(tokenizer);
         setValidator(NumberUtils.getNumberValidator());
         addTextChangedListener(new TextWatcher() {
@@ -148,8 +148,12 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
 
     @Override
     protected CharSequence convertSelectionToString(Object selectedItem) {
-        NameNumberEntry currentEntry = (NameNumberEntry) selectedItem;
-        return currentEntry.getFieldRepresantation();
+        Cursor cursor = (Cursor) selectedItem;
+        int numberCol = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        String number = cursor.getString(numberCol);
+        int nameCol = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        String name = cursor.getString(nameCol);
+        return name + " (" + NumberUtils.fixNumber(number) + ")";
     }
 
 
@@ -182,9 +186,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
         StringBuilder builder = new StringBuilder();
         synchronized (lock) {
             for (Receiver receiver : receiverList) {
-                String receiverNumber = receiver.getReceiverNumber();
-                NameNumberEntry entry = new NameNumberEntry(receiver.getName(), receiverNumber, receiver.getNumberType());
-                builder.append(tokenizer.terminateToken(convertSelectionToString(entry)));
+                builder.append(tokenizer.terminateToken(receiver.getName() + " (" + receiver.getReceiverNumber() + ")"));
             }
         }
         setText(builder.toString());

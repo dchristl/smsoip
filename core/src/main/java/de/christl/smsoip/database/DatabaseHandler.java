@@ -27,8 +27,6 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.autosuggest.NameNumberEntry;
-import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.models.Message;
 import de.christl.smsoip.picker.DateTimeObject;
 import org.acra.ACRA;
@@ -76,7 +74,7 @@ public abstract class DatabaseHandler {
         return out;
     }
 
-    private static String translateTypeToString(Context context, int value) {
+    public static String translateTypeToString(Context context, int value) {
         return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.text_no_phone_type_label));
     }
 
@@ -226,34 +224,25 @@ public abstract class DatabaseHandler {
         return out;
     }
 
-    public static List<NameNumberEntry> getAllContactsWithPhoneNumber(Context context) {
-        List<NameNumberEntry> out = new ArrayList<NameNumberEntry>();
-        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-        while (cursor.moveToNext()) {
-            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-            String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            boolean hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0;
-            if (hasPhone) {
-                //add contact to list if has number
+    /**
+     * get the cursor by search term
+     * return is ordered by mobile
+     *
+     * @param context
+     * @param searchTerm
+     * @return
+     */
+    public static Cursor getDBCursor(Context context, CharSequence searchTerm) {
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE};
+        String selection = searchTerm == null ? null : ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " LIKE '%" + searchTerm + "%' OR " + ContactsContract.CommonDataKinds.Phone.NUMBER + " LIKE '%" + searchTerm + "%'";
 
-                Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                List<NameNumberEntry> addAfterMobileList = new ArrayList<NameNumberEntry>();
-                while (phones.moveToNext()) {
-                    String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    int phoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                    NameNumberEntry nameNumberEntry = new NameNumberEntry(contactName, NumberUtils.fixNumber(phoneNumber), translateTypeToString(context, phoneType));
-                    if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
-                        out.add(nameNumberEntry);
-                    } else {
-                        addAfterMobileList.add(nameNumberEntry);
-                    }
-                }
-                out.addAll(addAfterMobileList);
-                phones.close();
-            }
-        }
-        cursor.close();
-        ACRA.getErrorReporter().putCustomData("bookSize", String.valueOf(out.size()));
-        return out;
+        String orderby = "CASE WHEN " + ContactsContract.CommonDataKinds.Phone.TYPE + " = " + ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE
+                + " THEN 0" +
+                " ELSE 1" +
+                "  END";
+
+        return context.getContentResolver().query(uri, projection, selection, null, orderby);
     }
 }

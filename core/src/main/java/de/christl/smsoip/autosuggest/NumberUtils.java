@@ -95,11 +95,7 @@ public abstract class NumberUtils {
 
         @Override
         public boolean isValid(CharSequence text) {
-            boolean matches = isCorrectNameNumber(text);
-            if (!matches) {
-                matches = isCorrectNumberInInternationalStyle(text);
-            }
-            return matches;
+            return isCorrectNameNumber(text);
         }
 
 
@@ -108,14 +104,17 @@ public abstract class NumberUtils {
             Matcher matcher = JUST_NUMBERS_OR_STARTED_WITH_PLUS.matcher(invalidText);
             boolean matches = matcher.matches();
             if (matches) {
-                String fixedNumber = NumberUtils.fixNumber(invalidText.toString());
-                Receiver receiver = DatabaseHandler.findContactByNumber(fixedNumber, SMSoIPApplication.getApp().getBaseContext());
-                String textUnknown = SMSoIPApplication.getApp().getString(R.string.text_unknown);
-                NameNumberEntry tmpEntry = new NameNumberEntry(textUnknown, fixedNumber, textUnknown);
+                String number = NumberUtils.fixNumber(invalidText.toString());
+                Receiver receiver = DatabaseHandler.findContactByNumber(number, SMSoIPApplication.getApp().getBaseContext());
+                String name;
                 if (receiver != null) {
-                    tmpEntry = new NameNumberEntry(receiver.getName(), receiver.getReceiverNumber(), receiver.getNumberType());
+                    name = receiver.getName();
+                } else {
+                    name = SMSoIPApplication.getApp().getString(R.string.text_unknown);
                 }
-                return tmpEntry.getFieldRepresantation();
+
+
+                return name + " (" + number + ")";
             } else {
                 return "";
             }
