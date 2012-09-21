@@ -32,7 +32,7 @@
     <string name="text_signature_description">Die Signatur, die zur Nachricht hinzugefügt werden kann.
     </string>
     <string name="button_save">Speichern</string>
-    <string name="hint_receiverField">Name oder Nummmer</string>
+    <string name="hint_receiverField">Name oder Nummer</string>
     <string name="hint_smsText">Nachricht</string>
     <string name="hint_sendernumber">Absender</string>
     <string name="text_chooseType">Sendetyp</string>
