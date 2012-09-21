@@ -27,7 +27,6 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
-import org.acra.ACRA;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -46,7 +45,7 @@ import java.util.*;
  */
 public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
-    private OptionProvider provider;
+    private GMXOptionProvider provider;
     /**
      * this.getClass().getCanonicalName() for output.
      */
@@ -65,6 +64,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String CRLF = "\r\n";
     private static final String ENCODING = "UTF-8";
 
+    private Long leaseTime;
+
     public GMXSupplier() {
         provider = new GMXOptionProvider();
     }
@@ -75,9 +76,11 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject) {
-        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
-        if (!result.isSuccess()) {
-            return FireSMSResultList.getAllInOneResult(result, receivers);
+        if (isLoginNeeded()) {
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
+                return FireSMSResultList.getAllInOneResult(result, receivers);
+            }
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
             SMSActionResult tmpResult = refreshInformations(true);
@@ -245,7 +248,10 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         Document feedBackPanelContent = Jsoup.parse(feedBackPanelText, ENCODING);
         Elements feedBackPanelDiv = feedBackPanelContent.select("div");
-        if (feedBackPanelDiv.select("span").attr("class").equals("feedbackPanelERROR")) {
+        if (feedBackPanelDiv.size() == 0) {
+            leaseTime = null; //force a new login
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        } else if (feedBackPanelDiv.select("span").attr("class").equals("feedbackPanelERROR")) {
             return SMSActionResult.UNKNOWN_ERROR(feedBackPanelDiv.text());
         } else {
             return SMSActionResult.NO_ERROR(feedBackPanelDiv.select("#confirmation_message_text").text());
@@ -284,6 +290,16 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             Log.e(this.getClass().getCanonicalName(), "", e);
         }
         return SMSActionResult.NO_ERROR(infoText);
+    }
+
+    private boolean isLoginNeeded() {
+        boolean out = true;
+        if (!provider.isAccountChanged()) {
+            if (leaseTime != null) {
+                out = leaseTime + (5 * 60 * 1000) - System.currentTimeMillis() < 0;
+            }
+        }
+        return out;
     }
 
     /**
@@ -342,6 +358,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
         String tmpUrl;
+        leaseTime = null;
         try {
             tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
         } catch (UnsupportedEncodingException e) {
@@ -352,7 +369,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
         sessionId = null;
         HttpURLConnection con;
-        String inputStream = "null";
+        String inputStream;
         try {
             con = factory.create();
 
@@ -361,9 +378,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             if (headerFields == null) {
                 return SMSActionResult.NETWORK_ERROR();
             }
-            //TODO remove after its stable
             InputStream tmpStream = con.getInputStream();
-            if (tmpStream == null) {      //!! TODO not yet deployed
+            if (tmpStream == null) {
                 return SMSActionResult.NETWORK_ERROR();
             }
             inputStream = UrlConnectionFactory.inputStream2DebugString(tmpStream);
@@ -389,6 +405,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
             if (!(sessionId == null || sessionId.length() == 0)) {
                 lastParsedDocument = document;
+                leaseTime = System.currentTimeMillis();
+                provider.setAccountChanged(false);
                 return SMSActionResult.LOGIN_SUCCESSFUL();
             }
         } catch (SocketTimeoutException stoe) {
@@ -397,10 +415,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return SMSActionResult.NETWORK_ERROR();
-        } catch (Exception e) {            //TODO remove after its stable
-            ACRA.getErrorReporter().putCustomData("inputstream", inputStream);
-            ACRA.getErrorReporter().handleSilentException(e);
-            return SMSActionResult.UNKNOWN_ERROR();
         }
         return SMSActionResult.LOGIN_FAILED_ERROR();
     }

@@ -46,6 +46,7 @@ public abstract class OptionProvider {
     private SharedPreferences settings;
     private Map<Integer, AccountModel> accounts;
     private Integer currentAccountId = null;
+    private boolean accountChanged = false;
 
     /**
      * default constructor, use the other one for give a name to the provider otherwise classname will be used
@@ -120,6 +121,7 @@ public abstract class OptionProvider {
             userName = null;
             password = null;
         }
+
 
     }
 
@@ -211,5 +213,19 @@ public abstract class OptionProvider {
      */
     public int getLengthDependentSMSCount(int textLength) {
         return 0;
+    }
+
+    /**
+     * returns if the user has clicked on switch account button
+     * <b>resetting this have to be done in plugin itself</b>
+     *
+     * @return
+     */
+    public boolean isAccountChanged() {
+        return accountChanged;
+    }
+
+    public void setAccountChanged(boolean accountChanged) {
+        this.accountChanged = accountChanged;
     }
 }
