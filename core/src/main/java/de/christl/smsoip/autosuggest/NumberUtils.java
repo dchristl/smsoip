@@ -76,10 +76,6 @@ public abstract class NumberUtils {
         return builder.toString();
     }
 
-    public static String getValidatedString(String text) {
-        return getValidatedString(text, new MultiAutoCompleteTextView.CommaTokenizer(), new NameNumberValidator());
-    }
-
     public static boolean isCorrectNumberInInternationalStyle(CharSequence text) {
         Matcher matcher = NUMBER_INPUT.matcher(text);
         return matcher.matches();
@@ -104,16 +100,15 @@ public abstract class NumberUtils {
             Matcher matcher = JUST_NUMBERS_OR_STARTED_WITH_PLUS.matcher(invalidText);
             boolean matches = matcher.matches();
             if (matches) {
-                String number = NumberUtils.fixNumber(invalidText.toString());
-                Receiver receiver = DatabaseHandler.findContactByNumber(number, SMSoIPApplication.getApp().getBaseContext());
+                String rawNumber = invalidText.toString();
+                Receiver receiver = DatabaseHandler.findContactByNumber(rawNumber, SMSoIPApplication.getApp().getBaseContext());
+                String number = NumberUtils.fixNumber(rawNumber);
                 String name;
                 if (receiver != null) {
                     name = receiver.getName();
                 } else {
                     name = SMSoIPApplication.getApp().getString(R.string.text_unknown);
                 }
-
-
                 return name + " (" + number + ")";
             } else {
                 return "";

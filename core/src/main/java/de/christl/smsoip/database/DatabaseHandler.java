@@ -128,7 +128,7 @@ public abstract class DatabaseHandler {
                 if (receiver == null) {
                     String text = context.getString(R.string.text_unknown);
                     receiver = new Receiver(text);
-                    receiver.setRawNumber(number, context.getString(R.string.text_unknown));//TODO exchange by correct type
+                    receiver.setRawNumber(number, context.getString(R.string.text_unknown));
 
                 }
                 out.put(receiver, msg);
@@ -191,14 +191,12 @@ public abstract class DatabaseHandler {
     }
 
 
-    public static Receiver findContactByNumber(String givenNumber, Context context) {
+    public static Receiver findContactByNumber(String rawNumber, Context context) {
         Receiver out = null;
         String name;
         String[] projection = new String[]{
-                ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
-
-        String encodedNumber = Uri.encode(givenNumber);
+                ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
+        String encodedNumber = Uri.encode(rawNumber);
         if (!encodedNumber.equals("")) {
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
             try {
@@ -210,14 +208,13 @@ public abstract class DatabaseHandler {
                         name = context.getString(R.string.text_unknown);
                     }
                     out = new Receiver(name);
-                    out.setRawNumber(givenNumber, context.getString(R.string.text_unknown));        //TODO check if type is available her
+                    out.setRawNumber(rawNumber, context.getString(R.string.text_unknown));
                 }
                 query.close();
             } catch (IllegalArgumentException e) {
                 ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
-
                 instance.handleSilentException(e);
             }
         }
