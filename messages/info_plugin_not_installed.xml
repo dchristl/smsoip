@@ -21,13 +21,13 @@
 
 <messages>
     <message>
-        <id>69</id>
+        <id>17</id>
         <action>1</action>
         <title>Developer information</title>
-        <text>Check out the donate version</text>
+        <text>New Plugin available</text>
         <url>http://www.web.de</url>
         <alternativeUrl>https://play.google.com/store/search?q=SMSoIP</alternativeUrl>
-        <donate>false</donate>
+        <not>de.christl.smsoip.supplier.gmx.GMXSupplier</not>
     </message>
 </messages>
 

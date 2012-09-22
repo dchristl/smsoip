@@ -100,6 +100,16 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
      */
     private static final String EXECUTE = "execute";
 
+    /**
+     * not installed plugin dependent
+     */
+    private static final String NOT_INSTALLED = "not";
+
+    /**
+     * show only if donate is already instaled
+     */
+    private static final String DONATE_DEPENDENT = "donate";
+
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -174,6 +184,18 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
             } else {
                 out = false;
             }
+        }
+        String notString = message.select(NOT_INSTALLED).text();
+        if (!notString.equals("")) {
+            SMSoIPPlugin smSoIPPlugin = SMSoIPApplication.getApp().getProviderEntries().get(notString);
+            if (smSoIPPlugin == null) {
+                out = false;
+            }
+        }
+        String donateString = message.select(DONATE_DEPENDENT).text();
+        if (!donateString.equals("")) {
+            boolean donate = Boolean.parseBoolean(donateString);
+            out = donate == !SMSoIPApplication.getApp().isAdsEnabled();
         }
         return out;
     }
