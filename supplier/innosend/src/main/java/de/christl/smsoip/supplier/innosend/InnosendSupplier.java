@@ -251,6 +251,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         }
 
         switch (sendMethod) {
+            case FREE:
+                break;//do nothing
             case TURBO:
                 if (isForeign) {
                     tmpUrl.append("&type=8");
@@ -323,7 +325,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     private Boolean isForeign(List<Receiver> receivers) {
         Boolean out = null;
         for (Receiver receiver : receivers) {
-            if (!receiver.getReceiverNumber().startsWith("0049")) {
+            if (receiver.getReceiverNumber().startsWith("0049")) {
                 if (out == null) {
                     out = false;
                 } else if (out) {
