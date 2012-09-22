@@ -19,8 +19,8 @@
 package de.christl.smsoip.supplier.innosend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
@@ -39,13 +39,15 @@ import java.util.List;
 public class InnosendOptionProvider extends OptionProvider {
 
     private static final String PROVIDER_NAME = "Innosend";
+    public static final String SENDER_PREFIX = "sender_";
 
     private int messageLength = 160;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
-    private static final String PROVIDER_SENDER = "provider.sender";
     private int maxReceiverCount = 1;
     private int maxMessageCount = 1;
+
+    private boolean accountChanged = false;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -96,7 +98,6 @@ public class InnosendOptionProvider extends OptionProvider {
     @Override
     public List<Preference> getAdditionalPreferences(Context context) {
         List<Preference> out = new ArrayList<Preference>();
-
         ListPreference listPref = new ListPreference(context);
         String[] typeArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(typeArray);
@@ -107,14 +108,9 @@ public class InnosendOptionProvider extends OptionProvider {
         listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
-        EditTextPreference sender = new EditTextPreference(context);
-        sender.setDialogTitle(getTextByResourceId(R.string.text_sender));
-        sender.setKey(PROVIDER_SENDER);
-        sender.setTitle(getTextByResourceId(R.string.text_sender));
-        sender.setSummary(getTextByResourceId(R.string.text_sender_description));
-        out.add(sender);
         return out;
     }
+
 
     @Override
     public int getMaxReceiverCount() {
@@ -136,8 +132,13 @@ public class InnosendOptionProvider extends OptionProvider {
         return getDrawble(R.drawable.icon);
     }
 
-    public String getSender() {
-        return getSettings().getString(PROVIDER_SENDER, null);
+
+    public boolean isAccountChanged() {
+        return accountChanged;
+    }
+
+    public void setAccountChanged(boolean accountChanged) {
+        this.accountChanged = accountChanged;
     }
 
 //    @Override
@@ -153,4 +154,26 @@ public class InnosendOptionProvider extends OptionProvider {
 //            return smsCount + 2;
 //        }
 //    }
+
+    public String getSender() {
+        return getSettings().getString(SENDER_PREFIX + getUserName(), "");
+    }
+
+    public void writeSender(String number) {
+        String userName = getUserName();
+        if (number != null && !number.equals("") && userName != null && !userName.equals("")) {
+            SharedPreferences.Editor edit = getSettings().edit();
+            edit.putString(SENDER_PREFIX + userName, number);
+            edit.commit();
+        }
+    }
+
+    public void resetSender() {
+        String userName = getUserName();
+        if (userName != null && !userName.equals("")) {
+            SharedPreferences.Editor edit = getSettings().edit();
+            edit.remove(SENDER_PREFIX + userName);
+            edit.commit();
+        }
+    }
 }
