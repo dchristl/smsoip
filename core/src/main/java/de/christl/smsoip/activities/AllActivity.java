@@ -128,7 +128,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     protected void showChangelogIfNeeded() {
         ChangeLog cl = new ChangeLog(this);
-        if (cl.firstRun()) {
+        if (cl.firstRunEver()) {
+            cl.getWelcomeDialog().show();
+        } else if (cl.firstRun()) {
             cl.getLogDialog().show();
         }
     }

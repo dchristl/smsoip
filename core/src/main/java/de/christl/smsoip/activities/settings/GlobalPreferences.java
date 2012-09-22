@@ -37,6 +37,7 @@ import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
@@ -54,7 +55,6 @@ public class GlobalPreferences extends PreferenceActivity {
     private static final int ACTIVITY_SELECT_IMAGE = 10;
 
     private ProcessImageAndSetBackgroundTask processImageAndSetBackgroundTask;
-
 
 
     private Integer adjustment = 0;
@@ -139,6 +139,18 @@ public class GlobalPreferences extends PreferenceActivity {
         pluginIntent.setTitle(R.string.text_visit_plugin_page);
         pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
         root.addPreference(pluginIntent);
+        PreferenceScreen welcomePref = getPreferenceManager().createPreferenceScreen(this);
+        welcomePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ChangeLog cl = new ChangeLog(GlobalPreferences.this);
+                cl.getWelcomeDialog().show();
+                return true;
+            }
+        });
+        welcomePref.setTitle(R.string.text_reshow_welcome);
+        welcomePref.setSummary(R.string.text_reshow_welcome_description);
+        root.addPreference(welcomePref);
     }
 
     private void addLayoutSettings(PreferenceScreen root) {

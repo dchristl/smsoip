@@ -141,6 +141,11 @@ public class ChangeLog {
         return this.getDialog(false);
     }
 
+    public AlertDialog getWelcomeDialog() {
+        return this.getDialog(true);
+    }
+
+
     private AlertDialog getDialog(boolean full) {
         LayoutInflater factory = LayoutInflater.from(context);
         final View dialogView = factory.inflate(R.layout.changelogdialog, null);
@@ -148,12 +153,11 @@ public class ChangeLog {
         wv.setBackgroundColor(0); // transparent
         // wv.getSettings().setDefaultTextEncodingName("utf-8");
         wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        int changelog_title = full ? R.string.welcome_title : R.string.changelog_title;
         builder.setTitle(context.getResources().getString(
-                R.string.changelog_title))
+                changelog_title))
                 .setView(dialogView)
-                .setCancelable(false)
                 .setPositiveButton(
                         context.getResources().getString(
                                 R.string.text_ok),
@@ -162,7 +166,6 @@ public class ChangeLog {
                                 dialog.cancel();
                             }
                         });
-
         return builder.create();
     }
 
@@ -174,12 +177,6 @@ public class ChangeLog {
         return this.getLog(false);
     }
 
-    /**
-     * @return HTML which displays full change log
-     */
-    public String getFullLog() {
-        return this.getLog(true);
-    }
 
     /**
      * modes for HTML-Lists (bullet, numbered)
@@ -198,7 +195,8 @@ public class ChangeLog {
         // read changelog.txt file
         sb = new StringBuffer();
         try {
-            InputStream ins = context.getResources().openRawResource(R.raw.changelog);
+            int logToShow = full ? R.raw.welcome : R.raw.changelog;
+            InputStream ins = context.getResources().openRawResource(logToShow);
             BufferedReader br = new BufferedReader(new InputStreamReader(ins));
 
             String line;
@@ -282,7 +280,6 @@ public class ChangeLog {
         this.listMode = Listmode.NONE;
     }
 
-    private static final String TAG = "ChangeLog";
 
     /**
      * manually set the last version name - for testing purposes only

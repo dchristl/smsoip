@@ -85,6 +85,10 @@ fileName: strings.xml
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen.</string>
     <string name="text_visit_plugin_page">Plugins suchen</string>
     <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play.</string>
+    <string name="text_reshow_welcome">Willkommensdialog anschauen</string>
+    <string name="text_reshow_welcome_description">Schaue dir den Willkommensdialog noch einmal für eine kurze
+        Einführung an.
+    </string>
     <string name="text_area_code">Standardländercode</string>
     <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -134,6 +138,7 @@ fileName: strings.xml
     <string name="text_chooseAccount">Account auswählen</string>
     <string name="text_partial_success">Teilweiser Erfolg</string>
     <string name="changelog_title">Was ist neu</string>
+    <string name="welcome_title">Willkommen bei SMSoIP</string>
     <string name="text_lastMessage">Letzte Nachricht</string>
     <string name="text_lastConversation">Letzte Konversationen</string>
     <string name="text_clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>

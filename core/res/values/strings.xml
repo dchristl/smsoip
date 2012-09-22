@@ -78,6 +78,8 @@
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
     <string name="text_visit_plugin_page">Find plugins</string>
     <string name="text_visit_plugin_page_description">Find additional plugins at Google Play</string>
+    <string name="text_reshow_welcome">Show welcome dialog</string>
+    <string name="text_reshow_welcome_description">Look at the welcome dialog again for a short introduction.</string>
     <string name="text_area_code">Default international area code</string>
     <string name="text_area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
         will be automatically prepended to receiver number if needed.
@@ -127,6 +129,7 @@
     <string name="text_chooseAccount">Choose Account</string>
     <string name="text_partial_success">Partial success</string>
     <string name="changelog_title">What\'s New</string>
+    <string name="welcome_title">Welcome to SMSoIP</string>
     <string name="text_lastMessage">Last message</string>
     <string name="text_lastConversation">Last conversation</string>
     <string name="text_clickToAdd">(Click to add as receiver)</string>
