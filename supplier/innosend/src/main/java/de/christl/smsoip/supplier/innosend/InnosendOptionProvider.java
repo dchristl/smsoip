@@ -70,9 +70,9 @@ public class InnosendOptionProvider extends OptionProvider {
                         messageLength = 146;
                         break;
                     case 3:   //TURBO
-                        messageLength = 1000;
+                        messageLength = 100;       //just for message length filter (will be calculated for own)
                         maxReceiverCount = 500;
-                        maxMessageCount = 1;       //TODO calculate for own
+                        maxMessageCount = 10;
                         break;
                     default: //OTHER
                         maxMessageCount = 1;
@@ -141,19 +141,16 @@ public class InnosendOptionProvider extends OptionProvider {
         this.accountChanged = accountChanged;
     }
 
-//    @Override
-//    public int getLengthDependentSMSCount(int textLength) {
-//        if (textLength < 161) {
-//            return 0;  //will be claimed usual way
-//        } else if (textLength < 305) {
-//            return 2;
-//        } else {
-//            textLength -= 304;
-//            int smsCount = Math.round((textLength / 152));
-//            smsCount = textLength % 152 == 0 ? smsCount : smsCount + 1;
-//            return smsCount + 2;
-//        }
-//    }
+    @Override
+    public int getLengthDependentSMSCount(int textLength) {
+        if (textLength < 161) {
+            return 1;
+        } else {
+            int smsCount = Math.round((textLength / 153));
+            smsCount = textLength % 153 == 0 ? smsCount : smsCount + 1;
+            return smsCount;
+        }
+    }
 
     public String getSender() {
         return getSettings().getString(SENDER_PREFIX + getUserName(), "");
