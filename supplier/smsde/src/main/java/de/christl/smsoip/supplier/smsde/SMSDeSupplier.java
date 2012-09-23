@@ -164,11 +164,11 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             sessionCookies = new Vector<String>();
             String cSmsdeUid = "C_SMSDE_UID";
             String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, cSmsdeUid);
-            if (c_smsde_uid_cookie == null) {
+            String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
+            if (c_smsde_uid_cookie == null || c_smsde_uid1_cookie == null) {
                 return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(cSmsdeUid, tmpSessionCookie));
-            String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
             sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));
             if (sessionCookies.size() != 2) {
                 return SMSActionResult.LOGIN_FAILED_ERROR();
