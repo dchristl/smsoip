@@ -278,7 +278,7 @@ public class SendActivity extends AllActivity {
         View stRow = findViewById(R.id.tblSendingTypeSpinner);
         View stDescr = findViewById(R.id.tblSendingTypeDescr);
         View infoTextUpper = findViewById(R.id.infoTextUpper);
-
+        View freeLayout = findViewById(R.id.tblFreeLayout);
         switch (mode) {
             case NORMAL:
                 but1.setVisibility(View.VISIBLE);
@@ -287,6 +287,7 @@ public class SendActivity extends AllActivity {
                 tsDescr.setVisibility(View.VISIBLE);
                 stRow.setVisibility(View.VISIBLE);
                 stDescr.setVisibility(View.VISIBLE);
+                freeLayout.setVisibility(View.VISIBLE);
                 infoTextUpper.setVisibility(View.GONE);
                 break;
             case COMPACT:
@@ -297,6 +298,7 @@ public class SendActivity extends AllActivity {
                 tsDescr.setVisibility(View.GONE);
                 stRow.setVisibility(View.GONE);
                 stDescr.setVisibility(View.GONE);
+                freeLayout.setVisibility(View.GONE);
                 break;
         }
     }
@@ -1004,7 +1006,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void setSuppliersLayout() {
-        LinearLayout freeLayout = (LinearLayout) findViewById(R.id.free_layout);
+        LinearLayout freeLayout = (LinearLayout) findViewById(R.id.freeLayout);
         freeLayout.removeAllViews();
         if (smSoIPPlugin != null) {
             smSoIPPlugin.getProvider().getFreeLayout(freeLayout);

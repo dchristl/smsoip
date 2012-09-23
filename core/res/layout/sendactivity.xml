@@ -277,9 +277,9 @@
                     android:layout_span="5"
                     />
         </TableRow>
-        <TableRow>
+        <TableRow android:id="@+id/tblFreeLayout">
             <LinearLayout
-                    android:id="@+id/free_layout"
+                    android:id="@+id/freeLayout"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
