@@ -427,7 +427,7 @@ fileName: strings.xml
     <string name="text_return_162">No free messages left.</string>
     <string name="text_return_170">Wrong date.</string>
     <string name="text_return_171">Date in past.</string>
-    <string name="text_return_172">Too many numbers</string>
+    <string name="text_return_172">Too many numbers.</string>
     <string name="text_return_unknown">Unknown problem:</string>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>

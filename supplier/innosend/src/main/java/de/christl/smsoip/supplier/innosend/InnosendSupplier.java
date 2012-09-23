@@ -81,6 +81,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) {
         if (userName == null || password == null) {
+            leaseTime = null;
+            phpsessid = null;
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String tmpUrl;
@@ -99,6 +101,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             if (returnValue.contains(",")) { //its floating point number so credits will be replied
                 return SMSActionResult.LOGIN_SUCCESSFUL();
             }
+            leaseTime = null;
+            phpsessid = null;
             //no floating point so check for error code
             int returnInt = returnValue.equals("") ? 0 : Integer.parseInt(returnValue);
             return getErrorMessageByResult(returnInt);
@@ -193,6 +197,12 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
      */
     private SMSActionResult refreshSession() throws IOException {
         if (phpsessid == null || leaseTime == null || isSessionRefreshNeeded()) {
+            SMSActionResult checkCredentialsResult = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!checkCredentialsResult.isSuccess()) {
+                leaseTime = null;
+                phpsessid = null;
+                return checkCredentialsResult;
+            }
             UrlConnectionFactory loginFactory = new UrlConnectionFactory(LOGIN_URL);
             String userNamePasswordBody = "bn=" + URLEncoder.encode(provider.getUserName(), ENCODING) + "&pw=" + URLEncoder.encode(provider.getPassword(), ENCODING);
             HttpURLConnection con = loginFactory.writeBody(userNamePasswordBody);
@@ -203,6 +213,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             phpsessid = UrlConnectionFactory.findCookieByName(headerFields, "PHPSESSID");
             if (phpsessid == null || phpsessid.equals("")) {
                 leaseTime = null;
+                phpsessid = null;
                 return SMSActionResult.LOGIN_FAILED_ERROR();
             }
             leaseTime = System.currentTimeMillis();
@@ -295,7 +306,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         }
         try {
             if (dateTime != null || receivers.size() > 1) {
-                String sender = findSender();
+                String sender = findSenderAndWriteIfAvailable();
                 if (sender.equals("")) {
                     return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
                 }
@@ -342,7 +353,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         return out;
     }
 
-    private String findSender() throws IOException {
+    private String findSenderAndWriteIfAvailable() throws IOException {
         //first check in the options if sender is available
         String sender = provider.getSender();
         if (sender.equals("")) {
@@ -401,7 +412,9 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             case 111:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_111));
             case 112:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_112));
+                SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_112));
+                smsActionResult.setRetryMakesSense(false);
+                return smsActionResult;
             case 120:
                 provider.resetSender();
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_120));

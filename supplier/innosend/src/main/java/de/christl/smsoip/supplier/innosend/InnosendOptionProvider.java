@@ -152,6 +152,12 @@ public class InnosendOptionProvider extends OptionProvider {
         }
     }
 
+    @Override
+    public void setCurrentAccountId(Integer currentAccountId) {
+        super.setCurrentAccountId(currentAccountId);
+        accountChanged = true;
+    }
+
     public String getSender() {
         return getSettings().getString(SENDER_PREFIX + getUserName(), "");
     }

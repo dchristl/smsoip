@@ -122,7 +122,7 @@ public abstract class OptionProvider {
             password = null;
         }
 
-
+        accountChanged = true;
     }
 
     public String getUserName() {
