@@ -29,6 +29,10 @@ import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
+
 /**
  * checks the login in background in GlobalPreferences
  */
@@ -60,14 +64,24 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
         if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
             smsActionResult = SMSActionResult.NO_CREDENTIALS();
         } else {
-            smsActionResult = supplier.checkCredentials(userName, pass);
+            try {
+                smsActionResult = supplier.checkCredentials(userName, pass);
+            } catch (UnsupportedEncodingException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+            } catch (SocketTimeoutException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.NETWORK_ERROR();
+            }
         }
         if (progressDialog != null && progressDialog.isShowing()) {
             publishProgress(smsActionResult.getMessage());
             try {
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
+            } catch (InterruptedException ignored) {
             }
         }
         return null;

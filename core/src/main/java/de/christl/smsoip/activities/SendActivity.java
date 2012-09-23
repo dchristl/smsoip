@@ -36,6 +36,7 @@ import android.text.InputFilter;
 import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
@@ -70,6 +71,9 @@ import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,7 +121,7 @@ public class SendActivity extends AllActivity {
     private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
     private DateTimeObject dateTime;
-    private AsyncTask<Void, String, SMSActionResult> backgroundUpdateTask;
+    private AsyncTask<Boolean, String, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
 
 
@@ -426,7 +430,7 @@ public class SendActivity extends AllActivity {
         if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             infoText.setText(R.string.text_notyetrefreshed);
             infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
-            refreshInformationText();
+            refreshInformationText(true);
 
         } else {
             infoText.setText(R.string.text_notyetrefreshed);
@@ -679,7 +683,7 @@ public class SendActivity extends AllActivity {
         View.OnClickListener l = new View.OnClickListener() {
             public void onClick(View view) {
                 ErrorReporterStack.put(LogConst.REFRESH_UPPER_CLICKED);
-                refreshInformationText();
+                refreshInformationText(true);
             }
         };
         refreshButon.setOnClickListener(l);
@@ -845,29 +849,44 @@ public class SendActivity extends AllActivity {
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
         String userName = smSoIPPlugin.getProvider().getUserName();
         String pass = smSoIPPlugin.getProvider().getPassword();
+        FireSMSResultList out;
         if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_CREDENTIALS(), receiverList);
+            out = FireSMSResultList.getAllInOneResult(SMSActionResult.NO_CREDENTIALS(), receiverList);
         } else {
             cancelUpdateTask();
-            if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
-                return smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
-            } else {
-                return smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
+            try {
+                if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
+                    out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
+                } else {
+                    out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
+                }
+            } catch (UnsupportedEncodingException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
+            } catch (SocketTimeoutException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
             }
         }
+
+        return out;
     }
 
 
     /**
      * since API Level 14
      *
+     * @param refreshButtonPressed
      * @return
      */
 
-    void refreshInformationText() {
+    void refreshInformationText(Boolean refreshButtonPressed) {
         ErrorReporterStack.put(LogConst.REFRESH_INFORMATION_TEXT + smSoIPPlugin.getProviderName());
         cancelUpdateTask();
-        backgroundUpdateTask = new BackgroundUpdateTask(this).execute(null, null);
+        backgroundUpdateTask = new BackgroundUpdateTask(this).execute(refreshButtonPressed);
     }
 
 
@@ -907,7 +926,7 @@ public class SendActivity extends AllActivity {
                                     break;
                                 }
                             }
-                            receiver.setRawNumber(key, getString(R.string.text_no_phone_type_label)); //TODO check if we can get back the type
+                            receiver.setRawNumber(key, getString(R.string.text_no_phone_type_label));
                             addReceiver(receiver);
                         }
                     });

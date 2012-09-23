@@ -90,7 +90,7 @@ public class RunnableFactory {
                                         FireSMSResultList fireSMSResultList = builder.getFireSMSResults();
                                         FireSMSResultList.SendResult sendResult = fireSMSResultList.getResult();
                                         if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
-                                            RunnableFactory.this.sendActivity.refreshInformationText();
+                                            RunnableFactory.this.sendActivity.refreshInformationText(false);
                                         }
                                         updateUIHandler.post(getUpdateUIRunnable(fireSMSResultList));
                                         RunnableFactory.this.progressDialog.cancel();
@@ -103,7 +103,7 @@ public class RunnableFactory {
                     } else {
                         FireSMSResultList.SendResult sendResult = fireSMSResults.getResult();
                         if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
-                            RunnableFactory.this.sendActivity.refreshInformationText();
+                            RunnableFactory.this.sendActivity.refreshInformationText(false);
                         }
                         updateUIHandler.post(getUpdateUIRunnable(fireSMSResults));
                         RunnableFactory.this.progressDialog.cancel();

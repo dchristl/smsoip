@@ -24,6 +24,7 @@ import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 
+import java.io.IOException;
 import java.util.List;
 
 @APIVersion(minVersion = 14)
@@ -46,7 +47,7 @@ public interface ExtendedSMSSupplier {
      * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on ic_menu_success or any other otherwise
      */
 
-    FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText);
+    FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException;
 
     /**
      * will be called by checking the login in the option dialog
@@ -55,7 +56,7 @@ public interface ExtendedSMSSupplier {
      * @param password - the password
      * @return Result.NO_ERRORS -> Strings will be marked green, otherwise red
      */
-    SMSActionResult checkCredentials(String userName, String password);
+    SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException;
 
     /**
      * this will called when the refresh button is used, is splitted by refreshInformationAfterMessageSuccessfulSent
@@ -65,7 +66,7 @@ public interface ExtendedSMSSupplier {
      * @return Result.NO_ERRORS add additional info for the informations next to refresh button<br/>
      *         any other error if not successful
      */
-    SMSActionResult refreshInfoTextOnRefreshButtonPressed();
+    SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException;
 
     /**
      * this will called after message is sent successful, is splitted by refreshInformationOnRefreshButtonPressed
@@ -75,7 +76,7 @@ public interface ExtendedSMSSupplier {
      * @return Result.NO_ERRORS add additional info for the informations next to refresh button<br/>
      *         any other error if not successful
      */
-    SMSActionResult refreshInfoTextAfterMessageSuccessfulSent();
+    SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException;
 
     /**
      * the corresponding provider of this supplier

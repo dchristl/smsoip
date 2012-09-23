@@ -22,6 +22,7 @@ import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.picker.DateTimeObject;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public interface TimeShiftSupplier {
 
-    FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime);
+    FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException;
 
     int getMinuteStepSize();
 

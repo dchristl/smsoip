@@ -27,13 +27,16 @@ import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 import org.acra.ACRA;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Update the informations in background
  */
-public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResult> {
+public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionResult> {
 
     private SendActivity sendActivity;
     private Timer timer;
@@ -53,7 +56,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
     }
 
     @Override
-    protected SMSActionResult doInBackground(Void... params) {
+    protected SMSActionResult doInBackground(Boolean... params) {
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_STARTED);
         TimerTask task = new TimerTask() {
             private String dots = ".";
@@ -79,20 +82,37 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
 
         timer = new Timer();
         timer.schedule(task, 0, 500);
+        SMSActionResult smsActionResult;
         try {
             String userName = sendActivity.getSmSoIPPlugin().getProvider().getUserName();
             String pass = sendActivity.getSmSoIPPlugin().getProvider().getPassword();
             if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
                 timer.cancel();
-                return SMSActionResult.NO_CREDENTIALS();
+                smsActionResult = SMSActionResult.NO_CREDENTIALS();
             } else {
-                return sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+                try {
+                    if (params[0]) {
+                        smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+                    } else {
+                        smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                    smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+                } catch (SocketTimeoutException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                    smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+                } catch (IOException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                    smsActionResult = SMSActionResult.NETWORK_ERROR();
+                }
             }
         } catch (Exception e) {    //TODO remove after stability improvements
             Log.e(this.getClass().getCanonicalName(), "", e);
             ACRA.getErrorReporter().handleSilentException(e);
-            return SMSActionResult.UNKNOWN_ERROR();
+            smsActionResult = SMSActionResult.UNKNOWN_ERROR();
         }
+        return smsActionResult;
     }
 
     @Override
@@ -138,7 +158,7 @@ public class BackgroundUpdateTask extends AsyncTask<Void, String, SMSActionResul
                     } catch (InterruptedException e) {
                         Log.e(this.getClass().getCanonicalName(), "", e);
                     }
-                    new BackgroundUpdateTask(sendActivity, retryCount + 1).execute(null, null);
+                    new BackgroundUpdateTask(sendActivity, retryCount + 1).execute(true);
                 }
             }
             sendActivity.updateInfoTextAndRefreshButton(actionResult.getMessage());
