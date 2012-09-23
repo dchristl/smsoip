@@ -183,6 +183,7 @@ public class SendActivity extends AllActivity {
         addModeSwitcher();
         if (savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null) {  //activity was killed and is resumed
             smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
+            smSoIPPlugin.getProvider().afterActivityKilledAndOnCreateCalled(savedInstanceState);
             setFullTitle();
             setSpinner();
             long timeInMillis = savedInstanceState.getLong(SAVED_INSTANCE_DATE_TIME, -1);
@@ -466,6 +467,7 @@ public class SendActivity extends AllActivity {
         OptionProvider provider = smSoIPPlugin.getProvider();
         String userName = provider.getUserName() == null ? getString(R.string.text_account_no_account) : provider.getUserName();
         setTitle(userName);
+        setSuppliersLayout();
     }
 
     private void setPreselectedContact(Uri data) {
@@ -998,6 +1000,15 @@ public class SendActivity extends AllActivity {
         setVisibilityByCurrentReceivers();
         setInfoButtonVisibility();
         setDateTimePickerDialog();
+        setSuppliersLayout();
+    }
+
+    private void setSuppliersLayout() {
+        LinearLayout freeLayout = (LinearLayout) findViewById(R.id.free_layout);
+        freeLayout.removeAllViews();
+        if (smSoIPPlugin != null) {
+            smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
+        }
     }
 
     private void setVisibilityByCurrentReceivers() {
@@ -1298,6 +1309,7 @@ public class SendActivity extends AllActivity {
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
             }
+            smSoIPPlugin.getProvider().onActivityPaused(outState);
         }
     }
 

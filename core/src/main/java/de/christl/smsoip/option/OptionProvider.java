@@ -21,8 +21,10 @@ package de.christl.smsoip.option;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.Preference;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
@@ -227,5 +229,33 @@ public abstract class OptionProvider {
 
     public void setAccountChanged(boolean accountChanged) {
         this.accountChanged = accountChanged;
+    }
+
+    /**
+     * call by some suppliers needed a special
+     *
+     * @param freeLayout
+     */
+    public void getFreeLayout(LinearLayout freeLayout) {
+        //do nothing by default
+    }
+
+    /**
+     * if on create method called after the activity was killed (or in background) this method will be called to restore the state
+     * of the linear layout
+     *
+     * @param savedInstanceState
+     */
+    public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
+        //do nothing by default
+    }
+
+    /**
+     * when activity gets paused this method will be called to save things in the linear layout
+     *
+     * @param outState
+     */
+    public void onActivityPaused(Bundle outState) {
+        //do nothing by default
     }
 }
