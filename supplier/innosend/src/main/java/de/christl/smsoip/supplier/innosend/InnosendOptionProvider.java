@@ -74,6 +74,11 @@ public class InnosendOptionProvider extends OptionProvider {
                         maxReceiverCount = 500;
                         maxMessageCount = 10;
                         break;
+                    case 4: //LANDLINE
+                        maxMessageCount = 1;
+                        messageLength = 160;
+                        maxReceiverCount = 1;
+                        break;
                     default: //OTHER
                         maxMessageCount = 1;
                         messageLength = 160;

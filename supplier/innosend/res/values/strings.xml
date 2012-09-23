@@ -41,8 +41,10 @@
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
     </string>
-    <string name="text_multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not allowed for this sending type.
+    <string name="text_multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not
+        allowed for this sending type.
     </string>
+    <string name="text_landline_outside_germany">Landline messages are not allowed outside Germany.</string>
     <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
     <string name="text_next">Next: %1$s</string>
     <!--<string name="text_no_sender">For sending to multiple receivers or time-phased messages a sender number-->
@@ -58,5 +60,6 @@
         <item>SPEED (without SI, GW 2|10)</item>
         <item>POWER (with SI, GW 3)</item>
         <item>TURBO (with SI, GW 4|8)</item>
+        <item>LANDLINE</item>
     </string-array>
 </resources>

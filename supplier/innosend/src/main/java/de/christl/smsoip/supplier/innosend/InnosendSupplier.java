@@ -54,6 +54,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     private static final int SPEED = 1;
     private static final int POWER = 2;
     private static final int TURBO = 3;
+    private static final int LANDLINE = 4;
 
 
     public static final String LOGIN_URL = "https://www.innosend.de/index.php?seite=login";
@@ -62,6 +63,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     public static final String GATEWAY_URL = "https://www.innosend.de/gateway/";
     public static final String ACCOUNT_SUB = "konto.php?";
     public static final String SMS_SUB = "sms.php?";
+    public static final String LANDLINE_SUB = "fest.php?";
     public static final String FREE_SUB = "free.php?app=1&was=iphone";
 
     private static final String ENCODING = "ISO-8859-1";
@@ -254,15 +256,22 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             String msg = provider.getTextByResourceId(R.string.text_multiple_receivers_not_allowed);
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(msg), receivers);
         }
+        if (sendMethod == LANDLINE && isForeign) {
+            String msg = provider.getTextByResourceId(R.string.text_landline_outside_germany);
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(msg), receivers);
+        }
         StringBuilder tmpUrl = new StringBuilder(GATEWAY_URL);
         if (sendMethod == FREE) {
             tmpUrl.append(FREE_SUB);
+        } else if (sendMethod == LANDLINE) {
+            tmpUrl.append(LANDLINE_SUB);
         } else {
             tmpUrl.append(SMS_SUB);
         }
 
         switch (sendMethod) {
             case FREE:
+            case LANDLINE:
                 break;//do nothing
             case TURBO:
                 if (isForeign) {
@@ -280,7 +289,6 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
                 break;
             case POWER:
                 tmpUrl.append("&type=3");
-
                 break;
             default:
                 return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
@@ -305,7 +313,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             tmpUrl.append("&massen=1");
         }
         try {
-            if (dateTime != null || receivers.size() > 1) {
+            if (dateTime != null || receivers.size() > 1 || sendMethod == LANDLINE) {
                 String sender = findSenderAndWriteIfAvailable();
                 if (sender.equals("")) {
                     return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
@@ -387,7 +395,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
 
     @Override
     public boolean isSendTypeTimeShiftCapable(String spinnerText) {
-        return findSendMethod(spinnerText) != FREE;
+        int sendMethod = findSendMethod(spinnerText);
+        return sendMethod != FREE && sendMethod != LANDLINE;
     }
 
     private int findSendMethod(String spinnerText) {
