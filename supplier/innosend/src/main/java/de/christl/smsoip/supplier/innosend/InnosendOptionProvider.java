@@ -24,6 +24,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.text.InputFilter;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
@@ -50,6 +53,9 @@ public class InnosendOptionProvider extends OptionProvider {
 
 
     private EditText sender;
+    private TextView header;
+    private LinearLayout wrapper;
+    private CheckBox freeInputCB;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -197,15 +203,72 @@ public class InnosendOptionProvider extends OptionProvider {
     }
 
     @Override
+
+    /**
+     *             <TextView android:id="@+id/timeShiftDescr"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:gravity="center"
+     android:layout_span="5"
+     android:textSize="18dp"
+     android:text="@string/text_sending_time"
+     />
+     */
     public void getFreeLayout(LinearLayout freeLayout) {
-        if (sender == null) {
-            sender = new EditText(freeLayout.getContext());
-        }
+        buildLayoutsContent(freeLayout.getContext());
+        freeLayout.setOrientation(LinearLayout.VERTICAL);
         if (senderVisible) {
-            sender.setText(getSenderFromOptions());
-            freeLayout.addView(sender);
+            String senderFromOptions = getSenderFromOptions();
+            if (senderFromOptions.equals("")) {
+                senderFromOptions = getTextByResourceId(R.string.text_automatic);
+            }
+            sender.setText(senderFromOptions);
+            freeLayout.addView(header);
+            wrapper.removeAllViews();
+            wrapper.addView(freeInputCB);
+            wrapper.addView(sender);
+            freeLayout.addView(wrapper);
         } else {
             sender.setText("");
+        }
+
+
+    }
+
+    private void buildLayoutsContent(Context context) {
+
+        if (sender == null) {
+            sender = new EditText(context);
+            int length = 16;
+            InputFilter maxLengthFilter = new InputFilter.LengthFilter(length);//max 16 chars allowed
+            sender.setFilters(new InputFilter[]{maxLengthFilter});
+            sender.setMinEms(length);
+            sender.setMaxEms(length);
+            sender.setEnabled(false);
+        }
+        if (header == null) {
+            header = new TextView(context);
+            header.setText(getTextByResourceId(R.string.text_sender));
+            header.setGravity(Gravity.CENTER);
+            header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        }
+        if (wrapper == null) {
+            wrapper = new LinearLayout(context);
+        }
+        if (freeInputCB == null) {
+            freeInputCB = new CheckBox(context);
+            freeInputCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        sender.setEnabled(true);
+                        sender.setText(getSenderFromOptions());
+                    } else {
+                        sender.setEnabled(false);
+                    }
+
+                }
+            });
         }
     }
 

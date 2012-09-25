@@ -48,13 +48,8 @@
     </string>
     <string name="text_landline_outside_germany">Festnetz-SMS werden nur in Deutschland unterstützt.</string>
     <string name="text_next">Nächste: %1$s</string>
-    <!--<string name="text_no_sender">Für das Senden an mehrere Empfänger oder terminierten SMS muss eine Absendernummer-->
-    <!--hinterlegt werden.\nDies kann in den Anbietereinstellungen getan werden.-->
-    <!--</string>-->
-    <!--<string name="text_sender">Absender</string>-->
-    <!--<string name="text_sender_description">Für das Senden an mehrere Empfänger oder terminierten SMS muss eine-->
-    <!--Absendernummer hinterlegt werden.-->
-    <!--</string>-->
+    <string name="text_sender">Absender</string>
+    <string name="text_automatic">Auto</string>
     <string-array name="array_spinner">
         <item>FREE (ohne AK)</item>
         <item>SPEED (ohne AK, GW 2|10)</item>
