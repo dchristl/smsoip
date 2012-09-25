@@ -244,6 +244,7 @@ fileName: strings.xml
     </string>
     <string name="text_no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
     <string name="text_free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden. Senden abgebrochen!</string>
+    <string name="text_login_error">Zugangsdaten fehlerhaft. Der Benutzername muss inkl. Domain, z.B. \'@gmx.de\' oder \'@gmx.net\' angegeben werden.</string>
 </resources>
 <!--String resources for:
 project: goodmails
@@ -449,8 +450,10 @@ fileName: strings.xml
     <string name="text_mixing_not_allowed">Das Vermischen von deutschen und ausländischen Telefonnummern wird nicht
         unterstützt.
     </string>
-    <string name="text_multiple_receivers_not_allowed">Das Senden an mehrere Empfänger außerhalb Deutschalands wird beim gewählten Sendetyp nicht unterstützt.
+    <string name="text_multiple_receivers_not_allowed">Das Senden an mehrere Empfänger außerhalb Deutschalands wird beim
+        gewählten Sendetyp nicht unterstützt.
     </string>
+    <string name="text_landline_outside_germany">Festnetz-SMS werden nur in Deutschland unterstützt.</string>
     <string name="text_next">Nächste: %1$s</string>
     <!--<string name="text_no_sender">Für das Senden an mehrere Empfänger oder terminierten SMS muss eine Absendernummer-->
     <!--hinterlegt werden.\nDies kann in den Anbietereinstellungen getan werden.-->
@@ -464,5 +467,6 @@ fileName: strings.xml
         <item>SPEED (ohne AK, GW 2|10)</item>
         <item>POWER (mit AK, GW 3)</item>
         <item>TURBO (mit AK, GW 4|8)</item>
+        <item>Festnetz</item>
     </string-array>
 </resources>

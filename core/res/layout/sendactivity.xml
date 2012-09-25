@@ -62,18 +62,19 @@
         <TableRow>
             <RelativeLayout android:layout_span="5">
                 <TextView
-                        android:id="@+id/infoTextUpper"
-                        android:layout_width="fill_parent"
+                        android:id="@+id/smssigns"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:text="@string/text_notyetrefreshed"
-                        android:visibility="invisible"
+                        android:layout_alignParentRight="true"
                         />
                 <TextView
-                        android:id="@+id/smssigns"
-                        android:layout_width="fill_parent"
+                        android:id="@+id/infoTextUpper"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="right|bottom"
+                        android:text="@string/text_notyetrefreshed"
+                        android:layout_toLeftOf="@id/smssigns"
+                        android:layout_alignParentLeft="true"
+                        android:visibility="invisible"
                         />
             </RelativeLayout>
         </TableRow>
@@ -169,6 +170,13 @@
                         android:layout_toRightOf="@id/clearButton"
                         >
                 </ImageButton>
+                <ImageButton
+                        android:id="@+id/showInfoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_info_details"
+                        android:layout_alignParentRight="true"
+                        />
                 <TextView
                         android:id="@+id/infoText"
                         android:layout_width="wrap_content"
@@ -176,16 +184,9 @@
                         android:text="@string/text_notyetrefreshed"
                         android:layout_toRightOf="@id/refreshButton"
                         android:layout_centerInParent="true"
+                        android:layout_toLeftOf="@id/showInfoButton"
                         >
                 </TextView>
-                <ImageButton
-                        android:id="@+id/showInfoButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_menu_info_details"
-                        android:layout_alignParentRight="true"
-                        android:visibility="gone"
-                        />
             </RelativeLayout>
         </TableRow>
         <TableRow android:id="@+id/tblSendingTimeDescr">

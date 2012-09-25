@@ -80,7 +80,9 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
 
-        return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+        smsActionResult.setRetryMakesSense(false);
+        return smsActionResult;
     }
 
     private String getURLStringWithUserNameAndPassword(String userName, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException {

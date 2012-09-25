@@ -21,12 +21,11 @@ package de.christl.smsoip.supplier.innosend;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -44,10 +43,13 @@ public class InnosendOptionProvider extends OptionProvider {
     private int messageLength = 160;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private static final String SENDER_INPUT = "sender.input";
     private int maxReceiverCount = 1;
     private int maxMessageCount = 1;
+    private boolean senderVisible = false;
 
-    private boolean accountChanged = false;
+
+    private EditText sender;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -64,25 +66,38 @@ public class InnosendOptionProvider extends OptionProvider {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
-                    case 0:
+                    case 0:  //FREE
                         maxReceiverCount = 1;
                         maxMessageCount = 1;
                         messageLength = 146;
+                        senderVisible = false;
+                        break;
+                    case 1: //SPEED
+                        senderVisible = false;
+                        maxMessageCount = 1;
+                        messageLength = 160;
+                        maxReceiverCount = 500;
+                        break;
+                    case 2:  //POWER
+                        senderVisible = true;
+                        maxMessageCount = 1;
+                        messageLength = 160;
+                        maxReceiverCount = 500;
                         break;
                     case 3:   //TURBO
                         messageLength = 100;       //just for message length filter (will be calculated for own)
                         maxReceiverCount = 500;
                         maxMessageCount = 10;
+                        senderVisible = true;
                         break;
                     case 4: //LANDLINE
                         maxMessageCount = 1;
                         messageLength = 160;
                         maxReceiverCount = 1;
+                        senderVisible = true;
                         break;
                     default: //OTHER
-                        maxMessageCount = 1;
-                        messageLength = 160;
-                        maxReceiverCount = 500;
+
                         break;
 
                 }
@@ -138,14 +153,6 @@ public class InnosendOptionProvider extends OptionProvider {
     }
 
 
-    public boolean isAccountChanged() {
-        return accountChanged;
-    }
-
-    public void setAccountChanged(boolean accountChanged) {
-        this.accountChanged = accountChanged;
-    }
-
     @Override
     public int getLengthDependentSMSCount(int textLength) {
         if (textLength < 161) {
@@ -157,13 +164,17 @@ public class InnosendOptionProvider extends OptionProvider {
         }
     }
 
-    @Override
-    public void setCurrentAccountId(Integer currentAccountId) {
-        super.setCurrentAccountId(currentAccountId);
-        accountChanged = true;
+    public String getSenderFromFieldOrOptions() {
+        String out = "";
+        out = sender.getText().toString();
+        if (out == null || out.equals("")) {
+            out = getSenderFromOptions();
+        }
+        return out;
+
     }
 
-    public String getSender() {
+    private String getSenderFromOptions() {
         return getSettings().getString(SENDER_PREFIX + getUserName(), "");
     }
 
@@ -183,5 +194,29 @@ public class InnosendOptionProvider extends OptionProvider {
             edit.remove(SENDER_PREFIX + userName);
             edit.commit();
         }
+    }
+
+    @Override
+    public void getFreeLayout(LinearLayout freeLayout) {
+        if (sender == null) {
+            sender = new EditText(freeLayout.getContext());
+        }
+        if (senderVisible) {
+            sender.setText(getSenderFromOptions());
+            freeLayout.addView(sender);
+        } else {
+            sender.setText("");
+        }
+    }
+
+    @Override
+    public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
+        sender.setText(savedInstanceState.getString(SENDER_INPUT, getSenderFromOptions()));
+    }
+
+
+    @Override
+    public void onActivityPaused(Bundle outState) {
+        outState.putString(SENDER_INPUT, sender.getText().toString());
     }
 }

@@ -18,7 +18,6 @@
 
 package de.christl.smsoip.supplier.innosend;
 
-import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResultList;
@@ -36,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,118 +74,88 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         return fireTimeShiftSMS(smsText, receivers, spinnerText, null);
     }
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) {
+    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         if (userName == null || password == null) {
             leaseTime = null;
             phpsessid = null;
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
-        String tmpUrl;
-        try {
-            tmpUrl = GATEWAY_URL + ACCOUNT_SUB + "id=" + URLEncoder.encode(userName, ENCODING) + "&pw=" + URLEncoder.encode(password, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            return SMSActionResult.UNKNOWN_ERROR();
-        }
+        String tmpUrl = GATEWAY_URL + ACCOUNT_SUB + "id=" + URLEncoder.encode(userName, ENCODING) + "&pw=" + URLEncoder.encode(password, ENCODING);
 
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
-        try {
-            HttpURLConnection httpURLConnection = factory.create();
-            InputStream inputStream = httpURLConnection.getInputStream();
+        HttpURLConnection httpURLConnection = factory.create();
+        InputStream inputStream = httpURLConnection.getInputStream();
 
-            String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
-            if (returnValue.contains(",")) { //its floating point number so credits will be replied
-                return SMSActionResult.LOGIN_SUCCESSFUL();
-            }
-            leaseTime = null;
-            phpsessid = null;
-            //no floating point so check for error code
-            int returnInt = returnValue.equals("") ? 0 : Integer.parseInt(returnValue);
-            return getErrorMessageByResult(returnInt);
-        } catch (SocketTimeoutException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.NETWORK_ERROR();
-        } catch (NumberFormatException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+        String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
+        if (returnValue.contains(",")) { //its floating point number so credits will be replied
+            return SMSActionResult.LOGIN_SUCCESSFUL();
         }
+        leaseTime = null;
+        phpsessid = null;
+        //no floating point so check for error code
+        int returnInt = returnValue.equals("") ? 0 : Integer.parseInt(returnValue);
+        return getErrorMessageByResult(returnInt);
 
     }
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
         return refreshInformations();
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
         return refreshInformations();
     }
 
-    private synchronized SMSActionResult refreshInformations() {
+    private synchronized SMSActionResult refreshInformations() throws IOException {
         String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
-        try {
-            SMSActionResult result = refreshSession();
-            if (!result.isSuccess()) {
-                return result;
-            }
+        SMSActionResult result = refreshSession();
+        if (!result.isSuccess()) {
+            return result;
+        }
 
-            UrlConnectionFactory infoFactory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
-            List<String> cookies = new ArrayList<String>();
-            cookies.add(phpsessid);
-            infoFactory.setCookies(cookies);
-            HttpURLConnection httpURLConnection = infoFactory.create();
-            Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "");
-            Elements select = parse.select("div.modulecont div div p b");
-            if (select.size() == 0) {
-                return SMSActionResult.UNKNOWN_ERROR();
-            }
-            String freeSMS = "";
-            for (Element element : select) {
-                freeSMS = element.text();
-                if (freeSMS.equals("SMS")) {
-                    freeSMS = "0 " + freeSMS;
-                }
-            }
-            Elements strongElements = parse.select("div.modulecont div div p strong");
-            for (Element strongElement : strongElements) {
-                String nextText = strongElement.text();
-                if (nextText.contains(":") && !nextText.equals(":")) {
-                    freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.text_next), nextText);
-                    break;
-                }
-            }
-            Elements balances = parse.select("ul#mainlevel-account li");
-            String balance = "";
-            for (Element element : balances) {
-                if (element.text().contains("Guthaben:")) {
-                    balance = element.text().replaceAll("Guthaben:", "").replaceAll("[^\\p{Print}]", "");
-                    balance += " €";
-                    break;
-                }
-            }
-
-            return SMSActionResult.NO_ERROR(String.format(tmpText, freeSMS, balance));
-        } catch (SocketTimeoutException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.UNKNOWN_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.NETWORK_ERROR();
-        } catch (NumberFormatException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
+        UrlConnectionFactory infoFactory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
+        List<String> cookies = new ArrayList<String>();
+        cookies.add(phpsessid);
+        infoFactory.setCookies(cookies);
+        HttpURLConnection httpURLConnection = infoFactory.create();
+        Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "");
+        Elements select = parse.select("div.modulecont div div p b");
+        if (select.size() == 0) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
+        String freeSMS = "";
+        for (Element element : select) {
+            freeSMS = element.text();
+            if (freeSMS.equals("SMS")) {
+                freeSMS = "0 " + freeSMS;
+            }
+        }
+        Elements strongElements = parse.select("div.modulecont div div p strong");
+        for (Element strongElement : strongElements) {
+            String nextText = strongElement.text();
+            if (nextText.contains(":") && !nextText.equals(":")) {
+                freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.text_next), nextText);
+                break;
+            }
+        }
+        Elements balances = parse.select("ul#mainlevel-account li");
+        String balance = "";
+        for (Element element : balances) {
+            if (element.text().contains("Guthaben:")) {
+                balance = element.text().replaceAll("Guthaben:", "").replaceAll("[^\\p{Print}]", "");
+                balance += " €";
+                break;
+            }
+        }
+
+        return SMSActionResult.NO_ERROR(String.format(tmpText, freeSMS, balance));
 
     }
 
@@ -245,7 +213,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
 
 
     @Override
-    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
         int sendMethod = findSendMethod(spinnerText);
         Boolean isForeign = isForeign(receivers);
         if (isForeign == null) {
@@ -312,33 +280,28 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         if (receivers.size() > 1) {
             tmpUrl.append("&massen=1");
         }
-        try {
-            if (dateTime != null || receivers.size() > 1 || sendMethod == LANDLINE) {
-                String sender = findSenderAndWriteIfAvailable();
+        if (dateTime != null || receivers.size() > 1 || sendMethod == LANDLINE) {
+            String sender;
+            if (sendMethod == SPEED) { //nobody cares about, but have to be set here
+                sender = "SMSoIP";
+            } else {
+                sender = findSenderAndWriteIfAvailable();
                 if (sender.equals("")) {
                     return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
                 }
-                tmpUrl.append("&absender=").append(URLEncoder.encode(sender, ENCODING));
             }
-            String encodedText = URLEncoder.encode(smsText, ENCODING);
-            if (encodedText.length() > 160) {
-                tmpUrl.append("&maxi=1");
-            }
-            tmpUrl.append("&").append(getIdPwString()).append("&text=").append(encodedText).append("&empfaenger=").append(receiverListBuilder);
-            UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString(), UrlConnectionFactory.METHOD_GET);
-            HttpURLConnection httpURLConnection = factory.create();
-            String returnValue = UrlConnectionFactory.inputStream2DebugString(httpURLConnection.getInputStream(), ENCODING);
-            int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms
-            return FireSMSResultList.getAllInOneResult(getErrorMessageByResult(returnInt), receivers);
-        } catch (SocketTimeoutException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receivers);
-        } catch (UnsupportedEncodingException e) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receivers);
+            tmpUrl.append("&absender=").append(URLEncoder.encode(sender, ENCODING));
         }
+        String encodedText = URLEncoder.encode(smsText, ENCODING);
+        if (encodedText.length() > 160) {
+            tmpUrl.append("&maxi=1");
+        }
+        tmpUrl.append("&").append(getIdPwString()).append("&text=").append(encodedText).append("&empfaenger=").append(receiverListBuilder);
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString(), UrlConnectionFactory.METHOD_GET);
+        HttpURLConnection httpURLConnection = factory.create();
+        String returnValue = UrlConnectionFactory.inputStream2DebugString(httpURLConnection.getInputStream(), ENCODING);
+        int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms
+        return FireSMSResultList.getAllInOneResult(getErrorMessageByResult(returnInt), receivers);
     }
 
     private Boolean isForeign(List<Receiver> receivers) {
@@ -363,7 +326,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
 
     private String findSenderAndWriteIfAvailable() throws IOException {
         //first check in the options if sender is available
-        String sender = provider.getSender();
+        String sender = provider.getSenderFromFieldOrOptions();
         if (sender.equals("")) {
             refreshSession();
             UrlConnectionFactory infoFactory = new UrlConnectionFactory(GET_MOBILENUMBER_URL, UrlConnectionFactory.METHOD_GET);

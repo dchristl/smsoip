@@ -416,7 +416,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return SMSActionResult.NETWORK_ERROR();
         }
-        return SMSActionResult.LOGIN_FAILED_ERROR();
+        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_error));
+        smsActionResult.setRetryMakesSense(false);
+        return smsActionResult;
     }
 
     @Override

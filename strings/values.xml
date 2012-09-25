@@ -232,6 +232,7 @@ fileName: strings.xml
     <string name="text_check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
     <string name="text_no_free_messages_available">Not enough free messages available.</string>
     <string name="text_free_messages_could_not_resolved">Count of free messages couldn\'t be obtained. Sending canceled!</string>
+    <string name="text_login_error">Login failed. Please check if your username includes the domain, i.e. \'@gmx.de\' or \'@gmx.net\'.</string>
 </resources>
 <!--String resources for:
 project: goodmails
@@ -433,8 +434,10 @@ fileName: strings.xml
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
     </string>
-    <string name="text_multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not allowed for this sending type.
+    <string name="text_multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not
+        allowed for this sending type.
     </string>
+    <string name="text_landline_outside_germany">Landline messages are not allowed outside Germany.</string>
     <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
     <string name="text_next">Next: %1$s</string>
     <!--<string name="text_no_sender">For sending to multiple receivers or time-phased messages a sender number-->
@@ -450,6 +453,7 @@ fileName: strings.xml
         <item>SPEED (without SI, GW 2|10)</item>
         <item>POWER (with SI, GW 3)</item>
         <item>TURBO (with SI, GW 4|8)</item>
+        <item>LANDLINE</item>
     </string-array>
 </resources>
 

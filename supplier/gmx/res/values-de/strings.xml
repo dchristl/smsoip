@@ -24,4 +24,5 @@
     </string>
     <string name="text_no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
     <string name="text_free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden. Senden abgebrochen!</string>
+    <string name="text_login_error">Zugangsdaten fehlerhaft. Der Benutzername muss inkl. Domain, z.B. \'@gmx.de\' oder \'@gmx.net\' angegeben werden.</string>
 </resources>
