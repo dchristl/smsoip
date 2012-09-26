@@ -440,13 +440,8 @@ fileName: strings.xml
     <string name="text_landline_outside_germany">Landline messages are not allowed outside Germany.</string>
     <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
     <string name="text_next">Next: %1$s</string>
-    <!--<string name="text_no_sender">For sending to multiple receivers or time-phased messages a sender number-->
-    <!--have to be maintained.\nThis can be done in the provider settings.-->
-    <!--</string>-->
-    <!--<string name="text_sender">Sender</string>-->
-    <!--<string name="text_sender_description">For sending to multiple receivers or time-phased messages a sender number-->
-    <!--have to be maintained.-->
-    <!--</string>-->
+    <string name="text_sender">Sender</string>
+    <string name="text_automatic">Auto</string>
 
     <string-array name="array_spinner">
         <item>FREE (without SI)</item>

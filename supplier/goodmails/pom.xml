@@ -31,6 +31,6 @@
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>goodmails</artifactId>
     <packaging>apk</packaging>
-    <version>1.2.7</version>
+    <version>1.2.8</version>
 
 </project>
