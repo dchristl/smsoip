@@ -75,7 +75,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
 
-    public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject) {
+    public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject) throws IOException {
         if (isLoginNeeded()) {
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
@@ -155,41 +155,29 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         parameterMap.put("sendMessage", "1");
         HttpURLConnection con;
 
-        PrintWriter writer = null;
-        try {
-            String tmpUrl = String.format(TARGET_URL, sessionId);
-            con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setDoOutput(true);
-            con.setReadTimeout(TIMEOUT);
-            con.setConnectTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
-            String boundary = "--" + Long.toHexString(System.currentTimeMillis());
-            con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
-            OutputStream output = con.getOutputStream();
-            writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
-            for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
-                writer.append("--").append(boundary).append(CRLF);
-                writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
-                writer.append(CRLF);
-                writer.append(stringStringEntry.getValue()).append(CRLF).flush();
+        PrintWriter writer;
+        String tmpUrl = String.format(TARGET_URL, sessionId);
+        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
+        con.setDoOutput(true);
+        con.setReadTimeout(TIMEOUT);
+        con.setConnectTimeout(TIMEOUT);
+        con.setRequestProperty("User-Agent", TARGET_AGENT);
+        con.setRequestMethod("POST");
+        String boundary = "--" + Long.toHexString(System.currentTimeMillis());
+        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
+        OutputStream output = con.getOutputStream();
+        writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
+        for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
+            writer.append("--").append(boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
+            writer.append(CRLF);
+            writer.append(stringStringEntry.getValue()).append(CRLF).flush();
 
-            }
-            writer.append("--").append(boundary).append("--").append(CRLF).flush();
-            return FireSMSResultList.getAllInOneResult(processReturn(con.getInputStream()), receivers);
-
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receivers);
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receivers);
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
+        writer.append("--").append(boundary).append("--").append(CRLF).flush();
+        return FireSMSResultList.getAllInOneResult(processReturn(con.getInputStream()), receivers);
+
     }
 
     private SMSActionResult sendSaveRequest(Map<String, String> parameterMap) {
@@ -259,7 +247,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
         SMSActionResult result = refreshInformations(false);
         if (result.isSuccess() && result.getMessage().equals("")) {              //informations are not available at first try so do it twice
             result = refreshInformations(false);
@@ -269,26 +257,21 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
         return refreshInformations(true);
     }
 
-    private SMSActionResult refreshInformations(boolean noLoginBefore) {
+    private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
                 return result;
             }
         }
-        String infoText = "";
         if (lastParsedDocument == null) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
-        try {
-            infoText = findInfoText();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-        }
+        String infoText = findInfoText();
         return SMSActionResult.NO_ERROR(infoText);
     }
 
@@ -356,65 +339,53 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) {
+    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         String tmpUrl;
         leaseTime = null;
-        try {
-            tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            return SMSActionResult.UNKNOWN_ERROR();
-        }
+        tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
         sendNowRadioButtonId = null;
         sendLaterRadioButtonId = null;
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
         sessionId = null;
         HttpURLConnection con;
         String inputStream;
-        try {
-            con = factory.create();
+        con = factory.create();
 
-            //no network
-            Map<String, List<String>> headerFields = con.getHeaderFields();
-            if (headerFields == null) {
-                return SMSActionResult.NETWORK_ERROR();
-            }
-            InputStream tmpStream = con.getInputStream();
-            if (tmpStream == null) {
-                return SMSActionResult.NETWORK_ERROR();
-            }
-            inputStream = UrlConnectionFactory.inputStream2DebugString(tmpStream);
-            Document document = Jsoup.parse(inputStream);
-            Elements scripts = document.select("script");
-            for (Element script : scripts) {
-                String data = script.data();
-                if (data.contains(SESSION_ID_URL_STRING)) {
-                    sessionId = data.replaceAll("\\s", "");
-                    sessionId = sessionId.replaceAll(".*jsessionid=", "");
-                    sessionId = sessionId.replaceAll("\\?.*", "");
-                    break;
-                }
-            }
-
-            Elements radioButtons = document.select("input[id^=SMMS_tab_content_radio]");
-            for (Element radioButton : radioButtons) {
-                if (radioButton.hasAttr("checked")) {
-                    sendNowRadioButtonId = radioButton.attr("value");
-                } else {
-                    sendLaterRadioButtonId = radioButton.attr("value");
-                }
-            }
-            if (!(sessionId == null || sessionId.length() == 0)) {
-                lastParsedDocument = document;
-                leaseTime = System.currentTimeMillis();
-                provider.setAccountChanged(false);
-                return SMSActionResult.LOGIN_SUCCESSFUL();
-            }
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+        //no network
+        Map<String, List<String>> headerFields = con.getHeaderFields();
+        if (headerFields == null) {
             return SMSActionResult.NETWORK_ERROR();
+        }
+        InputStream tmpStream = con.getInputStream();
+        if (tmpStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        inputStream = UrlConnectionFactory.inputStream2DebugString(tmpStream);
+        Document document = Jsoup.parse(inputStream);
+        Elements scripts = document.select("script");
+        for (Element script : scripts) {
+            String data = script.data();
+            if (data.contains(SESSION_ID_URL_STRING)) {
+                sessionId = data.replaceAll("\\s", "");
+                sessionId = sessionId.replaceAll(".*jsessionid=", "");
+                sessionId = sessionId.replaceAll("\\?.*", "");
+                break;
+            }
+        }
+
+        Elements radioButtons = document.select("input[id^=SMMS_tab_content_radio]");
+        for (Element radioButton : radioButtons) {
+            if (radioButton.hasAttr("checked")) {
+                sendNowRadioButtonId = radioButton.attr("value");
+            } else {
+                sendLaterRadioButtonId = radioButton.attr("value");
+            }
+        }
+        if (!(sessionId == null || sessionId.length() == 0)) {
+            lastParsedDocument = document;
+            leaseTime = System.currentTimeMillis();
+            provider.setAccountChanged(false);
+            return SMSActionResult.LOGIN_SUCCESSFUL();
         }
         SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_error));
         smsActionResult.setRetryMakesSense(false);
@@ -422,12 +393,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
         return sendSMS(smsText, receivers, dateTime);
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         return sendSMS(smsText, receivers, null);
     }
 

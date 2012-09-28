@@ -29,6 +29,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -49,37 +50,26 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) {
+    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         if (userName == null || password == null) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String tmpUrl;
         try {
             tmpUrl = getURLStringWithUserNameAndPassword(userName, password);
-        } catch (UnsupportedEncodingException e) {
-            return SMSActionResult.UNKNOWN_ERROR();
         } catch (NoSuchAlgorithmException e) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
 
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
-        try {
-            HttpURLConnection httpURLConnection = factory.create();
-            InputStream inputStream = httpURLConnection.getInputStream();
+        HttpURLConnection httpURLConnection = factory.create();
+        InputStream inputStream = httpURLConnection.getInputStream();
 
-            String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
-            int returnInt = Integer.parseInt(returnValue);
-            if (returnInt == 10 || returnInt == 60) { //expect wrong receiver number, is better than check for credits
-                return SMSActionResult.LOGIN_SUCCESSFUL();
-            }
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.NETWORK_ERROR();
-        } catch (NumberFormatException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+        String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
+        int returnInt = Integer.parseInt(returnValue);
+        if (returnInt == 10 || returnInt == 60) { //expect wrong receiver number, is better than check for credits
+            return SMSActionResult.LOGIN_SUCCESSFUL();
         }
-
         SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
         smsActionResult.setRetryMakesSense(false);
         return smsActionResult;
@@ -91,7 +81,7 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
@@ -105,8 +95,6 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             if (sendMethod == WITH_SI) {
                 tmpUrl += "&from=1";
             }
-        } catch (UnsupportedEncodingException e) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         } catch (NoSuchAlgorithmException e) {
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         }
@@ -116,6 +104,9 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             try {
                 InputStream inputStream = factory.create().getInputStream();
                 out.add(new FireSMSResult(receiver, processFireSMSReturn(inputStream)));
+            } catch (SocketTimeoutException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "", e);
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
@@ -195,11 +186,11 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
         return refreshInformations(true);
     }
 
-    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) {
+    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) throws IOException {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
@@ -215,21 +206,15 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             int returnInt = Integer.parseInt(returnValue);
             //only valid value here will be 50 (login failed, but will not reached here if creentials errous)
             return SMSActionResult.NO_ERROR(String.format(tmpText, returnInt));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.UNKNOWN_ERROR();
         } catch (NoSuchAlgorithmException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.UNKNOWN_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.NETWORK_ERROR();
         }
 
     }
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
         return refreshInformations(false);
     }
 

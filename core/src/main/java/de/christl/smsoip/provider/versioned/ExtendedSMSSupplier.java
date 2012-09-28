@@ -40,16 +40,6 @@ public interface ExtendedSMSSupplier {
     final int TIMEOUT = 10000;
 
     /**
-     * will be called on send SMS button
-     *
-     * @param smsText     - the message text
-     * @param receivers   - indexed map of all receivers
-     * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on ic_menu_success or any other otherwise
-     */
-
-    FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException;
-
-    /**
      * will be called by checking the login in the option dialog
      *
      * @param userName - the username
@@ -77,6 +67,16 @@ public interface ExtendedSMSSupplier {
      *         any other error if not successful
      */
     SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException;
+
+    /**
+     * will be called on send SMS button
+     *
+     * @param smsText     - the message text
+     * @param receivers   - indexed map of all receivers
+     * @param spinnerText - the text of the spinner or null if not visible  @return Result.NO_ERRORS on ic_menu_success or any other otherwise
+     */
+
+    FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException;
 
     /**
      * the corresponding provider of this supplier

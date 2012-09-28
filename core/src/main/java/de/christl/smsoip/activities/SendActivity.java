@@ -69,6 +69,7 @@ import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
+import org.acra.ACRA;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
@@ -873,7 +874,11 @@ public class SendActivity extends AllActivity {
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
+            } catch (Exception e) {                                                      //for insurance
+                ACRA.getErrorReporter().handleSilentException(e);
+                out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
             }
+
         }
 
         return out;

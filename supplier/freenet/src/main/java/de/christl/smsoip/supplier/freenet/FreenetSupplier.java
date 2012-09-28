@@ -30,10 +30,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,16 +57,16 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
         return refreshInformations(false);
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
         return refreshInformations(true);
     }
 
-    private SMSActionResult refreshInformations(boolean noLoginBefore) {
+    private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
@@ -78,25 +75,17 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         String tmpUrl = REFRESH_URL;
         HttpURLConnection con;
-        try {
-            con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setConnectTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("GET");
-            StringBuilder cookieBuilder = new StringBuilder();
-            for (String sessionCookie : sessionCookies) {
-                cookieBuilder.append(sessionCookie).append(";");
-            }
-            con.setRequestProperty("Cookie", cookieBuilder.toString());
-            return processRefreshReturn(con.getInputStream());
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return SMSActionResult.NETWORK_ERROR();
+        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
+        con.setReadTimeout(TIMEOUT);
+        con.setConnectTimeout(TIMEOUT);
+        con.setRequestProperty("User-Agent", TARGET_AGENT);
+        con.setRequestMethod("GET");
+        StringBuilder cookieBuilder = new StringBuilder();
+        for (String sessionCookie : sessionCookies) {
+            cookieBuilder.append(sessionCookie).append(";");
         }
+        con.setRequestProperty("Cookie", cookieBuilder.toString());
+        return processRefreshReturn(con.getInputStream());
     }
 
     private SMSActionResult processRefreshReturn(InputStream is) throws IOException {
@@ -157,101 +146,83 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) {
+    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         sessionCookies = new ArrayList<String>();
         String tmpUrl;
-        try {
-            tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.UNKNOWN_ERROR();
-        }
+        tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
         HttpURLConnection con;
-        try {
-            //first get the login cookie
-            con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setConnectTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
-            Map<String, List<String>> headerFields = con.getHeaderFields();
-            if (headerFields == null) {
-                return SMSActionResult.NETWORK_ERROR();
-            }
-            String sidCookie = null;
-            Outer:
-            for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
-                String cookieList = stringListEntry.getKey();
-                if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
-                    for (String cookie : stringListEntry.getValue()) {
-                        if (cookie != null && cookie.startsWith("SID")) {
-                            sessionCookies.add(cookie);
-                            sidCookie = cookie;
-                            break Outer;
-                        }
-                    }
-                }
-            }
-            if (sidCookie == null) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            //now get the freenetMail4Prev cookie, that is also needed
-            con = (HttpURLConnection) new URL(HOME_URL).openConnection();
-            con.setReadTimeout(TIMEOUT);
-            con.setConnectTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Cookie", sidCookie);
-            headerFields = con.getHeaderFields();
-            if (headerFields == null) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            Outer:
-            for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
-                String cookieList = stringListEntry.getKey();
-                if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
-                    for (String cookie : stringListEntry.getValue()) {
-                        if (cookie != null && cookie.startsWith("freenetMail4Prev")) {
-                            sessionCookies.add(cookie);
-                            break Outer;
-                        }
-                    }
-                }
-            }
-            if (sessionCookies.size() != 2) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            return SMSActionResult.LOGIN_SUCCESSFUL();
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+        //first get the login cookie
+        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
+        con.setReadTimeout(TIMEOUT);
+        con.setConnectTimeout(TIMEOUT);
+        con.setRequestProperty("User-Agent", TARGET_AGENT);
+        con.setRequestMethod("POST");
+        Map<String, List<String>> headerFields = con.getHeaderFields();
+        if (headerFields == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
+        String sidCookie = null;
+        Outer:
+        for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
+            String cookieList = stringListEntry.getKey();
+            if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
+                for (String cookie : stringListEntry.getValue()) {
+                    if (cookie != null && cookie.startsWith("SID")) {
+                        sessionCookies.add(cookie);
+                        sidCookie = cookie;
+                        break Outer;
+                    }
+                }
+            }
+        }
+        if (sidCookie == null) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        //now get the freenetMail4Prev cookie, that is also needed
+        con = (HttpURLConnection) new URL(HOME_URL).openConnection();
+        con.setReadTimeout(TIMEOUT);
+        con.setConnectTimeout(TIMEOUT);
+        con.setRequestProperty("User-Agent", TARGET_AGENT);
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Cookie", sidCookie);
+        headerFields = con.getHeaderFields();
+        if (headerFields == null) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        Outer:
+        for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
+            String cookieList = stringListEntry.getKey();
+            if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
+                for (String cookie : stringListEntry.getValue()) {
+                    if (cookie != null && cookie.startsWith("freenetMail4Prev")) {
+                        sessionCookies.add(cookie);
+                        break Outer;
+                    }
+                }
+            }
+        }
+        if (sessionCookies.size() != 2) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        return SMSActionResult.LOGIN_SUCCESSFUL();
 
 
     }
 
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         return sendSMS(smsText, receivers, null);
     }
 
     //    myAction=send&from=&senderName=service%40freenet.de&defaultEmailSender=&to=01745686886&smsText=Test+zeitversetzt&later=1&day=24&month=07&year=2012&hours=22&minutes=09&smsToSent=1
-    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTime) {
+    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTime) throws IOException {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
-        String message;
-        try {
-            message = URLEncoder.encode(smsText, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(e.getMessage()), receivers);
-        }
+        String message = URLEncoder.encode(smsText, ENCODING);
+
         FireSMSResultList out = new FireSMSResultList(receivers.size());
         //currently only free sms supported, for paid accounts change will be here
         for (Receiver receiver : receivers) {
@@ -287,7 +258,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
         return sendSMS(smsText, receivers, dateTime);
     }
 
