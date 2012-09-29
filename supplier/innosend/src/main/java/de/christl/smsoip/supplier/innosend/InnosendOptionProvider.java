@@ -41,7 +41,9 @@ import java.util.List;
 public class InnosendOptionProvider extends OptionProvider {
 
     private static final String PROVIDER_NAME = "Innosend";
-    public static final String SENDER_PREFIX = "sender_";
+    public static final String SENDER_RESOLVED_PREFIX = "sender_";
+    private static final String SENDER_FREE_LAST_INPUT_PREFIX = "sender_free_last_input";
+
 
     private int messageLength = 160;
 
@@ -56,6 +58,8 @@ public class InnosendOptionProvider extends OptionProvider {
     private TextView header;
     private LinearLayout wrapper;
     private CheckBox freeInputCB;
+    private String textToSet;
+    private TextView senderDisabledText;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -171,24 +175,23 @@ public class InnosendOptionProvider extends OptionProvider {
     }
 
     public String getSenderFromFieldOrOptions() {
-        String out = "";
-        out = sender.getText().toString();
-        if (out == null || out.equals("")) {
-            out = getSenderFromOptions();
+        String out = getDefaultSender();
+        if (freeInputCB.isChecked()) {
+            out = sender.getText().toString();
         }
         return out;
 
     }
 
-    private String getSenderFromOptions() {
-        return getSettings().getString(SENDER_PREFIX + getUserName(), "");
+    private String getDefaultSender() {
+        return getSettings().getString(SENDER_RESOLVED_PREFIX + getUserName(), null);
     }
 
-    public void writeSender(String number) {
+    public void writeDefaultSender(String number) {
         String userName = getUserName();
         if (number != null && !number.equals("") && userName != null && !userName.equals("")) {
             SharedPreferences.Editor edit = getSettings().edit();
-            edit.putString(SENDER_PREFIX + userName, number);
+            edit.putString(SENDER_RESOLVED_PREFIX + userName, number);
             edit.commit();
         }
     }
@@ -197,7 +200,7 @@ public class InnosendOptionProvider extends OptionProvider {
         String userName = getUserName();
         if (userName != null && !userName.equals("")) {
             SharedPreferences.Editor edit = getSettings().edit();
-            edit.remove(SENDER_PREFIX + userName);
+            edit.remove(SENDER_RESOLVED_PREFIX + userName);
             edit.commit();
         }
     }
@@ -218,17 +221,22 @@ public class InnosendOptionProvider extends OptionProvider {
         buildLayoutsContent(freeLayout.getContext());
         freeLayout.setOrientation(LinearLayout.VERTICAL);
         if (senderVisible) {
-            String senderFromOptions = getSenderFromOptions();
-            if (senderFromOptions.equals("")) {
+            String senderFromOptions = getDefaultSender();
+            if (senderFromOptions == null) {
                 senderFromOptions = getTextByResourceId(R.string.text_automatic);
             }
-            sender.setText(senderFromOptions);
+            senderDisabledText.setText(senderFromOptions);
+            sender.setVisibility(View.GONE);
             freeLayout.addView(header);
             wrapper.removeAllViews();
+            freeInputCB.setChecked(false); //TODO resolve later by bundle
             wrapper.addView(freeInputCB);
             wrapper.addView(sender);
+            wrapper.addView(senderDisabledText);
             freeLayout.addView(wrapper);
-        } else {
+        } else {                          //revert everything
+            freeInputCB.setChecked(false);
+            senderDisabledText.setText("");
             sender.setText("");
         }
 
@@ -244,7 +252,11 @@ public class InnosendOptionProvider extends OptionProvider {
             sender.setFilters(new InputFilter[]{maxLengthFilter});
             sender.setMinEms(length);
             sender.setMaxEms(length);
-            sender.setEnabled(false);
+        }
+        if (senderDisabledText == null) {
+            senderDisabledText = new TextView(context);
+            senderDisabledText.setGravity(Gravity.CENTER);
+            senderDisabledText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         }
         if (header == null) {
             header = new TextView(context);
@@ -261,25 +273,55 @@ public class InnosendOptionProvider extends OptionProvider {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        sender.setEnabled(true);
+                        sender.setVisibility(View.VISIBLE);
+                        senderDisabledText.setVisibility(View.GONE);
                         sender.setText(getSenderFromOptions());
                     } else {
-                        sender.setEnabled(false);
+                        sender.setVisibility(View.GONE);
+                        senderDisabledText.setVisibility(View.VISIBLE);
                     }
 
                 }
+
+
             });
         }
     }
 
+    private String getSenderFromOptions() {
+        String out = getSettings().getString(SENDER_FREE_LAST_INPUT_PREFIX + getUserName(), null);
+        if (out == null) {
+            out = getDefaultSender();
+            if (out == null) {
+                out = "";
+            }
+        }
+        return out;
+    }
+
     @Override
     public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
-        sender.setText(savedInstanceState.getString(SENDER_INPUT, getSenderFromOptions()));
+        textToSet = savedInstanceState.getString(SENDER_INPUT);
+        if (textToSet == null) {
+            textToSet = getDefaultSender();
+        }
     }
 
 
     @Override
     public void onActivityPaused(Bundle outState) {
         outState.putString(SENDER_INPUT, sender.getText().toString());
+    }
+
+    public void writeFreeInputSender() {
+        if (freeInputCB != null && freeInputCB.isChecked()) {
+            String toWrite = sender.getText().toString();
+            String userName = getUserName();
+            if (toWrite != null && !toWrite.equals("") && userName != null && !userName.equals("")) {
+                SharedPreferences.Editor edit = getSettings().edit();
+                edit.putString(SENDER_FREE_LAST_INPUT_PREFIX + userName, toWrite);
+                edit.commit();
+            }
+        }
     }
 }

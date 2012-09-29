@@ -114,11 +114,11 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     }
 
     private synchronized SMSActionResult refreshInformations() throws IOException {
-        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
         SMSActionResult result = refreshSession();
         if (!result.isSuccess()) {
             return result;
         }
+        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
 
         UrlConnectionFactory infoFactory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
         List<String> cookies = new ArrayList<String>();
@@ -214,6 +214,10 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
+        SMSActionResult result = refreshSession();
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
+        }
         int sendMethod = findSendMethod(spinnerText);
         Boolean isForeign = isForeign(receivers);
         if (isForeign == null) {
@@ -280,7 +284,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         if (receivers.size() > 1) {
             tmpUrl.append("&massen=1");
         }
-        if (dateTime != null || receivers.size() > 1 || sendMethod == LANDLINE) {
+        if (sendMethod != FREE) {
             String sender;
             if (sendMethod == SPEED) { //nobody cares about, but have to be set here
                 sender = "SMSoIP";
@@ -301,6 +305,9 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         HttpURLConnection httpURLConnection = factory.create();
         String returnValue = UrlConnectionFactory.inputStream2DebugString(httpURLConnection.getInputStream(), ENCODING);
         int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms
+        if (returnInt == 100 || returnInt == 101) {           //write the last input as suggest for the sending
+            provider.writeFreeInputSender();
+        }
         return FireSMSResultList.getAllInOneResult(getErrorMessageByResult(returnInt), receivers);
     }
 
@@ -327,7 +334,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     private String findSenderAndWriteIfAvailable() throws IOException {
         //first check in the options if sender is available
         String sender = provider.getSenderFromFieldOrOptions();
-        if (sender.equals("")) {
+        if (sender == null || sender.equals("")) {
             refreshSession();
             UrlConnectionFactory infoFactory = new UrlConnectionFactory(GET_MOBILENUMBER_URL, UrlConnectionFactory.METHOD_GET);
             List<String> cookies = new ArrayList<String>();
@@ -339,7 +346,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             Elements tableColsWithBoldText = parse.select("table.contenttableform tr td:has(b)");
             if (tableColsWithBoldText.size() == 1) {//exactly one element with number should be found
                 sender = tableColsWithBoldText.select("b").first().text();
-                provider.writeSender(sender);
+                provider.writeDefaultSender(sender);
             }
 
         }

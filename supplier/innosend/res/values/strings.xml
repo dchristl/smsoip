@@ -48,7 +48,7 @@
     <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
     <string name="text_next">Next: %1$s</string>
     <string name="text_sender">Sender</string>
-    <string name="text_automatic">Auto</string>
+    <string name="text_automatic">Assign automatically</string>
 
     <string-array name="array_spinner">
         <item>FREE (without SI)</item>
