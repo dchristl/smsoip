@@ -35,8 +35,6 @@ public class GMXOptionProvider extends OptionProvider {
     private static final String PROVIDER_NAME = "GMX";
     public static final String PROVIDER_CHECKNOFREESMSAVAILABLE = "provider.checknofreesmsavailable";
 
-    private boolean accountChanged = false;
-
     public GMXOptionProvider() {
         super(PROVIDER_NAME);
     }
@@ -76,17 +74,4 @@ public class GMXOptionProvider extends OptionProvider {
         }
     }
 
-    @Override
-    public void setCurrentAccountId(Integer currentAccountId) {
-        super.setCurrentAccountId(currentAccountId);
-        accountChanged = true;
-    }
-
-    public boolean isAccountChanged() { //remove this in later releases
-        return accountChanged;
-    }
-
-    public void setAccountChanged(boolean accountChanged) {
-        this.accountChanged = accountChanged;
-    }
 }

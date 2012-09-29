@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -48,7 +49,8 @@ public class InnosendOptionProvider extends OptionProvider {
     private int messageLength = 160;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
-    private static final String SENDER_INPUT = "sender.input";
+    private static final String STATE_SENDER_INPUT = "sender.input";
+    private static final String STATE_CHECKBOX = "sender.checkbox";
     private int maxReceiverCount = 1;
     private int maxMessageCount = 1;
     private boolean senderVisible = false;
@@ -58,8 +60,10 @@ public class InnosendOptionProvider extends OptionProvider {
     private TextView header;
     private LinearLayout wrapper;
     private CheckBox freeInputCB;
-    private String textToSet;
     private TextView senderDisabledText;
+    private String textBeforeActivityKilled;
+    private Boolean checkBoxStateBeforeActivityKilled;
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -221,15 +225,23 @@ public class InnosendOptionProvider extends OptionProvider {
         buildLayoutsContent(freeLayout.getContext());
         freeLayout.setOrientation(LinearLayout.VERTICAL);
         if (senderVisible) {
+            if (checkBoxStateBeforeActivityKilled != null && checkBoxStateBeforeActivityKilled) {
+                sender.setText(textBeforeActivityKilled);
+                setCheckBoxWithoutListener(true);
+                sender.setVisibility(View.VISIBLE);
+                senderDisabledText.setVisibility(View.GONE);
+            } else {
+                setCheckBoxWithoutListener(false);
+                sender.setVisibility(View.GONE);
+                senderDisabledText.setVisibility(View.VISIBLE);
+            }
             String senderFromOptions = getDefaultSender();
             if (senderFromOptions == null) {
                 senderFromOptions = getTextByResourceId(R.string.text_automatic);
             }
             senderDisabledText.setText(senderFromOptions);
-            sender.setVisibility(View.GONE);
             freeLayout.addView(header);
             wrapper.removeAllViews();
-            freeInputCB.setChecked(false); //TODO resolve later by bundle
             wrapper.addView(freeInputCB);
             wrapper.addView(sender);
             wrapper.addView(senderDisabledText);
@@ -239,43 +251,73 @@ public class InnosendOptionProvider extends OptionProvider {
             senderDisabledText.setText("");
             sender.setText("");
         }
-
-
     }
 
-    private void buildLayoutsContent(Context context) {
+    private void setCheckBoxWithoutListener(boolean b) {
+        freeInputCB.setOnCheckedChangeListener(null);
+        freeInputCB.setChecked(b);
+        freeInputCB.setOnCheckedChangeListener(onCheckedChangeListener);
+    }
 
+
+    private void buildLayoutsContent(Context context) {
         if (sender == null) {
             sender = new EditText(context);
             int length = 16;
             InputFilter maxLengthFilter = new InputFilter.LengthFilter(length);//max 16 chars allowed
-            sender.setFilters(new InputFilter[]{maxLengthFilter});
+            InputFilter specialCharsFilter = new InputFilter() {
+                @Override
+                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                    for (int i = start; i < end; i++) {
+                        if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
+                            return "";
+                        }
+                    }
+                    return null;
+                }
+            };
+            sender.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
             sender.setMinEms(length);
             sender.setMaxEms(length);
         }
-        if (senderDisabledText == null) {
+
+        if (senderDisabledText == null)
+
+        {
             senderDisabledText = new TextView(context);
             senderDisabledText.setGravity(Gravity.CENTER);
             senderDisabledText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         }
-        if (header == null) {
+
+        if (header == null)
+
+        {
             header = new TextView(context);
             header.setText(getTextByResourceId(R.string.text_sender));
             header.setGravity(Gravity.CENTER);
             header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         }
-        if (wrapper == null) {
+
+        if (wrapper == null)
+
+        {
             wrapper = new LinearLayout(context);
         }
-        if (freeInputCB == null) {
+
+        if (freeInputCB == null)
+
+        {
             freeInputCB = new CheckBox(context);
-            freeInputCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
                         sender.setVisibility(View.VISIBLE);
                         senderDisabledText.setVisibility(View.GONE);
                         sender.setText(getSenderFromOptions());
+                        //revert them, so on the next time it will handle as usual
+                        checkBoxStateBeforeActivityKilled = null;
+                        textBeforeActivityKilled = null;
                     } else {
                         sender.setVisibility(View.GONE);
                         senderDisabledText.setVisibility(View.VISIBLE);
@@ -284,8 +326,10 @@ public class InnosendOptionProvider extends OptionProvider {
                 }
 
 
-            });
+            };
+            freeInputCB.setOnCheckedChangeListener(onCheckedChangeListener);
         }
+
     }
 
     private String getSenderFromOptions() {
@@ -301,16 +345,15 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
-        textToSet = savedInstanceState.getString(SENDER_INPUT);
-        if (textToSet == null) {
-            textToSet = getDefaultSender();
-        }
+        textBeforeActivityKilled = savedInstanceState.getString(STATE_SENDER_INPUT);
+        checkBoxStateBeforeActivityKilled = savedInstanceState.getBoolean(STATE_CHECKBOX);
     }
 
 
     @Override
     public void onActivityPaused(Bundle outState) {
-        outState.putString(SENDER_INPUT, sender.getText().toString());
+        outState.putString(STATE_SENDER_INPUT, sender.getText().toString());
+        outState.putBoolean(STATE_CHECKBOX, freeInputCB.isChecked());
     }
 
     public void writeFreeInputSender() {
@@ -324,4 +367,5 @@ public class InnosendOptionProvider extends OptionProvider {
             }
         }
     }
+
 }
