@@ -307,6 +307,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms
         if (returnInt == 100 || returnInt == 101) {           //write the last input as suggest for the sending
             provider.writeFreeInputSender();
+            provider.resetState();
         }
         return FireSMSResultList.getAllInOneResult(getErrorMessageByResult(returnInt), receivers);
     }

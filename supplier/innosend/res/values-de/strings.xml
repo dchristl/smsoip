@@ -50,6 +50,10 @@
     <string name="text_next">Nächste: %1$s</string>
     <string name="text_sender">Absender</string>
     <string name="text_automatic">Automatisch bestimmen</string>
+    <string name="text_show_sender">Absender anzeigen.</string>
+    <string name="text_show_sender_description">Zeigt die Möglichkeit den Absender zu ändern an, andernfalls wird immer
+        der automatisch bestimmte Absender genutzt.
+    </string>
     <string-array name="array_spinner">
         <item>FREE (ohne AK)</item>
         <item>SPEED (ohne AK, GW 2|10)</item>

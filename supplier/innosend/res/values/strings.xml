@@ -49,7 +49,8 @@
     <string name="text_next">Next: %1$s</string>
     <string name="text_sender">Sender</string>
     <string name="text_automatic">Assign automatically</string>
-
+    <string name="text_show_sender">Show sender</string>
+    <string name="text_show_sender_description">Show the possibility to change the sender. If disabled the automatically assigned sender will always be used.</string>
     <string-array name="array_spinner">
         <item>FREE (without SI)</item>
         <item>SPEED (without SI, GW 2|10)</item>

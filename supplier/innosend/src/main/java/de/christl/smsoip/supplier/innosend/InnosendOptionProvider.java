@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
@@ -43,12 +44,13 @@ public class InnosendOptionProvider extends OptionProvider {
 
     private static final String PROVIDER_NAME = "Innosend";
     public static final String SENDER_RESOLVED_PREFIX = "sender_";
-    private static final String SENDER_FREE_LAST_INPUT_PREFIX = "sender_free_last_input";
+    private static final String SENDER_FREE_LAST_INPUT_PREFIX = "sender_free_last_input_";
 
 
     private int messageLength = 160;
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    public static final String PROVIDER_SHOW_SENDER = "provider.show.sender";
     private static final String STATE_SENDER_INPUT = "sender.input";
     private static final String STATE_CHECKBOX = "sender.checkbox";
     private int maxReceiverCount = 1;
@@ -64,6 +66,7 @@ public class InnosendOptionProvider extends OptionProvider {
     private String textBeforeActivityKilled;
     private Boolean checkBoxStateBeforeActivityKilled;
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
+    private boolean reset = false;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -142,6 +145,12 @@ public class InnosendOptionProvider extends OptionProvider {
         listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
+        CheckBoxPreference showSenderCB = new CheckBoxPreference(context);
+        showSenderCB.setDefaultValue(true);
+        showSenderCB.setKey(PROVIDER_SHOW_SENDER);
+        showSenderCB.setTitle(getTextByResourceId(R.string.text_show_sender));
+        showSenderCB.setSummary(getTextByResourceId(R.string.text_show_sender_description));
+        out.add(showSenderCB);
         return out;
     }
 
@@ -210,11 +219,10 @@ public class InnosendOptionProvider extends OptionProvider {
     }
 
     @Override
-
     public void getFreeLayout(LinearLayout freeLayout) {
         buildLayoutsContent(freeLayout.getContext());
         freeLayout.setOrientation(LinearLayout.VERTICAL);
-        if (senderVisible) {
+        if (senderVisible && getSettings().getBoolean(PROVIDER_SHOW_SENDER, true)) {
             if (checkBoxStateBeforeActivityKilled != null) {
                 if (checkBoxStateBeforeActivityKilled) {
                     sender.setText(textBeforeActivityKilled);
@@ -226,7 +234,6 @@ public class InnosendOptionProvider extends OptionProvider {
                 }
             } else {
                 if (!freeInputCB.isChecked()) {
-
                     sender.setVisibility(View.GONE);
                     senderDisabledText.setVisibility(View.VISIBLE);
                 }
@@ -236,11 +243,16 @@ public class InnosendOptionProvider extends OptionProvider {
                 senderFromOptions = getTextByResourceId(R.string.text_automatic);
             }
             senderDisabledText.setText(senderFromOptions);
-            freeLayout.addView(header);
+            if (reset) {
+                freeInputCB.setChecked(false);
+                reset = false;
+            }
             wrapper.removeAllViews();
             wrapper.addView(freeInputCB);
             wrapper.addView(sender);
             wrapper.addView(senderDisabledText);
+            freeLayout.removeAllViews();
+            freeLayout.addView(header);
             freeLayout.addView(wrapper);
         } else {                          //revert everything
             freeInputCB.setChecked(false);
@@ -273,13 +285,21 @@ public class InnosendOptionProvider extends OptionProvider {
                 }
             };
             sender.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
-            sender.setMinEms(length);
+            sender.setMinEms(7);
             sender.setMaxEms(length);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 0, 0, 0);
+            layoutParams.weight = 2.0f;
+            sender.setLayoutParams(layoutParams);
         }
 
         if (senderDisabledText == null) {
             senderDisabledText = new TextView(context);
             senderDisabledText.setGravity(Gravity.LEFT);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 0, 0, 0);
+            layoutParams.weight = 2.0f;
+            senderDisabledText.setLayoutParams(layoutParams);
         }
 
         if (header == null) {
@@ -355,4 +375,9 @@ public class InnosendOptionProvider extends OptionProvider {
         }
     }
 
+    public void resetState() {
+        textBeforeActivityKilled = null;
+        checkBoxStateBeforeActivityKilled = null;
+        reset = true;
+    }
 }
