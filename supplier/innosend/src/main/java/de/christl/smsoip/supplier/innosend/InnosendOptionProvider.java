@@ -211,29 +211,25 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
 
-    /**
-     *             <TextView android:id="@+id/timeShiftDescr"
-     android:layout_width="wrap_content"
-     android:layout_height="wrap_content"
-     android:gravity="center"
-     android:layout_span="5"
-     android:textSize="18dp"
-     android:text="@string/text_sending_time"
-     />
-     */
     public void getFreeLayout(LinearLayout freeLayout) {
         buildLayoutsContent(freeLayout.getContext());
         freeLayout.setOrientation(LinearLayout.VERTICAL);
         if (senderVisible) {
-            if (checkBoxStateBeforeActivityKilled != null && checkBoxStateBeforeActivityKilled) {
-                sender.setText(textBeforeActivityKilled);
-                setCheckBoxWithoutListener(true);
-                sender.setVisibility(View.VISIBLE);
-                senderDisabledText.setVisibility(View.GONE);
+            if (checkBoxStateBeforeActivityKilled != null) {
+                if (checkBoxStateBeforeActivityKilled) {
+                    sender.setText(textBeforeActivityKilled);
+                    setCheckBoxWithoutListener(true);
+                    sender.setVisibility(View.VISIBLE);
+                    senderDisabledText.setVisibility(View.GONE);
+                } else {
+                    freeInputCB.setChecked(false);
+                }
             } else {
-                setCheckBoxWithoutListener(false);
-                sender.setVisibility(View.GONE);
-                senderDisabledText.setVisibility(View.VISIBLE);
+                if (!freeInputCB.isChecked()) {
+
+                    sender.setVisibility(View.GONE);
+                    senderDisabledText.setVisibility(View.VISIBLE);
+                }
             }
             String senderFromOptions = getDefaultSender();
             if (senderFromOptions == null) {
@@ -281,32 +277,23 @@ public class InnosendOptionProvider extends OptionProvider {
             sender.setMaxEms(length);
         }
 
-        if (senderDisabledText == null)
-
-        {
+        if (senderDisabledText == null) {
             senderDisabledText = new TextView(context);
-            senderDisabledText.setGravity(Gravity.CENTER);
-            senderDisabledText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+            senderDisabledText.setGravity(Gravity.LEFT);
         }
 
-        if (header == null)
-
-        {
+        if (header == null) {
             header = new TextView(context);
             header.setText(getTextByResourceId(R.string.text_sender));
             header.setGravity(Gravity.CENTER);
             header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         }
 
-        if (wrapper == null)
-
-        {
+        if (wrapper == null) {
             wrapper = new LinearLayout(context);
         }
 
-        if (freeInputCB == null)
-
-        {
+        if (freeInputCB == null) {
             freeInputCB = new CheckBox(context);
             onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
                 @Override
