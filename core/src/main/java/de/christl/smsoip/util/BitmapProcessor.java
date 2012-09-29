@@ -179,7 +179,17 @@ public class BitmapProcessor {
             }
         }
         if (newImageHeight > 0 && newImageWidth > 0) { //some too small image
+            //fix some rounding problems
+            int outHeight = options.outHeight;
+            if (outHeight + verAdjustment > newImageHeight && outHeight != 0) {
+                newImageHeight = outHeight;
+            }
+            int outWidth = options.outWidth;
+            if (outWidth + horAdjustment > newImageWidth && outWidth != 0) {
+                newImageWidth = outWidth;
+            }
             try {
+
                 return Bitmap.createBitmap(origin, horAdjustment, verAdjustment, newImageWidth, newImageHeight);
             } catch (IllegalArgumentException e) {
                 ErrorReporter errorReporter = ACRA.getErrorReporter();
