@@ -28,4 +28,9 @@
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_wrong_number">Wrong number</string>
+    <string name="text_send_as_flash">Send as flash message</string>
+    <string name="text_show_flash">Show flash message</string>
+    <string name="text_show_flash_description">Zeigt die Möglichkeit, Flash-SMS zu verschicken, andernfalls wird die
+        Nachricht immer als normale SMS verschickt.
+    </string>
 </resources>

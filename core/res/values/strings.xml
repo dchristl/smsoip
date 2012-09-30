@@ -143,7 +143,7 @@
     <string name="crash_dialog_text">An unexpected error occurred forcing the
         application to stop. Please make sure you have the latest version of SMSoIP and your used plugins installed.
         If this will not work, please help the developer to improve SMSoIP by sending error data,
-        all you have to do is click \'OK\'. No private data will be send.
+        all you have to do is click \'OK\'. No private data will be sent.
     </string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem and if you want to be
         contacted your mail address below:

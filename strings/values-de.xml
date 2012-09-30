@@ -346,6 +346,11 @@ fileName: strings.xml
     <string name="text_default_type">Standard Absendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="text_wrong_number">Falsche Nummer</string>
+    <string name="text_send_as_flash">Als Flash-SMS schicken</string>
+    <string name="text_show_flash">Show flash message</string>
+    <string name="text_show_flash_description">Show the possibility to send message as flash messages. If disabled the
+        message will be sent as normal message.
+    </string>
 </resources>
 <!--String resources for:
 project: cherrysms

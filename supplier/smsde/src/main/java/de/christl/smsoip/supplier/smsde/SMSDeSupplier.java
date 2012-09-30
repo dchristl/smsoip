@@ -234,6 +234,8 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return sendSMS(smsText, receivers, spinnerText, null);
     }
 
+
+
     private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) throws IOException {
         String errorText = preCheckNumbers(receivers);
         if (!errorText.equals("")) {
@@ -255,66 +257,70 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 if (sendIndex == TYPE_FREE) {
                     smsText += " / sms.de";
                 }
-                String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING));
+                StringBuilder body = new StringBuilder(String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING)));
                 boolean flagSet = provider.getSettings().getBoolean(InputPatcher.SHOW_RETURN_FROM_SERVER, false);
                 switch (sendIndex) {
                     case TYPE_POWER_160:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=0";
-                        body += "&smslength=160";
-                        body += "&which_page=power-sms+160";    //this is for output of send type
+                        body.append("&empfcount=1");
+                        body.append("&oadc=0");
+                        body.append("&smslength=160");
+                        body.append("&which_page=power-sms+160");    //this is for output of send type
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+160"; //this is for the return message
+                            body.append("&which_page_international=power-sms-international+160"); //this is for the return message
                         }
                         break;
                     case TYPE_POWER_160_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=1";
-                        body += "&smslength=160";
-                        body += "&which_page=power-sms+160";
+                        body.append("&empfcount=1");
+                        body.append("&oadc=1");
+                        body.append("&smslength=160");
+                        body.append("&which_page=power-sms+160");
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+160";
+                            body.append("&which_page_international=power-sms-international+160");
                         }
                         break;
                     case TYPE_POWER_300:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=0";
-                        body += "&smslength=300";
-                        body += "&which_page=power-sms+300";
+                        body.append("&empfcount=1");
+                        body.append("&oadc=0");
+                        body.append("&smslength=300");
+                        body.append("&which_page=power-sms+300");
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+300";
+                            body.append("&which_page_international=power-sms-international+300");
                         }
                         break;
                     case TYPE_POWER_300_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=1";
-                        body += "&smslength=300";
-                        body += "&which_page=power-sms+300";
+                        body.append("&empfcount=1");
+                        body.append("&oadc=1");
+                        body.append("&smslength=300");
+                        body.append("&which_page=power-sms+300");
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+300";
+                            body.append("&which_page_international=power-sms-international+300");
                         }
                         break;
                     case TYPE_FREE:
                     default:
                         factory = new UrlConnectionFactory(SEND_FREE_PAGE);
-                        body += "&smslength=151";
+                        body.append("&smslength=151");
                         break;
                 }
                 if (dateTimeObject != null) {
-                    body += "&schedule=set";
+                    body.append("&schedule=set");
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    body += "&day=" + sdf.format(dateTimeObject.getCalendar().getTime());
-                    body += "&hour=" + dateTimeObject.getHour();
-                    body += "&minute=" + dateTimeObject.getMinute();
+                    body.append("&day=").append(sdf.format(dateTimeObject.getCalendar().getTime()));
+                    body.append("&hour=").append(dateTimeObject.getHour());
+                    body.append("&minute=").append(dateTimeObject.getMinute());
+                }
+                if (provider.isFlash()) {
+                    body.append("&flashsms=1");
                 }
                 factory.setCookies(sessionCookies);
-                HttpURLConnection con = factory.writeBody(body);
+                HttpURLConnection con = factory.writeBody(body.toString());
                 SMSDeSendResult sendResult = processSendReturn(con.getInputStream());
                 if (sendResult.isSuccess()) {
+                    provider.reset();
                     out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(sendResult.getMessage())));
                 } else {
                     out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(sendResult.getMessage())));
@@ -352,4 +358,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         int sendType = findSendMethod(spinnerText, "");
         return sendType != TYPE_FREE;
     }
+
+
 }

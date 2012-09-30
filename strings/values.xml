@@ -150,7 +150,7 @@ fileName: strings.xml
     <string name="crash_dialog_text">An unexpected error occurred forcing the
         application to stop. Please make sure you have the latest version of SMSoIP and your used plugins installed.
         If this will not work, please help the developer to improve SMSoIP by sending error data,
-        all you have to do is click \'OK\'. No private data will be send.
+        all you have to do is click \'OK\'. No private data will be sent.
     </string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem and if you want to be
         contacted your mail address below:
@@ -332,6 +332,11 @@ fileName: strings.xml
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_wrong_number">Wrong number</string>
+    <string name="text_send_as_flash">Send as flash message</string>
+    <string name="text_show_flash">Show flash message</string>
+    <string name="text_show_flash_description">Zeigt die Möglichkeit, Flash-SMS zu verschicken, andernfalls wird die
+        Nachricht immer als normale SMS verschickt.
+    </string>
 </resources>
 <!--String resources for:
 project: cherrysms
