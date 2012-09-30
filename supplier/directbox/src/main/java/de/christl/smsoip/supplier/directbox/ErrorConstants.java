@@ -18,25 +18,10 @@
 
 package de.christl.smsoip.supplier.directbox;
 
-import android.graphics.drawable.Drawable;
-import de.christl.smsoip.option.OptionProvider;
-
-
-public class DirectboxOptionProvider extends OptionProvider {
-    private static final String PROVIDER_NAME = "Directbox";
-
-    @Override
-    public Drawable getIconDrawable() {
-        return getDrawble(R.drawable.icon);
-    }
-
-
-    @Override
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
-
-    public void saveToken(String userName, String token) {
-        //TODO
-    }
+/**
+ * Error constants returned by json
+ */
+public abstract class ErrorConstants {
+    public static final String LOGIN_FAILURE_BAD_USERNAME_OR_PASSWORD = "Login failure, bad username or password.";
+    public static final String OBJECT_REFERENCE_NOT_SET_TO_AN_INSTANCE_OF_AN_OBJECT = "Object reference not set to an instance of an object.";
 }

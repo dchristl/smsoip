@@ -18,5 +18,7 @@
   -->
 
 <resources>
-
+    <string name="text_login_error">Login failure, bad username or password. Please check if your username includes the
+        domain \'@directbox.com\'.
+    </string>
 </resources>
