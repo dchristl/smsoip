@@ -47,6 +47,7 @@ public class UrlConnectionFactory {
      */
     private int timeout = 10000;
     private List<String> cookies;
+    private Map<String, String> requestProperties;
     private HttpURLConnection con;
     private boolean followRedirects = true;
 
@@ -63,7 +64,9 @@ public class UrlConnectionFactory {
         con = (HttpURLConnection) new URL(url).openConnection();
         con.setReadTimeout(timeout);
         con.setConnectTimeout(timeout);
-        con.setRequestProperty("User-Agent", targetAgent);
+        if (targetAgent != null) {
+            con.setRequestProperty("User-Agent", targetAgent);
+        }
         con.setRequestMethod(method);
         con.setInstanceFollowRedirects(followRedirects);
         if (cookies != null) {
@@ -73,6 +76,12 @@ public class UrlConnectionFactory {
                 cookieBuilder.append(sessionCookie).append(i + 1 < sessionCookiesSize ? "; " : "");
             }
             con.setRequestProperty("Cookie", cookieBuilder.toString());
+        }
+        if (requestProperties != null) {
+            for (Map.Entry<String, String> stringStringEntry : requestProperties.entrySet()) {
+                con.setRequestProperty(stringStringEntry.getKey(), stringStringEntry.getValue());
+            }
+
         }
         return con;
     }
@@ -163,6 +172,10 @@ public class UrlConnectionFactory {
 
     public void setCookies(List<String> cookies) {
         this.cookies = cookies;
+    }
+
+    public void setRequestProperties(Map<String, String> requestProperties) {
+        this.requestProperties = requestProperties;
     }
 
     public void setFollowRedirects(boolean followRedirects) {
