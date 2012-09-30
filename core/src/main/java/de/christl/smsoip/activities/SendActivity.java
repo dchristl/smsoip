@@ -1013,6 +1013,7 @@ public class SendActivity extends AllActivity {
     private void setSuppliersLayout() {
         LinearLayout freeLayout = (LinearLayout) findViewById(R.id.freeLayout);
         freeLayout.removeAllViews();
+        freeLayout.setOrientation(LinearLayout.HORIZONTAL);
         if (smSoIPPlugin != null) {
             smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
         }
