@@ -293,36 +293,6 @@ public class InnosendOptionProvider extends OptionProvider {
             sender.setLayoutParams(layoutParams);
         }
 
-        if (senderDisabledText == null) {
-            senderDisabledText = new TextView(context);
-            senderDisabledText.setGravity(Gravity.LEFT);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 0, 0, 0);
-            layoutParams.weight = 2.0f;
-            senderDisabledText.setLayoutParams(layoutParams);
-        }
-
-        if (header == null) {
-            header = new TextView(context);
-            header.setText(getTextByResourceId(R.string.text_sender));
-            header.setGravity(Gravity.CENTER);
-            header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        } else {
-            ViewGroup parent = (ViewGroup) header.getParent();
-            if (parent != null) {          //remove an already assigned view from its parent to avoid exception
-                parent.removeView(header);
-            }
-        }
-
-        if (wrapper == null) {
-            wrapper = new LinearLayout(context);
-        } else {
-            ViewGroup parent = (ViewGroup) wrapper.getParent();
-            if (parent != null) {
-                parent.removeView(wrapper);
-            }
-        }
-
         if (freeInputCB == null) {
             freeInputCB = new CheckBox(context);
             onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -346,6 +316,43 @@ public class InnosendOptionProvider extends OptionProvider {
             };
             freeInputCB.setOnCheckedChangeListener(onCheckedChangeListener);
         }
+
+        if (senderDisabledText == null) {
+            senderDisabledText = new TextView(context);
+            senderDisabledText.setGravity(Gravity.LEFT);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(20, 0, 0, 0);
+            layoutParams.weight = 2.0f;
+            senderDisabledText.setLayoutParams(layoutParams);
+            senderDisabledText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    freeInputCB.setChecked(!freeInputCB.isChecked());
+                }
+            });
+        }
+
+        if (header == null) {
+            header = new TextView(context);
+            header.setText(getTextByResourceId(R.string.text_sender));
+            header.setGravity(Gravity.CENTER);
+            header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        } else {
+            ViewGroup parent = (ViewGroup) header.getParent();
+            if (parent != null) {          //remove an already assigned view from its parent to avoid exception
+                parent.removeView(header);
+            }
+        }
+
+        if (wrapper == null) {
+            wrapper = new LinearLayout(context);
+        } else {
+            ViewGroup parent = (ViewGroup) wrapper.getParent();
+            if (parent != null) {
+                parent.removeView(wrapper);
+            }
+        }
+
 
     }
 
