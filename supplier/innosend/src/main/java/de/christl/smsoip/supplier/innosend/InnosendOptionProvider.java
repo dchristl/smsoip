@@ -30,6 +30,7 @@ import android.text.Spanned;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
@@ -251,7 +252,6 @@ public class InnosendOptionProvider extends OptionProvider {
             wrapper.addView(freeInputCB);
             wrapper.addView(sender);
             wrapper.addView(senderDisabledText);
-            freeLayout.removeAllViews();
             freeLayout.addView(header);
             freeLayout.addView(wrapper);
         } else {                          //revert everything
@@ -307,10 +307,20 @@ public class InnosendOptionProvider extends OptionProvider {
             header.setText(getTextByResourceId(R.string.text_sender));
             header.setGravity(Gravity.CENTER);
             header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        } else {
+            ViewGroup parent = (ViewGroup) header.getParent();
+            if (parent != null) {          //remove an already assigned view from its parent to avoid exception
+                parent.removeView(header);
+            }
         }
 
         if (wrapper == null) {
             wrapper = new LinearLayout(context);
+        } else {
+            ViewGroup parent = (ViewGroup) wrapper.getParent();
+            if (parent != null) {
+                parent.removeView(wrapper);
+            }
         }
 
         if (freeInputCB == null) {
