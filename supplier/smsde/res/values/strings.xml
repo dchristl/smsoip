@@ -30,7 +30,8 @@
     <string name="text_wrong_number">Wrong number</string>
     <string name="text_send_as_flash">Send as flash message</string>
     <string name="text_show_flash">Show flash message</string>
-    <string name="text_show_flash_description">Zeigt die Möglichkeit, Flash-SMS zu verschicken, andernfalls wird die
-        Nachricht immer als normale SMS verschickt.
+    <string name="text_show_flash_description">Show the possibility to send message as flash messages. If disabled the
+        message will be sent as normal message.
     </string>
+
 </resources>

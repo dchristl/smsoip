@@ -29,8 +29,8 @@
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="text_wrong_number">Falsche Nummer</string>
     <string name="text_send_as_flash">Als Flash-SMS schicken</string>
-    <string name="text_show_flash">Show flash message</string>
-    <string name="text_show_flash_description">Show the possibility to send message as flash messages. If disabled the
-        message will be sent as normal message.
+    <string name="text_show_flash">Flash-Versand anzeigen</string>
+    <string name="text_show_flash_description">Zeigt die Möglichkeit Flash-SMS zu verschicken, andernfalls wird die
+        Nachricht immer als normale SMS verschickt.
     </string>
 </resources>

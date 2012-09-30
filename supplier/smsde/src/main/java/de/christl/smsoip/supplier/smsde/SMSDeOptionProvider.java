@@ -121,7 +121,7 @@ public class SMSDeOptionProvider extends OptionProvider {
         showSenderCB.setDefaultValue(true);
         showSenderCB.setKey(PROVIDER_SHOW_FLASH);
         showSenderCB.setTitle(getTextByResourceId(R.string.text_show_flash));
-        showSenderCB.setSummary(getTextByResourceId(R.string.text_show_flash));
+        showSenderCB.setSummary(getTextByResourceId(R.string.text_show_flash_description));
         out.add(showSenderCB);
         return out;
     }
