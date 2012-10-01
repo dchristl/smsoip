@@ -18,5 +18,7 @@
   -->
 
 <resources>
-
+    <string name="text_login_error">Login fehlgeschlagen. Der Benutzername muss inkl. Domain \'@directbox.com\'
+        angegeben werden.
+    </string>
 </resources>

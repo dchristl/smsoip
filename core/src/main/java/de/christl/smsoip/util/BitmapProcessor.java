@@ -179,14 +179,16 @@ public class BitmapProcessor {
             }
         }
         if (newImageHeight > 0 && newImageWidth > 0) { //some too small image
-            //fix some rounding problems
+            //fix some rounding problems in special behaviours
             int outHeight = options.outHeight;
-            if (outHeight + verAdjustment > newImageHeight && outHeight != 0) {
+            if (newImageHeight + verAdjustment > outHeight && outHeight != 0) {
                 newImageHeight = outHeight;
+                verAdjustment = 0;
             }
             int outWidth = options.outWidth;
-            if (outWidth + horAdjustment > newImageWidth && outWidth != 0) {
+            if (newImageWidth + horAdjustment > outWidth && outWidth != 0) {
                 newImageWidth = outWidth;
+                horAdjustment = 0;
             }
             try {
 
