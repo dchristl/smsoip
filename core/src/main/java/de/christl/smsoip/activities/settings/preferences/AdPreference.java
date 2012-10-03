@@ -24,7 +24,6 @@ import android.preference.Preference;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.AdViewListener;
@@ -32,6 +31,8 @@ import de.christl.smsoip.application.SMSoIPApplication;
 
 public class AdPreference extends Preference {
 
+
+    private MobclixMMABannerXLAdView adView;
 
     public AdPreference(Context context) {
         super(context);
@@ -43,10 +44,14 @@ public class AdPreference extends Preference {
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            Activity activity = (Activity) getContext();
-            MobclixAdView adView = new MobclixMMABannerXLAdView(activity);
-            adView.setRefreshTime(10000);
-            adView.addMobclixAdViewListener(new AdViewListener(getContext()));
+            if (adView == null) {
+                Activity activity = (Activity) getContext();
+                adView = new MobclixMMABannerXLAdView(activity);
+                adView.setRefreshTime(10000);
+                adView.addMobclixAdViewListener(new AdViewListener(getContext()));
+            } else {
+                ((ViewGroup) adView.getParent()).removeView(adView);
+            }
             ((LinearLayout) view).addView(adView);
             adView.getAd();
         } else {

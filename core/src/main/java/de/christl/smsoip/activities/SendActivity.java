@@ -39,6 +39,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -126,6 +127,7 @@ public class SendActivity extends AllActivity {
     private DateTimeObject dateTime;
     private AsyncTask<Boolean, String, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
+    private MobclixMMABannerXLAdView adView;
 
 
     @Override
@@ -161,10 +163,14 @@ public class SendActivity extends AllActivity {
     private void insertAds() {
         LinearLayout adLayout = ((LinearLayout) findViewById(R.id.banner_adview));
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            MobclixMMABannerXLAdView adView = new MobclixMMABannerXLAdView(this);
-            adView.setRefreshTime(10000);
-            adView.addMobclixAdViewListener(new AdViewListener(this));
-            adLayout.removeAllViews();
+            if (adView == null) {
+                adView = new MobclixMMABannerXLAdView(this);
+                adView.setRefreshTime(10000);
+                adView.addMobclixAdViewListener(new AdViewListener(this));
+                adLayout.removeAllViews();
+            } else {
+                ((ViewGroup) adView.getParent()).removeView(adView);
+            }
             adLayout.addView(adView);
             adView.getAd();
         } else {
