@@ -80,6 +80,10 @@
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen.</string>
     <string name="text_visit_plugin_page">Plugins suchen</string>
     <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play.</string>
+    <string name="text_donate_plugin_page">Werbung entfernen</string>
+    <string name="text_donate_plugin_page_description">Entferne die Werbung und unterstütze die Weiterentwicklung durch
+        Kauf des Donate Plugins.
+    </string>
     <string name="text_reshow_welcome">Willkommensdialog anschauen</string>
     <string name="text_reshow_welcome_description">Schaue dir den Willkommensdialog noch einmal für eine kurze
         Einführung an.

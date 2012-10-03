@@ -18,13 +18,17 @@
 
 package de.christl.smsoip.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixAdViewListener;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.GlobalPreferences;
 
 /**
  * Simple listener handling visibility of ads by success/error
@@ -51,6 +55,19 @@ public class AdViewListener implements MobclixAdViewListener {
         mobclixAdView.setVisibility(View.VISIBLE);
         imageView = new ImageView(context);
         imageView.setBackgroundResource(R.drawable.ad_layer);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.ADFREE_MARKET_URL));
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //Market not available on device
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.WEB_ADFREE_MARKET_URL));
+                    context.startActivity(intent);
+                }
+            }
+        });
         mobclixAdView.addView(imageView);
         mobclixAdView.setRefreshTime(10000);
 

@@ -51,7 +51,9 @@ public class GlobalPreferences extends PreferenceActivity {
 
 
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
+    public static final String ADFREE_MARKET_URL = "market://search?id=de.christl.smsoip.adfree";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
+    public static final String WEB_ADFREE_MARKET_URL = "https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
 
     private ProcessImageAndSetBackgroundTask processImageAndSetBackgroundTask;
@@ -139,6 +141,27 @@ public class GlobalPreferences extends PreferenceActivity {
         pluginIntent.setTitle(R.string.text_visit_plugin_page);
         pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
         root.addPreference(pluginIntent);
+
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            PreferenceScreen adfreeIntent = getPreferenceManager().createPreferenceScreen(this);
+            adfreeIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ADFREE_MARKET_URL));
+                        GlobalPreferences.this.startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        //Market not available on device
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_ADFREE_MARKET_URL));
+                        GlobalPreferences.this.startActivity(intent);
+                    }
+                    return true;
+                }
+            });
+            adfreeIntent.setTitle(R.string.text_donate_plugin_page);
+            adfreeIntent.setSummary(R.string.text_donate_plugin_page_description);
+            root.addPreference(adfreeIntent);
+        }
         PreferenceScreen welcomePref = getPreferenceManager().createPreferenceScreen(this);
         welcomePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

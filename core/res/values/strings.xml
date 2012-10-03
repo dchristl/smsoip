@@ -78,6 +78,8 @@
     <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
     <string name="text_visit_plugin_page">Find plugins</string>
     <string name="text_visit_plugin_page_description">Find additional plugins at Google Play</string>
+    <string name="text_donate_plugin_page">Remove ads</string>
+    <string name="text_donate_plugin_page_description">Remove the ads and support future development by buying Donate Plugin.</string>
     <string name="text_reshow_welcome">Show welcome dialog</string>
     <string name="text_reshow_welcome_description">Look at the welcome dialog again for a short introduction.</string>
     <string name="text_area_code">Default international area code</string>
