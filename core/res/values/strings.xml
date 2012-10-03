@@ -79,7 +79,9 @@
     <string name="text_visit_plugin_page">Find plugins</string>
     <string name="text_visit_plugin_page_description">Find additional plugins at Google Play</string>
     <string name="text_donate_plugin_page">Remove ads</string>
-    <string name="text_donate_plugin_page_description">Remove the ads and support future development by buying Donate Plugin.</string>
+    <string name="text_donate_plugin_page_description">Remove the ads and support future development by buying Donate
+        Plugin.
+    </string>
     <string name="text_reshow_welcome">Show welcome dialog</string>
     <string name="text_reshow_welcome_description">Look at the welcome dialog again for a short introduction.</string>
     <string name="text_area_code">Default international area code</string>
@@ -196,4 +198,6 @@
     <string name="text_background_image_dialog_reset">Reset</string>
     <string name="text_background_will_be_set">Image will be processed and set.</string>
     <string name="text_background_set_error">Error on setting background image.</string>
+    <string name="text_no_last_message">No incoming messages</string>
+    <string name="text_no_conversation">No conversation</string>
 </resources>

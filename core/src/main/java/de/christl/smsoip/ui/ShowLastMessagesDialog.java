@@ -61,6 +61,7 @@ public class ShowLastMessagesDialog extends Dialog {
 
         Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage(appContext);
         String defaultUnknownText = appContext.getString(R.string.text_unknown);
+        TextView lastIncomingMessage = (TextView) findViewById(R.id.message);
         if (lastMessage.size() > 0) {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
                 final Receiver receiver = receiverStringEntry.getKey();
@@ -80,13 +81,14 @@ public class ShowLastMessagesDialog extends Dialog {
                 content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                 contact.setText(content);
                 contact.setOnClickListener(onClickListener);
-                TextView messageView = (TextView) findViewById(R.id.message);
-                messageView.setText(message);
-                messageView.setOnClickListener(onClickListener);
+
+                lastIncomingMessage.setText(message);
+                lastIncomingMessage.setOnClickListener(onClickListener);
                 findViewById(R.id.clickToAdd).setOnClickListener(onClickListener);
             }
         } else {
             findViewById(R.id.clickToAdd).setVisibility(View.GONE);
+            lastIncomingMessage.setText(R.string.text_no_last_message);
         }
         if (receiverList.isEmpty()) {
             findViewById(R.id.lastConversation).setVisibility(View.GONE);
@@ -106,24 +108,35 @@ public class ShowLastMessagesDialog extends Dialog {
             content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
             receiverView.setText(content);
             layout.addView(receiverView);
-
+            if (conversation.isEmpty()) {
+                TextView messageView = new TextView(appContext);
+                messageView.setText(R.string.text_no_conversation);
+                messageView.setGravity(Gravity.CENTER);
+                messageView.setTextColor(Color.parseColor("#6400F0"));
+                messageView.setBackgroundColor(Color.parseColor("#AAE9C400"));
+                messageView.setPadding(5, 5, 5, 5);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                layoutParams.setMargins(0, 5, 0, 5);
+                messageView.setLayoutParams(layoutParams);
+                layout.addView(messageView);
+            }
             for (Message message : conversation) {
                 TextView messageView = new TextView(appContext);
                 messageView.setText(message.getMessage());
                 if (message.isOutgoing()) {
                     messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
                     messageView.setPadding(50, 0, 20, 20);
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                    layoutParams.setMargins(50, 0, 0, 0);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                    layoutParams.setMargins(50, 5, 0, 0);
                     messageView.setLayoutParams(layoutParams);
                     messageView.setTextColor(Color.parseColor("#0014F0"));
                     messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_left));
                 } else {
                     messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-                    messageView.setPadding(20, 0, 50, 20);
+                    messageView.setPadding(20, 5, 50, 20);
                     messageView.setTextColor(Color.parseColor("#6400F0"));
                     messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_right));
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
                     layoutParams.setMargins(0, 0, 50, 0);
                     messageView.setLayoutParams(layoutParams);
                 }

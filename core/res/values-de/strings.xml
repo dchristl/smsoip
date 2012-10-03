@@ -210,4 +210,6 @@
     <string name="text_background_image_dialog_reset">Standard</string>
     <string name="text_background_will_be_set">Hintergrundbild wird verarbeitet und gesetzt.</string>
     <string name="text_background_set_error">Fehler beim Setzen des Hintergrundes aufgetreten.</string>
+    <string name="text_no_last_message">Keine eingehenden Nachrichten</string>
+    <string name="text_no_conversation">Keine Konversation</string>
 </resources>
