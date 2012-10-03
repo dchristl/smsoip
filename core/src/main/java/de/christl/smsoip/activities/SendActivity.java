@@ -475,7 +475,7 @@ public class SendActivity extends AllActivity {
             public void onClick(View v) {
                 if (lastInfoDialog != null) {
                     lastInfoDialog.show();
-                    killDialogAfterAWhile(lastInfoDialog);
+                    lastInfoDialog.setCancelable(true);
                 }
             }
         });
