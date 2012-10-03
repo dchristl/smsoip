@@ -5,7 +5,7 @@
         <action>1</action>
         <title>Donate Plugin now available!</title>
         <text>Remove ads. Support future development.</text>
-        <url>market://search?id=de.christl.smsoip.adfree</url>
+        <url>market://details?id=de.christl.smsoip.adfree</url>
         <alternativeUrl>https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</alternativeUrl>
         <donate>false</donate>
     </message>

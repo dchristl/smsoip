@@ -51,7 +51,7 @@ public class GlobalPreferences extends PreferenceActivity {
 
 
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
-    public static final String ADFREE_MARKET_URL = "market://search?id=de.christl.smsoip.adfree";
+    public static final String ADFREE_MARKET_URL = "market://details?id=de.christl.smsoip.adfree";
     private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     public static final String WEB_ADFREE_MARKET_URL = "https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
