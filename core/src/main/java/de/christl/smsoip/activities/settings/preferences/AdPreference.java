@@ -38,20 +38,19 @@ public class AdPreference extends Preference {
         setLayoutResource(R.layout.adpreference);
     }
 
+
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        Activity activity = (Activity) getContext();
-
-        MobclixAdView adView = new MobclixMMABannerXLAdView(activity);
-        adView.setRefreshTime(10000);
-        adView.addMobclixAdViewListener(new AdViewListener());
-        ((LinearLayout) view).addView(adView);
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            adView.setVisibility(View.VISIBLE);
+            Activity activity = (Activity) getContext();
+            MobclixAdView adView = new MobclixMMABannerXLAdView(activity);
+            adView.setRefreshTime(10000);
+            adView.addMobclixAdViewListener(new AdViewListener(getContext()));
+            ((LinearLayout) view).addView(adView);
+            adView.getAd();
         } else {
-            adView.setVisibility(View.GONE);
-            adView.cancelAd();
+            view.setVisibility(View.GONE);
         }
         return view;
     }

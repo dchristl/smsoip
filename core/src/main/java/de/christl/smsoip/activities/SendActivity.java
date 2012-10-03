@@ -42,6 +42,8 @@ import android.view.View;
 import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.mobclix.android.sdk.MobclixAdView;
+import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.send.Mode;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
@@ -153,7 +155,21 @@ public class SendActivity extends AllActivity {
             invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
+        insertAds();
+    }
 
+    private void insertAds() {
+        LinearLayout adLayout = ((LinearLayout) findViewById(R.id.banner_adview));
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            MobclixMMABannerXLAdView adView = new MobclixMMABannerXLAdView(this);
+            adView.setRefreshTime(10000);
+            adView.addMobclixAdViewListener(new AdViewListener(this));
+            adLayout.removeAllViews();
+            adLayout.addView(adView);
+            adView.getAd();
+        } else {
+            adLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -222,7 +238,6 @@ public class SendActivity extends AllActivity {
             }
             updateInfoTextSilent();
         }
-        insertAds(R.id.banner_adview, this);
         showChangelogIfNeeded();
         setViewByMode(mode);
         ErrorReporterStack.put(LogConst.ON_CREATE);
@@ -588,7 +603,7 @@ public class SendActivity extends AllActivity {
         if (chosenContactsDialog != null && chosenContactsDialog.isShowing()) {
             chosenContactsDialog.redraw();
         }
-
+        insertAds();
     }
 
     private void setSmileyButton() {

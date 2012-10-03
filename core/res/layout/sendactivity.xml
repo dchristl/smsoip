@@ -269,7 +269,7 @@
             </Spinner>
         </TableRow>
         <TableRow>
-            <com.mobclix.android.sdk.MobclixMMABannerXLAdView
+            <LinearLayout
                     android:id="@+id/banner_adview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"

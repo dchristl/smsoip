@@ -42,7 +42,6 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.mobclix.android.sdk.MobclixAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.threading.UpdateDeveloperInfoTask;
@@ -272,18 +271,6 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         outState.putBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, nwSettingsAlreadyShown);
     }
 
-    public static void insertAds(int adviewId, Activity activity) {
-        MobclixAdView adView = (MobclixAdView) activity.findViewById(adviewId);
-        adView.setRefreshTime(10000);
-        adView.addMobclixAdViewListener(new AdViewListener());
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            adView.setVisibility(View.VISIBLE);
-            adView.pause();
-        } else {
-            adView.setVisibility(View.GONE);
-        }
-
-    }
 
     public static Context getActivity() {
         return context;

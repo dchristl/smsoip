@@ -18,32 +18,42 @@
 
 package de.christl.smsoip.activities;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixAdViewListener;
-import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.R;
 
 /**
  * Simple listener handling visibility of ads by success/error
  */
 public class AdViewListener implements MobclixAdViewListener {
 
-    public AdViewListener() {
+    private Context context;
+    private ImageView imageView;
+
+    public AdViewListener(Context context) {
+        this.context = context;
     }
 
     @Override
     public void onSuccessfulLoad(MobclixAdView mobclixAdView) {
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            mobclixAdView.setVisibility(View.VISIBLE);
-        } else {
-            mobclixAdView.setVisibility(View.GONE);
-            mobclixAdView.cancelAd();
-        }
+        Log.e("christl", "mobclixAdView success= " + mobclixAdView);
+        mobclixAdView.setVisibility(View.VISIBLE);
+        mobclixAdView.removeView(imageView);
     }
 
     @Override
     public void onFailedLoad(MobclixAdView mobclixAdView, int i) {
-        mobclixAdView.setVisibility(View.GONE);
+        Log.e("christl", "errorcode = " + i);
+        mobclixAdView.setVisibility(View.VISIBLE);
+        imageView = new ImageView(context);
+        imageView.setBackgroundResource(R.drawable.ad_layer);
+        mobclixAdView.addView(imageView);
+        mobclixAdView.setRefreshTime(10000);
+
     }
 
     @Override
