@@ -22,8 +22,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixAdViewListener;
@@ -44,31 +44,35 @@ public class AdViewListener implements MobclixAdViewListener {
 
     @Override
     public void onSuccessfulLoad(MobclixAdView mobclixAdView) {
-        Log.e("christl", "mobclixAdView success= " + mobclixAdView);
         mobclixAdView.setVisibility(View.VISIBLE);
-        mobclixAdView.removeView(imageView);
+        if (imageView != null) {
+            ((ViewGroup) imageView.getParent()).removeView(imageView);
+            imageView.invalidate();
+        }
+        mobclixAdView.setRefreshTime(10000);
     }
 
     @Override
     public void onFailedLoad(MobclixAdView mobclixAdView, int i) {
-        Log.e("christl", "errorcode = " + i);
         mobclixAdView.setVisibility(View.VISIBLE);
-        imageView = new ImageView(context);
-        imageView.setBackgroundResource(R.drawable.ad_layer);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.ADFREE_MARKET_URL));
-                    context.startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    //Market not available on device
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.WEB_ADFREE_MARKET_URL));
-                    context.startActivity(intent);
+        if (imageView == null) {
+            imageView = new ImageView(context);
+            imageView.setBackgroundResource(R.drawable.ad_layer);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.ADFREE_MARKET_URL));
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        //Market not available on device
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.WEB_ADFREE_MARKET_URL));
+                        context.startActivity(intent);
+                    }
                 }
-            }
-        });
-        mobclixAdView.addView(imageView);
+            });
+            mobclixAdView.addView(imageView);
+        }
         mobclixAdView.setRefreshTime(10000);
 
     }

@@ -97,7 +97,7 @@ public class GlobalPreferences extends PreferenceActivity {
         miscCategory.setTitle(R.string.text_category_stuff);
         root.addPreference(miscCategory);
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
-        String uriString = Locale.getDefault().equals(Locale.GERMANY) ? "https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version" : "https://sites.google.com/site/smsoip/home";
+        String uriString = Locale.getDefault().getDisplayLanguage().equals(Locale.GERMANY.getDisplayLanguage()) ? "https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version" : "https://sites.google.com/site/smsoip/home";
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
                 .setData(Uri.parse(uriString)));
         intentPref.setTitle(R.string.text_visit_project_page);

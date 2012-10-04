@@ -124,7 +124,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
             if (cal.after(nextUpdateCal) || isDev) {
                 int lastId = defaultSharedPreferences.getInt(NOTIFICATION_LAST_ID, 0);
                 String url;
-                if (Locale.getDefault().equals(Locale.GERMANY)) {
+                if (Locale.getDefault().getDisplayLanguage().equals(Locale.GERMANY.getDisplayLanguage())) {
                     url = String.format(NOTIFICATION_URL, "de");
                 } else {
                     url = String.format(NOTIFICATION_URL, "en");
