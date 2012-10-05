@@ -24,10 +24,14 @@ import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,13 +39,18 @@ import java.util.Map;
 public class FishtextSupplier implements ExtendedSMSSupplier {
 
 
-    public static final String SESSION_ID_COOKIE = "SESSIONID";
+    public static final String SESSION_ID_COOKIE = "sessionID";
     private FishtextOptionProvider provider;
-    private static final String ENCODING = "UTF-8";
+    private static final String ENCODING = "ISO-8859-1";
 
     private static final String BASE_URL = "http://www.fishtext.mobi";
     private static final String LOGIN_URL = BASE_URL + "/cgi-bin/mobi/account";
+    private static final String BALANCE_URL = BASE_URL + "/cgi-bin/mobi/sendMessage.cgi";
     private static final String LOGIN_BODY = "action=login&_sp_errorJS=1&_sp_tooltip_init=1&mobile=%s&password=%s";
+    private static final String SEND_MESSAGE_URL = BASE_URL + "/SendSMS/SendSMS";
+    private static final String SEND_BODY = "action=Send&SA=%s&DR=1&ST=1&RN=%s&M5a64cbce520cbb2398160565ebf60e97=%s";
+
+
     private String sessionID;
 
 
@@ -59,7 +68,7 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
             smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
-        sessionID = UrlConnectionFactory.findCookieByName(headerFields, SESSION_ID_COOKIE);
+        sessionID = UrlConnectionFactory.findCookieByName(headerFields, SESSION_ID_COOKIE.toUpperCase());
         if (sessionID == null || sessionID.equals("")) {
             SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
             smsActionResult.setRetryMakesSense(false);
@@ -70,22 +79,88 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
 
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return null;
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
+        return refreshInformations(true);
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return null;
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
+        return refreshInformations(false);
+    }
+
+
+    private synchronized SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) throws IOException {
+        if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
+                return result;
+            }
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_URL);
+        factory.setCookies(new ArrayList<String>() {
+            {
+                add(sessionID);
+            }
+
+        });
+        InputStream inputStream = factory.create().getInputStream();
+        Document parse = Jsoup.parse(inputStream, "UTF-8", "");
+        String text = parse.select("#balanceCounter").text();
+        if (text != null && !text.equals("")) {
+            text = String.format(provider.getTextByResourceId(R.string.text_balance), text);
+            return SMSActionResult.NO_ERROR(text);
+        }
+        return SMSActionResult.UNKNOWN_ERROR();
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws
+            IOException, NumberFormatException {
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(SEND_MESSAGE_URL);
+        factory.setCookies(new ArrayList<String>() {
+            {
+                add(sessionID);
+            }
+
+        });
+        StringBuilder receiverListBuilder = new StringBuilder();
+        for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
+            String receiver = receivers.get(i).getReceiverNumber();
+            receiverListBuilder.append(receiver);
+            if (i + 1 != receivers.size()) {
+                receiverListBuilder.append(",");
+            }
+        }
+        int sendType = findSendMethod(spinnerText);
+        HttpURLConnection urlConnection = factory.writeBody(String.format(SEND_BODY, sendType, receiverListBuilder.toString(), URLEncoder.encode(smsText, ENCODING)));
+        InputStream inputStream = urlConnection.getInputStream();
+        String s = UrlConnectionFactory.inputStream2DebugString(inputStream);
+//
+        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(s), receivers);
+
     }
 
     @Override
     public OptionProvider getProvider() {
         return provider;
     }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        int sendType = 0;//SOURCE_IDENTIFIER;
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                sendType = i;
+                break;
+            }
+        }
+
+        return sendType;
+    }
+
 }

@@ -503,4 +503,5 @@ fileName: strings.xml
     <string name="text_need_account_long">You want to create a new account and want to support further development of
         SMSoIP. Please create an account by this link.
     </string>
+    <string name="text_balance">Balance: %1$s</string>
 </resources>

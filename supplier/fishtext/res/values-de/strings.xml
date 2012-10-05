@@ -31,4 +31,5 @@
     <string name="text_need_account_long">Du willst einen Account anlegen und gleichzeitig die Weiterentwicklung von
         SMSoIP unterstützen. Dann nutze diesen Link, um dich anzumelden.
     </string>
+    <string name="text_balance">Guthaben: %1$s</string>
 </resources>
