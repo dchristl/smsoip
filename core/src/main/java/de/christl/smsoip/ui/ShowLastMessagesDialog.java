@@ -127,7 +127,7 @@ public class ShowLastMessagesDialog extends Dialog {
                     messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
                     messageView.setPadding(50, 5, 20, 20);
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    layoutParams.setMargins(50, 0, 0, 0);
+                    layoutParams.setMargins(50, 5, 0, 0);
                     messageView.setLayoutParams(layoutParams);
                     messageView.setTextColor(Color.parseColor("#0014F0"));
                     messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_left));
@@ -137,7 +137,7 @@ public class ShowLastMessagesDialog extends Dialog {
                     messageView.setTextColor(Color.parseColor("#6400F0"));
                     messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_right));
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    layoutParams.setMargins(0, 0, 50, 0);
+                    layoutParams.setMargins(0, 5, 50, 0);
                     messageView.setLayoutParams(layoutParams);
                 }
 
