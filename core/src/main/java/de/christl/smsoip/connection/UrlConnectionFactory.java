@@ -126,12 +126,19 @@ public class UrlConnectionFactory {
         return returnFromServer.toString();
     }
 
+    /**
+     * find the cookie by given name, the cookie must use uppercase letters
+     *
+     * @param headerFields
+     * @param cookieName
+     * @return
+     */
     public static String findCookieByName(Map<String, List<String>> headerFields, String cookieName) {
         for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
             String cookieList = stringListEntry.getKey();
             if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                 for (String cookie : stringListEntry.getValue()) {
-                    if (cookie != null && cookie.toUpperCase().startsWith(cookieName + "=")) {
+                    if (cookie != null && cookie.toUpperCase().startsWith(cookieName.toUpperCase() + "=")) {
                         return cookie;
                     }
                 }
