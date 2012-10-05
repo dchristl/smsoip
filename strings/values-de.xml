@@ -506,8 +506,8 @@ fileName: strings.xml
 
 <resources>
     <string-array name="array_spinner">
-        <item>Anonym</item>
         <item>Mit Absenderkennung</item>
+        <item>Anonym</item>
     </string-array>
     <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'

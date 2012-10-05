@@ -491,8 +491,8 @@ fileName: strings.xml
 
 <resources>
     <string-array name="array_spinner">
-        <item>Anonymous</item>
         <item>With source identifier</item>
+        <item>Anonymous</item>
     </string-array>
     <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
         like \'00491721234567\'
