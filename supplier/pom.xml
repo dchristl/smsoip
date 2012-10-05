@@ -40,7 +40,7 @@
         <module>smsde</module>
         <module>cherrysms</module>
         <module>innosend</module>
-        <module>directbox</module>
+        <module>fishtext</module>
     </modules>
 
     <dependencies>

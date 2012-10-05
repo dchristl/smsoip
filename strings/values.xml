@@ -466,7 +466,7 @@ fileName: strings.xml
 </resources>
 
 <!--String resources for:
-project: directbox
+project: fishtext
 values folder: values
 fileName: strings.xml
 -->
@@ -490,7 +490,17 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_login_error">Login failure, bad username or password. Please check if your username includes the
-        domain \'@directbox.com\'.
+    <string-array name="array_spinner">
+        <item>Anonymous</item>
+        <item>With source identifier</item>
+    </string-array>
+    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+        like \'00491721234567\'
+    </string>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_need_account">No account yet?</string>
+    <string name="text_need_account_long">You want to create a new account and want to support further development of
+        SMSoIP. Please create an account by this link.
     </string>
 </resources>

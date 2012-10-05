@@ -16,14 +16,14 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.directbox;
+package de.christl.smsoip.supplier.fishtext;
 
 import android.graphics.drawable.Drawable;
 import de.christl.smsoip.option.OptionProvider;
 
 
-public class DirectboxOptionProvider extends OptionProvider {
-    private static final String PROVIDER_NAME = "Directbox";
+public class FishtextOptionProvider extends OptionProvider {
+    private static final String PROVIDER_NAME = "Fishtext";
 
     @Override
     public Drawable getIconDrawable() {

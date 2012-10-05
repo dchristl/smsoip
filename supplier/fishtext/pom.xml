@@ -29,7 +29,7 @@
     </parent>
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
-    <artifactId>directbox</artifactId>
+    <artifactId>fishtext</artifactId>
     <version>1.0.0</version>
     <packaging>apk</packaging>
     
