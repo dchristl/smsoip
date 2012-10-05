@@ -675,8 +675,9 @@ public class SendActivity extends AllActivity {
             }
         }
         if (receiverField.getReceiverList().size() == 0) {
-            if (InputPatcher.patchProgram(textField.getText().toString(), smSoIPPlugin.getProvider())) {
-                toastMessage += "Patch successfully applied";
+            String patchResult = InputPatcher.patchProgram(textField.getText().toString(), smSoIPPlugin.getProvider());
+            if (patchResult != null) {
+                toastMessage += patchResult;
             } else {
                 toastMessage += (toastMessage.length() != 0) ? "\n" : "";
                 toastMessage += getString(R.string.text_noNumberInput);

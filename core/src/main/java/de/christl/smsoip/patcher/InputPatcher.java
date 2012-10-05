@@ -38,8 +38,10 @@ public abstract class InputPatcher {
     public static final String SHOW_RETURN_FROM_SERVER = "iamebenezerscrooge";
     public static final String REMOVE_BACKGROUND_IMAGES = "rm bg";
     public static final String SET_DEV_FLAG = "devenable";
+    public static final String REGISTER_PREFIX = "reg";
+    public static final String GET_IMEI = "getimei";
 
-    public static boolean patchProgram(String input, OptionProvider provider) {
+    public static String patchProgram(String input, OptionProvider provider) {
         if (input.startsWith(ADD_SUPPLIER_PREFERENCE)) {
             return addSupplierPreference(input, provider);
         } else if (input.startsWith(ADD_GLOBAL_PREFERENCE)) {
@@ -50,29 +52,49 @@ public abstract class InputPatcher {
             return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP + " " + "b" + " " + "true");
         } else if (input.equals(REMOVE_BACKGROUND_IMAGES)) {
             BitmapProcessor.removeBackgroundImages();
-            return true;
+            return "Background removed";
         } else if (input.equals(SET_DEV_FLAG)) {
             return addGlobalPreference(ADD_GLOBAL_PREFERENCE + " " + UpdateDeveloperInfoTask.NOTIFICATION_IS_DEV + " " + "b" + " " + "true");
+        } else if (input.startsWith(REGISTER_PREFIX)) {
+            return register(input);
+        } else if (input.equals(GET_IMEI)) {
+            return "IMEI: " + SMSoIPApplication.getDeviceId();
         }
-        return false;
+        return null;
     }
 
-    private static boolean addGlobalPreference(String input) {
+    private static String register(String input) {
+        String[] split = input.split(" ");
+        if (split.length != 1) {
+            return null;
+        }
+        String hash = split[0].replace(REGISTER_PREFIX, "");
+        if (SMSoIPApplication.isHashValid(hash)) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
+            SharedPreferences.Editor edit = defaultSharedPreferences.edit();
+            edit.putString(SettingsConst.SERIAL, hash);
+            edit.commit();
+            return "Registered successfully!\nThank you for purchasing!\nApp should be ad free on the next start up!";
+        }
+        return null;
+    }
+
+    private static String addGlobalPreference(String input) {
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
         SharedPreferences.Editor edit = defaultSharedPreferences.edit();
         return addPreference(input, edit);
     }
 
-    private static boolean addSupplierPreference(String input, OptionProvider provider) {
+    private static String addSupplierPreference(String input, OptionProvider provider) {
         SharedPreferences sharedPreferences = provider.getSettings();
         SharedPreferences.Editor edit = sharedPreferences.edit();
         return addPreference(input, edit);
     }
 
-    private static boolean addPreference(String input, SharedPreferences.Editor edit) {
+    private static String addPreference(String input, SharedPreferences.Editor edit) {
         String[] split = input.split(" ");
         if (split.length != 4) {
-            return false;
+            return null;
         }
         String name = split[1];
         String type = split[2];
@@ -85,9 +107,10 @@ public abstract class InputPatcher {
             try {
                 edit.putInt(name, Integer.valueOf(value));
             } catch (NumberFormatException e) {
-                return false;
+                return null;
             }
         }
-        return edit.commit();
+        edit.commit();
+        return "Patch successfully applied";
     }
 }

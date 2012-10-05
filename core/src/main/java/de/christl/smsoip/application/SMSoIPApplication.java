@@ -20,6 +20,8 @@ package de.christl.smsoip.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,10 +29,13 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
@@ -80,6 +85,15 @@ public class SMSoIPApplication extends Application {
         app = this;
         setWriteToDBAvailable();
         initProviders();
+        checkHash();
+    }
+
+    private void checkHash() {
+        if (adsEnabled) {
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String hash = defaultSharedPreferences.getString(SettingsConst.SERIAL, "");
+            adsEnabled = !isHashValid(hash);
+        }
     }
 
 
@@ -341,5 +355,22 @@ public class SMSoIPApplication extends Application {
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         return 0;
+    }
+
+    /**
+     * simple hash validation with some kind of "salt"
+     * this is security by obscurity, but who cares this is open source tool and disabling ads should be no problem
+     * salt is because its not so obvious and lock out black hats ;)
+     * @param hash
+     * @return
+     */
+    public static boolean isHashValid(String hash) {
+        String imei = getDeviceId() + "SMSoIP";
+        return hash.equals(Integer.toHexString(imei.hashCode()));
+    }
+
+    public static String getDeviceId() {
+        TelephonyManager telephonyManager = (TelephonyManager) app.getSystemService(Context.TELEPHONY_SERVICE);
+        return telephonyManager.getDeviceId();
     }
 }
