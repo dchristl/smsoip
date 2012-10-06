@@ -41,6 +41,11 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
 
 
     public static final String SESSION_ID_COOKIE = "sessionID";
+    /**
+     * the message box name, seems to be different on accounts, but will not be checked really,
+     * if it could not be resolved this is the fallback (id of empty test account)
+     */
+    public static final String MESSAGE_BOX_NAME = "Md09f227bf5931a1d31893782d395ea15";
     private FishtextOptionProvider provider;
     private static final String ENCODING = "ISO-8859-1";
 
@@ -49,7 +54,7 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
     private static final String BALANCE_URL = BASE_URL + "/cgi-bin/mobi/sendMessage.cgi";
     private static final String LOGIN_BODY = "action=login&_sp_errorJS=1&_sp_tooltip_init=1&mobile=%s&password=%s";
     private static final String SEND_MESSAGE_URL = BASE_URL + "/SendSMS/SendSMS";
-    private static final String SEND_BODY = "action=Send&SA=%s&DR=1&ST=1&RN=%s&M5a64cbce520cbb2398160565ebf60e97=%s";
+    private static final String SEND_BODY = "action=Send&SA=%s&DR=1&ST=1&RN=%s&%s=%s";
 
 
     private String sessionID;
@@ -137,11 +142,34 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
             }
         }
         int sendType = findSendMethod(spinnerText);
-        HttpURLConnection urlConnection = factory.writeBody(String.format(SEND_BODY, sendType, receiverListBuilder.toString(), URLEncoder.encode(smsText, ENCODING)));
+        String messageBoxName = findMessageBoxName();
+        HttpURLConnection urlConnection = factory.writeBody(String.format(SEND_BODY, sendType, receiverListBuilder.toString(), messageBoxName, URLEncoder.encode(smsText, ENCODING)));
         InputStream inputStream = urlConnection.getInputStream();
         SMSActionResult smsActionResult = processReturnMessage(inputStream);
         return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
 
+    }
+
+    private String findMessageBoxName() {
+        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_URL);
+        factory.setCookies(new ArrayList<String>() {
+            {
+                add(sessionID);
+            }
+
+        });
+        Document parse;
+        try {
+            InputStream inputStream = factory.create().getInputStream();
+            parse = Jsoup.parse(inputStream, ENCODING, "");
+            String messageId = parse.select("#message").attr("name");
+            if (messageId != null && !messageId.equals("")) {
+                return messageId;
+            }
+        } catch (IOException e) {
+            return MESSAGE_BOX_NAME;
+        }
+        return MESSAGE_BOX_NAME;
     }
 
     static SMSActionResult processReturnMessage(InputStream inputStream) throws IOException {
