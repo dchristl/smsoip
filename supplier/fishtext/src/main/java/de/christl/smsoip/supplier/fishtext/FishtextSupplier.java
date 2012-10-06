@@ -26,6 +26,7 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,7 +105,7 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
 
         });
         InputStream inputStream = factory.create().getInputStream();
-        Document parse = Jsoup.parse(inputStream, "UTF-8", "");
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
         String text = parse.select("#balanceCounter").text();
         if (text != null && !text.equals("")) {
             text = String.format(provider.getTextByResourceId(R.string.text_balance), text);
@@ -138,10 +139,29 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
         int sendType = findSendMethod(spinnerText);
         HttpURLConnection urlConnection = factory.writeBody(String.format(SEND_BODY, sendType, receiverListBuilder.toString(), URLEncoder.encode(smsText, ENCODING)));
         InputStream inputStream = urlConnection.getInputStream();
-        String s = UrlConnectionFactory.inputStream2DebugString(inputStream);
-//
-        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(s), receivers);
+        SMSActionResult smsActionResult = processReturnMessage(inputStream);
+        return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
 
+    }
+
+    static SMSActionResult processReturnMessage(InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+        Elements result = parse.select("h1");
+        if (result.size() == 0) {
+            result = parse.select("h2");
+        }
+        Elements content = parse.select("p");
+        if (result.size() != 1 || content.size() != 1) { //don't know whats getting wrong here
+            return SMSActionResult.UNKNOWN_ERROR(parse.text());
+        }
+        String message = content.text();
+        if (!result.text().equals("Message sent")) {   //error occured
+            return SMSActionResult.UNKNOWN_ERROR(message);
+        }
+        return SMSActionResult.NO_ERROR(message);
     }
 
     @Override

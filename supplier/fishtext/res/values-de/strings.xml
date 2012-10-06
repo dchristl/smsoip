@@ -27,9 +27,5 @@
     </string>
     <string name="text_default_type">Standard Absendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_need_account">Noch keinen Account?</string>
-    <string name="text_need_account_long">Du willst einen Account anlegen und gleichzeitig die Weiterentwicklung von
-        SMSoIP unterstützen. Dann nutze diesen Link, um dich anzumelden.
-    </string>
     <string name="text_balance">Guthaben: %1$s</string>
 </resources>

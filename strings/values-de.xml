@@ -1,3 +1,9 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -15,14 +21,6 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values-de
-fileName: strings.xml
--->
-<?xml version="1.0" encoding="utf-8"?>
-
 
 <resources>
     <string name="button_send">Senden</string>
@@ -516,9 +514,5 @@ fileName: strings.xml
     </string>
     <string name="text_default_type">Standard Absendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_need_account">Noch keinen Account?</string>
-    <string name="text_need_account_long">Du willst einen Account anlegen und gleichzeitig die Weiterentwicklung von
-        SMSoIP unterstützen. Dann nutze diesen Link, um dich anzumelden.
-    </string>
     <string name="text_balance">Guthaben: %1$s</string>
 </resources>
