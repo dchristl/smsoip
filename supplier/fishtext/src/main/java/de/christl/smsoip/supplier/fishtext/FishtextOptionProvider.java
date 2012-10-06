@@ -79,4 +79,24 @@ public class FishtextOptionProvider extends OptionProvider {
         return out;
     }
 
+
+    @Override
+    public int getLengthDependentSMSCount(int textLength) {
+        if (textLength <= 160) {
+            return 1;
+        }
+        int smsCount = Math.round((textLength / 153));
+        smsCount = textLength % 153 == 0 ? smsCount : smsCount + 1;
+        return smsCount;
+    }
+
+    @Override
+    public int getTextMessageLength() {
+        return 153;
+    }
+
+    @Override
+    public int getMaxMessageCount() {
+        return 3;
+    }
 }
