@@ -20,6 +20,7 @@ package de.christl.smsoip.activities.settings.preferences;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.text.InputFilter;
@@ -117,7 +118,10 @@ public class TextModulePreference extends DialogPreference {
     protected View onCreateView(ViewGroup parent) {
         if (key == null) {
             View inflate = LayoutInflater.from(context).inflate(R.layout.lastlistem, null);
-            ((TextView) inflate.findViewById(R.id.addText)).setText(R.string.text_add_text_module);
+            TextView viewById = (TextView) inflate.findViewById(R.id.addText);
+            viewById.setText(R.string.text_add_text_module);
+            ColorStateList defaultColor = new TextView(getContext()).getTextColors();
+            viewById.setTextColor(defaultColor);
             return inflate;
         } else {
             return super.onCreateView(parent);
