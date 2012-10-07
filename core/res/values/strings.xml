@@ -206,4 +206,5 @@
     <string name="text_key">Key</string>
     <string name="text_value">Value</string>
     <string name="text_delete">Delete</string>
+    <string name="text_add_text_module">Add text module</string>
 </resources>

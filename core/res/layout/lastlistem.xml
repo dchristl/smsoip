@@ -23,6 +23,7 @@
               android:layout_height="?android:attr/listPreferredItemHeight" android:gravity="center"
               android:id="@+id/addAccount">
     <TextView
+            android:id="@+id/addText"
             android:background="#00ffffff"
             android:layout_width="wrap_content"
             android:paddingLeft="6dip"

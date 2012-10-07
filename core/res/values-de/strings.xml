@@ -218,4 +218,5 @@
     <string name="text_key">Schlüssel</string>
     <string name="text_value">Wert</string>
     <string name="text_delete">Löschen</string>
+    <string name="text_add_text_module">Textbaustein hinzufügen</string>
 </resources>

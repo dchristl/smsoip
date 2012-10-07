@@ -24,8 +24,11 @@ import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.TextModulePreferenceActivity;
@@ -48,6 +51,9 @@ public class TextModulePreference extends DialogPreference {
         this.context = context;
         this.key = key;
         this.value = value;
+        setTitle(key);
+        setSummary(value);
+        setNegativeButtonText(R.string.text_delete);
         init();
     }
 
@@ -56,21 +62,12 @@ public class TextModulePreference extends DialogPreference {
         this.context = context;
         this.key = null;
         this.value = null;
+        setNegativeButtonText(null);
         init();
     }
 
     private void init() {
-        if (key != null) {
-            setTitle(key);
-            setSummary(value);
-            setNegativeButtonText(R.string.text_delete);
-        } else {
-            setNegativeButtonText(null);
-        }
         setDialogLayoutResource(R.layout.textmodule);
-        setDefaultValue("1.0");
-        setPersistent(false);
-
     }
 
     @Override
@@ -115,4 +112,16 @@ public class TextModulePreference extends DialogPreference {
         }
         super.onClick(dialog, which);
     }
+
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        if (key == null) {
+            View inflate = LayoutInflater.from(context).inflate(R.layout.lastlistem, null);
+            ((TextView) inflate.findViewById(R.id.addText)).setText(R.string.text_add_text_module);
+            return inflate;
+        } else {
+            return super.onCreateView(parent);
+        }
+    }
+
 }
