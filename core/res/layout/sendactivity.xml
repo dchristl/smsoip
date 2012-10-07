@@ -81,7 +81,7 @@
         <TableRow android:layout_weight="1.0">
             <RelativeLayout android:layout_span="5"
                     >
-                <EditText
+                <de.christl.smsoip.ui.SMSInputEditText
                         android:id="@+id/textInput"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
@@ -90,7 +90,7 @@
                         android:textSize="15dp"
                         android:gravity="top|left"
                         >
-                </EditText>
+                </de.christl.smsoip.ui.SMSInputEditText>
                 <ImageView
                         android:id="@+id/viewToggleUp"
                         android:layout_width="wrap_content"

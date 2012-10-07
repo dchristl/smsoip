@@ -103,6 +103,8 @@ public class ProviderPreferences extends PreferenceActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        backgroundImage.setCallback(null);
+        if (backgroundImage != null) {
+            backgroundImage.setCallback(null);
+        }
     }
 }

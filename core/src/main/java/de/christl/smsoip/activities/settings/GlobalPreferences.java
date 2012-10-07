@@ -321,6 +321,19 @@ public class GlobalPreferences extends PreferenceActivity {
         defaultAreaCode.setSummary(R.string.text_area_code_description);
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
+        PreferenceScreen textModulePreference = getPreferenceManager().createPreferenceScreen(this);
+        textModulePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent pref = new Intent(GlobalPreferences.this, TextModulePreferenceActivity.class);
+                startActivity(pref);
+                return true;
+            }
+        });
+
+        textModulePreference.setTitle(R.string.text_text_module_preference);
+        textModulePreference.setSummary(R.string.text_text_module_preference_description);
+        root.addPreference(textModulePreference);
     }
 
     private Preference.OnPreferenceChangeListener getListener() {

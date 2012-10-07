@@ -42,4 +42,6 @@ public abstract class SettingsConst {
     public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
     public static final String SERIAL = "registered.serial";
 
+    public static final String TEXT_MODULES_PREFIX = "text.module.";
+
 }

@@ -43,7 +43,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.send.Mode;
@@ -68,10 +67,7 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
-import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
-import de.christl.smsoip.ui.ChosenContactsDialog;
-import de.christl.smsoip.ui.EmoImageDialog;
-import de.christl.smsoip.ui.ShowLastMessagesDialog;
+import de.christl.smsoip.ui.*;
 import org.acra.ACRA;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -87,7 +83,7 @@ public class SendActivity extends AllActivity {
 
 
     private NameNumberSuggestField receiverField;
-    private EditText textField;
+    private SMSInputEditText textField;
     private TextView smssigns;
     private Spinner spinner;
 
@@ -149,7 +145,7 @@ public class SendActivity extends AllActivity {
             }
             float fontSize = settings.getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
             ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
-
+            textField.refreshTextModules();
             optionsCalled = false;
         }
         if (providerOptionsCalled) {
@@ -790,13 +786,12 @@ public class SendActivity extends AllActivity {
 
 
     private void setTextArea() {
-        textField = (EditText) findViewById(R.id.textInput);
-        float fontSize = settings.getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
-        ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
+        textField = (SMSInputEditText) findViewById(R.id.textInput);
         textField.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //do nothing
+
             }
 
             @Override
@@ -808,9 +803,10 @@ public class SendActivity extends AllActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                //do nothing
+
             }
         });
+
     }
 
     public void updateSMScounter() {

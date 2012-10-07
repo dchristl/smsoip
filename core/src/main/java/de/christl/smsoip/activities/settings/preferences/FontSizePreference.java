@@ -47,6 +47,7 @@ public class FontSizePreference extends DialogPreference {
         setSummary(R.string.text_font_size_description);
         setDialogTitle(R.string.text_font_size);
         setDialogMessage(R.string.text_font_size_dialog_description);
+        setNegativeButtonText(null);
         setPersistent(false);
     }
 

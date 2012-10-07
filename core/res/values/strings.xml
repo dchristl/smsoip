@@ -200,4 +200,10 @@
     <string name="text_background_set_error">Error on setting background image.</string>
     <string name="text_no_last_message">No incoming messages</string>
     <string name="text_no_conversation">No conversation</string>
+    <string name="text_text_module_preference">Text modules</string>
+    <string name="text_text_module_preference_description">Maintain text modules for faster text input.
+    </string>
+    <string name="text_key">Key</string>
+    <string name="text_value">Value</string>
+    <string name="text_delete">Delete</string>
 </resources>
