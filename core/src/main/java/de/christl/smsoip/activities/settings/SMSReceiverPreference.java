@@ -18,38 +18,26 @@
 
 package de.christl.smsoip.activities.settings;
 
-import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.PreferenceScreen;
+import android.preference.RingtonePreference;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
-import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.util.BitmapProcessor;
 
 /**
  * managing all broadcast preferences
  */
-public class SMSReceiverPreference extends PreferenceActivity {
+public class SMSReceiverPreference extends BackgroundPreferenceActivity {
 
-
-    private Drawable backgroundImage;
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SMSoIPApplication.setCurrentActivity(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_sms_receiver_settings));
         setPreferenceScreen(initPreferences());
-        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     private PreferenceScreen initPreferences() {
@@ -91,18 +79,4 @@ public class SMSReceiverPreference extends PreferenceActivity {
         return root;
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (backgroundImage != null) {
-            backgroundImage.setCallback(null);
-        }
-    }
 }

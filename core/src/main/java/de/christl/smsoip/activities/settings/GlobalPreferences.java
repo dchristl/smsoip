@@ -23,8 +23,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.*;
@@ -47,7 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class GlobalPreferences extends PreferenceActivity {
+public class GlobalPreferences extends BackgroundPreferenceActivity {
 
 
     private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
@@ -60,13 +58,6 @@ public class GlobalPreferences extends PreferenceActivity {
 
 
     private Integer adjustment = 0;
-    private Drawable backgroundImage;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SMSoIPApplication.setCurrentActivity(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +69,6 @@ public class GlobalPreferences extends PreferenceActivity {
         } else {
             adjustment = (Integer) getIntent().getExtras().get(SettingsConst.EXTRA_ADJUSTMENT);
         }
-        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
 
@@ -396,20 +385,6 @@ public class GlobalPreferences extends PreferenceActivity {
         outState.putInt(SettingsConst.EXTRA_ADJUSTMENT, adjustment);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (backgroundImage != null) {
-            backgroundImage.setCallback(null);
-        }
-    }
 }
 
 

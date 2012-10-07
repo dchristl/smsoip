@@ -18,33 +18,21 @@
 
 package de.christl.smsoip.activities.settings;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.TextModulePreference;
 import de.christl.smsoip.activities.util.TextModuleUtil;
-import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.util.BitmapProcessor;
 
 import java.util.Map;
 
 /**
  * Handles the text modules (in preferences
  */
-public class TextModulePreferenceActivity extends PreferenceActivity {
-
-    private Drawable backgroundImage;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SMSoIPApplication.setCurrentActivity(this);
-    }
+public class TextModulePreferenceActivity extends BackgroundPreferenceActivity {
 
 
     @Override
@@ -52,8 +40,6 @@ public class TextModulePreferenceActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         setTitle(R.string.text_text_module_preference);
         setPreferenceScreen(initPreferences());
-        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     private PreferenceScreen initPreferences() {
@@ -86,12 +72,4 @@ public class TextModulePreferenceActivity extends PreferenceActivity {
         return root;
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (backgroundImage != null) {
-            backgroundImage.setCallback(null);
-        }
-    }
 }

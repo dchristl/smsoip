@@ -18,11 +18,8 @@
 
 package de.christl.smsoip.activities.settings;
 
-import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import de.christl.smsoip.R;
@@ -32,14 +29,13 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.util.BitmapProcessor;
 
 import java.util.List;
 
 /**
  * Prefernces for one provider
  */
-public class ProviderPreferences extends PreferenceActivity {
+public class ProviderPreferences extends BackgroundPreferenceActivity {
     public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
     private SMSoIPPlugin smsSupplier;
     public static final String PROVIDER_USERNAME = "provider.username";
@@ -47,14 +43,7 @@ public class ProviderPreferences extends PreferenceActivity {
     public static final String PROVIDER_DEFAULT_ACCOUNT = "provider.default.number";
     private PreferenceManager preferenceManager;
     private OptionProvider provider;
-    private Drawable backgroundImage;
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SMSoIPApplication.setCurrentActivity(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +57,6 @@ public class ProviderPreferences extends PreferenceActivity {
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
         preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
         setPreferenceScreen(initPreferences());
-        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     private PreferenceScreen initPreferences() {
@@ -93,18 +80,4 @@ public class ProviderPreferences extends PreferenceActivity {
         return smsSupplier.getSupplier();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
-        getWindow().setBackgroundDrawable(backgroundImage);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (backgroundImage != null) {
-            backgroundImage.setCallback(null);
-        }
-    }
 }

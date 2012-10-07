@@ -23,8 +23,9 @@ import android.preference.PreferenceManager;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Helper for saving and getting strings from SharedPreferences
@@ -35,7 +36,12 @@ public abstract class TextModuleUtil {
     private static SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
 
     public static Map<String, String> getTextModules() {
-        Map<String, String> out = new HashMap<String, String>();
+        Map<String, String> out = new TreeMap<String, String>(new Comparator<String>() {
+            @Override
+            public int compare(String s, String s1) {
+                return s.toUpperCase().compareTo(s1.toUpperCase());
+            }
+        });
         Map<String, ?> allPreferences = sharedPreferences.getAll();
         for (Map.Entry<String, ?> stringEntry : allPreferences.entrySet()) {
             String key = stringEntry.getKey();

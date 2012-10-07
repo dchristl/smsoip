@@ -63,13 +63,14 @@ public class TextModulePreference extends DialogPreference {
         if (key != null) {
             setTitle(key);
             setSummary(value);
+            setNegativeButtonText(R.string.text_delete);
         } else {
-
+            setNegativeButtonText(null);
         }
         setDialogLayoutResource(R.layout.textmodule);
         setDefaultValue("1.0");
         setPersistent(false);
-        setNegativeButtonText(R.string.text_delete);
+
     }
 
     @Override
