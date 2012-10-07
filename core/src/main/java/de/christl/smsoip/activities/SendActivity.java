@@ -803,7 +803,7 @@ public class SendActivity extends AllActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                textField.processReplacement();
             }
         });
 
