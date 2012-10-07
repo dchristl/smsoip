@@ -32,20 +32,20 @@ import java.util.Map;
 /**
  * Edittext handling the sms text
  */
-public class SMSInputEdittext extends EditText {
+public class SMSInputEdittexta extends EditText {
     private Map<String, String> textModules;
 
-    public SMSInputEditText(Context context) {
+    public SMSInputEdittexta(Context context) {
         super(context);
         init();
     }
 
-    public SMSInputEditText(Context context, AttributeSet attrs) {
+    public SMSInputEdittexta(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public SMSInputEditText(Context context, AttributeSet attrs, int defStyle) {
+    public SMSInputEdittexta(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
