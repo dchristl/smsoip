@@ -132,7 +132,7 @@ public class TextModulePreference extends DialogPreference {
                     toast.show();
                     return;
                 }
-                if (valueView.getText().toString().trim().length() > 0) {
+                if (valueView.getText().toString().trim().length() == 0) {
                     Toast toast = Toast.makeText(getContext(), R.string.text_empty_value, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
