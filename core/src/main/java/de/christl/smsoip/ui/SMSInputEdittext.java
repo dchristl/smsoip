@@ -21,8 +21,6 @@ package de.christl.smsoip.ui;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.christl.smsoip.R;
@@ -34,7 +32,7 @@ import java.util.Map;
 /**
  * Edittext handling the sms text
  */
-public class SMSInputEditText extends EditText {
+public class SMSInputEdittext extends EditText {
     private Map<String, String> textModules;
 
     public SMSInputEditText(Context context) {
@@ -56,44 +54,32 @@ public class SMSInputEditText extends EditText {
         float fontSize = PreferenceManager.getDefaultSharedPreferences(getContext()).getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
         ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
         refreshTextModules();
-        setImeActionLabel("unsp", EditorInfo.IME_ACTION_UNSPECIFIED);
-        setImeOptions(EditorInfo.IME_ACTION_UNSPECIFIED);
-        setImeActionLabel("Done", EditorInfo.IME_ACTION_DONE);
-        setImeOptions(EditorInfo.IME_ACTION_DONE);
-        setImeActionLabel("Sea", EditorInfo.IME_ACTION_SEARCH);
-        setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        setImeActionLabel("Send", EditorInfo.IME_ACTION_SEND);
-        setImeOptions(EditorInfo.IME_ACTION_SEND);
-        setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && textModules != null && !textModules.isEmpty()) {
-                    int cursor = getSelectionStart();
-                    String input = getText().toString();
-                    String stringBefore = input.substring(0, cursor);
-                    int lastSpace = stringBefore.lastIndexOf(" ");
-                    int lastNL = stringBefore.lastIndexOf("\n");
-                    int lastDivider = Math.max(lastNL, lastSpace);
-                    if (lastDivider == -1) {  //if the first word should replaced (normally does not start with space)
-                        lastDivider = 0;
-                    } else {
-                        lastDivider += 1;
-                    }
-                    String wordToCheck = input.substring(lastDivider, cursor);
+    }
 
-                    if (textModules.containsKey(wordToCheck)) {
-                        wordToCheck = textModules.get(wordToCheck);
-                        String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
-                        setText(newText);
-                        int newSelection = lastDivider + wordToCheck.length();
-                        setSelection(newText.length() < newSelection ? newText.length() : newSelection);
-                        return true;
-                    }
-
-                }
-                return false;
+    public void processReplacement() {
+        int cursor = getSelectionStart();
+        String input = getText().toString();
+        String lastKey = input.substring(cursor - 1 < 0 ? 0 : cursor - 1, cursor);
+        if (lastKey.equals(" ") || lastKey.equals("\n")) {
+            String stringBefore = input.substring(0, cursor - 1);
+            int lastSpace = stringBefore.lastIndexOf(" ");
+            int lastNL = stringBefore.lastIndexOf("\n");
+            int lastDivider = Math.max(lastNL, lastSpace);
+            if (lastDivider == -1) {  //if the first word should replaced (normally does not start with space)
+                lastDivider = 0;
+            } else {
+                lastDivider += 1;
             }
-        });
+            String wordToCheck = input.substring(lastDivider, cursor - 1);
+
+            if (textModules.containsKey(wordToCheck)) {
+                wordToCheck = textModules.get(wordToCheck);
+                String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
+                setText(newText);
+                int newSelection = lastDivider + wordToCheck.length();
+                setSelection(newText.length() < newSelection ? newText.length() : newSelection);
+            }
+        }
     }
 
 
