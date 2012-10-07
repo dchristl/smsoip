@@ -18,9 +18,11 @@
 
 package de.christl.smsoip.activities.settings.preferences;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.text.InputFilter;
@@ -28,12 +30,16 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.TextModulePreferenceActivity;
 import de.christl.smsoip.activities.util.TextModuleUtil;
+
+import java.util.Map;
 
 /**
  * DialogPreference for one text module
@@ -44,23 +50,26 @@ public class TextModulePreference extends DialogPreference {
     private Context context;
     private final String key;
     private final String value;
+    private Map<String, String> textModules;
     private EditText valueView;
     private EditText keyView;
 
-    public TextModulePreference(Context context, String key, String value) {
+    public TextModulePreference(Context context, String key, String value, Map<String, String> textModules) {
         super(context, null);
         this.context = context;
         this.key = key;
         this.value = value;
+        this.textModules = textModules;
         setTitle(key);
         setSummary(value);
         setNegativeButtonText(R.string.text_delete);
         init();
     }
 
-    public TextModulePreference(TextModulePreferenceActivity context) {
+    public TextModulePreference(TextModulePreferenceActivity context, Map<String, String> textModules) {
         super(context, null);
         this.context = context;
+        this.textModules = textModules;
         this.key = null;
         this.value = null;
         setNegativeButtonText(null);
@@ -79,7 +88,7 @@ public class TextModulePreference extends DialogPreference {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 for (int i = start; i < end; i++) {
-                    if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or characters allowed
                         return "";
                     }
                 }
@@ -98,20 +107,51 @@ public class TextModulePreference extends DialogPreference {
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
-            String newKey = keyView.getText().toString();
-            String newValue = valueView.getText().toString();
-            TextModuleUtil.updateValue(key, newKey, newValue);
-            callChangeListener(null);
-            if (key != null) {//new one does not need update
-                setSummary(newValue);
-                setTitle(newKey);
-            }
-        } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+        if (which == DialogInterface.BUTTON_NEGATIVE) {
             TextModuleUtil.removeKey(key);
             callChangeListener(null);
         }
-        super.onClick(dialog, which);
+
+    }
+
+    @Override
+    protected void showDialog(Bundle state) {
+        super.showDialog(state);
+        Button pos = ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE);
+        pos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newKey = keyView.getText().toString();
+                if (newKey.length() < 2) {
+                    Toast toast = Toast.makeText(getContext(), R.string.text_key_too_short, Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                if (!newKey.equals(key) && textModules.containsKey(newKey)) {
+                    Toast toast = Toast.makeText(getContext(), R.string.text_key_already_exist, Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                if (valueView.getText().toString().trim().length() > 0) {
+                    Toast toast = Toast.makeText(getContext(), R.string.text_empty_value, Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                String newValue = valueView.getText().toString();
+                TextModuleUtil.updateValue(key, newKey, newValue);
+                callChangeListener(null);
+                if (key != null) {//new one does not need update
+                    setSummary(newValue);
+                    setTitle(newKey);
+                }
+                getDialog().dismiss();
+            }
+        });
+    }
+
+    @Override
+    protected void onDialogClosed(boolean positiveResult) {
+        super.onDialogClosed(positiveResult);
     }
 
     @Override

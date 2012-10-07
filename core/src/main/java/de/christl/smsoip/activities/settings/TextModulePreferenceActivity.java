@@ -60,13 +60,13 @@ public class TextModulePreferenceActivity extends BackgroundPreferenceActivity {
         for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {
             String key = stringStringEntry.getKey();
             String value = stringStringEntry.getValue();
-            TextModulePreference pref = new TextModulePreference(this, key, value);
+            TextModulePreference pref = new TextModulePreference(this, key, value, textModules);
 
             pref.setOnPreferenceChangeListener(onPreferenceChangeListener);
             root.addPreference(pref);
         }
 
-        DialogPreference addNew = new TextModulePreference(this);
+        DialogPreference addNew = new TextModulePreference(this, textModules);
         addNew.setOnPreferenceChangeListener(onPreferenceChangeListener);
         root.addPreference(addNew);
         return root;

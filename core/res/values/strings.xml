@@ -207,4 +207,7 @@
     <string name="text_value">Value</string>
     <string name="text_delete">Delete</string>
     <string name="text_add_text_module">Add text module</string>
+    <string name="text_key_too_short">The key must have at least two characters.</string>
+    <string name="text_key_already_exist">The key already exists.</string>
+    <string name="text_empty_value">No value entered.</string>
 </resources>
