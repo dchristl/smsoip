@@ -35,8 +35,6 @@ fileName: strings.xml
     <string name="text_optionTitle">Options for</string>
     <string name="text_username">Username</string>
     <string name="text_password">Password</string>
-    <string name="text_signature">Signature</string>
-    <string name="text_signature_description">Signature, that can be appended to message.</string>
     <string name="button_save">Save</string>
     <string name="hint_receiverField">Name or Number</string>
     <string name="hint_smsText">Message</string>
@@ -207,6 +205,16 @@ fileName: strings.xml
     <string name="text_background_set_error">Error on setting background image.</string>
     <string name="text_no_last_message">No incoming messages</string>
     <string name="text_no_conversation">No conversation</string>
+    <string name="text_text_module_preference">Text modules</string>
+    <string name="text_text_module_preference_description">Maintain text modules for faster text input.
+    </string>
+    <string name="text_key">Key</string>
+    <string name="text_value">Value</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_add_text_module">Add text module</string>
+    <string name="text_key_too_short">The key must have at least two characters.</string>
+    <string name="text_key_already_exist">The key already exists.</string>
+    <string name="text_empty_value">No value entered.</string>
 </resources>
 
 <!--String resources for:

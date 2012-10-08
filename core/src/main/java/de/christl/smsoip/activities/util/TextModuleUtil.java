@@ -36,6 +36,15 @@ public abstract class TextModuleUtil {
     private static SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
 
     public static Map<String, String> getTextModules() {
+        //put the old signature as a new text module, this can be deleted in further releases
+        String signature = sharedPreferences.getString(SettingsConst.GLOBAL_SIGNATURE, "");
+        if (!signature.equals("")) {
+            SharedPreferences.Editor edit = sharedPreferences.edit();
+            edit.remove(SettingsConst.GLOBAL_SIGNATURE);
+            edit.putString(SettingsConst.TEXT_MODULES_PREFIX + "sig", signature);
+            edit.commit();
+        }
+
         Map<String, String> out = new TreeMap<String, String>(new Comparator<String>() {
             @Override
             public int compare(String s, String s1) {

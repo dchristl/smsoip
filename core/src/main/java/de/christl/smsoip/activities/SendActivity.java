@@ -33,7 +33,6 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -649,10 +648,11 @@ public class SendActivity extends AllActivity {
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textField.setText(textField.getText() + " " + settings.getString(SettingsConst.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
-                int position = textField.length();
-                Editable etext = textField.getText();
-                Selection.setSelection(etext, position);
+                //TODO replace by new
+//                textField.setText(textField.getText() + " " + settings.getString(SettingsConst.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
+//                int position = textField.length();
+//                Editable etext = textField.getText();
+//                Selection.setSelection(etext, position);
             }
         });
     }

@@ -275,12 +275,6 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         PreferenceCategory mainCategory = new PreferenceCategory(this);
         mainCategory.setTitle(R.string.text_category_base);
         root.addPreference(mainCategory);
-        EditTextPreference editTextPref = new EditTextPreference(this);
-        editTextPref.setDialogTitle(R.string.text_signature);
-        editTextPref.setKey(SettingsConst.GLOBAL_SIGNATURE);
-        editTextPref.setTitle(R.string.text_signature);
-        editTextPref.setSummary(R.string.text_signature_description);
-        root.addPreference(editTextPref);
         final ListPreference listPref = new ListPreference(this);
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.size() > 1) {

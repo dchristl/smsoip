@@ -33,9 +33,6 @@ fileName: strings.xml
     <string name="text_optionTitle">Optionen für</string>
     <string name="text_username">Benutzername</string>
     <string name="text_password">Passwort</string>
-    <string name="text_signature">Signatur</string>
-    <string name="text_signature_description">Die Signatur, die zur Nachricht hinzugefügt werden kann.
-    </string>
     <string name="button_save">Speichern</string>
     <string name="hint_receiverField">Name oder Nummer</string>
     <string name="hint_smsText">Nachricht</string>
@@ -217,6 +214,16 @@ fileName: strings.xml
     <string name="text_background_set_error">Fehler beim Setzen des Hintergrundes aufgetreten.</string>
     <string name="text_no_last_message">Keine eingehenden Nachrichten</string>
     <string name="text_no_conversation">Keine Konversation</string>
+    <string name="text_text_module_preference">Textbausteine</string>
+    <string name="text_text_module_preference_description">Verwalte deine Textbausteine für schnellere Texteingabe.
+    </string>
+    <string name="text_key">Schlüssel</string>
+    <string name="text_value">Wert</string>
+    <string name="text_delete">Löschen</string>
+    <string name="text_add_text_module">Textbaustein hinzufügen</string>
+    <string name="text_key_too_short">Der Schlüssel muss mindestens aus zwei Zeichen bestehen.</string>
+    <string name="text_key_already_exist">Der Schlüssel existiert bereits.</string>
+    <string name="text_empty_value">Keinen Wert eingegeben.</string>
 </resources>
 
 <!--String resources for:

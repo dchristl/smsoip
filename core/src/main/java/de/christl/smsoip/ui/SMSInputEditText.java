@@ -77,7 +77,7 @@ public class SMSInputEditText extends EditText {
                 String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
                 setText(newText);
                 int newSelection = lastDivider + wordToCheck.length();
-                setSelection(newText.length() < newSelection ? newText.length() : newSelection);
+                setSelection(getText().length() < newSelection ? getText().length() : newSelection);
             }
         }
     }

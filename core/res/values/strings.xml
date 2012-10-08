@@ -28,8 +28,6 @@
     <string name="text_optionTitle">Options for</string>
     <string name="text_username">Username</string>
     <string name="text_password">Password</string>
-    <string name="text_signature">Signature</string>
-    <string name="text_signature_description">Signature, that can be appended to message.</string>
     <string name="button_save">Save</string>
     <string name="hint_receiverField">Name or Number</string>
     <string name="hint_smsText">Message</string>
