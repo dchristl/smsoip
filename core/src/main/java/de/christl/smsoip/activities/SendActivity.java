@@ -102,6 +102,7 @@ public class SendActivity extends AllActivity {
     private static final int GLOBAL_OPTION = 34;
     private static final int OPTION_SWITCH_ACCOUNT = 35;
     private static final int DIALOG_SWITCH_ACCOUNT = 36;
+    private static final int DIALOG_TEXT_MODULES = 37;
 
     private SharedPreferences settings;
     private ImageButton searchButton;
@@ -648,11 +649,15 @@ public class SendActivity extends AllActivity {
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO replace by new
-//                textField.setText(textField.getText() + " " + settings.getString(SettingsConst.GLOBAL_SIGNATURE, "Sent by SMSoIP"));
-//                int position = textField.length();
-//                Editable etext = textField.getText();
-//                Selection.setSelection(etext, position);
+                Map<String, String> textModules = textField.getTextModules();
+                if (textModules.size() > 1) {
+                    showDialog(DIALOG_TEXT_MODULES);
+                } else if (textModules.size() == 1) {
+                    for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {
+                        textField.insertText(stringStringEntry.getValue()); //its only one in this loop, so do not break
+                    }
+                }
+
             }
         });
     }
@@ -1158,6 +1163,20 @@ public class SendActivity extends AllActivity {
         Dialog dialog;
         ErrorReporterStack.put(LogConst.ON_CREATE_DIALOG + id);
         switch (id) {
+            case DIALOG_TEXT_MODULES:
+                Map<String, String> modules = textField.getTextModules();
+                final CharSequence[] textModules = modules.values().toArray(new CharSequence[modules.size()]);
+
+                AlertDialog.Builder textModulesBuilder = new AlertDialog.Builder(this);
+                textModulesBuilder.setItems(textModules, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        textField.insertText(textModules[item].toString());
+                        dialog.dismiss();
+
+                    }
+                });
+                dialog = textModulesBuilder.create();
+                break;
             case DIALOG_SMILEYS:
                 final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};
 

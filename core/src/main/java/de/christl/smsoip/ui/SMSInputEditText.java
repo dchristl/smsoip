@@ -75,6 +75,9 @@ public class SMSInputEditText extends EditText {
             if (textModules.containsKey(wordToCheck)) {
                 wordToCheck = textModules.get(wordToCheck);
                 String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
+                if (lastKey.equals(" ")) {
+                    newText += " ";
+                }
                 setText(newText);
                 int newSelection = lastDivider + wordToCheck.length();
                 setSelection(getText().length() < newSelection ? getText().length() : newSelection);
@@ -85,5 +88,20 @@ public class SMSInputEditText extends EditText {
 
     public void refreshTextModules() {
         textModules = TextModuleUtil.getTextModules();
+    }
+
+    public Map<String, String> getTextModules() {
+        return textModules;
+    }
+
+    public void insertText(String textToInsert) {
+        int cursor = hasFocus() ? getSelectionStart() : getText().length();
+        String input = getText().toString();
+        String stringBefore = cursor == 0 ? "" : input.substring(0, cursor);
+        String newText = stringBefore + textToInsert + input.substring(cursor);
+        setText(newText);
+        requestFocus();
+        int newSelection = (stringBefore + textToInsert).length();
+        setSelection(getText().length() < newSelection ? getText().length() : newSelection);
     }
 }

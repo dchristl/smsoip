@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.preference.Preference;
@@ -44,8 +45,21 @@ public class TextModulePreferenceActivity extends BackgroundPreferenceActivity {
 
     private PreferenceScreen initPreferences() {
         PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
-        Map<String, String> textModules = TextModuleUtil.getTextModules();
-        //TODO add explanation preference
+        PreferenceScreen textModuleExplanationPreference = getPreferenceManager().createPreferenceScreen(this);
+        textModuleExplanationPreference.setTitle(R.string.text_modules_explanation);
+        textModuleExplanationPreference.setSummary(R.string.text_modules_explanation_description);
+        textModuleExplanationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TextModulePreferenceActivity.this);
+                builder.setTitle(R.string.text_modules_explanation);
+                builder.setMessage(R.string.text_modules_explanation_description_full);
+                builder.setPositiveButton(R.string.text_ok, null);
+                builder.show();
+                return true;
+            }
+        });
+        root.addPreference(textModuleExplanationPreference);
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
         Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
@@ -57,6 +71,7 @@ public class TextModulePreferenceActivity extends BackgroundPreferenceActivity {
                 return true;
             }
         };
+        Map<String, String> textModules = TextModuleUtil.getTextModules();
         for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {
             String key = stringStringEntry.getKey();
             String value = stringStringEntry.getValue();

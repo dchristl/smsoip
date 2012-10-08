@@ -213,10 +213,23 @@
     <string name="text_text_module_preference_description">Verwalte deine Textbausteine für schnellere Texteingabe.
     </string>
     <string name="text_key">Schlüssel</string>
-    <string name="text_value">Wert</string>
-    <string name="text_delete">Löschen</string>
+    <string name="text_value">Schlüssel</string>
+    <string name="text_delete">Ersetzung</string>
     <string name="text_add_text_module">Textbaustein hinzufügen</string>
     <string name="text_key_too_short">Der Schlüssel muss mindestens aus zwei Zeichen bestehen.</string>
     <string name="text_key_already_exist">Der Schlüssel existiert bereits.</string>
     <string name="text_empty_value">Keinen Wert eingegeben.</string>
+    <string name="text_modules_explanation">Was sind Textbausteine?</string>
+    <string name="text_modules_explanation_description">Zeigt eine kleine Erklärung wofür Textbausteine da sind und wie
+        man sie benutzt.
+    </string>
+    <string name="text_modules_explanation_description_full">Textbausteine bestehen aus einem Schlüssel (Shortcut) und
+        einer Ersetzung. Diese helfen dabei häufig wiederkehrende Texte schneller einzugeben.\nIn SMSoIP werden die
+        Textbausteine für schnellere Eingaben in das Nachrichtenfeld genutzt und können auf drei Arten gestartet
+        werden:\n-durch Eingabe des Schlüssels, gefolgt von einem Leerzeichen\n-durch Eingabe des Schlüssels, gefolgt
+        von der Enter-Taste des Keyboards oder\n-durch Drücken des Pfeil-Knopfes rechts unterhalb des
+        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du indem du als Schlüssel ein kurze
+        Buchstabenfolge benutzt, die aber kein normales Wort ist, damit die Textbausteine nicht mit der normalen
+        Texteingabe kollidieren.
+    </string>
 </resources>

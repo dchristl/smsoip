@@ -201,11 +201,21 @@
     <string name="text_text_module_preference">Text modules</string>
     <string name="text_text_module_preference_description">Maintain text modules for faster text input.
     </string>
-    <string name="text_key">Key</string>
-    <string name="text_value">Value</string>
+    <string name="text_key">Shortcut</string>
+    <string name="text_value">Replacement</string>
     <string name="text_delete">Delete</string>
     <string name="text_add_text_module">Add text module</string>
-    <string name="text_key_too_short">The key must have at least two characters.</string>
-    <string name="text_key_already_exist">The key already exists.</string>
-    <string name="text_empty_value">No value entered.</string>
+    <string name="text_key_too_short">The shortcut must have at least two characters.</string>
+    <string name="text_key_already_exist">The shortcut already exists.</string>
+    <string name="text_empty_value">No replacement entered.</string>
+    <string name="text_modules_explanation">What is a text module?</string>
+    <string name="text_modules_explanation_description">Show a little explanation, text modules can used for.
+    </string>
+    <string name="text_modules_explanation_description_full">Text modules consist of a shortcut and a replacement. They
+        help you to enter often used text faster. \nIn SMSoIP they are used for faster inputs in the message textfiels
+        and can be invoked in three different ways:\n -By input of the shortcut followed by space\n-By input of the
+        shortcut followed by enter key or\n-By pressing the arrow button on the bottom of the message field.\nThe best
+        result you will get if you choose a short word as shortcut, that is not a normal word. So text modules do not
+        collide with normal text input.
+    </string>
 </resources>
