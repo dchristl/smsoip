@@ -48,7 +48,6 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Task for getting server informations and shows information in notification area
@@ -59,7 +58,6 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
     private static final String NOTIFICATION_LAST_UPDATE = "notification.last.update";
     public static final String NOTIFICATION_IS_DEV = "notification.is.dev";
 
-    private static final String NOTIFICATION_URL = "http://smsoip.funpic.de/messages/%s/info.xml";
     private static final String NOTIFICATION_URL_DEV = "http://smsoip.funpic.de/messages/dev/info.xml";
 
     private static final int ACTION_LINK = 1; //go to any url
@@ -123,12 +121,7 @@ public class UpdateDeveloperInfoTask extends AsyncTask<Void, Void, Void> {
             Calendar cal = Calendar.getInstance();
             if (cal.after(nextUpdateCal) || isDev) {
                 int lastId = defaultSharedPreferences.getInt(NOTIFICATION_LAST_ID, 0);
-                String url;
-                if (Locale.getDefault().getDisplayLanguage().equals(Locale.GERMANY.getDisplayLanguage())) {
-                    url = String.format(NOTIFICATION_URL, "de");
-                } else {
-                    url = String.format(NOTIFICATION_URL, "en");
-                }
+                String url = SMSoIPApplication.getApp().getResources().getString(R.string.notification_url);
                 if (isDev) {
                     url = NOTIFICATION_URL_DEV;
                 }

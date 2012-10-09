@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixAdViewListener;
 import de.christl.smsoip.R;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.application.SMSoIPApplication;
 
 /**
  * Simple listener handling visibility of ads by success/error
@@ -55,6 +55,7 @@ public class AdViewListener implements MobclixAdViewListener {
     @Override
     public void onFailedLoad(MobclixAdView mobclixAdView, int i) {
         mobclixAdView.setVisibility(View.VISIBLE);
+        final int storeId = SMSoIPApplication.getApp().getStoreId();
         if (imageView == null) {
             imageView = new ImageView(context);
             imageView.setBackgroundResource(R.drawable.ad_layer);
@@ -62,11 +63,13 @@ public class AdViewListener implements MobclixAdViewListener {
                 @Override
                 public void onClick(View v) {
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.ADFREE_MARKET_URL));
+                        String marketUrl = context.getResources().getStringArray(R.array.adfree_market_url)[storeId];
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
                         context.startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         //Market not available on device
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalPreferences.WEB_ADFREE_MARKET_URL));
+                        String alternativeMarketUrl = context.getResources().getStringArray(R.array.adfree_alternative)[storeId];
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alternativeMarketUrl));
                         context.startActivity(intent);
                     }
                 }

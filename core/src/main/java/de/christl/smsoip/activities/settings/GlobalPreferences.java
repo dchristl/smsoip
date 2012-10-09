@@ -42,16 +42,10 @@ import de.christl.smsoip.util.BitmapProcessor;
 import org.acra.ACRA;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class GlobalPreferences extends BackgroundPreferenceActivity {
 
-
-    private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
-    public static final String ADFREE_MARKET_URL = "market://details?id=de.christl.smsoip.adfree";
-    private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
-    public static final String WEB_ADFREE_MARKET_URL = "https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree";
     private static final int ACTIVITY_SELECT_IMAGE = 10;
 
     private ProcessImageAndSetBackgroundTask processImageAndSetBackgroundTask;
@@ -86,7 +80,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         miscCategory.setTitle(R.string.text_category_stuff);
         root.addPreference(miscCategory);
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
-        String uriString = Locale.getDefault().getDisplayLanguage().equals(Locale.GERMANY.getDisplayLanguage()) ? "https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version" : "https://sites.google.com/site/smsoip/home";
+        String uriString = getString(R.string.homepage);
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
                 .setData(Uri.parse(uriString)));
         intentPref.setTitle(R.string.text_visit_project_page);
@@ -98,11 +92,11 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:tcr87tEPUao"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.youtube_alternative)));
                     GlobalPreferences.this.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     //Youtube app not installed on device
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=tcr87tEPUao"));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.youtube_alternative)));
                     GlobalPreferences.this.startActivity(intent);
                 }
                 return true;
@@ -111,17 +105,20 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         youtubeIntent.setTitle(R.string.text_youtube_video);
         youtubeIntent.setSummary(R.string.text_youtube_video_description);
         root.addPreference(youtubeIntent);
-
+        final int storeId = SMSoIPApplication.getApp().getStoreId();
         PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
         pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+
+                    String marketUrl = getResources().getStringArray(R.array.market_plugin_url)[storeId];
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
                     GlobalPreferences.this.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     //Market not available on device
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
+                    String alternativeMarketUrl = getResources().getStringArray(R.array.market_alternative)[storeId];
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alternativeMarketUrl));
                     GlobalPreferences.this.startActivity(intent);
                 }
                 return true;
@@ -137,11 +134,13 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ADFREE_MARKET_URL));
+                        String marketUrl = getResources().getStringArray(R.array.adfree_market_url)[storeId];
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
                         GlobalPreferences.this.startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         //Market not available on device
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_ADFREE_MARKET_URL));
+                        String marketUrlAlternative = getResources().getStringArray(R.array.adfree_alternative)[storeId];
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrlAlternative));
                         GlobalPreferences.this.startActivity(intent);
                     }
                     return true;

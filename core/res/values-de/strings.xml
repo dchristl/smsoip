@@ -228,7 +228,7 @@
         Textbausteine für schnellere Eingaben in das Nachrichtenfeld genutzt und können auf drei Arten gestartet
         werden:\n-durch Eingabe des Schlüssels, gefolgt von einem Leerzeichen\n-durch Eingabe des Schlüssels, gefolgt
         von der Enter-Taste des Keyboards oder\n-durch Drücken des Pfeil-Knopfes rechts unterhalb des
-        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du indem du als Schlüssel ein kurze
+        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du, indem du als Schlüssel ein kurze
         Buchstabenfolge benutzt, die aber kein normales Wort ist, damit die Textbausteine nicht mit der normalen
         Texteingabe kollidieren.
     </string>
