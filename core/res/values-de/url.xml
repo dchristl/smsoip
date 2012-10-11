@@ -23,6 +23,11 @@
         <item>http://www.amazon.de/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin
         </item>
     </string-array>
+    <string-array name="visit_plugin_page_description">
+        <item>Finde mehr Plugins bei Google Play</item>
+        <item>Finde mehr Plugins bei AndroidPit</item>
+        <item>Finde mehr Plugins bei Amazon</item>
+    </string-array>
     <string-array name="market_alternative">
         <item>https://play.google.com/store/search?q=SMSoIP</item>
     </string-array>

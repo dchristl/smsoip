@@ -81,7 +81,6 @@ fileName: strings.xml
     <string name="text_visit_project_page">Homepage besuchen</string>
     <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen.</string>
     <string name="text_visit_plugin_page">Plugins suchen</string>
-    <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play.</string>
     <string name="text_donate_plugin_page">Werbung entfernen</string>
     <string name="text_donate_plugin_page_description">Entferne die Werbung und unterstütze die Weiterentwicklung durch
         Kauf des Donate Plugins.
@@ -233,12 +232,60 @@ fileName: strings.xml
         Textbausteine für schnellere Eingaben in das Nachrichtenfeld genutzt und können auf drei Arten gestartet
         werden:\n-durch Eingabe des Schlüssels, gefolgt von einem Leerzeichen\n-durch Eingabe des Schlüssels, gefolgt
         von der Enter-Taste des Keyboards oder\n-durch Drücken des Pfeil-Knopfes rechts unterhalb des
-        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du indem du als Schlüssel ein kurze
+        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du, indem du als Schlüssel ein kurze
         Buchstabenfolge benutzt, die aber kein normales Wort ist, damit die Textbausteine nicht mit der normalen
         Texteingabe kollidieren.
     </string>
 </resources>
 
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: url.xml
+-->
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string-array name="market_plugin_url">
+        <item>market://search?q=SMSoIP</item>
+        <item>http://www.androidpit.de/de/android/developer/2118568/Danny</item>
+        <item>http://www.amazon.de/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin
+        </item>
+    </string-array>
+    <string-array name="visit_plugin_page_description">
+        <item>Finde mehr Plugins bei Google Play</item>
+        <item>Finde mehr Plugins bei AndroidPit</item>
+        <item>Finde mehr Plugins bei Amazon</item>
+    </string-array>
+    <string-array name="market_alternative">
+        <item>https://play.google.com/store/search?q=SMSoIP</item>
+    </string-array>
+    <string-array name="adfree_market_url">
+        <item>market://details?id=de.christl.smsoip.adfree</item>
+        <item>http://www.androidpit.de/de/android/market/apps/app/de.christl.smsoip.adfree/SMSoIP-Donate-Plugin</item>
+    </string-array>
+    <string-array name="adfree_alternative">
+        <item>https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</item>
+    </string-array>
+    <string name="homepage">https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version</string>
+    <string name="notification_url">http://smsoip.funpic.de/messages/de/info.xml</string>
+</resources>
 <!--String resources for:
 project: gmx
 values folder: values-de

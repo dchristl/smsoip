@@ -117,6 +117,7 @@ public class TextModulePreference extends DialogPreference {
     @Override
     protected void showDialog(Bundle state) {
         super.showDialog(state);
+        keyView.requestFocus();
         Button pos = ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE);
         pos.setOnClickListener(new View.OnClickListener() {
             @Override

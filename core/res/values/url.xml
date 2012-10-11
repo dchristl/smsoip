@@ -24,6 +24,11 @@
         <item>http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin
         </item>
     </string-array>
+    <string-array name="visit_plugin_page_description">
+        <item>Find more plugins on Google Play</item>
+        <item>Find more plugins on AndroidPit</item>
+        <item>Find more plugins on Amazon</item>
+    </string-array>
     <string-array name="market_alternative">
         <item>https://play.google.com/store/search?q=SMSoIP</item>
     </string-array>
@@ -32,7 +37,7 @@
         <item>http://www.androidpit.com/en/android/market/apps/app/de.christl.smsoip.adfree/SMSoIP-Donate-Plugin</item>
     </string-array>
     <string-array name="adfree_alternative">
-        <item>http://www.androidpit.com/en/android/market/apps/app/de.christl.smsoip.adfree/SMSoIP-Donate-Plugin</item>
+        <item>https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</item>
     </string-array>
 
     <!--language dependent-->

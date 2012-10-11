@@ -125,7 +125,8 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             }
         });
         pluginIntent.setTitle(R.string.text_visit_plugin_page);
-        pluginIntent.setSummary(R.string.text_visit_plugin_page_description);
+        String visitPluginDescription = getResources().getStringArray(R.array.visit_plugin_page_description)[storeId];
+        pluginIntent.setSummary(visitPluginDescription);
         root.addPreference(pluginIntent);
 
         if (SMSoIPApplication.getApp().isAdsEnabled()) {

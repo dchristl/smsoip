@@ -70,7 +70,7 @@ public class SMSoIPApplication extends Application {
     private int versionNumber;
     private Integer installedPackages;
     private static Activity currentActivity;
-    private int storeId;
+    private int storeId = 0;
 
     public static Activity getCurrentActivity() {
         return currentActivity;
@@ -87,13 +87,12 @@ public class SMSoIPApplication extends Application {
     @Override
     public void onCreate() {
         ACRA.init(this);
-        PackageItemInfo packageItemInfo = null;
+        super.onCreate();
         try {
-            packageItemInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            PackageItemInfo packageItemInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
             storeId = ((ApplicationInfo) packageItemInfo).metaData.getInt("storeId");
         } catch (PackageManager.NameNotFoundException ignored) {
         }
-        super.onCreate();
         app = this;
         setWriteToDBAvailable();
         initProviders();
