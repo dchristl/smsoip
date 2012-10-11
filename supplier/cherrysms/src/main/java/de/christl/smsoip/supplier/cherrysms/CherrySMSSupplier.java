@@ -66,6 +66,9 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
         InputStream inputStream = httpURLConnection.getInputStream();
 
         String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
+        if (returnValue.equals("")) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
         int returnInt = Integer.parseInt(returnValue);
         if (returnInt == 10 || returnInt == 60) { //expect wrong receiver number, is better than check for credits
             return SMSActionResult.LOGIN_SUCCESSFUL();

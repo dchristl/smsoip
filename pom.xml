@@ -14,6 +14,11 @@
         <module>supplier</module>
         <module>adfree</module>
     </modules>
+
+    <properties>
+        <manifest.location>${project.basedir}/AndroidManifest.xml</manifest.location>
+        <classifier.name>Google</classifier.name>
+    </properties>
     <build>
         <pluginManagement>
             <plugins>
@@ -75,6 +80,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <androidManifestFile>${manifest.location}</androidManifestFile>
+                    <classifier>${classifier.name}</classifier>
                     <sign>
                         <debug>false</debug>
                     </sign>
