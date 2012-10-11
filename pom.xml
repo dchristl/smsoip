@@ -80,7 +80,6 @@
                 </executions>
                 <configuration>
                     <androidManifestFile>${manifest.location}</androidManifestFile>
-                    <classifier>${classifier.name}</classifier>
                     <sign>
                         <debug>false</debug>
                     </sign>
