@@ -29,9 +29,33 @@
         <artifactId>SMSoIP</artifactId>
         <version>2.6.0</version>
     </parent>
+    <profiles>
+        <profile>
+            <id>PLAY</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <classifier.name>google</classifier.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>ANDROIDPIT</id>
+            <properties>
+                <manifest.location>${project.basedir}/androidpit/AndroidManifest.xml</manifest.location>
+                <classifier.name>androidpit</classifier.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>AMAZON</id>
+            <properties>
+                <manifest.location>${project.basedir}/amazon/AndroidManifest.xml</manifest.location>
+                <classifier.name>amazon</classifier.name>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
-
         <dependency>
             <groupId>com.google.ads</groupId>
             <artifactId>admob</artifactId>
@@ -56,6 +80,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}-${classifier.name}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

@@ -17,7 +17,6 @@
 
     <properties>
         <manifest.location>${project.basedir}/AndroidManifest.xml</manifest.location>
-        <classifier.name>Google</classifier.name>
     </properties>
     <build>
         <pluginManagement>
