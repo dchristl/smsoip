@@ -43,7 +43,6 @@
             <id>ANDROIDPIT</id>
             <properties>
                 <classifier.name>androidpit</classifier.name>
-                <customerResources>${project.basedir}/androidpit/res</customerResources>
             </properties>
         </profile>
         <profile>

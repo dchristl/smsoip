@@ -17,8 +17,8 @@
   -->
 <resources>
     <string name="market_plugin_url">http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin</string>
-    <string name="visit_plugin_page_description">Find more plugins on AndroidPit</string>
+    <string name="visit_plugin_page_description">Find more plugins on Amazon</string>
     <string name="market_alternative">http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin</string>
-    <string name="adfree_market_url">market://details?id=de.christl.smsoip.adfree</string>
-    <string name="adfree_alternative">https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</string>
+    <!--<string name="adfree_market_url">market://details?id=de.christl.smsoip.adfree</string>-->
+    <!--<string name="adfree_alternative">https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</string>-->
 </resources>

@@ -1310,9 +1310,11 @@ public class SendActivity extends AllActivity {
     }
 
     private void showTooMuchReceiversToast() {
-        toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
-        toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
-        toast.show();
+        if (smSoIPPlugin != null) { //can be null on startup
+            toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
+            toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 
 
