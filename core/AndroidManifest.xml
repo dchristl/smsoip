@@ -32,7 +32,6 @@
     <application android:description="@string/description" android:hardwareAccelerated="true"
                  android:icon="@drawable/icon" android:label="@string/applicationName"
                  android:name=".application.SMSoIPApplication">
-        <meta-data android:name="storeId" android:value="0"/>
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
                   android:hardwareAccelerated="true" android:launchMode="singleTop"
                   android:name=".activities.SendActivity" android:theme="@style/Theme.Sherlock">

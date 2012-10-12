@@ -14,10 +14,26 @@
         <module>supplier</module>
         <module>adfree</module>
     </modules>
-
-    <properties>
-        <manifest.location>${project.basedir}/AndroidManifest.xml</manifest.location>
-    </properties>
+    <profiles>
+        <profile>
+            <id>PLAY</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>ANDROIDPIT</id>
+            <properties>
+                <overlay.directory>${project.basedir}/androidpit</overlay.directory>
+            </properties>
+        </profile>
+        <profile>
+            <id>AMAZON</id>
+            <properties>
+                <overlay.directory>${project.basedir}/amazon</overlay.directory>
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <pluginManagement>
             <plugins>
@@ -72,6 +88,7 @@
                             <goal>manifest-update</goal>
                         </goals>
                         <configuration>
+
                             <manifest>
                                 <versionName>${project.version}</versionName>
                             </manifest>
@@ -79,7 +96,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <androidManifestFile>${manifest.location}</androidManifestFile>
+                    <resourceOverlayDirectory>${overlay.directory}</resourceOverlayDirectory>
                     <sign>
                         <debug>false</debug>
                     </sign>

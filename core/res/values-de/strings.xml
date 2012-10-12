@@ -231,4 +231,6 @@
         Buchstabenfolge benutzt, die aber kein normales Wort ist, damit die Textbausteine nicht mit der normalen
         Texteingabe kollidieren.
     </string>
+    <string name="homepage">https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version</string>
+    <string name="notification_url">http://smsoip.funpic.de/messages/de/info.xml</string>
 </resources>

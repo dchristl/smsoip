@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteException;
@@ -70,7 +69,6 @@ public class SMSoIPApplication extends Application {
     private int versionNumber;
     private Integer installedPackages;
     private static Activity currentActivity;
-    private int storeId = 0;
 
     public static Activity getCurrentActivity() {
         return currentActivity;
@@ -80,19 +78,11 @@ public class SMSoIPApplication extends Application {
         SMSoIPApplication.currentActivity = currentActivity;
     }
 
-    public int getStoreId() {
-        return storeId;
-    }
 
     @Override
     public void onCreate() {
         ACRA.init(this);
         super.onCreate();
-        try {
-            PackageItemInfo packageItemInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            storeId = ((ApplicationInfo) packageItemInfo).metaData.getInt("storeId");
-        } catch (PackageManager.NameNotFoundException ignored) {
-        }
         app = this;
         setWriteToDBAvailable();
         initProviders();

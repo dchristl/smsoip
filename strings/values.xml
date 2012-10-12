@@ -1,3 +1,35 @@
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: storedependent.xml
+-->
+
+<resources>
+    <string name="market_plugin_url">market://search?q=SMSoIP</string>
+    <string name="visit_plugin_page_description">Find more plugins on Google Play</string>
+    <string name="market_alternative">https://play.google.com/store/search?q=SMSoIP</string>
+    <string name="adfree_market_url">market://details?id=de.christl.smsoip.adfree</string>
+    <string name="adfree_alternative">https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</string>
+</resources>
+
 <!--String resources for:
 project: SMSoIP-core
 values folder: values
@@ -222,56 +254,6 @@ fileName: strings.xml
         result you will get if you choose a short word as shortcut, that is not a normal word. So text modules do not
         collide with normal text input.
     </string>
-</resources>
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: url.xml
--->
-<!--
-  ~ Copyright (c) Danny Christl 2012.
-  ~     This file is part of SMSoIP.
-  ~
-  ~     SMSoIP is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     SMSoIP is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<resources>
-    <!--store and language dependent-->
-    <string-array name="market_plugin_url">
-        <item>market://search?q=SMSoIP</item>
-        <item>http://www.androidpit.com/en/android/developer/2118568/Danny</item>
-        <item>http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin
-        </item>
-    </string-array>
-    <string-array name="visit_plugin_page_description">
-        <item>Find more plugins on Google Play</item>
-        <item>Find more plugins on AndroidPit</item>
-        <item>Find more plugins on Amazon</item>
-    </string-array>
-    <string-array name="market_alternative">
-        <item>https://play.google.com/store/search?q=SMSoIP</item>
-    </string-array>
-    <string-array name="adfree_market_url">
-        <item>market://details?id=de.christl.smsoip.adfree</item>
-        <item>http://www.androidpit.com/en/android/market/apps/app/de.christl.smsoip.adfree/SMSoIP-Donate-Plugin</item>
-    </string-array>
-    <string-array name="adfree_alternative">
-        <item>https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</item>
-    </string-array>
-
-    <!--language dependent-->
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>
 
@@ -279,6 +261,7 @@ fileName: url.xml
     <string name="youtube_intent">vnd.youtube:tcr87tEPUao</string>
     <string name="youtube_alternative">http://www.youtube.com/watch?v=tcr87tEPUao</string>
 </resources>
+
 <!--String resources for:
 project: gmx
 values folder: values

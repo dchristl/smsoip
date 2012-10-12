@@ -42,14 +42,13 @@
         <profile>
             <id>ANDROIDPIT</id>
             <properties>
-                <manifest.location>${project.basedir}/androidpit/AndroidManifest.xml</manifest.location>
                 <classifier.name>androidpit</classifier.name>
+                <customerResources>${project.basedir}/androidpit/res</customerResources>
             </properties>
         </profile>
         <profile>
             <id>AMAZON</id>
             <properties>
-                <manifest.location>${project.basedir}/amazon/AndroidManifest.xml</manifest.location>
                 <classifier.name>amazon</classifier.name>
             </properties>
         </profile>

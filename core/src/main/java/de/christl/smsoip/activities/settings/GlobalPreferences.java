@@ -105,19 +105,18 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         youtubeIntent.setTitle(R.string.text_youtube_video);
         youtubeIntent.setSummary(R.string.text_youtube_video_description);
         root.addPreference(youtubeIntent);
-        final int storeId = SMSoIPApplication.getApp().getStoreId();
         PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
         pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 try {
 
-                    String marketUrl = getResources().getStringArray(R.array.market_plugin_url)[storeId];
+                    String marketUrl = getString(R.string.market_plugin_url);
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
                     GlobalPreferences.this.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     //Market not available on device
-                    String alternativeMarketUrl = getResources().getStringArray(R.array.market_alternative)[storeId];
+                    String alternativeMarketUrl = getString(R.string.market_alternative);
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alternativeMarketUrl));
                     GlobalPreferences.this.startActivity(intent);
                 }
@@ -125,7 +124,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             }
         });
         pluginIntent.setTitle(R.string.text_visit_plugin_page);
-        String visitPluginDescription = getResources().getStringArray(R.array.visit_plugin_page_description)[storeId];
+        String visitPluginDescription = getString(R.string.visit_plugin_page_description);
         pluginIntent.setSummary(visitPluginDescription);
         root.addPreference(pluginIntent);
 
@@ -135,12 +134,12 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     try {
-                        String marketUrl = getResources().getStringArray(R.array.adfree_market_url)[storeId];
+                        String marketUrl = getString(R.string.adfree_market_url);
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
                         GlobalPreferences.this.startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         //Market not available on device
-                        String marketUrlAlternative = getResources().getStringArray(R.array.adfree_alternative)[storeId];
+                        String marketUrlAlternative = getString(R.string.adfree_alternative);
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrlAlternative));
                         GlobalPreferences.this.startActivity(intent);
                     }
