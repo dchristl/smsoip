@@ -67,8 +67,6 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
-    private static final String APP_MARKET_URL = "market://search?q=SMSoIP";
-    private static final String WEB_MARKET_URL = "https://play.google.com/store/search?q=SMSoIP";
     private static AllActivity context;
     private Drawable backgroundImage;
 
@@ -249,11 +247,11 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_MARKET_URL));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.market_plugin_url)));
                     AllActivity.this.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     //Market not available on device
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_MARKET_URL));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.market_alternative)));
                     AllActivity.this.startActivity(intent);
                 }
                 killAll();
