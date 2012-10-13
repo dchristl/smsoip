@@ -146,7 +146,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
+    public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException {
         sessionCookies = new ArrayList<String>();
         String tmpUrl;
         tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
