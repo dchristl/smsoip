@@ -13,6 +13,7 @@
         <module>core</module>
         <module>supplier</module>
         <module>adfree</module>
+        <module>widget</module>
     </modules>
     <profiles>
         <profile>
@@ -36,6 +37,7 @@
     </profiles>
     <build>
         <pluginManagement>
+
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

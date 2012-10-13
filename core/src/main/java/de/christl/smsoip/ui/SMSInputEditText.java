@@ -21,11 +21,13 @@ package de.christl.smsoip.ui;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.util.TextModuleUtil;
+import org.acra.ACRA;
 
 import java.util.Map;
 
@@ -57,31 +59,36 @@ public class SMSInputEditText extends EditText {
     }
 
     public void processReplacement() {
-        int cursor = getSelectionStart();
-        String input = getText().toString();
-        String lastKey = input.substring(cursor - 1 < 0 ? 0 : cursor - 1, cursor);
-        if (lastKey.equals(" ") || lastKey.equals("\n")) {
-            String stringBefore = input.substring(0, cursor - 1);
-            int lastSpace = stringBefore.lastIndexOf(" ");
-            int lastNL = stringBefore.lastIndexOf("\n");
-            int lastDivider = Math.max(lastNL, lastSpace);
-            if (lastDivider == -1) {  //if the first word should replaced (normally does not start with space)
-                lastDivider = 0;
-            } else {
-                lastDivider += 1;
-            }
-            String wordToCheck = input.substring(lastDivider, cursor - 1);
-
-            if (textModules.containsKey(wordToCheck)) {
-                wordToCheck = textModules.get(wordToCheck);
-                String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
-                if (lastKey.equals(" ")) {
-                    newText += " ";
+        try {
+            int cursor = getSelectionStart();
+            String input = getText().toString();
+            String lastKey = input.substring(cursor - 1 < 0 ? 0 : cursor - 1, cursor);
+            if (lastKey.equals(" ") || lastKey.equals("\n")) {
+                String stringBefore = input.substring(0, cursor - 1);
+                int lastSpace = stringBefore.lastIndexOf(" ");
+                int lastNL = stringBefore.lastIndexOf("\n");
+                int lastDivider = Math.max(lastNL, lastSpace);
+                if (lastDivider == -1) {  //if the first word should replaced (normally does not start with space)
+                    lastDivider = 0;
+                } else {
+                    lastDivider += 1;
                 }
-                setText(newText);
-                int newSelection = lastDivider + wordToCheck.length();
-                setSelection(getText().length() < newSelection ? getText().length() : newSelection);
+                String wordToCheck = input.substring(lastDivider, cursor - 1);
+
+                if (textModules.containsKey(wordToCheck)) {
+                    wordToCheck = textModules.get(wordToCheck);
+                    String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
+                    if (lastKey.equals(" ")) {
+                        newText += " ";
+                    }
+                    setText(newText);
+                    int newSelection = lastDivider + wordToCheck.length();
+                    setSelection(getText().length() < newSelection ? getText().length() : newSelection);
+                }
             }
+        } catch (Exception e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            ACRA.getErrorReporter().handleSilentException(e);
         }
     }
 
@@ -95,13 +102,18 @@ public class SMSInputEditText extends EditText {
     }
 
     public void insertText(String textToInsert) {
-        int cursor = hasFocus() ? getSelectionStart() : getText().length();
-        String input = getText().toString();
-        String stringBefore = cursor == 0 ? "" : input.substring(0, cursor);
-        String newText = stringBefore + textToInsert + input.substring(cursor);
-        setText(newText);
-        requestFocus();
-        int newSelection = (stringBefore + textToInsert).length();
-        setSelection(getText().length() < newSelection ? getText().length() : newSelection);
+        try {
+            int cursor = hasFocus() ? getSelectionStart() : getText().length();
+            String input = getText().toString();
+            String stringBefore = cursor == 0 ? "" : input.substring(0, cursor);
+            String newText = stringBefore + textToInsert + input.substring(cursor);
+            setText(newText);
+            requestFocus();
+            int newSelection = (stringBefore + textToInsert).length();
+            setSelection(getText().length() < newSelection ? getText().length() : newSelection);
+        } catch (Exception e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            ACRA.getErrorReporter().handleSilentException(e);
+        }
     }
 }

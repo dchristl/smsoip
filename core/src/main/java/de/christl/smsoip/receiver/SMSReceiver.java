@@ -49,6 +49,8 @@ public class SMSReceiver extends BroadcastReceiver {
 
     private static final String PDUS = "pdus";
     public static int ID = 1;
+    public static final String NUMBER_PARAM = "number";
+    public static final String SMSOIP_SCHEME = "smsoip";
 
 
     @Override
@@ -84,10 +86,11 @@ public class SMSReceiver extends BroadcastReceiver {
             builder.setContentTitle(contentTitle);
 
             builder.setContentText(messages.getMessageBody());
-
-            Uri inboxQuery = Uri.parse("smsoip:" + messages.getOriginatingAddress());
+            Uri.Builder uriBuilder = new Uri.Builder();
+            uriBuilder.scheme(SMSOIP_SCHEME);
+            uriBuilder.appendQueryParameter(NUMBER_PARAM, messages.getOriginatingAddress());
             Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-            sendIntent.setData(inboxQuery);
+            sendIntent.setData(uriBuilder.build());
             sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
             builder.setContentIntent(contentIntent);

@@ -66,6 +66,7 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.ui.*;
 import org.acra.ACRA;
 import org.apache.http.message.BasicNameValuePair;
@@ -227,17 +228,9 @@ public class SendActivity extends AllActivity {
             updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO));
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
-            String defaultSupplier = getDefaultSupplier();
-            setPreselectedContact(getIntent().getData());
-            if (defaultSupplier != null) {
-                smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(defaultSupplier);
-                setFullTitle();
-                setSpinner();
-                setDateTimePickerDialog();
-                updateViewOnChangedReceivers();
-            } else {
-                showProvidersDialog();
-            }
+            Uri data = getIntent().getData();
+            getAndSetSupplier(data);
+            setPreselectedContact(data);
             updateInfoTextSilent();
         }
         showChangelogIfNeeded();
@@ -492,15 +485,23 @@ public class SendActivity extends AllActivity {
 
     private void setPreselectedContact(Uri data) {
         if (data != null) {
+            String givenNumber;
             ErrorReporterStack.put(LogConst.SET_PRESELECTED_CONTACT);
-            String givenNumber = data.getSchemeSpecificPart();
-            Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
-            if (contactByNumber == null) {
-                contactByNumber = new Receiver(getString(R.string.text_unknown));
-                contactByNumber.setRawNumber(givenNumber, getString(R.string.text_no_phone_type_label));
+            if (data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
+                givenNumber = data.getQueryParameter(SMSReceiver.NUMBER_PARAM);
+            } else {
+                givenNumber = data.getSchemeSpecificPart();
             }
-            addReceiver(contactByNumber);
+            if (givenNumber != null && !givenNumber.equals("")) {
+                Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
+                if (contactByNumber == null) {
+                    contactByNumber = new Receiver(getString(R.string.text_unknown));
+                    contactByNumber.setRawNumber(givenNumber, getString(R.string.text_no_phone_type_label));
+                }
+                addReceiver(contactByNumber);
+            }
         }
+
     }
 
     private void setSendButton() {
@@ -550,13 +551,23 @@ public class SendActivity extends AllActivity {
     }
 
 
-    private String getDefaultSupplier() {
-        String string = settings.getString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, "");
+    private void getAndSetSupplier(Uri data) {
+        String supplier = "";
+        //only change if own scheme is used and
+        if (data != null && receiverField.getReceiverList().size() == 0 && data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
+            String provider = data.getQueryParameter("provider");
+            if (provider != null && !provider.equals("")) {
+                supplier = provider;
+            }
+        }
+        if (supplier.equals("")) {
+            supplier = settings.getString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, "");
+        }
         //check if default provider is installed
-        if (!string.equals("")) {
+        if (!supplier.equals("")) {
             boolean found = false;
             for (SMSoIPPlugin providerEntry : SMSoIPApplication.getApp().getProviderEntries().values()) {
-                if (providerEntry.getSupplierClassName().equals(string)) {
+                if (providerEntry.getSupplierClassName().equals(supplier)) {
                     found = true;
                     break;
                 }
@@ -565,13 +576,16 @@ public class SendActivity extends AllActivity {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, null);
                 editor.commit();
-                string = null;
+                supplier = null;
             }
         } else {
-            string = null;
+            supplier = null;
         }
-
-        return string;
+        if (supplier == null) {
+            showProvidersDialog();
+        } else {
+            changeSupplier(supplier);
+        }
     }
 
 
