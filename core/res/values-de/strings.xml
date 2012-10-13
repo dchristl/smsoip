@@ -212,8 +212,8 @@
     <string name="text_text_module_preference_description">Verwalte deine Textbausteine für schnellere Texteingabe.
     </string>
     <string name="text_key">Schlüssel</string>
-    <string name="text_value">Schlüssel</string>
-    <string name="text_delete">Ersetzung</string>
+    <string name="text_value">Ersetzung</string>
+    <string name="text_delete">Entfernen</string>
     <string name="text_add_text_module">Textbaustein hinzufügen</string>
     <string name="text_key_too_short">Der Schlüssel muss mindestens aus zwei Zeichen bestehen.</string>
     <string name="text_key_already_exist">Der Schlüssel existiert bereits.</string>
