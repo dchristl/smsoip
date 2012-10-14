@@ -35,7 +35,9 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
     private static final String LOGIN_URL = "https://www.directbox.com/portal/index.aspx";
     private static final String BALANCE_URL = "https://www.directbox.com/portal/services/WidgetService.asmx/WidgetLoad";
-    private static final String NUMBER_URL = "https://www.directbox.com/portal/sites/messaging/shortmessage.aspx";
+    private static final String NUMBER_AND_SEND_URL = "https://www.directbox.com/portal/sites/messaging/shortmessage.aspx";
     private static final String COOKIE_NAME = "ASP.NET_SessionId";
     private List<String> sessionId;
 
@@ -67,39 +69,39 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         StringBuilder bodyString = new StringBuilder();
         bodyString.append(SendConstants.USER_NAME_FIELD_ID).append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&");
         bodyString.append(SendConstants.PASSWORD_FIELD_ID).append(URLEncoder.encode(password == null ? "" : password, ENCODING)).append("&");
-        bodyString.append(SendConstants.VIEWSTATE_PARAM).append("&");
-        bodyString.append(SendConstants.EVENTVALIDATION_PARAM).append("&");
+        bodyString.append(SendConstants.VIEWSTATE_LOGIN_PARAM).append("&");
+        bodyString.append(SendConstants.EVENT_VALIDATION_LOGIN__PARAM).append("&");
         bodyString.append(SendConstants.ASYNCPOST_PARAM).append("&");
         bodyString.append(SendConstants.LOGIN_BUTTON_PARAM);
 
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
         Map<String, String> requestProperties = new HashMap<String, String>(1);
-        requestProperties.put("Content-Type", SendConstants.X_WWW_FORM_URL_ENCODING);
+        requestProperties.put("Content-Type", SendConstants.X_WWW_FORM_URL_ENCODING_WITH_UTF8);
         factory.setRequestProperties(requestProperties);
         factory.setTargetAgent(TARGET_AGENT);
         HttpURLConnection httpURLConnection = factory.writeBody(bodyString.toString());
         if (httpURLConnection == null) {
             SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.isRetryMakesSense();
+            smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
         Map<String, List<String>> headerFields = httpURLConnection.getHeaderFields();
         InputStream inputStream = httpURLConnection.getInputStream();
         if (headerFields == null || headerFields.size() == 0 || inputStream == null) {
             SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.isRetryMakesSense();
+            smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
         String response = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
         if (!response.contains("overview.aspx")) {
             SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.isRetryMakesSense();
+            smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
         String tmpSessionId = UrlConnectionFactory.findCookieByName(headerFields, COOKIE_NAME.toUpperCase());
         if (tmpSessionId == null || tmpSessionId.equals("")) {
             SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.isRetryMakesSense();
+            smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
         sessionId.add(tmpSessionId.replaceAll(";.*", ""));
@@ -164,7 +166,80 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
-        return null;
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL);
+        factory.setTargetAgent(TARGET_AGENT);
+        Map<String, String> requestProperties = new HashMap<String, String>(1);
+        requestProperties.put("Content-Type", SendConstants.X_WWW_FORM_URL_ENCODING);
+        factory.setRequestProperties(requestProperties);
+        factory.setTargetAgent(TARGET_AGENT);
+        factory.setCookies(sessionId);
+
+        StringBuilder bodyString = new StringBuilder();
+        bodyString.append(SendConstants.VIEWSTATE_SEND_PARAM).append("&");
+        bodyString.append(SendConstants.EVENT_VALIDATION_SEND__PARAM).append("&");
+        bodyString.append(SendConstants.TEXT_FIELD_ID).append(URLDecoder.decode(smsText, ENCODING)).append("&");
+        StringBuilder receiverString = new StringBuilder();
+        for (Receiver receiver : receivers) {
+            receiverString.append(receiver.getReceiverNumber()).append("%3B");
+        }
+        bodyString.append(SendConstants.TO_FIELD_ID).append(receiverString).append("&");
+
+
+        String dateTimeString = "";  //15.10.2012+13%3A30
+        if (dateTime != null) {
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy'+'HH'%3A'mm");
+            dateTimeString = format.format(dateTime.getCalendar().getTime());
+        }
+        bodyString.append(SendConstants.TIME_FIELD_ID).append(dateTimeString).append("&");
+
+
+        String fromString = "False";
+        if (provider.isSIActivated()) {
+            String sender = provider.getSender();
+            if (sender == null) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
+            } else {
+                fromString = sender;
+            }
+        }
+        bodyString.append(SendConstants.FROM_FIELD_ID).append(fromString).append("&");
+
+
+        bodyString.append(SendConstants.SEND_BUTTON_PARAM);
+
+        HttpURLConnection httpURLConnection = factory.writeBody(bodyString.toString());
+        SMSActionResult smsActionResult = processSendReturn(httpURLConnection.getInputStream());
+        return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
+    }
+
+    static SMSActionResult processSendReturn(InputStream resultStream) throws IOException {
+        Document parse = Jsoup.parse(resultStream, ENCODING, "");
+        Elements select = parse.select("span#ctl00_ContentPlaceHolder_successMessage");
+        if (select.size() == 1) {
+            String text = select.text();
+            Elements numbers = parse.select("div#KnownRecipientListView span");
+            for (Element number : numbers) {
+                text += "\n" + number.text();
+            }
+            return SMSActionResult.NO_ERROR(text);
+        }
+        String errorText = "";
+        Elements error = parse.select("span#ctl00_ContentPlaceHolder_lblErrorMessage");
+        if (error.size() == 1) {
+            errorText = error.text();
+        } else {
+            Elements errorElements = parse.select(".error");
+            for (Element errorElement : errorElements) {
+                if (!errorElement.attr("style").contains("display:none")) {
+                    errorText += errorElement.text();
+                }
+            }
+        }
+        return errorText.equals("") ? SMSActionResult.UNKNOWN_ERROR() : SMSActionResult.UNKNOWN_ERROR(errorText);
     }
 
     @Override
@@ -187,7 +262,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         if (!result.isSuccess()) {
             return result;
         }
-        UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_URL, UrlConnectionFactory.METHOD_GET);
+        UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL, UrlConnectionFactory.METHOD_GET);
         factory.setTargetAgent(TARGET_AGENT);
         factory.setCookies(sessionId);
         InputStream inputStream = factory.create().getInputStream();

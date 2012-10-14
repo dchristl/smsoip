@@ -283,4 +283,12 @@ public class DirectboxOptionProvider extends OptionProvider {
         outState.putInt(STATE_SPINNER, numberSpinner.getSelectedItemPosition());
         outState.putBoolean(STATE_CHECKBOX, sourceIDCB.isChecked());
     }
+
+    public boolean isSIActivated() {
+        return sourceIDCB.isChecked();
+    }
+
+    public String getSender() {
+        return String.valueOf(numberSpinner.getSelectedItem());
+    }
 }
