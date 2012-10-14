@@ -19,13 +19,17 @@
 
 <resources>
     <string-array name="array_spinner">
+        <item>Ohne Absenderkennung</item>
         <item>Mit Absenderkennung</item>
-        <item>Anonym</item>
     </string-array>
-    <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
-        Format sein, z.B. \'00491721234567\'
+    <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Domain \'@directbox.com\'
+        enthalten.
     </string>
+    <string name="text_sender">Absender</string>
     <string name="text_balance">Guthaben: %1$s\nSMS-Prepaid: %2$s\nSMS-Paket: %3$s</string>
     <string name="text_default_type">Standard Absendetyp</string>
     <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+    <string name="text_without_si">Ohne Absenderkennung</string>
+    <string name="text_pleaseWait">Bitte warten</string>
+    <string name="text_not_yet_refreshed">Noch nicht bestimmt</string>
 </resources>

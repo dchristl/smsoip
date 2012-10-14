@@ -552,3 +552,42 @@ fileName: strings.xml
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string name="text_balance">Balance: %1$s</string>
 </resources>
+<!--String resources for:
+project: directbox
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string-array name="array_spinner">
+        <item>Without source identifier</item>
+        <item>With source identifier</item>
+    </string-array>
+    <string name="text_login_failed">Login failed. Please check if your username includes the domain \'@directbox.com\'.
+    </string>
+    <string name="text_balance">Balance: %1$s\nSMS-Prepaid: %2$s\nSMS-Packet: %3$s</string>
+    <string name="text_sender">Sender</string>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="text_without_si">Without source identifier</string>
+    <string name="text_pleaseWait">Please wait</string>
+    <string name="text_not_yet_refreshed">Not yet refreshed</string>
+</resources>

@@ -29,6 +29,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -51,20 +52,21 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
     private static final String LOGIN_URL = "https://www.directbox.com/portal/index.aspx";
     private static final String BALANCE_URL = "https://www.directbox.com/portal/services/WidgetService.asmx/WidgetLoad";
+    private static final String NUMBER_URL = "https://www.directbox.com/portal/sites/messaging/shortmessage.aspx";
     private static final String COOKIE_NAME = "ASP.NET_SessionId";
     private List<String> sessionId;
 
 
     public DirectboxSupplier() {
-        provider = new DirectboxOptionProvider();
+        provider = new DirectboxOptionProvider(this);
     }
 
     @Override
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
         sessionId = new ArrayList<String>();
         StringBuilder bodyString = new StringBuilder();
-        bodyString.append(SendConstants.USER_NAME_FIELD_ID).append(URLEncoder.encode(userName, ENCODING)).append("&");
-        bodyString.append(SendConstants.PASSWORD_FIELD_ID).append(URLEncoder.encode(password, ENCODING)).append("&");
+        bodyString.append(SendConstants.USER_NAME_FIELD_ID).append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&");
+        bodyString.append(SendConstants.PASSWORD_FIELD_ID).append(URLEncoder.encode(password == null ? "" : password, ENCODING)).append("&");
         bodyString.append(SendConstants.VIEWSTATE_PARAM).append("&");
         bodyString.append(SendConstants.EVENTVALIDATION_PARAM).append("&");
         bodyString.append(SendConstants.ASYNCPOST_PARAM).append("&");
@@ -77,20 +79,28 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         factory.setTargetAgent(TARGET_AGENT);
         HttpURLConnection httpURLConnection = factory.writeBody(bodyString.toString());
         if (httpURLConnection == null) {
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+            smsActionResult.isRetryMakesSense();
+            return smsActionResult;
         }
         Map<String, List<String>> headerFields = httpURLConnection.getHeaderFields();
         InputStream inputStream = httpURLConnection.getInputStream();
         if (headerFields == null || headerFields.size() == 0 || inputStream == null) {
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+            smsActionResult.isRetryMakesSense();
+            return smsActionResult;
         }
         String response = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
         if (!response.contains("overview.aspx")) {
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+            smsActionResult.isRetryMakesSense();
+            return smsActionResult;
         }
         String tmpSessionId = UrlConnectionFactory.findCookieByName(headerFields, COOKIE_NAME.toUpperCase());
         if (tmpSessionId == null || tmpSessionId.equals("")) {
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+            smsActionResult.isRetryMakesSense();
+            return smsActionResult;
         }
         sessionId.add(tmpSessionId.replaceAll(";.*", ""));
         return SMSActionResult.LOGIN_SUCCESSFUL();
@@ -144,7 +154,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+        return fireTimeShiftSMS(smsText, receivers, spinnerText, null);
     }
 
     @Override
@@ -159,7 +169,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
     @Override
     public int getMinuteStepSize() {
-        return 60;
+        return 1;
     }
 
     @Override
@@ -170,5 +180,30 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     @Override
     public boolean isSendTypeTimeShiftCapable(String spinnerText) {
         return true;
+    }
+
+    public SMSActionResult resolveNumbers() throws IOException {
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return result;
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_URL, UrlConnectionFactory.METHOD_GET);
+        factory.setTargetAgent(TARGET_AGENT);
+        factory.setCookies(sessionId);
+        InputStream inputStream = factory.create().getInputStream();
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+        Elements options = parse.select("select#ctl00_ContentPlaceHolder_cbxFrom option");
+        if (options.size() < 2) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        List<String> numbers = new ArrayList<String>();
+        for (Element option : options) {
+            String value = option.attr("value");
+            if (!value.equalsIgnoreCase("false")) {
+                numbers.add(value);
+            }
+        }
+        provider.saveNumbers(numbers);
+        return SMSActionResult.NO_ERROR();
     }
 }
