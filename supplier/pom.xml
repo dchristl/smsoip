@@ -41,6 +41,7 @@
         <module>cherrysms</module>
         <module>innosend</module>
         <module>fishtext</module>
+        <module>directbox</module>
     </modules>
 
     <dependencies>
