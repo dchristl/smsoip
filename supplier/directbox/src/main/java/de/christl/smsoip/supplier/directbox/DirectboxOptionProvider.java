@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -122,6 +123,8 @@ public class DirectboxOptionProvider extends OptionProvider {
             layoutParams.setMargins(20, 0, 0, 0);
             layoutParams.weight = 2.0f;
             infoTextField.setLayoutParams(layoutParams);
+            infoTextField.setEllipsize(TextUtils.TruncateAt.END);
+            infoTextField.setSingleLine(true);
         }
         if (sourceIDCB == null) {
             sourceIDCB = new CheckBox(context);
