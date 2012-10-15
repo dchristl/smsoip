@@ -147,6 +147,7 @@ public class DirectboxOptionProvider extends OptionProvider {
                         infoTextField.setVisibility(View.VISIBLE);
                         infoTextField.setText(getTextByResourceId(R.string.text_without_si));
                     }
+                    checkBoxState = isChecked;
 
                 }
             });
@@ -167,7 +168,7 @@ public class DirectboxOptionProvider extends OptionProvider {
                     numberSpinner.setVisibility(View.GONE);
                     infoTextField.setVisibility(View.VISIBLE);
                     refreshNumberTask = new RefreshNumbersTask(DirectboxOptionProvider.this);
-                    refreshNumberTask.execute();
+                    refreshNumberTask.execute(null, null);
                 }
             });
         }
@@ -198,6 +199,10 @@ public class DirectboxOptionProvider extends OptionProvider {
     @Override
     public void setCurrentAccountId(Integer currentAccountId) {
         super.setCurrentAccountId(currentAccountId);
+        resetState();
+    }
+
+    public void resetState() {
         checkBoxState = null;
         spinnerItem = null;
     }

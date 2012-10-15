@@ -213,6 +213,9 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
         HttpURLConnection httpURLConnection = factory.writeBody(bodyString.toString());
         SMSActionResult smsActionResult = processSendReturn(httpURLConnection.getInputStream());
+        if (smsActionResult.isSuccess()) {
+            provider.resetState();//reset cb state
+        }
         return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
     }
 
