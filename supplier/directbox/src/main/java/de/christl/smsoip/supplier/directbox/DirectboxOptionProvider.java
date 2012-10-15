@@ -44,7 +44,7 @@ public class DirectboxOptionProvider extends OptionProvider {
     private LinearLayout wrapper;
     private TextView infoTextField;
     private CheckBox sourceIDCB;
-    private ImageView refreshView;
+    private ImageButton refreshView;
     private RefreshNumbersTask refreshNumberTask;
     private DirectboxSupplier directboxSupplier;
     private Spinner numberSpinner;
@@ -153,7 +153,7 @@ public class DirectboxOptionProvider extends OptionProvider {
             });
         }
         if (refreshView == null) {
-            refreshView = new ImageView(context);
+            refreshView = new ImageButton(context);
             refreshView.setVisibility(View.GONE);
             refreshView.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
