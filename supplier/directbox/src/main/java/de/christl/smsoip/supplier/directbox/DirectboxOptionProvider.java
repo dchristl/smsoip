@@ -39,7 +39,7 @@ import java.util.Map;
 
 public class DirectboxOptionProvider extends OptionProvider {
 
-    private static String providerName = "Directbox";
+    private static String providerName = "DirectBOX";
     private TextView header;
     private LinearLayout wrapper;
     private TextView infoTextField;

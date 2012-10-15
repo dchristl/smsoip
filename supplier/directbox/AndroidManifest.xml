@@ -20,6 +20,6 @@
           android:versionCode="1" android:versionName="1.0.0" package="de.christl.smsoip.supplier.directbox">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP DirectBox Plugin">
+    <application android:icon="@drawable/icon" android:label="SMSoIP DirectBOX Plugin">
     </application>
 </manifest>
