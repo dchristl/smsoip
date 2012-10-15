@@ -184,6 +184,7 @@ public class DirectboxOptionProvider extends OptionProvider {
             numberSpinner.setSelection(spinnerItem);
         }
         numberSpinner.setVisibility(startWithSourceIdentifier ? View.VISIBLE : View.GONE);
+        sourceIDCB.setChecked(!startWithSourceIdentifier);//set it to "old" before to force a refresh by calling listener
         sourceIDCB.setChecked(startWithSourceIdentifier);//get this from the options
     }
 
@@ -289,6 +290,7 @@ public class DirectboxOptionProvider extends OptionProvider {
     }
 
     public String getSender() {
-        return String.valueOf(numberSpinner.getSelectedItem());
+        Object selectedItem = numberSpinner.getSelectedItem();
+        return selectedItem == null ? null : String.valueOf(selectedItem);
     }
 }
