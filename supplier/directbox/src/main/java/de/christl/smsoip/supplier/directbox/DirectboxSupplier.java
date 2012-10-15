@@ -171,7 +171,6 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL);
-        factory.setTargetAgent(TARGET_AGENT);
         Map<String, String> requestProperties = new HashMap<String, String>(1);
         requestProperties.put("Content-Type", SendConstants.X_WWW_FORM_URL_ENCODING);
         factory.setRequestProperties(requestProperties);
