@@ -162,6 +162,21 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         welcomePref.setTitle(R.string.text_reshow_welcome);
         welcomePref.setSummary(R.string.text_reshow_welcome_description);
         root.addPreference(welcomePref);
+        PreferenceScreen contactIntent = getPreferenceManager().createPreferenceScreen(this);
+        contactIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"smsoip+feedback@gmail.com"});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "SMSoIP Feedback");
+                GlobalPreferences.this.startActivity(emailIntent);
+                return true;
+            }
+        });
+        contactIntent.setTitle(R.string.text_contact_developer);
+        contactIntent.setSummary(getString(R.string.text_contact_developer_description));
+        root.addPreference(contactIntent);
     }
 
     private void addLayoutSettings(PreferenceScreen root) {

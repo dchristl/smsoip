@@ -233,4 +233,8 @@
     </string>
     <string name="homepage">https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/de/info.xml</string>
+    <string name="text_contact_developer">Entwickler kontaktieren</string>
+    <string name="text_contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
+        nicht verfügbar? Sende mir eine E-Mail.
+    </string>
 </resources>
