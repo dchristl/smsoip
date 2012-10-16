@@ -555,9 +555,14 @@ public class SendActivity extends AllActivity {
         String supplier = "";
         //only change if own scheme is used and
         if (data != null && receiverField.getReceiverList().size() == 0 && data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
-            String provider = data.getQueryParameter("provider");
-            if (provider != null && !provider.equals("")) {
-                supplier = provider;
+            if (!data.isOpaque()) {
+                String provider = data.getQueryParameter("provider");
+                if (provider != null && !provider.equals("")) {
+                    supplier = provider;
+                }
+            } else {
+                //this hould not happen normally
+                ACRA.getErrorReporter().handleSilentException(new IllegalArgumentException(data.toString()));
             }
         }
         if (supplier.equals("")) {

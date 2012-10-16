@@ -57,6 +57,8 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     private static final String NUMBER_AND_SEND_URL = "https://www.directbox.com/portal/sites/messaging/shortmessage.aspx";
     private static final String COOKIE_NAME = "ASP.NET_SessionId";
     private List<String> sessionId;
+    private String sms;
+    private String smsPrepaid;
 
 
     public DirectboxSupplier() {
@@ -119,6 +121,8 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     }
 
     private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
+        sms = null;
+        smsPrepaid = null;
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
@@ -148,8 +152,8 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
             return SMSActionResult.UNKNOWN_ERROR();
         }
         String balance = smsContingent.text();
-        String smsPrepaid = prepaidContingent.get(0).text().replaceAll("\\\\n", "").trim();
-        String sms = prepaidContingent.get(1).text().replaceAll("\\\\n", "").trim();
+        smsPrepaid = prepaidContingent.get(0).text().replaceAll("\\\\n", "").trim();
+        sms = prepaidContingent.get(1).text().replaceAll("\\\\n", "").trim();
         String balanceText = String.format(provider.getTextByResourceId(R.string.text_balance), balance, smsPrepaid, sms);
         return SMSActionResult.NO_ERROR(balanceText);
     }
@@ -169,6 +173,24 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
+        }
+        refreshInformations(true); //refresh the informations to get fresh data
+        if (sms != null && smsPrepaid != null) {
+            String tmpSMS = sms.replaceAll("\\D", "");
+            String tmpSmsPrepaid = smsPrepaid.replaceAll("\\D", "");
+            int availableSMS = 0;
+            try {
+                availableSMS = Integer.parseInt(tmpSMS) + Integer.parseInt(tmpSmsPrepaid);
+            } catch (NumberFormatException ignored) {
+                //ignore this and do the default behaviour
+            }
+            int smsCosts = receivers.size();
+            if (provider.isSIActivated()) {
+                smsCosts *= 2;
+            }
+            if (availableSMS < smsCosts) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_balance)), receivers);
+            }
         }
         UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL);
         Map<String, String> requestProperties = new HashMap<String, String>(1);
@@ -205,6 +227,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
                 fromString = sender;
             }
         }
+
         bodyString.append(SendConstants.FROM_FIELD_ID).append(fromString).append("&");
 
 
