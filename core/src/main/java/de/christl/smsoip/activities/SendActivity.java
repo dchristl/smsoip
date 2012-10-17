@@ -44,6 +44,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.dialogadapter.ChangeProviderArrayAdapter;
 import de.christl.smsoip.activities.send.Mode;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
@@ -1215,33 +1216,19 @@ public class SendActivity extends AllActivity {
                 dialog = builder.create();
                 break;
             case DIALOG_PROVIDER://this will only called if more than two providers are available, otherwise dialog will be null
-                Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
-                final List<SMSoIPPlugin> filteredProviderEntries = new ArrayList<SMSoIPPlugin>();
-                if (smSoIPPlugin == null) {   //add all if current provider not set
-                    filteredProviderEntries.addAll(providerEntries.values());
-                } else {
-                    for (SMSoIPPlugin providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
-                        if (!providerEntry.getSupplierClassName().equals(smSoIPPlugin.getSupplierClassName())) {
-                            filteredProviderEntries.add(providerEntry);
-                        }
-                    }
-                }
-                int filteredProvidersSize = filteredProviderEntries.size();
-                final CharSequence[] providerItems = new String[filteredProvidersSize];
-                for (int i = 0; i < filteredProvidersSize; i++) {
-                    SMSoIPPlugin providerEntry = filteredProviderEntries.get(i);
-                    providerItems[i] = providerEntry.getProviderName();
-                }
                 builder = new AlertDialog.Builder(this);
-                builder.setItems(providerItems, new DialogInterface.OnClickListener() {
+                final ChangeProviderArrayAdapter adapter = new ChangeProviderArrayAdapter(this, smSoIPPlugin);
+                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
-                        String supplierClassName = filteredProviderEntries.get(item).getSupplierClassName();
+                        String supplierClassName = adapter.getItem(item).getSupplierClassName();
                         dialog.dismiss();
                         changeSupplier(supplierClassName);
                     }
-                });
+                };
+
+                builder.setAdapter(adapter, listener);
                 builder.setTitle(R.string.text_chooseProvider);
-                builder.setCancelable(providerEntries.size() != filteredProvidersSize); //only cancelable on switch providers
+                builder.setCancelable(adapter.isCancelable()); //only cancelable on switch providers
                 dialog = builder.create();
                 break;
             case DIALOG_SWITCH_ACCOUNT:
