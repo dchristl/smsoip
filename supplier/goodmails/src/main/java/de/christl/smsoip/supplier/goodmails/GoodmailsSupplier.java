@@ -25,13 +25,16 @@ import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -50,7 +53,6 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
     static final String NOT_ALLOWED_YET = "NOT ALLOWED YET"; ///special case on resend
     static final String MESSAGE_SENT_SUCCESSFUL = "Die SMS wurde erfolgreich verschickt.";
-
 
 
     public GoodmailsSupplier() {
@@ -80,7 +82,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 urlConn.setReadTimeout(TIMEOUT);
                 urlConn.setConnectTimeout(TIMEOUT);
                 urlConn.setRequestProperty("Cookie", sessionCookie);
-                urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
+                urlConn.setRequestProperty("User-Agent", TARGET_AGENT);
                 writer = new OutputStreamWriter(urlConn.getOutputStream());
                 String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, ENCODING);
                 switch (sendIndex) {
@@ -161,41 +163,29 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         return refreshInformations(false);
     }
 
-    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) throws IOException {
+    private synchronized SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) throws IOException {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
                 return result;
             }
         }
-        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
         HttpURLConnection urlConn;
-        String credits = null;
         String tmpUrl = HOME_PAGE + "&sid=" + getSIDParamater();
-        BufferedReader reader;
         URL myUrl = new URL(tmpUrl);
         urlConn = (HttpURLConnection) myUrl.openConnection();
-        urlConn.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
+        urlConn.setReadTimeout(TIMEOUT);
         urlConn.setConnectTimeout(TIMEOUT);
         urlConn.setConnectTimeout(TIMEOUT);
         urlConn.setDoOutput(true);
         urlConn.setRequestProperty("Cookie", sessionCookie);
-        urlConn.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
-        InputStream is = urlConn.getInputStream();
-        String line;
-        reader = new BufferedReader(new InputStreamReader(is, ENCODING));
-        while ((line = reader.readLine()) != null) {
-            if (line.contains("name=\"glf_password\"")) {
-                Pattern p = Pattern.compile("value=\"[0-9]+[\\.+[0-9]+]*\"");
-                Matcher m = p.matcher(line);
-                while (m.find()) {
-                    if (credits == null) {
-                        credits = line.substring(m.start() + 1, m.end() - 1).replaceAll("[^0-9]", "");
-                    }
-                }
-            }
+        urlConn.setRequestProperty("User-Agent", TARGET_AGENT);
+        Document parse = Jsoup.parse(urlConn.getInputStream(), ENCODING, "");
+        Elements select = parse.select("div.mainMenu ul li span:containsOwn(Credits)");
+        if (select.size() != 1) {
+            return SMSActionResult.UNKNOWN_ERROR();
         }
-        return SMSActionResult.NO_ERROR(String.format(tmpText, credits));
+        return SMSActionResult.NO_ERROR(select.text());
     }
 
     private String getSIDParamater() {
@@ -234,14 +224,14 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
+    public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException {
         String tmpUrl;
         tmpUrl = LOGIN_URL + "&glf_username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&glf_password=" +
                 URLEncoder.encode(password == null ? "" : password, ENCODING) + "&email_domain=goodmails.de&language=deutsch&do=login";
         HttpURLConnection con;
         con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-        con.setReadTimeout(ExtendedSMSSupplier.TIMEOUT);
-        con.setRequestProperty("User-Agent", ExtendedSMSSupplier.TARGET_AGENT);
+        con.setReadTimeout(TIMEOUT);
+        con.setRequestProperty("User-Agent", TARGET_AGENT);
         con.setRequestMethod("GET");
         con.setInstanceFollowRedirects(false);
         Map<String, List<String>> headerFields = con.getHeaderFields();

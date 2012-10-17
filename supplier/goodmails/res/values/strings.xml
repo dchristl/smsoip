@@ -20,7 +20,6 @@
     <string name="text_alternate_not_allowed_yet">not yet allowed</string>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_refresh_informations">"Credits: %s"</string>
     <string-array name="array_spinner">
         <item>Free SMS (0 Credits)</item>
         <item>Default SMS (10 Credits)</item>
