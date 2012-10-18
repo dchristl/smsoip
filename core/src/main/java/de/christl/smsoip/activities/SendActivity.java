@@ -1198,25 +1198,21 @@ public class SendActivity extends AllActivity {
                 dialog = textModulesBuilder.create();
                 break;
             case DIALOG_SMILEYS:
-                final CharSequence[] smileyItems = {";)", ":-)", ":-))", ":-(", ":-((", ";-)", ":-D", ":-@", ":-O", ":-|", ":-o", ":~-(", ":-*", ":-#", ":-s", "(^_^)", "(^_~)", "d(^_^)b", "(+_+)", "(>_<)", "(-_-)", "=^.^="};
+                dialog = new SmileyDialog(this);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setItems(smileyItems, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        CharSequence smiley = smileyItems[item];
-                        dialog.dismiss();
-                        final int selStart = textField.getSelectionStart();
-                        final int selEnd = textField.getSelectionEnd();
-                        StringBuffer result = new StringBuffer(textField.getText().subSequence(0, selStart));
-                        result.append(" ").append(smiley).append(" ").append(textField.getText().subSequence(selEnd, textField.length()));
-                        textField.setText(result);
-
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        SmileyDialog smileyDialog = (SmileyDialog) dialog;
+                        if (smileyDialog.isPositiveResult()) {
+                            String itemString = smileyDialog.getItem();
+                            textField.insertText(itemString);
+                        }
                     }
                 });
-                dialog = builder.create();
                 break;
             case DIALOG_PROVIDER://this will only called if more than two providers are available, otherwise dialog will be null
-                builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 final ChangeProviderArrayAdapter adapter = new ChangeProviderArrayAdapter(this, smSoIPPlugin);
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
