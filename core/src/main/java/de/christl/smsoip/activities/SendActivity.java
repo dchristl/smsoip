@@ -744,15 +744,9 @@ public class SendActivity extends AllActivity {
         ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getText(R.string.text_wantClear))
-                .setCancelable(false)
                 .setPositiveButton(getText(R.string.text_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         clearAllInputs();
-                    }
-                })
-                .setNegativeButton(getText(R.string.text_cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
                     }
                 });
         final AlertDialog alert = builder.create();
