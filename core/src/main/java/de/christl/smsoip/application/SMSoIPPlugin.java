@@ -27,6 +27,7 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -149,5 +150,9 @@ public class SMSoIPPlugin {
 
     public int getVersionCode() {
         return packageInfo.versionCode;
+    }
+
+    public InputStream resolveRawResource(int resourceId) {
+        return resources.openRawResource(resourceId);
     }
 }

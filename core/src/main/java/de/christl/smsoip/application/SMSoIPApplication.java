@@ -44,6 +44,7 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @ReportsCrashes(formKey = "dDFEZFF5R1FzTWlNVHkzdnJFaGVDTUE6MQ", mode = ReportingInteractionMode.NOTIFICATION,
@@ -374,5 +375,13 @@ public class SMSoIPApplication extends Application {
     public static String getDeviceId() {
         TelephonyManager telephonyManager = (TelephonyManager) app.getSystemService(Context.TELEPHONY_SERVICE);
         return telephonyManager.getDeviceId();
+    }
+
+    public InputStream getRawResourceByResourceId(OptionProvider optionProvider, int resourceId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveRawResource(resourceId);
+        }
+        return null;
     }
 }

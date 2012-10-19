@@ -31,6 +31,7 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.application.SMSoIPApplication;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,6 +174,11 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 
+    public final InputStream getRawResourceByResourceId(int resourceId) {
+        return SMSoIPApplication.getApp().getRawResourceByResourceId(this, resourceId);
+    }
+
+
     protected final String getTextByResourceId(int resourceId, int quantity) {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId, quantity);
     }
@@ -257,5 +263,18 @@ public abstract class OptionProvider {
      */
     public void onActivityPaused(Bundle outState) {
         //do nothing by default
+    }
+
+    public InputStream getChangelogInputStream() {
+        Integer i = getChangelogResourceId();
+        if (i != null) {
+            return getRawResourceByResourceId(i);
+        } else {
+            return null;
+        }
+    }
+
+    protected Integer getChangelogResourceId() {
+        return null;
     }
 }

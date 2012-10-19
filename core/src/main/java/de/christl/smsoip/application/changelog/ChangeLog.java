@@ -152,11 +152,33 @@ public class ChangeLog {
         WebView wv = (WebView) dialogView.findViewById(R.id.webView);
         wv.setBackgroundColor(0); // transparent
         // wv.getSettings().setDefaultTextEncodingName("utf-8");
-        wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
+        wv.loadDataWithBaseURL(null, this.getLog(full, null), "text/html", "UTF-8", null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
         int changelog_title = full ? R.string.welcome_title : R.string.changelog_title;
         builder.setTitle(context.getResources().getString(
                 changelog_title))
+                .setView(dialogView)
+                .setPositiveButton(
+                        context.getResources().getString(
+                                R.string.text_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        return builder.create();
+    }
+
+    public AlertDialog getChangelogDialogByView(InputStream dialogContent) {
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View dialogView = factory.inflate(R.layout.changelogdialog, null);
+        WebView wv = (WebView) dialogView.findViewById(R.id.webView);
+        wv.setBackgroundColor(0); // transparent
+        // wv.getSettings().setDefaultTextEncodingName("utf-8");
+        wv.loadDataWithBaseURL(null, this.getLog(true, dialogContent), "text/html", "UTF-8", null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        builder.setTitle(context.getResources().getString(
+                R.string.changelog_title))
                 .setView(dialogView)
                 .setPositiveButton(
                         context.getResources().getString(
@@ -174,7 +196,7 @@ public class ChangeLog {
      *         installed version of your app (what's new)
      */
     public String getLog() {
-        return this.getLog(false);
+        return this.getLog(false, null);
     }
 
 
@@ -191,13 +213,14 @@ public class ChangeLog {
     private StringBuffer sb = null;
     private static final String EOCL = "END_OF_CHANGE_LOG";
 
-    private String getLog(boolean full) {
-        // read changelog.txt file
+    private String getLog(boolean full, InputStream logToShowIs) {
         sb = new StringBuffer();
         try {
-            int logToShow = full ? R.raw.welcome : R.raw.changelog;
-            InputStream ins = context.getResources().openRawResource(logToShow);
-            BufferedReader br = new BufferedReader(new InputStreamReader(ins));
+            if (logToShowIs == null) {
+                int logToShow = full ? R.raw.welcome : R.raw.changelog;
+                logToShowIs = context.getResources().openRawResource(logToShow);
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(logToShowIs));
 
             String line;
             boolean advanceToEOVS = false; // if true: ignore further version sections

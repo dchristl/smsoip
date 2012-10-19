@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
@@ -27,9 +28,11 @@ import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -72,6 +75,23 @@ public class ProviderPreferences extends BackgroundPreferenceActivity {
             for (Preference additionalPreference : additionalPreferences) {
                 root.addPreference(additionalPreference);
             }
+        }
+        final InputStream changelogInputStream = provider.getChangelogInputStream();
+        if (changelogInputStream != null) {
+            PreferenceScreen changelogIntent = getPreferenceManager().createPreferenceScreen(this);
+            changelogIntent.setTitle(R.string.text_provider_changelog);
+            changelogIntent.setSummary(R.string.text_provider_changelog_description);
+            changelogIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ChangeLog cl = new ChangeLog(ProviderPreferences.this);
+
+                    AlertDialog changelogDialogByView = cl.getChangelogDialogByView(changelogInputStream);
+                    changelogDialogByView.show();
+                    return true;
+                }
+            });
+            root.addPreference(changelogIntent);
         }
         return root;
     }
