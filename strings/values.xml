@@ -259,6 +259,10 @@ fileName: strings.xml
         mail.
     </string>
 
+    <string name="text_provider_changelog">Show changes</string>
+    <string name="text_provider_changelog_description">See last plugin changes.</string>
+
+
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>
     <string name="youtube_intent">vnd.youtube:tcr87tEPUao</string>

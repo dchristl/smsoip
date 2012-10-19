@@ -272,6 +272,9 @@ fileName: strings.xml
     <string name="text_contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
         nicht verfügbar? Sende mir eine E-Mail.
     </string>
+
+    <string name="text_provider_changelog">Was ist neu?</string>
+    <string name="text_provider_changelog_description">Schaue dir die letzten Änderungen im Plugin an.</string>
 </resources>
 
 <!--String resources for:
