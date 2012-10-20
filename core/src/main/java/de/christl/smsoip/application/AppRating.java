@@ -41,8 +41,8 @@ public class AppRating {
         SharedPreferences.Editor editor = prefs.edit();
 
         // Increment launch counter
-        long launchCount = prefs.getInt(LAUNCH_COUNT, 0) + 1;
-        editor.putLong(LAUNCH_COUNT, launchCount);
+        int launchCount = prefs.getInt(LAUNCH_COUNT, 0) + 1;
+        editor.putInt(LAUNCH_COUNT, launchCount);
 
         // Wait at least n days before opening
         if (launchCount >= LAUNCHES_UNTIL_PROMPT) {
