@@ -192,7 +192,22 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
                 return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_balance)), receivers);
             }
         }
-        UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL);
+
+        //get the user dependent view and send state first
+        UrlConnectionFactory factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL, UrlConnectionFactory.METHOD_GET);
+        factory.setTargetAgent(TARGET_AGENT);
+        factory.setCookies(sessionId);
+        HttpURLConnection con = factory.create();
+        Document messagePage = Jsoup.parse(con.getInputStream(), ENCODING, "");
+        String viewStateRawValue = messagePage.select("#__VIEWSTATE").attr("value");
+        String eventValidationRawValue = messagePage.select("#__EVENTVALIDATION").attr("value");
+        if (viewStateRawValue.equals("") || eventValidationRawValue.equals("")) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receivers);
+        }
+        String viewStateContent = URLEncoder.encode(viewStateRawValue, ENCODING);
+        String eventValidationContent = URLEncoder.encode(eventValidationRawValue, ENCODING);
+
+        factory = new UrlConnectionFactory(NUMBER_AND_SEND_URL);
         Map<String, String> requestProperties = new HashMap<String, String>(1);
         requestProperties.put("Content-Type", SendConstants.X_WWW_FORM_URL_ENCODING);
         factory.setRequestProperties(requestProperties);
@@ -200,8 +215,11 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         factory.setCookies(sessionId);
 
         StringBuilder bodyString = new StringBuilder();
-        bodyString.append(SendConstants.VIEWSTATE_SEND_PARAM).append("&");
-        bodyString.append(SendConstants.EVENT_VALIDATION_SEND__PARAM).append("&");
+        bodyString.append(SendConstants.VIEWSTATE_SEND_PARAM).append(viewStateContent).append("&");
+        bodyString.append(SendConstants.EVENT_VALIDATION_SEND__PARAM).append(eventValidationContent).append("&");
+        smsText = smsText.replaceAll("\\+", "%2B");
+        smsText = smsText.replaceAll("%", "%25");
+
         bodyString.append(SendConstants.TEXT_FIELD_ID).append(URLDecoder.decode(smsText, ENCODING)).append("&");
         StringBuilder receiverString = new StringBuilder();
         for (Receiver receiver : receivers) {

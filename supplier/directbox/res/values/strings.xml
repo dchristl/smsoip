@@ -31,6 +31,6 @@
     <string name="text_without_si">Without source identifier</string>
     <string name="text_pleaseWait">Please wait</string>
     <string name="text_not_yet_refreshed">Not yet refreshed</string>
-    <string name="text_refresh_sender_first">No sender number selected. Please refresh your senders first.</string>
+    <string name="text_refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye button.</string>
     <string name="text_no_balance">You do not have enough credit to send this text message.</string>
 </resources>
