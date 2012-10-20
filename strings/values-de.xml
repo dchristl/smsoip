@@ -265,8 +265,8 @@ fileName: strings.xml
     <string name="contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
         nicht verfügbar? Sende mir eine E-Mail.
     </string>
-    <string name="rate_app_message">If you enjoy using SMSoIP, please take a moment to rate it. Thanks for your
-        support!
+    <string name="rate_app_message">Wenn dir SMSoIP gefällt und du einen Moment Zeit hast, würde es mich freuen, wenn du
+        die App bei Google Play bewertest.\nVielen Dank für deine Unterstützung!
     </string>
     <string name="rate_app_title">Zufrieden mit SMSoIP?</string>
     <string name="rate_no_thanks">Nein,Danke/Bereits bewertet</string>

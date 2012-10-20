@@ -33,7 +33,7 @@ public class AppRating {
     public static final String RATING_DISABLED = "rating.disabled";
 
     public static void showRateDialogIfNeeded(Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences(MARKET_URL + "rating.counter", 0);
+        SharedPreferences prefs = mContext.getSharedPreferences("rating.counter", 0);
         if (prefs.getBoolean(RATING_DISABLED, false)) {
             return;
         }
