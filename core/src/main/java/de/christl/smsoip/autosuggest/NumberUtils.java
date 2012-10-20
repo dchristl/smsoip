@@ -107,7 +107,7 @@ public abstract class NumberUtils {
                 if (receiver != null) {
                     name = receiver.getName();
                 } else {
-                    name = SMSoIPApplication.getApp().getString(R.string.text_unknown);
+                    name = SMSoIPApplication.getApp().getString(R.string.unknown);
                 }
                 return name + " (" + number + ")";
             } else {

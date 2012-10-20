@@ -49,7 +49,7 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
     @Override
     protected void onPreExecute() {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_STARTED);
-        progressDialog.setMessage(multiPreference.getContext().getString(R.string.text_checkCredentials));
+        progressDialog.setMessage(multiPreference.getContext().getString(R.string.checkCredentials));
         progressDialog.show();
     }
 

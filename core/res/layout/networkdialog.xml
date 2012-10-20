@@ -28,13 +28,13 @@
     <Button android:id="@+id/openNetworkSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_openNetworkSettings"
+            android:text="@string/openNetworkSettings"
             />
 
     <Button android:id="@+id/activateWLAN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_activateWLAN"
+            android:text="@string/activateWLAN"
             />
 
 </TableLayout>

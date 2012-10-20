@@ -29,7 +29,7 @@
         <TextView android:padding="5dp"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
-                  android:text="@string/text_font_size_dialog_description"
+                  android:text="@string/font_size_dialog_description"
                   android:layout_gravity="center"
                   android:gravity="center"
                   android:layout_span="3"

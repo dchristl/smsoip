@@ -60,7 +60,7 @@ public class ShowLastMessagesDialog extends Dialog {
         setContentView(R.layout.showlastmessagesdialog);
 
         Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage(appContext);
-        String defaultUnknownText = appContext.getString(R.string.text_unknown);
+        String defaultUnknownText = appContext.getString(R.string.unknown);
         TextView lastIncomingMessage = (TextView) findViewById(R.id.message);
         if (lastMessage.size() > 0) {
             for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
@@ -88,7 +88,7 @@ public class ShowLastMessagesDialog extends Dialog {
             }
         } else {
             findViewById(R.id.clickToAdd).setVisibility(View.GONE);
-            lastIncomingMessage.setText(R.string.text_no_last_message);
+            lastIncomingMessage.setText(R.string.no_last_message);
         }
         if (receiverList.isEmpty()) {
             findViewById(R.id.lastConversation).setVisibility(View.GONE);
@@ -110,7 +110,7 @@ public class ShowLastMessagesDialog extends Dialog {
             layout.addView(receiverView);
             if (conversation.isEmpty()) {
                 TextView messageView = new TextView(appContext);
-                messageView.setText(R.string.text_no_conversation);
+                messageView.setText(R.string.no_conversation);
                 messageView.setGravity(Gravity.CENTER);
                 messageView.setTextColor(Color.parseColor("#6400F0"));
                 messageView.setBackgroundColor(Color.parseColor("#AAE9C400"));

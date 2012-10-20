@@ -66,7 +66,7 @@ public class MultipleAccountsPreferenceAdapter extends ArrayAdapter<AccountModel
         final AccountModel item = getItem(position);
         View row;
 
-        if (item.getUserName().equals(getContext().getString(R.string.text_account_add_account))) {
+        if (item.getUserName().equals(getContext().getString(R.string.account_add_account))) {
             row = inflater.inflate(R.layout.lastlistem, parent, false);
         } else {
             row = inflater.inflate(R.layout.defaultlistitem, parent, false);

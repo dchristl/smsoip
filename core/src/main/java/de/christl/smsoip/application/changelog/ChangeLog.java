@@ -160,7 +160,7 @@ public class ChangeLog {
                 .setView(dialogView)
                 .setPositiveButton(
                         context.getResources().getString(
-                                R.string.text_ok),
+                                R.string.ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
@@ -182,7 +182,7 @@ public class ChangeLog {
                 .setView(dialogView)
                 .setPositiveButton(
                         context.getResources().getString(
-                                R.string.text_ok),
+                                R.string.ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();

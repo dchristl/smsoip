@@ -59,8 +59,8 @@ public class MultipleAccountsPreference extends ListPreference {
     private void init() {
         setPersistent(false);
         setDefaultAccountInSummary();
-        setDialogTitle(R.string.text_chooseAccount);
-        setTitle(R.string.text_account_list);
+        setDialogTitle(R.string.chooseAccount);
+        setTitle(R.string.account_list);
         //needed by preference, but values will be filled later in cycle, so defined empty ones
         setEntryValues(new CharSequence[0]);
         setEntries(new CharSequence[0]);
@@ -72,8 +72,8 @@ public class MultipleAccountsPreference extends ListPreference {
 
     private void setDefaultAccountInSummary() {
         int defaultAccount = getDefaultAccount();
-        String defaultAccountName = preferences.getString(ProviderPreferences.PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.text_account_no_account));
-        setSummary(String.format(getContext().getString(R.string.text_account_list_description), defaultAccountName));
+        String defaultAccountName = preferences.getString(ProviderPreferences.PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.account_no_account));
+        setSummary(String.format(getContext().getString(R.string.account_list_description), defaultAccountName));
     }
 
     private void fillAccountMap() {
@@ -97,7 +97,7 @@ public class MultipleAccountsPreference extends ListPreference {
                 }
             }
         }
-        accountModels.addFakeAsLast(getContext().getString(R.string.text_account_add_account));
+        accountModels.addFakeAsLast(getContext().getString(R.string.account_add_account));
 
     }
 
@@ -130,7 +130,7 @@ public class MultipleAccountsPreference extends ListPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
-        builder.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MultipleAccountsPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
@@ -142,7 +142,7 @@ public class MultipleAccountsPreference extends ListPreference {
         builder.setSingleChoiceItems(listAdapter, listAdapter.getDefaultAccount(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (listAdapter.getItem(which).getUserName().equals(getContext().getString(R.string.text_account_add_account))) {
+                if (listAdapter.getItem(which).getUserName().equals(getContext().getString(R.string.account_add_account))) {
                     showUserNamePasswordDialog(null);
                 } else {
                     listAdapter.setDefaultAccount(which);
@@ -160,7 +160,7 @@ public class MultipleAccountsPreference extends ListPreference {
         ErrorReporterStack.put(LogConst.SHOW_USER_NAME_PASSWORD_DIALOG);
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.userpassinputs);
-        dialog.setTitle(R.string.text_account_add_account);
+        dialog.setTitle(R.string.account_add_account);
         View okButton = dialog.findViewById(R.id.okButton);
         final EditText userInput = (EditText) dialog.findViewById(R.id.user);
         final EditText passInput = (EditText) dialog.findViewById(R.id.pass);

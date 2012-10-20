@@ -56,7 +56,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_program_settings));
+        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.program_settings));
         setPreferenceScreen(initPreferences());
         if (savedInstanceState != null) {
             adjustment = savedInstanceState.getInt(SettingsConst.EXTRA_ADJUSTMENT, 0);
@@ -77,14 +77,14 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
 
     private void addMiscellaneousSettings(PreferenceScreen root) {
         PreferenceCategory miscCategory = new PreferenceCategory(this);
-        miscCategory.setTitle(R.string.text_category_stuff);
+        miscCategory.setTitle(R.string.category_stuff);
         root.addPreference(miscCategory);
         PreferenceScreen intentPref = getPreferenceManager().createPreferenceScreen(this);
         String uriString = getString(R.string.homepage);
         intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
                 .setData(Uri.parse(uriString)));
-        intentPref.setTitle(R.string.text_visit_project_page);
-        intentPref.setSummary(R.string.text_visit_project_page_description);
+        intentPref.setTitle(R.string.visit_project_page);
+        intentPref.setSummary(R.string.visit_project_page_description);
         root.addPreference(intentPref);
 
         PreferenceScreen youtubeIntent = getPreferenceManager().createPreferenceScreen(this);
@@ -102,8 +102,8 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                 return true;
             }
         });
-        youtubeIntent.setTitle(R.string.text_youtube_video);
-        youtubeIntent.setSummary(R.string.text_youtube_video_description);
+        youtubeIntent.setTitle(R.string.youtube_video);
+        youtubeIntent.setSummary(R.string.youtube_video_description);
         root.addPreference(youtubeIntent);
         PreferenceScreen pluginIntent = getPreferenceManager().createPreferenceScreen(this);
         pluginIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -123,7 +123,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                 return true;
             }
         });
-        pluginIntent.setTitle(R.string.text_visit_plugin_page);
+        pluginIntent.setTitle(R.string.visit_plugin_page);
         String visitPluginDescription = getString(R.string.visit_plugin_page_description);
         pluginIntent.setSummary(visitPluginDescription);
         root.addPreference(pluginIntent);
@@ -146,8 +146,8 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                     return true;
                 }
             });
-            adfreeIntent.setTitle(R.string.text_donate_plugin_page);
-            adfreeIntent.setSummary(R.string.text_donate_plugin_page_description);
+            adfreeIntent.setTitle(R.string.donate_plugin_page);
+            adfreeIntent.setSummary(R.string.donate_plugin_page_description);
             root.addPreference(adfreeIntent);
         }
         PreferenceScreen welcomePref = getPreferenceManager().createPreferenceScreen(this);
@@ -159,8 +159,8 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                 return true;
             }
         });
-        welcomePref.setTitle(R.string.text_reshow_welcome);
-        welcomePref.setSummary(R.string.text_reshow_welcome_description);
+        welcomePref.setTitle(R.string.reshow_welcome);
+        welcomePref.setSummary(R.string.reshow_welcome_description);
         root.addPreference(welcomePref);
         PreferenceScreen contactIntent = getPreferenceManager().createPreferenceScreen(this);
         contactIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -174,40 +174,40 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                 return true;
             }
         });
-        contactIntent.setTitle(R.string.text_contact_developer);
-        contactIntent.setSummary(getString(R.string.text_contact_developer_description));
+        contactIntent.setTitle(R.string.contact_developer);
+        contactIntent.setSummary(getString(R.string.contact_developer_description));
         root.addPreference(contactIntent);
     }
 
     private void addLayoutSettings(PreferenceScreen root) {
         PreferenceCategory layoutCategory = new PreferenceCategory(this);
-        layoutCategory.setTitle(R.string.text_category_layout);
+        layoutCategory.setTitle(R.string.category_layout);
         root.addPreference(layoutCategory);
         root.addPreference(new FontSizePreference(this));
         CheckBoxPreference enableCompactMode = new CheckBoxPreference(this);
         enableCompactMode.setDefaultValue(false);
         enableCompactMode.setKey(SettingsConst.GLOBAL_ENABLE_COMPACT_MODE);
-        enableCompactMode.setTitle(R.string.text_enable_compact_mode);
-        enableCompactMode.setSummary(R.string.text_enable_compact_mode_description);
+        enableCompactMode.setTitle(R.string.enable_compact_mode);
+        enableCompactMode.setSummary(R.string.enable_compact_mode_description);
         root.addPreference(enableCompactMode);
         PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
-        backgroundImageIntent.setTitle(R.string.text_background_image);
-        backgroundImageIntent.setSummary(R.string.text_background_image_description);
+        backgroundImageIntent.setTitle(R.string.background_image);
+        backgroundImageIntent.setSummary(R.string.background_image_description);
         backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 if (BitmapProcessor.isBackgroundImageSet()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(GlobalPreferences.this);
-                    builder.setTitle(R.string.text_background_image);
-                    builder.setMessage(R.string.text_background_image_dialog);
-                    builder.setPositiveButton(R.string.text_background_image_dialog_pick, new DialogInterface.OnClickListener() {
+                    builder.setTitle(R.string.background_image);
+                    builder.setMessage(R.string.background_image_dialog);
+                    builder.setPositiveButton(R.string.background_image_dialog_pick, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             startImagePicker();
                             dialog.dismiss();
                         }
                     });
-                    builder.setNegativeButton(R.string.text_background_image_dialog_reset, new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(R.string.background_image_dialog_reset, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             writeImageUriAndUpdateBackground(null);
@@ -227,7 +227,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
 
     private void addBehaviourSettings(PreferenceScreen root) {
         PreferenceCategory behaviourCategory = new PreferenceCategory(this);
-        behaviourCategory.setTitle(R.string.text_category_behaviour);
+        behaviourCategory.setTitle(R.string.category_behaviour);
         root.addPreference(behaviourCategory);
         PreferenceScreen receiverIntent = getPreferenceManager().createPreferenceScreen(this);
         receiverIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -239,35 +239,35 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             }
         });
 
-        receiverIntent.setTitle(R.string.text_react_on_incoming_sms);
-        receiverIntent.setSummary(R.string.text_react_on_incoming_sms_description);
+        receiverIntent.setTitle(R.string.react_on_incoming_sms);
+        receiverIntent.setSummary(R.string.react_on_incoming_sms_description);
         root.addPreference(receiverIntent);
         CheckBoxPreference enableNetworkCheck = new CheckBoxPreference(this);
         enableNetworkCheck.setDefaultValue(true);
         enableNetworkCheck.setKey(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK);
-        enableNetworkCheck.setTitle(R.string.text_enable_network_check);
-        enableNetworkCheck.setSummary(R.string.text_enable_network_check_description);
+        enableNetworkCheck.setTitle(R.string.enable_network_check);
+        enableNetworkCheck.setSummary(R.string.enable_network_check_description);
         root.addPreference(enableNetworkCheck);
         CheckBoxPreference enableInfoOnStartup = new CheckBoxPreference(this);
         enableInfoOnStartup.setDefaultValue(false);
         enableInfoOnStartup.setKey(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP);
-        enableInfoOnStartup.setTitle(R.string.text_enable_info_update);
-        enableInfoOnStartup.setSummary(R.string.text_enable_info_update_description);
+        enableInfoOnStartup.setTitle(R.string.enable_info_update);
+        enableInfoOnStartup.setSummary(R.string.enable_info_update_description);
         root.addPreference(enableInfoOnStartup);
         boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
         writeToDataBase.setKey(SettingsConst.GLOBAL_WRITE_TO_DATABASE);
         writeToDataBase.setDefaultValue(writeToDatabaseAvailable);
         writeToDataBase.setEnabled(writeToDatabaseAvailable);
-        writeToDataBase.setTitle(R.string.text_write_to_database);
-        writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.text_write_to_database_description : R.string.text_not_supported_on_device);
+        writeToDataBase.setTitle(R.string.write_to_database);
+        writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.write_to_database_description : R.string.not_supported_on_device);
         root.addPreference(writeToDataBase);
         final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
         enableProviderOutput.setKey(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT);
         enableProviderOutput.setDefaultValue(false);
         enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false));
-        enableProviderOutput.setTitle(R.string.text_enable_provider_output);
-        enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.text_enable_provider_output_description : R.string.text_not_supported_on_device);
+        enableProviderOutput.setTitle(R.string.enable_provider_output);
+        enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.enable_provider_output_description : R.string.not_supported_on_device);
         root.addPreference(enableProviderOutput);
 
         writeToDataBase.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -287,22 +287,22 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
 
     private void addBaseSettings(PreferenceScreen root) {
         PreferenceCategory mainCategory = new PreferenceCategory(this);
-        mainCategory.setTitle(R.string.text_category_base);
+        mainCategory.setTitle(R.string.category_base);
         root.addPreference(mainCategory);
         final ListPreference listPref = new ListPreference(this);
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
         if (providerEntries.size() > 1) {
             Map<String, String> providersWithNames = new LinkedHashMap<String, String>();
-            providersWithNames.put((String) getText(R.string.text_no_default_Provider), "");
+            providersWithNames.put((String) getText(R.string.no_default_Provider), "");
             for (SMSoIPPlugin providerEntry : providerEntries.values()) {
                 providersWithNames.put(providerEntry.getProviderName(), providerEntry.getSupplierClassName());
             }
             listPref.setEntries(providersWithNames.keySet().toArray(new CharSequence[providersWithNames.size()]));
             listPref.setEntryValues(providersWithNames.values().toArray(new CharSequence[providersWithNames.size()]));
-            listPref.setDialogTitle(R.string.text_default_provider);
+            listPref.setDialogTitle(R.string.default_provider);
             listPref.setKey(SettingsConst.GLOBAL_DEFAULT_PROVIDER);
-            listPref.setTitle(R.string.text_default_provider);
-            listPref.setSummary(R.string.text_default_provider_description);
+            listPref.setTitle(R.string.default_provider);
+            listPref.setSummary(R.string.default_provider_description);
             if (listPref.getValue() == null) {
                 listPref.setValue("");    //set the value if nothing selected
             }
@@ -311,11 +311,11 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
         EditTextPreference defaultAreaCode = new EditTextPreference(this);
-        defaultAreaCode.setDialogTitle(R.string.text_area_code);
+        defaultAreaCode.setDialogTitle(R.string.area_code);
         defaultAreaCode.setKey(SettingsConst.GLOBAL_AREA_CODE);
-        defaultAreaCode.setTitle(R.string.text_area_code);
+        defaultAreaCode.setTitle(R.string.area_code);
         defaultAreaCode.setDefaultValue("49");
-        defaultAreaCode.setSummary(R.string.text_area_code_description);
+        defaultAreaCode.setSummary(R.string.area_code_description);
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
         PreferenceScreen textModulePreference = getPreferenceManager().createPreferenceScreen(this);
@@ -328,8 +328,8 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             }
         });
 
-        textModulePreference.setTitle(R.string.text_text_module_preference);
-        textModulePreference.setSummary(R.string.text_text_module_preference_description);
+        textModulePreference.setTitle(R.string.module_preference);
+        textModulePreference.setSummary(R.string.module_preference_description);
         root.addPreference(textModulePreference);
     }
 
@@ -348,7 +348,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                     Integer.parseInt(value);
                 } catch (NumberFormatException e) {
                     value = editTextPreference.getText();
-                    String text = String.format(getString(R.string.text_reset_area_code), value);
+                    String text = String.format(getString(R.string.reset_area_code), value);
                     Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -376,7 +376,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
     }
 
     private void writeImageUriAndUpdateBackground(String selectedImage) {
-        Toast toast = Toast.makeText(this, R.string.text_background_will_be_set, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, R.string.background_will_be_set, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
         toast.show();
         if (processImageAndSetBackgroundTask != null) {

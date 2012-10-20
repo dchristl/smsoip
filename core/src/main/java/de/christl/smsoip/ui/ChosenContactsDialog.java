@@ -48,7 +48,7 @@ public class ChosenContactsDialog extends Dialog {
         super(context);
         bitmaps = new ArrayList<Bitmap>(receiverList.size());
         this.receiverList = receiverList;
-        setTitle(R.string.text_pick_for_disabling);
+        setTitle(R.string.pick_for_disabling);
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
         double factor = 1.0;

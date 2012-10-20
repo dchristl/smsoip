@@ -89,9 +89,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         SMSoIPApplication app = SMSoIPApplication.getApp();
         app.initProviders();
         if (app.getPluginsToOld().size() > 0) {
-            showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.text_deprecated_providers));
+            showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.deprecated_providers));
         } else if (app.getPluginsToNew().size() > 0) {
-            showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.text_too_new_providers));
+            showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.too_new_providers));
         } else if (app.getProviderEntries().size() == 0) {
             showNoProvidersDialog();
         } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
@@ -101,7 +101,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                 if (!nwSettingsAlreadyShown) {
                     showDialog(DIALOG_NO_NETWORK_ID);
                 } else {
-                    Toast toast = Toast.makeText(getApplicationContext(), getText(R.string.text_noNetworkAvailable), Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), getText(R.string.noNetworkAvailable), Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -111,7 +111,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             nwSettingsAlreadyShown = savedInstanceState.getBoolean(SAVED_INSTANCE_NWSETTINGSALREADYSHOWN, false);
         }
         if (!isNetworkDisabled()) {
-            new UpdateDeveloperInfoTask().execute();
+            new UpdateDeveloperInfoTask().execute(null, null);
         }
     }
 
@@ -134,7 +134,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add(0, EXIT, Menu.CATEGORY_SECONDARY, getString(R.string.text_exit));
+        MenuItem item = menu.add(0, EXIT, Menu.CATEGORY_SECONDARY, getString(R.string.exit));
         item.setIcon(R.drawable.ic_menu_close_clear_cancel);
         return true;
     }
@@ -166,7 +166,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         for (SMSoIPPlugin smsSupplier : suppliers.values()) {
             message.append(smsSupplier.getProviderName()).append("\n");
         }
-        builder.setMessage(message).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+        builder.setMessage(message).setPositiveButton(getString(R.string.ok), dialogClickListener).show();
         notLoadedDialogAlreadyShown = true;
     }
 
@@ -197,8 +197,8 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.text_sureQuit)).setPositiveButton(getString(R.string.text_yesOption), dialogClickListener)
-                .setNegativeButton(getString(R.string.text_noOption), dialogClickListener).show();
+        builder.setMessage(getString(R.string.sureQuit)).setPositiveButton(getString(R.string.yesOption), dialogClickListener)
+                .setNegativeButton(getString(R.string.noOption), dialogClickListener).show();
     }
 
     protected Dialog onCreateDialog(int id) {
@@ -207,7 +207,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             case DIALOG_NO_NETWORK_ID:
                 dialog = new Dialog(this);
                 dialog.setContentView(R.layout.networkdialog);
-                dialog.setTitle(getString(R.string.text_noNetworkAvailable));
+                dialog.setTitle(getString(R.string.noNetworkAvailable));
                 Button openNWSettingsButton = (Button) dialog.findViewById(R.id.openNetworkSettings);
                 openNWSettingsButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -231,7 +231,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         nwSettingsAlreadyShown = true;
-                        new UpdateDeveloperInfoTask().execute();
+                        new UpdateDeveloperInfoTask().execute(null, null);
                     }
                 });
                 break;
@@ -259,7 +259,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-        builder.setMessage(getString(R.string.text_no_providers)).setPositiveButton(getString(R.string.text_ok), dialogClickListener).show();
+        builder.setMessage(getString(R.string.no_providers)).setPositiveButton(getString(R.string.ok), dialogClickListener).show();
     }
 
     @Override

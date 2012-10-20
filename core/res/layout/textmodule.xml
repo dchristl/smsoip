@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/text_key"
+            android:text="@string/key"
             />
     <EditText android:id="@+id/key"
               android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/text_value"
+            android:text="@string/value"
 
             />
     <EditText android:id="@+id/value"

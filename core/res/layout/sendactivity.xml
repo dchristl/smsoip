@@ -36,7 +36,7 @@
                     android:scrollbars="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_receiverField"
+                    android:hint="@string/receiverField"
                     android:layout_weight="1"
                     android:textSize="15dp"
                     android:layout_span="3"
@@ -71,7 +71,7 @@
                         android:id="@+id/infoTextUpper"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/text_notyetrefreshed"
+                        android:text="@string/notyetrefreshed"
                         android:layout_toLeftOf="@id/smssigns"
                         android:layout_alignParentLeft="true"
                         android:visibility="invisible"
@@ -86,7 +86,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:minLines="3"
-                        android:hint="@string/hint_smsText"
+                        android:hint="@string/smsText"
                         android:textSize="15dp"
                         android:gravity="top|left"
                         >
@@ -181,7 +181,7 @@
                         android:id="@+id/infoText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/text_notyetrefreshed"
+                        android:text="@string/notyetrefreshed"
                         android:layout_toRightOf="@id/refreshButton"
                         android:layout_centerInParent="true"
                         android:layout_toLeftOf="@id/showInfoButton"
@@ -196,7 +196,7 @@
                       android:gravity="center"
                       android:layout_span="5"
                       android:textSize="18dp"
-                      android:text="@string/text_sending_time"
+                      android:text="@string/sending_time"
                     />
         </TableRow>
         <TableRow android:id="@+id/tblTimeShiftRow">
@@ -218,7 +218,7 @@
                             android:id="@+id/timeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/text_now"
+                            android:text="@string/now"
                             android:layout_marginLeft="20dp"
                             android:layout_weight="2"
                             android:visibility="visible"
@@ -255,7 +255,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textSize="18dp"
-                    android:text="@string/text_chooseType"
+                    android:text="@string/chooseType"
                     android:layout_span="5"
                     />
         </TableRow>
@@ -293,7 +293,7 @@
                     android:id="@+id/sendButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_send"
+                    android:text="@string/send"
                     android:layout_span="5"
                     >
             </Button>

@@ -82,28 +82,28 @@ public class SMSActionResult {
 
 
     public static SMSActionResult NO_ERROR() {
-        return new SMSActionResult(true, R.string.text_ok);
+        return new SMSActionResult(true, R.string.ok);
     }
 
     public static SMSActionResult LOGIN_SUCCESSFUL() {
-        return new SMSActionResult(true, R.string.text_loginSuccessful);
+        return new SMSActionResult(true, R.string.loginSuccessful);
     }
 
     public static SMSActionResult NETWORK_ERROR() {
-        return new SMSActionResult(R.string.text_noNetwork);
+        return new SMSActionResult(R.string.noNetwork);
 
     }
 
     public static SMSActionResult LOGIN_FAILED_ERROR() {
-        return new SMSActionResult(R.string.text_loginFailed);
+        return new SMSActionResult(R.string.loginFailed);
     }
 
     public static SMSActionResult TIMEOUT_ERROR() {
-        return new SMSActionResult(false, true, R.string.text_timeOutReached);
+        return new SMSActionResult(false, true, R.string.timeOutReached);
     }
 
     public static SMSActionResult UNKNOWN_ERROR() {
-        return new SMSActionResult(false, true, R.string.text_unknown_error);
+        return new SMSActionResult(false, true, R.string.unknown_error);
     }
 
     public static SMSActionResult NO_ERROR(String message) {
@@ -117,7 +117,7 @@ public class SMSActionResult {
     }
 
     public static SMSActionResult NO_CREDENTIALS() {
-        return new SMSActionResult(R.string.text_noCredentials);
+        return new SMSActionResult(R.string.noCredentials);
     }
 
     /**
@@ -126,7 +126,7 @@ public class SMSActionResult {
      * @return
      */
     public static SMSActionResult USER_CANCELED() {
-        return new SMSActionResult(R.string.text_user_cancelled);
+        return new SMSActionResult(R.string.user_cancelled);
     }
 
     public static SMSActionResult SHOW_DIALOG_RESULT(BreakingProgressDialog dialog) {

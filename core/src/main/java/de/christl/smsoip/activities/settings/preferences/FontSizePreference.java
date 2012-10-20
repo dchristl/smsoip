@@ -43,10 +43,10 @@ public class FontSizePreference extends DialogPreference {
         setDefaultValue("1.0");
         setKey(SettingsConst.GLOBAL_FONT_SIZE_FACTOR);
         setDialogLayoutResource(R.layout.fontsizepreference);
-        setTitle(R.string.text_font_size);
-        setSummary(R.string.text_font_size_description);
-        setDialogTitle(R.string.text_font_size);
-        setDialogMessage(R.string.text_font_size_dialog_description);
+        setTitle(R.string.font_size);
+        setSummary(R.string.font_size_description);
+        setDialogTitle(R.string.font_size);
+        setDialogMessage(R.string.font_size_dialog_description);
         setNegativeButtonText(null);
         setPersistent(false);
     }

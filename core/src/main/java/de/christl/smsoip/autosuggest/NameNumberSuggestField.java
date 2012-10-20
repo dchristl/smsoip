@@ -95,8 +95,8 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
                 currentPart = NumberUtils.fixNumber(currentPart);
                 Receiver receiver = DatabaseHandler.findContactByNumber(currentPart, getContext());
                 if (receiver == null) {
-                    receiver = new Receiver(getContext().getString(R.string.text_unknown));
-                    receiver.setReceiverNumber(currentPart, getContext().getString(R.string.text_no_phone_type_label));
+                    receiver = new Receiver(getContext().getString(R.string.unknown));
+                    receiver.setReceiverNumber(currentPart, getContext().getString(R.string.no_phone_type_label));
                 }
                 if (tmpList.size() < maxReceiverCount) {
                     addedTwice |= tmpList.addWithAlreadyInsertedCheck(receiver);
@@ -107,7 +107,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
                 String name = currentPart.replaceAll(" \\(.*", "");
                 String number = currentPart.replaceAll(".* \\(", "");
                 Receiver receiver = new Receiver(name);
-                receiver.setRawNumber(number, getContext().getString(R.string.text_no_phone_type_label)); //number will be fixed automatically
+                receiver.setRawNumber(number, getContext().getString(R.string.no_phone_type_label)); //number will be fixed automatically
                 if (tmpList.size() < maxReceiverCount) {
                     addedTwice |= tmpList.addWithAlreadyInsertedCheck(receiver);
                 } else {

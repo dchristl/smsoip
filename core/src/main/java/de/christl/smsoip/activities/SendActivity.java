@@ -183,7 +183,7 @@ public class SendActivity extends AllActivity {
         AppRating.showRateDialogIfNeeded(this);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
-        signsconstant = getText(R.string.text_smssigns);
+        signsconstant = getText(R.string.smssigns);
         setAutoSuggestField();
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -396,7 +396,7 @@ public class SendActivity extends AllActivity {
                     } else {
                         pickHour.setOnClickListener(null);
                         pickDay.setOnClickListener(null);
-                        timeText.setText(R.string.text_now);
+                        timeText.setText(R.string.now);
                         timeText.setVisibility(View.VISIBLE);
                         pickHour.setVisibility(View.GONE);
                         pickDay.setVisibility(View.INVISIBLE);
@@ -410,7 +410,7 @@ public class SendActivity extends AllActivity {
             timeShiftLayout.setVisibility(View.GONE);
             timeShiftDescr.setVisibility(View.GONE);
             timeText.setOnClickListener(null);
-            timeText.setText(R.string.text_now);
+            timeText.setText(R.string.now);
             pickHour.setVisibility(View.GONE);
             pickDay.setVisibility(View.INVISIBLE);
         }
@@ -445,23 +445,23 @@ public class SendActivity extends AllActivity {
         final TextView infoText = (TextView) findViewById(R.id.infoText);
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
-            infoText.setText(R.string.text_notyetrefreshed);
-            infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
+            infoText.setText(R.string.notyetrefreshed);
+            infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.click));
             refreshInformationText(true);
 
         } else {
-            infoText.setText(R.string.text_notyetrefreshed);
-            infoTextUpper.setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
+            infoText.setText(R.string.notyetrefreshed);
+            infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.click));
         }
     }
 
     public void updateInfoTextAndRefreshButton(String info) {
         if (info != null) {
             ((TextView) findViewById(R.id.infoText)).setText(info);
-            ((TextView) findViewById(R.id.infoTextUpper)).setText(info + " " + getString(R.string.text_click));
+            ((TextView) findViewById(R.id.infoTextUpper)).setText(info + " " + getString(R.string.click));
         } else {
-            ((TextView) findViewById(R.id.infoText)).setText(R.string.text_notyetrefreshed);
-            ((TextView) findViewById(R.id.infoTextUpper)).setText(getString(R.string.text_notyetrefreshed) + " " + getString(R.string.text_click));
+            ((TextView) findViewById(R.id.infoText)).setText(R.string.notyetrefreshed);
+            ((TextView) findViewById(R.id.infoTextUpper)).setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.click));
         }
     }
 
@@ -481,7 +481,7 @@ public class SendActivity extends AllActivity {
 
     private void setFullTitle() {
         OptionProvider provider = smSoIPPlugin.getProvider();
-        String userName = provider.getUserName() == null ? getString(R.string.text_account_no_account) : provider.getUserName();
+        String userName = provider.getUserName() == null ? getString(R.string.account_no_account) : provider.getUserName();
         setTitle(userName);
         setSuppliersLayout();
     }
@@ -498,8 +498,8 @@ public class SendActivity extends AllActivity {
             if (givenNumber != null && !givenNumber.equals("")) {
                 Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
                 if (contactByNumber == null) {
-                    contactByNumber = new Receiver(getString(R.string.text_unknown));
-                    contactByNumber.setRawNumber(givenNumber, getString(R.string.text_no_phone_type_label));
+                    contactByNumber = new Receiver(getString(R.string.unknown));
+                    contactByNumber.setRawNumber(givenNumber, getString(R.string.no_phone_type_label));
                 }
                 addReceiver(contactByNumber);
             }
@@ -510,7 +510,7 @@ public class SendActivity extends AllActivity {
     private void setSendButton() {
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
-        final CharSequence progressText = getText(R.string.text_smscomitted);
+        final CharSequence progressText = getText(R.string.smscomitted);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (!preSendCheck() || progressDialog == null) {
@@ -540,8 +540,8 @@ public class SendActivity extends AllActivity {
                         if (receiverNumber != null) {
                             Receiver contactByNumber = DatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
                             if (contactByNumber == null) {
-                                contactByNumber = new Receiver(getString(R.string.text_unknown));
-                                contactByNumber.setRawNumber(receiverNumber, getString(R.string.text_no_phone_type_label));
+                                contactByNumber = new Receiver(getString(R.string.unknown));
+                                contactByNumber.setRawNumber(receiverNumber, getString(R.string.no_phone_type_label));
                             }
                             addReceiver(contactByNumber);
                         }
@@ -692,7 +692,7 @@ public class SendActivity extends AllActivity {
         String textPreValidation = receiverField.getText().toString();
         if (!textPostValidation.equals(textPreValidation)) {
             toastMessage += (toastMessage.length() != 0) ? "\n" : "";
-            toastMessage += getString(R.string.text_inputs_corrected);
+            toastMessage += getString(R.string.inputs_corrected);
             if (receiverField.getReceiverList().size() == 0) { //set the text empty if after validation no receiver is availabel anymore
                 receiverField.setText("");
             }
@@ -703,18 +703,18 @@ public class SendActivity extends AllActivity {
                 toastMessage += patchResult;
             } else {
                 toastMessage += (toastMessage.length() != 0) ? "\n" : "";
-                toastMessage += getString(R.string.text_noNumberInput);
+                toastMessage += getString(R.string.noNumberInput);
             }
         }
         if (textField.getText().toString().trim().length() == 0) {
             toastMessage += (toastMessage.length() != 0) ? "\n" : "";
-            toastMessage += getString(R.string.text_noTextInput);
+            toastMessage += getString(R.string.noTextInput);
         }
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
         if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
             if (dateTime.getCalendar().before(Calendar.getInstance())) {
                 toastMessage += (toastMessage.length() != 0) ? "\n" : "";
-                toastMessage += getString(R.string.text_time_in_past);
+                toastMessage += getString(R.string.time_in_past);
             }
         }
         if (toastMessage.length() > 0) {
@@ -745,8 +745,8 @@ public class SendActivity extends AllActivity {
     private void setClearButton() {
         ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getText(R.string.text_wantClear))
-                .setPositiveButton(getText(R.string.text_ok), new DialogInterface.OnClickListener() {
+        builder.setMessage(getText(R.string.wantClear))
+                .setPositiveButton(getText(R.string.ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         clearAllInputs();
                     }
@@ -958,7 +958,7 @@ public class SendActivity extends AllActivity {
                 } else { //more than one number for contact
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                    builder.setTitle(String.format(getString(R.string.text_pickNumber), pickedContact.getName()));
+                    builder.setTitle(String.format(getString(R.string.pickNumber), pickedContact.getName()));
                     //build a map of string on screen with corresponding number for layout
                     final Map<String, String> presentationMap = new HashMap<String, String>();
                     for (BasicNameValuePair basicNameValuePair : numberTypeList) {
@@ -974,7 +974,7 @@ public class SendActivity extends AllActivity {
                                     break;
                                 }
                             }
-                            receiver.setRawNumber(key, getString(R.string.text_no_phone_type_label));
+                            receiver.setRawNumber(key, getString(R.string.no_phone_type_label));
                             addReceiver(receiver);
                         }
                     });
@@ -985,9 +985,9 @@ public class SendActivity extends AllActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 
-                builder.setMessage(String.format(getText(R.string.text_noNumber).toString(), pickedContact.getName()))
+                builder.setMessage(String.format(getText(R.string.noNumber).toString(), pickedContact.getName()))
                         .setCancelable(false)
-                        .setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
@@ -1018,14 +1018,14 @@ public class SendActivity extends AllActivity {
                 updateViewOnChangedReceivers();
             }
         } else {
-            toast.setText(String.format(getText(R.string.text_max_receivers_reached).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
+            toast.setText(String.format(getText(R.string.max_receivers_reached).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
     }
 
     private void showAddedTwiceToast() {
-        toast.setText(R.string.text_receiver_added_twice);
+        toast.setText(R.string.receiver_added_twice);
         toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
         toast.show();
     }
@@ -1085,16 +1085,16 @@ public class SendActivity extends AllActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuItem item = menu.add(0, PROVIDER_OPTION, Menu.CATEGORY_SECONDARY, R.string.text_provider_settings);
+        MenuItem item = menu.add(0, PROVIDER_OPTION, Menu.CATEGORY_SECONDARY, R.string.provider_settings);
         item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, Menu.CATEGORY_SECONDARY, R.string.text_program_settings);
+        MenuItem globalOption = menu.add(0, GLOBAL_OPTION, Menu.CATEGORY_SECONDARY, R.string.program_settings);
         globalOption.setIcon(R.drawable.ic_menu_compose);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) {
-            MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, R.string.text_changeProvider);
+            MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, R.string.changeProvider);
             switchSupplier.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1) {
-            MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, R.string.text_changeAccount);
+            MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, R.string.changeAccount);
             switchAccount.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         if (smSoIPPlugin != null) {
@@ -1219,7 +1219,7 @@ public class SendActivity extends AllActivity {
                 };
 
                 builder.setAdapter(adapter, listener);
-                builder.setTitle(R.string.text_chooseProvider);
+                builder.setTitle(R.string.chooseProvider);
                 builder.setCancelable(adapter.isCancelable()); //only cancelable on switch providers
                 dialog = builder.create();
                 break;
@@ -1250,7 +1250,7 @@ public class SendActivity extends AllActivity {
                         switchAccount(charAccountRel.get(item));
                     }
                 });
-                builder.setTitle(R.string.text_chooseAccount);
+                builder.setTitle(R.string.chooseAccount);
                 dialog = builder.create();
                 break;
             default:
@@ -1309,7 +1309,7 @@ public class SendActivity extends AllActivity {
 
     private void showTooMuchReceiversToast() {
         if (smSoIPPlugin != null) { //can be null on startup
-            toast.setText(String.format(getText(R.string.text_too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
+            toast.setText(String.format(getText(R.string.too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
@@ -1370,7 +1370,7 @@ public class SendActivity extends AllActivity {
         if (fireSMSResults.size() == 1) {  // nobody cares about extra Infos if only one message was sent
             resultMessage.append(fireSMSResults.get(0).getResult().getMessage());
         } else {
-            String unknownReceiverText = getText(R.string.text_unknown).toString();
+            String unknownReceiverText = getText(R.string.unknown).toString();
             for (int i = 0, fireSMSResultsSize = fireSMSResults.size(); i < fireSMSResultsSize; i++) {
                 FireSMSResult fireSMSResult = fireSMSResults.get(i);
                 Receiver receiver = fireSMSResult.getReceiver();

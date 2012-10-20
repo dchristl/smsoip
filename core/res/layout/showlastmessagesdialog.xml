@@ -32,7 +32,7 @@
             android:padding="10dp"
             >
         <TextView android:id="@+id/lastMessageHeader"
-                android:text="@string/text_lastMessage"
+                android:text="@string/lastMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -52,7 +52,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:paddingBottom="5dp"
-                  android:text="@string/text_clickToAdd"
+                  android:text="@string/clickToAdd"
                   android:textSize="10dp"
                 />
         <TextView android:id="@+id/message"
@@ -63,7 +63,7 @@
                   android:padding="5dp"
                   android:background="#AAE9C400"
                 />
-        <TextView android:text="@string/text_lastConversation"
+        <TextView android:text="@string/lastConversation"
                   android:id="@+id/lastConversation"
                   android:textStyle="bold"
                   android:textColor="#C0C0F0"

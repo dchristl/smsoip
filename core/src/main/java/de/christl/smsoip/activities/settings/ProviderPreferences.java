@@ -55,7 +55,7 @@ public class ProviderPreferences extends BackgroundPreferenceActivity {
         String supplierClassName = (String) extras.get(SUPPLIER_CLASS_NAME);
         smsSupplier = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
         provider = smsSupplier.getProvider();
-        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_provider_settings) + " (" + provider.getProviderName() + ")");
+        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.provider_settings) + " (" + provider.getProviderName() + ")");
         preferenceManager = getPreferenceManager();
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
         preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
@@ -79,8 +79,8 @@ public class ProviderPreferences extends BackgroundPreferenceActivity {
         final InputStream changelogInputStream = provider.getChangelogInputStream();
         if (changelogInputStream != null) {
             PreferenceScreen changelogIntent = getPreferenceManager().createPreferenceScreen(this);
-            changelogIntent.setTitle(R.string.text_provider_changelog);
-            changelogIntent.setSummary(R.string.text_provider_changelog_description);
+            changelogIntent.setTitle(R.string.provider_changelog);
+            changelogIntent.setSummary(R.string.provider_changelog_description);
             changelogIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {

@@ -75,7 +75,7 @@ public abstract class DatabaseHandler {
     }
 
     public static String translateTypeToString(Context context, int value) {
-        return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.text_no_phone_type_label));
+        return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.no_phone_type_label));
     }
 
 
@@ -126,9 +126,9 @@ public abstract class DatabaseHandler {
                 String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
                 Receiver receiver = findContactByNumber(number, context);
                 if (receiver == null) {
-                    String text = context.getString(R.string.text_unknown);
+                    String text = context.getString(R.string.unknown);
                     receiver = new Receiver(text);
-                    receiver.setRawNumber(number, context.getString(R.string.text_unknown));
+                    receiver.setRawNumber(number, context.getString(R.string.unknown));
 
                 }
                 out.put(receiver, msg);
@@ -205,10 +205,10 @@ public abstract class DatabaseHandler {
                 if (query.moveToFirst()) {
                     name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
                     if (name == null || name.equals("")) {
-                        name = context.getString(R.string.text_unknown);
+                        name = context.getString(R.string.unknown);
                     }
                     out = new Receiver(name);
-                    out.setRawNumber(rawNumber, context.getString(R.string.text_unknown));
+                    out.setRawNumber(rawNumber, context.getString(R.string.unknown));
                 }
                 query.close();
             } catch (IllegalArgumentException e) {

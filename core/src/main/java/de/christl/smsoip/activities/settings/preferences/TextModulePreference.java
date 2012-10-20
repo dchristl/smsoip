@@ -62,7 +62,7 @@ public class TextModulePreference extends DialogPreference {
         this.textModules = textModules;
         setTitle(key);
         setSummary(value);
-        setNegativeButtonText(R.string.text_delete);
+        setNegativeButtonText(R.string.delete);
         init();
     }
 
@@ -124,17 +124,17 @@ public class TextModulePreference extends DialogPreference {
             public void onClick(View v) {
                 String newKey = keyView.getText().toString();
                 if (newKey.length() < 2) {
-                    Toast toast = Toast.makeText(getContext(), R.string.text_key_too_short, Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getContext(), R.string.key_too_short, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
                 if (!newKey.equals(key) && textModules.containsKey(newKey)) {
-                    Toast toast = Toast.makeText(getContext(), R.string.text_key_already_exist, Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getContext(), R.string.key_already_exist, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
                 if (valueView.getText().toString().trim().length() == 0) {
-                    Toast toast = Toast.makeText(getContext(), R.string.text_empty_value, Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getContext(), R.string.empty_value, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
@@ -160,7 +160,7 @@ public class TextModulePreference extends DialogPreference {
         if (key == null) {
             View inflate = LayoutInflater.from(context).inflate(R.layout.lastlistem, null);
             TextView viewById = (TextView) inflate.findViewById(R.id.addText);
-            viewById.setText(R.string.text_add_text_module);
+            viewById.setText(R.string.add_module);
             ColorStateList defaultColor = new TextView(getContext()).getTextColors();
             viewById.setTextColor(defaultColor);
             return inflate;

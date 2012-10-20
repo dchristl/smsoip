@@ -39,22 +39,22 @@ public class TextModulePreferenceActivity extends BackgroundPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.text_text_module_preference);
+        setTitle(R.string.module_preference);
         setPreferenceScreen(initPreferences());
     }
 
     private PreferenceScreen initPreferences() {
         PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
         PreferenceScreen textModuleExplanationPreference = getPreferenceManager().createPreferenceScreen(this);
-        textModuleExplanationPreference.setTitle(R.string.text_modules_explanation);
-        textModuleExplanationPreference.setSummary(R.string.text_modules_explanation_description);
+        textModuleExplanationPreference.setTitle(R.string.modules_explanation);
+        textModuleExplanationPreference.setSummary(R.string.modules_explanation_description);
         textModuleExplanationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(TextModulePreferenceActivity.this);
-                builder.setTitle(R.string.text_modules_explanation);
-                builder.setMessage(R.string.text_modules_explanation_description_full);
-                builder.setPositiveButton(R.string.text_ok, null);
+                builder.setTitle(R.string.modules_explanation);
+                builder.setMessage(R.string.modules_explanation_description_full);
+                builder.setPositiveButton(R.string.ok, null);
                 builder.show();
                 return true;
             }

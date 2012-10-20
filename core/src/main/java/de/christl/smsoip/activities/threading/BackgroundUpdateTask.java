@@ -119,7 +119,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
     protected void onProgressUpdate(String... dots) {
         if (update) {
             if (dots != null) {
-                sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.text_pleaseWait) + dots[0]);
+                sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.pleaseWait) + dots[0]);
             } else {
                 sendActivity.updateInfoTextAndRefreshButton(null);
             }
