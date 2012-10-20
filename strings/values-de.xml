@@ -264,11 +264,12 @@ fileName: strings.xml
     <string name="contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
         nicht verfügbar? Sende mir eine E-Mail.
     </string>
-    <string name="rate_app_message">Wenn dir SMSoIP gefällt und du einen Moment Zeit hast, würde es mich freuen, wenn du
-        die App bei Google Play bewertest.\nVielen Dank für deine Unterstützung!
+    <string name="rate_app_message">Du benutzt nun SMSoIP schon einige Zeit.\nWenn dir die App gefällt und du einen
+        Moment Zeit hast, würde es mich freuen, wenn du
+        SMSoIP bei Google Play bewertest.\nVielen Dank für deine Unterstützung!
     </string>
     <string name="rate_app_title">Zufrieden mit SMSoIP?</string>
-    <string name="rate_no_thanks">Nein,Danke/Bereits bewertet</string>
+    <string name="rate_no_thanks">Nein, Danke</string>
     <string name="rate_yes">Bewerten</string>
     <string name="rate_remind_me_later">Später</string>
 
