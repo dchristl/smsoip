@@ -82,9 +82,8 @@ fileName: strings.xml
     <string name="user_cancelled">User canceled</string>
     <string name="loginSuccessful">Login successful</string>
     <string name="notyetrefreshed">Not yet refreshed</string>
-    <string name="click">(Click)</string>
+    <string name="tap">(Tap)</string>
     <string name="description">Sending SMS by several providers</string>
-    <string name="pleaseWait">Please wait</string>
     <string name="noNumberInput">No number entered!</string>
     <string name="noTextInput">No message entered!</string>
     <string name="noNetworkAvailable">Network not activated!</string>

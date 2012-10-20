@@ -1,3 +1,8 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: storedependent.xml
+-->
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -15,13 +20,6 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values-de
-fileName: storedependent.xml
--->
-
 
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
@@ -82,9 +80,8 @@ fileName: strings.xml
     <string name="user_cancelled">Abbruch durch Nutzer</string>
     <string name="loginSuccessful">Login erfolgreich</string>
     <string name="notyetrefreshed">Noch nicht aktualisiert</string>
-    <string name="click">(Klick)</string>
+    <string name="tap">(Tippe)</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
-    <string name="pleaseWait">Bitte warten</string>
     <string name="noNumberInput">Keine Nummer eingegeben!</string>
     <string name="noTextInput">Kein Text eingegeben!</string>
     <string name="noNetworkAvailable">Netzwerk nicht aktiviert!</string>

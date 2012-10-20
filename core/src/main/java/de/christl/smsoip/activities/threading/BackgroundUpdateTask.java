@@ -42,7 +42,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, Boolean, SMSActionR
 
     private int retryCount = 0;
 
-    public static final int MAX_RETRIES = 3;
+    public static final int MAX_RETRIES = 20;
     private boolean update = true;
 
     public BackgroundUpdateTask(SendActivity sendActivity) {

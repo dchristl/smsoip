@@ -446,12 +446,12 @@ public class SendActivity extends AllActivity {
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
         if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             infoText.setText(R.string.notyetrefreshed);
-            infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.click));
+            infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.tap));
             refreshInformationText(true);
 
         } else {
             infoText.setText(R.string.notyetrefreshed);
-            infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.click));
+            infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.tap));
         }
     }
 
@@ -464,11 +464,11 @@ public class SendActivity extends AllActivity {
         progressUpper.setVisibility(View.INVISIBLE);
         if (info != null) {
             infoText.setText(info);
-            infoTextUpper.setText(info + " " + getString(R.string.click));
+            infoTextUpper.setText(info + " " + getString(R.string.tap));
         } else {
             if (!showLoaderIcon) {
                 infoText.setText(R.string.notyetrefreshed);
-                infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.click));
+                infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.tap));
             } else {
                 infoText.setText("");
                 infoTextUpper.setText("");
