@@ -20,7 +20,6 @@ package de.christl.smsoip.activities.threading;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import de.christl.smsoip.R;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
@@ -36,7 +35,7 @@ import java.util.TimerTask;
 /**
  * Update the informations in background
  */
-public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionResult> {
+public class BackgroundUpdateTask extends AsyncTask<Boolean, Boolean, SMSActionResult> {
 
     private SendActivity sendActivity;
     private Timer timer;
@@ -59,17 +58,11 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
     protected SMSActionResult doInBackground(Boolean... params) {
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_STARTED);
         TimerTask task = new TimerTask() {
-            private String dots = ".";
 
             @Override
             public void run() {
-                if (dots.length() == 3) {
-                    dots = ".";
-                } else {
-                    dots += ".";
-                }
                 if (!BackgroundUpdateTask.this.isCancelled()) {
-                    publishProgress(dots);
+                    publishProgress(true);
                 }
             }
 
@@ -107,7 +100,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
                     smsActionResult = SMSActionResult.NETWORK_ERROR();
                 }
             }
-        } catch (Exception e) {    //TODO remove after stability improvements
+        } catch (Exception e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             ACRA.getErrorReporter().handleSilentException(e);
             smsActionResult = SMSActionResult.UNKNOWN_ERROR();
@@ -116,12 +109,12 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
     }
 
     @Override
-    protected void onProgressUpdate(String... dots) {
+    protected void onProgressUpdate(Boolean... inProgress) {
         if (update) {
-            if (dots != null) {
-                sendActivity.updateInfoTextAndRefreshButton(sendActivity.getString(R.string.pleaseWait) + dots[0]);
+            if (inProgress != null) {
+                sendActivity.updateInfoTextAndRefreshButton(null, true);
             } else {
-                sendActivity.updateInfoTextAndRefreshButton(null);
+                sendActivity.updateInfoTextAndRefreshButton(null, false);
             }
         }
 
@@ -133,7 +126,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
         if (timer != null) {
             timer.cancel();
         }
-        sendActivity.updateInfoTextAndRefreshButton(null);
+        sendActivity.updateInfoTextAndRefreshButton(null, false);
         super.onCancelled();
     }
 
@@ -145,7 +138,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
         }
         if (actionResult != null && actionResult.isSuccess() && !isCancelled()) {
             final String infoText = actionResult.getMessage();
-            sendActivity.updateInfoTextAndRefreshButton(infoText);
+            sendActivity.updateInfoTextAndRefreshButton(infoText, false);
         } else if (actionResult != null) {
             if (!isCancelled()) {
                 this.cancel(true);
@@ -161,7 +154,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, String, SMSActionRe
                     new BackgroundUpdateTask(sendActivity, retryCount + 1).execute(true);
                 }
             }
-            sendActivity.updateInfoTextAndRefreshButton(actionResult.getMessage());
+            sendActivity.updateInfoTextAndRefreshButton(actionResult.getMessage(), false);
         }
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_ON_POST_EXECUTE);
     }

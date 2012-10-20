@@ -76,6 +76,13 @@
                         android:layout_alignParentLeft="true"
                         android:visibility="invisible"
                         />
+                <ProgressBar
+                        android:id="@+id/infoTextProgressBarUpper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@android:style/Widget.ProgressBar.Small"
+                        android:visibility="invisible"
+                        />
             </RelativeLayout>
         </TableRow>
         <TableRow android:layout_weight="1.0">
@@ -187,6 +194,14 @@
                         android:layout_toLeftOf="@id/showInfoButton"
                         >
                 </TextView>
+                <ProgressBar
+                        android:id="@+id/infoTextProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/refreshButton"
+                        android:layout_centerInParent="true"
+                        android:visibility="invisible"
+                        />
             </RelativeLayout>
         </TableRow>
         <TableRow android:id="@+id/tblSendingTimeDescr">

@@ -1,8 +1,3 @@
-<!--String resources for:
-project: SMSoIP-core
-values folder: values-de
-fileName: storedependent.xml
--->
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -20,6 +15,13 @@ fileName: storedependent.xml
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: storedependent.xml
+-->
+
 
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
