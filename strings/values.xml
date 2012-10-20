@@ -91,7 +91,6 @@ fileName: strings.xml
     <string name="text_noNumberInput">No number entered!</string>
     <string name="text_noTextInput">No message entered!</string>
     <string name="text_noNetworkAvailable">Network not activated!</string>
-    <string name="text_smsSend_Success">Message transmitted</string>
     <string name="text_timeOutReached">Timeout reached! Please try again later</string>
     <string name="text_sureQuit">Quit SMSoIP?</string>
     <string name="text_saveChanges">Save changes?</string>
@@ -207,7 +206,6 @@ fileName: strings.xml
     </string>
     <string name="text_choose_ringtone">Ringtone</string>
     <string name="text_choose_ringtone_description">Choose your ringtone for notification.</string>
-    <string name="text_warning">Warning</string>
     <string name="text_inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>

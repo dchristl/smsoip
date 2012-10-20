@@ -51,6 +51,7 @@ import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
+import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.autosuggest.NameNumberSuggestField;
@@ -179,6 +180,7 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppRating.showRateDialogIfNeeded(this);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         signsconstant = getText(R.string.text_smssigns);

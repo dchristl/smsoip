@@ -23,9 +23,7 @@
     <string name="text_chooseProvider">Anbieter auswählen</string>
     <string name="text_provider_settings">Anbietereinstellungen</string>
     <string name="text_program_settings">Programmeinstellungen</string>
-    <string name="text_mainmenu">Hauptmenü</string>
     <string name="text_exit">Beenden</string>
-    <string name="text_optionTitle">Optionen für</string>
     <string name="text_username">Benutzername</string>
     <string name="text_password">Passwort</string>
     <string name="button_save">Speichern</string>
@@ -38,7 +36,6 @@
     <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
     <string name="text_smscomitted">SMS wird gesendet</string>
     <string name="text_ok">OK</string>
-    <string name="text_cancel">Abbrechen</string>
     <string name="text_wantClear">Alle eingegebenen Daten werden gelöscht!</string>
     <string name="text_error">Fehler</string>
     <string name="text_success">Erfolg</string>
@@ -57,14 +54,12 @@
     <string name="text_smsSend_Success">SMS wurde übermittelt</string>
     <string name="text_timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
     <string name="text_sureQuit">SMSoIP beenden?</string>
-    <string name="text_saveChanges">Änderungen speichern?</string>
     <string name="text_yesOption">Ja</string>
     <string name="text_noOption">Nein</string>
     <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
     <string name="text_noCredentials">Zugangsdaten unvollständig</string>
     <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
     <string name="button_activateWLAN">W-LAN aktivieren</string>
-    <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
     <string name="text_no_providers">Es ist kein Plugin installiert.\nSMSoIP benötigt mindestens ein Plugin, um zu
         funktionieren.\nDu wirst zur Plugin-Seite weitergeleitet.
     </string>
@@ -89,7 +84,6 @@
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
     </string>
     <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
-    <string name="text_checkLogin">Zugangsdaten überprüfen</string>
     <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
     <string name="text_too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
         Applikation updaten:
@@ -181,7 +175,6 @@
     <string name="text_inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
         Korrektheit und sende noch einmal.
     </string>
-    <string name="text_false_inputs_corrected">Fehlerhafte Empfängereingaben entfernt!</string>
     <string name="text_category_base">Grundeinstellungen</string>
     <string name="text_category_layout">Aussehen</string>
     <string name="text_category_behaviour">Verhalten</string>
@@ -237,6 +230,13 @@
     <string name="text_contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
         nicht verfügbar? Sende mir eine E-Mail.
     </string>
+    <string name="rate_app_message">If you enjoy using SMSoIP, please take a moment to rate it. Thanks for your
+        support!
+    </string>
+    <string name="rate_app_title">Zufrieden mit SMSoIP?</string>
+    <string name="rate_no_thanks">Nein,Danke/Bereits bewertet</string>
+    <string name="rate_yes">Bewerten</string>
+    <string name="rate_remind_me_later">Später</string>
 
     <string name="text_provider_changelog">Was ist neu?</string>
     <string name="text_provider_changelog_description">Schaue dir die letzten Änderungen im Plugin an.</string>

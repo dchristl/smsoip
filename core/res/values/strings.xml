@@ -23,9 +23,7 @@
     <string name="text_chooseProvider">Choose Provider</string>
     <string name="text_provider_settings">Provider settings</string>
     <string name="text_program_settings">Program settings</string>
-    <string name="text_mainmenu">Main menu</string>
     <string name="text_exit">Quit</string>
-    <string name="text_optionTitle">Options for</string>
     <string name="text_username">Username</string>
     <string name="text_password">Password</string>
     <string name="button_save">Save</string>
@@ -38,7 +36,6 @@
     <string name="text_noNumber">No number for %1$s found</string>
     <string name="text_smscomitted">Message will be sent</string>
     <string name="text_ok">OK</string>
-    <string name="text_cancel">Cancel</string>
     <string name="text_wantClear">All inputs will be deleted!</string>
     <string name="text_error">Error</string>
     <string name="text_success">Success</string>
@@ -57,14 +54,12 @@
     <string name="text_smsSend_Success">Message transmitted</string>
     <string name="text_timeOutReached">Timeout reached! Please try again later</string>
     <string name="text_sureQuit">Quit SMSoIP?</string>
-    <string name="text_saveChanges">Save changes?</string>
     <string name="text_yesOption">Yes</string>
     <string name="text_noOption">No</string>
     <string name="text_checkCredentials">Pass will be checked.</string>
     <string name="text_noCredentials">Credentials incomplete</string>
     <string name="button_openNetworkSettings">Networksettings</string>
     <string name="button_activateWLAN">Activate Wireless LAN</string>
-    <string name="text_not_yet_allowed">Not yet allowed</string>
     <string name="text_no_providers">No plugin is installed.\nSMSoIP needs at least one plugin to work.\nYou will be
         redirected to plugin page.
     </string>
@@ -86,7 +81,6 @@
         will be automatically prepended to receiver number if needed.
     </string>
     <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
-    <string name="text_checkLogin">Check credentials</string>
     <string name="text_deprecated_providers">Following plugins could not be loaded. Please update:</string>
     <string name="text_too_new_providers">Following plugins are too new and could not be loaded. Please update
         application:
@@ -174,7 +168,6 @@
     <string name="text_inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>
-    <string name="text_false_inputs_corrected">Wrong receiver inputs removed!</string>
     <string name="text_category_base">Base settings</string>
     <string name="text_category_layout">Layout settings</string>
     <string name="text_category_behaviour">Behaviour settings</string>
@@ -224,6 +217,13 @@
 
     <string name="text_provider_changelog">Show changes</string>
     <string name="text_provider_changelog_description">See last plugin changes.</string>
+    <string name="rate_app_message">If you enjoy using SMSoIP, please take a moment to rate it. Thanks for your
+        support!
+    </string>
+    <string name="rate_app_title">Enjoying SMSoIP?</string>
+    <string name="rate_no_thanks">No, thanks/Already rated</string>
+    <string name="rate_yes">Rate</string>
+    <string name="rate_remind_me_later">Remind me later</string>
 
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>

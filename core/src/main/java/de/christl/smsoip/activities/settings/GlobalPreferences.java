@@ -92,7 +92,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.youtube_alternative)));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.youtube_intent)));
                     GlobalPreferences.this.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     //Youtube app not installed on device

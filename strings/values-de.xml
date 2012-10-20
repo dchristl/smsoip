@@ -1,8 +1,3 @@
-<!--String resources for:
-project: SMSoIP-core
-values folder: values-de
-fileName: storedependent.xml
--->
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -20,6 +15,13 @@ fileName: storedependent.xml
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: storedependent.xml
+-->
+
 
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
@@ -89,7 +91,6 @@ fileName: strings.xml
     <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
     <string name="text_noTextInput">Kein Text eingegeben!</string>
     <string name="text_noNetworkAvailable">Netzwerk nicht aktiviert!</string>
-    <string name="text_smsSend_Success">SMS wurde übermittelt</string>
     <string name="text_timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
     <string name="text_sureQuit">SMSoIP beenden?</string>
     <string name="text_saveChanges">Änderungen speichern?</string>
@@ -212,7 +213,6 @@ fileName: strings.xml
     </string>
     <string name="text_choose_ringtone">Benachrichtigungston</string>
     <string name="text_choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
-    <string name="text_warning">Warnung</string>
     <string name="text_inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
         Korrektheit und sende noch einmal.
     </string>
