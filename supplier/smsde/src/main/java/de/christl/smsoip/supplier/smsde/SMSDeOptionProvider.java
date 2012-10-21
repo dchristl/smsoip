@@ -111,17 +111,17 @@ public class SMSDeOptionProvider extends OptionProvider {
         String[] prefArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(prefArray);
         listPref.setEntryValues(prefArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(prefArray[0]);
         out.add(listPref);
         CheckBoxPreference showSenderCB = new CheckBoxPreference(context);
         showSenderCB.setDefaultValue(true);
         showSenderCB.setKey(PROVIDER_SHOW_FLASH);
-        showSenderCB.setTitle(getTextByResourceId(R.string.text_show_flash));
-        showSenderCB.setSummary(getTextByResourceId(R.string.text_show_flash_description));
+        showSenderCB.setTitle(getTextByResourceId(R.string.show_flash));
+        showSenderCB.setSummary(getTextByResourceId(R.string.show_flash_description));
         out.add(showSenderCB);
         return out;
     }
@@ -175,7 +175,7 @@ public class SMSDeOptionProvider extends OptionProvider {
 
         if (textView == null) {
             textView = new TextView(context);
-            textView.setText(getTextByResourceId(R.string.text_send_as_flash));
+            textView.setText(getTextByResourceId(R.string.send_as_flash));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

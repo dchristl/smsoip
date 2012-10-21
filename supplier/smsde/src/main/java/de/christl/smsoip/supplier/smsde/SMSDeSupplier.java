@@ -170,7 +170,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
             if (receiverNumber.length() <= 7) {
-                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver.getReceiverNumber()).append("\n");
+                out.append(getProvider().getTextByResourceId(R.string.wrong_number)).append(": ").append(receiver.getReceiverNumber()).append("\n");
             }
         }
         return out.toString();
@@ -233,7 +233,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         return sendSMS(smsText, receivers, spinnerText, null);
     }
-
 
 
     private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) throws IOException {

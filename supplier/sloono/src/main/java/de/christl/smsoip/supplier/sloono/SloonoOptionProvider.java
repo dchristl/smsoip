@@ -90,7 +90,7 @@ public class SloonoOptionProvider extends OptionProvider {
 
         if (header == null) {
             header = new TextView(context);
-            header.setText(getTextByResourceId(R.string.text_sender));
+            header.setText(getTextByResourceId(R.string.sender));
             header.setGravity(Gravity.CENTER);
             header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         } else {
@@ -109,7 +109,7 @@ public class SloonoOptionProvider extends OptionProvider {
         }
         if (infoTextField == null) {
             infoTextField = new TextView(context);
-            infoTextField.setText(getTextByResourceId(R.string.text_given_number));
+            infoTextField.setText(getTextByResourceId(R.string.given_number));
             infoTextField.setGravity(Gravity.LEFT);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(20, 0, 0, 0);
@@ -127,7 +127,7 @@ public class SloonoOptionProvider extends OptionProvider {
                         refreshView.setVisibility(View.VISIBLE);
                         if (adapterItems.size() == 0) {
                             infoTextField.setVisibility(View.VISIBLE);
-                            infoTextField.setText(getTextByResourceId(R.string.text_not_yet_refreshed));
+                            infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
                             numberSpinner.setVisibility(View.GONE);
                         } else {
                             infoTextField.setVisibility(View.GONE);
@@ -137,7 +137,7 @@ public class SloonoOptionProvider extends OptionProvider {
                         refreshView.setVisibility(View.GONE);
                         numberSpinner.setVisibility(View.GONE);
                         infoTextField.setVisibility(View.VISIBLE);
-                        infoTextField.setText(getTextByResourceId(R.string.text_given_number));
+                        infoTextField.setText(getTextByResourceId(R.string.given_number));
                     }
 
                 }
@@ -292,10 +292,10 @@ public class SloonoOptionProvider extends OptionProvider {
         String[] typeArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(typeArray);
         listPref.setEntryValues(typeArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
         return out;

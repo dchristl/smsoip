@@ -243,8 +243,12 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
                         numberMap.put(Integer.parseInt(tag.getName().replace("kennung", "")), sender.text());
                     }
                 }
-                provider.saveSenders(numberMap);
-                return SMSActionResult.NO_ERROR();
+                if (numberMap.size() > 0) {
+                    provider.saveSenders(numberMap);
+                    return SMSActionResult.NO_ERROR();
+                } else {
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_numbers_maintened));
+                }
             } else {
                 return translateReturnCodeToSMSActionResult(returnCode);
             }
