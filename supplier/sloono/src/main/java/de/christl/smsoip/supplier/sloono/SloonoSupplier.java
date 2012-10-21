@@ -28,7 +28,10 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -47,7 +51,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
     private static final String LOGIN_BALANCE_URL = "http://www.sloono.de/API/httpkonto.php?return=xml&";
 
     public SloonoSupplier() {
-        provider = new SloonoOptionProvider();
+        provider = new SloonoOptionProvider(this);
     }
 
 
@@ -145,7 +149,6 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-//        String balance = parse.select("answer info kontostand").text();
         String tmpUrl;
         try {
             String userName = provider.getUserName();
@@ -212,5 +215,41 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
         }
 
         return hexString.toString();
+    }
+
+    public SMSActionResult resolveNumbers() throws IOException {
+        String tmpUrl;
+        try {
+            String userName = provider.getUserName();
+            String password = provider.getPassword();
+            tmpUrl = LOGIN_BALANCE_URL + "user=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + getMD5String(password == null ? "" : password);
+        } catch (NoSuchAlgorithmException e) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+        HttpURLConnection httpURLConnection = factory.create();
+        Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "", Parser.xmlParser());
+        try {
+            int returnCode = Integer.parseInt(parse.select("answer code").text());
+            if (returnCode == 101) {
+                Elements senders = parse.select("answer info absender");
+                if (senders.size() != 1) {
+                    return SMSActionResult.UNKNOWN_ERROR();
+                }
+                HashMap<Integer, String> numberMap = new HashMap<Integer, String>(4);
+                for (Element sender : senders.get(0).children()) {
+                    Tag tag = sender.tag();
+                    if (tag.getName().startsWith("kennung") && !sender.text().equals("")) {
+                        numberMap.put(Integer.parseInt(tag.getName().replace("kennung", "")), sender.text());
+                    }
+                }
+                provider.saveSenders(numberMap);
+                return SMSActionResult.NO_ERROR();
+            } else {
+                return translateReturnCodeToSMSActionResult(returnCode);
+            }
+        } catch (NumberFormatException e) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
     }
 }

@@ -36,5 +36,18 @@
     <string name="return_400">Wartungsarbeiten! Der Dienst steht zur Zeit nicht zur Verfügung.</string>
     <string name="return_unknown">Unbekannter Fehler: %1$s.</string>
     <string name="balance">Kontostand: %1$s</string>
-
+    <string name="text_sender">Absender</string>
+    <string name="text_refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absender vor
+        dem
+        Senden mit Hilfe des Auge-Buttons.
+    </string>
+    <string name="text_given_number">Mit Absenderkennung</string>
+    <string name="text_pleaseWait">Bitte warten</string>
+    <string name="text_not_yet_refreshed">Noch nicht bestimmt</string>
+    <string-array name="array_spinner">
+        <item>Basic SMS</item>
+        <item>Pro SMS (mit AK)</item>
+    </string-array>
+    <string name="text_default_type">Standard Absendetyp</string>
+    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
 </resources>

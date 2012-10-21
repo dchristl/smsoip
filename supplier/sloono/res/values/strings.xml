@@ -36,5 +36,17 @@
     <string name="return_400">Maintenance! Service currently not available.</string>
     <string name="return_unknown">Unknown error: %1$s.</string>
     <string name="balance">Balance: %1$s</string>
-
+    <string name="text_sender">Sender</string>
+    <string name="text_refresh_sender_first">No sender number selected. Please refresh your senders first by clicking
+        the eye button.
+    </string>
+    <string name="text_given_number">With source identifier</string>
+    <string name="text_pleaseWait">Please wait</string>
+    <string name="text_not_yet_refreshed">Not yet refreshed</string>
+    <string-array name="array_spinner">
+        <item>Basic SMS</item>
+        <item>Pro SMS (with SI)</item>
+    </string-array>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
 </resources>
