@@ -42,6 +42,7 @@
         <module>innosend</module>
         <module>fishtext</module>
         <module>directbox</module>
+        <module>sloono</module>
     </modules>
 
     <dependencies>

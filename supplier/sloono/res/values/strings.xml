@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="return_100">SMS sent succesfully.</string>
+    <string name="return_101">Request successful.</string>
+    <string name="return_102">Order successful.</string>
+    <string name="return_200">Wrong username and/or password.</string>
+    <string name="return_201">No text.</string>
+    <string name="return_202">No target.</string>
+    <string name="return_203">Text too long.</string>
+    <string name="return_204">Not enough credits.</string>
+    <string name="return_205">No MMS data.</string>
+    <string name="return_206">MMS too large.</string>
+    <string name="return_207">Invalid XML data.</string>
+    <string name="return_208">Invalid SMS type.</string>
+    <string name="return_300">System error.Please contact info@sloono.de.</string>
+    <string name="return_301">Error on sendng text message.</string>
+    <string name="return_302">Connection error.</string>
+    <string name="return_400">Maintenance! Service currently not available.</string>
+    <string name="return_unknown">Unknown error: %1$s.</string>
+    <string name="balance">Balance: %1$s</string>
+
+</resources>
