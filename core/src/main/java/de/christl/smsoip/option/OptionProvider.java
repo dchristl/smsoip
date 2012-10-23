@@ -20,6 +20,7 @@ package de.christl.smsoip.option;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -174,10 +175,17 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 
+    public final XmlResourceParser getLayoutResourceByResourceId(int layoutId) {
+        return SMSoIPApplication.getApp().getLayoutResourceByResourceId(this, layoutId);
+    }
+
+    public final XmlResourceParser getXMLResourceByResourceId(int xmlId) {
+        return SMSoIPApplication.getApp().getXMLResourceByResourceId(this, xmlId);
+    }
+
     public final InputStream getRawResourceByResourceId(int resourceId) {
         return SMSoIPApplication.getApp().getRawResourceByResourceId(this, resourceId);
     }
-
 
     protected final String getTextByResourceId(int resourceId, int quantity) {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId, quantity);

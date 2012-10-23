@@ -28,12 +28,12 @@ public class AppRating {
     private final static String ALTERNATIVE_URL = "https://play.google.com/store/apps/details?id=de.christl.smsoip";
 
 
-    private final static int LAUNCHES_UNTIL_PROMPT = 20;
+    private final static int LAUNCHES_UNTIL_PROMPT = 30;
     public static final String LAUNCH_COUNT = "launch.count";
     public static final String RATING_DISABLED = "rating.disabled";
 
     public static void showRateDialogIfNeeded(Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences("rating.counter", 0);
+        SharedPreferences prefs = mContext.getSharedPreferences("de.christl.smsoip.rating", 0);
         if (prefs.getBoolean(RATING_DISABLED, false)) {
             return;
         }
@@ -90,7 +90,16 @@ public class AppRating {
                 dialog.dismiss();
             }
         });
-
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (editor != null) {
+                    editor.remove(LAUNCH_COUNT);
+                    editor.commit();
+                }
+                dialog.dismiss();
+            }
+        });
         builder.show();
     }
 }

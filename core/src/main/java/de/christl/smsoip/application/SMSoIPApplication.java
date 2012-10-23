@@ -26,6 +26,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -381,6 +382,23 @@ public class SMSoIPApplication extends Application {
         SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
         if (plugin != null) {
             return plugin.resolveRawResource(resourceId);
+        }
+        return null;
+    }
+
+
+    public XmlResourceParser getLayoutResourceByResourceId(OptionProvider optionProvider, int layoutId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveLayout(layoutId);
+        }
+        return null;
+    }
+
+    public XmlResourceParser getXMLResourceByResourceId(OptionProvider optionProvider, int xmlId) {
+        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        if (plugin != null) {
+            return plugin.resolveXML(xmlId);
         }
         return null;
     }

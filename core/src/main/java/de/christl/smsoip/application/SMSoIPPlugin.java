@@ -21,6 +21,7 @@ package de.christl.smsoip.application;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.option.OptionProvider;
@@ -154,5 +155,13 @@ public class SMSoIPPlugin {
 
     public InputStream resolveRawResource(int resourceId) {
         return resources.openRawResource(resourceId);
+    }
+
+    public XmlResourceParser resolveLayout(int layoutId) {
+        return resources.getLayout(layoutId);
+    }
+
+    public XmlResourceParser resolveXML(int xmlId) {
+        return resources.getXml(xmlId);
     }
 }
