@@ -30,7 +30,7 @@
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>freenet</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <packaging>apk</packaging>
 
 </project>

@@ -18,9 +18,9 @@
 
 package de.christl.smsoip.supplier.freenet;
 
-import android.text.Html;
 import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
@@ -28,9 +28,16 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +96,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     private SMSActionResult processRefreshReturn(InputStream is) throws IOException {
-        String message = inputStream2String(is);
+        String message = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
         String out = provider.getTextByResourceId(R.string.text_refresh_informations);
         Pattern p = Pattern.compile("SMS.*?\\}"); //get the SMS JSON object
         Matcher m = p.matcher(message);
@@ -118,10 +125,12 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     private SMSActionResult processFireSMSReturn(InputStream is) throws IOException {
-        String message = inputStream2String(is);
-        message = message.replaceAll(".*SMSnotify\" value=\"", "");
-        message = message.replaceAll("\">.*", "");
-        message = Html.fromHtml(message).toString();
+        Document parse = Jsoup.parse(is, ENCODING, "");
+        Elements select = parse.select("input[name=SMSnotify]");
+        if (select.size() != 1) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        String message = select.attr("value");
         if (message.contains("erfolgreich")) {
             return SMSActionResult.NO_ERROR(message);
         } else {
@@ -129,15 +138,6 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
     }
 
-    private String inputStream2String(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, ENCODING));
-        String line;
-        StringBuilder returnFromServer = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            returnFromServer.append(line);
-        }
-        return returnFromServer.toString();
-    }
 
     @Override
     public OptionProvider getProvider() {
@@ -147,61 +147,37 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException {
-        sessionCookies = new ArrayList<String>();
+        sessionCookies = new ArrayList<String>(2);
         String tmpUrl;
         tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
-        HttpURLConnection con;
-        //first get the login cookie
-        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-        con.setReadTimeout(TIMEOUT);
-        con.setConnectTimeout(TIMEOUT);
-        con.setRequestProperty("User-Agent", TARGET_AGENT);
-        con.setRequestMethod("POST");
-        Map<String, List<String>> headerFields = con.getHeaderFields();
+
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+        HttpURLConnection httpURLConnection = factory.create();
+        Map<String, List<String>> headerFields = httpURLConnection.getHeaderFields();
         if (headerFields == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
-        String sidCookie = null;
-        Outer:
-        for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
-            String cookieList = stringListEntry.getKey();
-            if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
-                for (String cookie : stringListEntry.getValue()) {
-                    if (cookie != null && cookie.startsWith("SID")) {
-                        sessionCookies.add(cookie);
-                        sidCookie = cookie;
-                        break Outer;
-                    }
-                }
-            }
-        }
+        String sidCookie = UrlConnectionFactory.findCookieByName(headerFields, "SID");
         if (sidCookie == null) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
-        //now get the freenetMail4Prev cookie, that is also needed
-        con = (HttpURLConnection) new URL(HOME_URL).openConnection();
-        con.setReadTimeout(TIMEOUT);
-        con.setConnectTimeout(TIMEOUT);
-        con.setRequestProperty("User-Agent", TARGET_AGENT);
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Cookie", sidCookie);
-        headerFields = con.getHeaderFields();
-        if (headerFields == null) {
+        sessionCookies.add(sidCookie);
+
+
+        //now other cookies needed, too
+        factory = new UrlConnectionFactory(HOME_URL);
+        factory.setCookies(sessionCookies);
+        HttpURLConnection httpURLConnection1 = factory.create();
+        Map<String, List<String>> homeHeaderFields = httpURLConnection1.getHeaderFields();
+        if (homeHeaderFields == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        List<String> otherCookies = UrlConnectionFactory.findCookiesByPattern(homeHeaderFields, ".*");
+        if (otherCookies == null || otherCookies.size() == 0) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
-        Outer:
-        for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
-            String cookieList = stringListEntry.getKey();
-            if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
-                for (String cookie : stringListEntry.getValue()) {
-                    if (cookie != null && cookie.startsWith("freenetMail4Prev")) {
-                        sessionCookies.add(cookie);
-                        break Outer;
-                    }
-                }
-            }
-        }
-        if (sessionCookies.size() != 2) {
+        sessionCookies.addAll(otherCookies);
+        if (sessionCookies.size() < 2) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         return SMSActionResult.LOGIN_SUCCESSFUL();
@@ -233,18 +209,10 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             if (provider.getSettings().getBoolean(FreenetOptionProvider.PROVIDER_SAVE_IN_SENT, false)) {
                 tmpUrl += "&smsToSent=1";
             }
-            HttpURLConnection con;
             try {
-                con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-                con.setReadTimeout(TIMEOUT);
-                con.setConnectTimeout(TIMEOUT);
-                con.setRequestProperty("User-Agent", TARGET_AGENT);
-                con.setRequestMethod("POST");
-                StringBuilder cookieBuilder = new StringBuilder();
-                for (String sessionCookie : sessionCookies) {
-                    cookieBuilder.append(sessionCookie).append(";");
-                }
-                con.setRequestProperty("Cookie", cookieBuilder.toString());
+                UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+                factory.setCookies(sessionCookies);
+                HttpURLConnection con = factory.create();
                 out.add(new FireSMSResult(receiver, processFireSMSReturn(con.getInputStream())));
             } catch (SocketTimeoutException stoe) {
                 Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
