@@ -49,6 +49,9 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
     private static final String ENCODING = "UTF-8";
 
     private static final String LOGIN_BALANCE_URL = "http://www.sloono.de/API/httpkonto.php?return=xml&";
+    private static final String SEND_URL = "http://www.sloono.de/API/xmlsms.php";
+    private static final int BASIC = 1;
+    private static final int PRO = 2;
 
     public SloonoSupplier() {
         provider = new SloonoOptionProvider(this);
@@ -176,7 +179,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+        return fireTimeShiftSMS(smsText, receivers, spinnerText, null);
     }
 
     @Override
@@ -186,7 +189,81 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
-        return null;
+
+        StringBuilder tmpUrl = new StringBuilder();
+        try {
+            String userName = provider.getUserName();
+            String password = provider.getPassword();
+            tmpUrl.append(SEND_URL + "user=").append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&password=").append(getMD5String(password == null ? "" : password));
+        } catch (NoSuchAlgorithmException e) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
+        }
+
+        int sendMethod = findSendMethod(spinnerText);
+        tmpUrl.append("&typ=").append(sendMethod);
+        String time = "0";
+        if (dateTime != null) {
+            time = String.valueOf(dateTime.getCalendar().getTimeInMillis() / 1000L);
+        }
+        tmpUrl.append("&timestamp=").append(time);
+        tmpUrl.append("&text=").append(URLEncoder.encode(smsText, ENCODING));
+        if (sendMethod == PRO) {
+            String sender = provider.getSender();
+            if (sender == null) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
+            }
+            tmpUrl.append("&from=").append(sender);
+        }
+        String toString = "";
+        for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
+            String receiver = receivers.get(i).getReceiverNumber();
+            toString += "(" + receiver.replaceAll("^00", "+") + ")";
+            if (i + 1 != receivers.size()) {
+                toString += ",";
+            }
+        }
+        tmpUrl.append("&to=").append(URLEncoder.encode(toString, ENCODING));
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString(), UrlConnectionFactory.METHOD_GET);
+        HttpURLConnection httpURLConnection = factory.create();
+        Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "", Parser.xmlParser());
+        try {
+            int returnCode = Integer.parseInt(parse.select("answer code").text());
+            if (returnCode == 101) {
+                SMSActionResult result = resolveResult(parse);
+                return FireSMSResultList.getAllInOneResult(result, receivers);
+            } else {
+                return FireSMSResultList.getAllInOneResult(translateReturnCodeToSMSActionResult(returnCode), receivers);
+            }
+        } catch (NumberFormatException e) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
+        }
+    }
+
+    private SMSActionResult resolveResult(Document parse) {
+        String resultTextRaw = provider.getTextByResourceId(R.string.result);
+        String timeRaw = provider.getTextByResourceId(R.string.timePartial);
+        String smsCount = parse.select("answer info sms").text();
+        String target = parse.select("answer info ziel").text();
+        String costs = parse.select("answer info kosten").text();
+        String timeShift = parse.select("answer info versenden").text();
+        String time = "";
+        if (!timeShift.equals("Sofort")) {
+            time = String.format(timeRaw, timeShift);
+        }
+
+        return SMSActionResult.UNKNOWN_ERROR(String.format(resultTextRaw, smsCount, target, time, costs));
+    }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        int sendType = BASIC;
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                sendType = i + 1;
+            }
+        }
+        return sendType;
     }
 
     @Override
@@ -240,7 +317,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
                 for (Element sender : senders.get(0).children()) {
                     Tag tag = sender.tag();
                     if (tag.getName().startsWith("kennung") && !sender.text().equals("")) {
-                        numberMap.put(Integer.parseInt(tag.getName().replace("kennung", "")), sender.text());
+                        numberMap.put(Integer.parseInt(tag.getName().replace("kennung", "")) + 1, sender.text());
                     }
                 }
                 if (numberMap.size() > 0) {

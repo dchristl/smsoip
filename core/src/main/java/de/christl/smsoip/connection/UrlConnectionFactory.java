@@ -21,6 +21,8 @@ package de.christl.smsoip.connection;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -206,6 +208,19 @@ public class UrlConnectionFactory {
             create();
         }
         return con;
+    }
+
+    public static String getMD5String(String stringToEncode, String encoding) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        byte[] bytesOfMessage = stringToEncode.getBytes(encoding);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] thedigest = md.digest(bytesOfMessage);
+        StringBuilder hexString = new StringBuilder();
+        for (byte aThedigest : thedigest) {
+            String hexStringRaw = Integer.toHexString(0xFF & aThedigest);
+            hexString.append(("00" + hexStringRaw).substring(hexStringRaw.length()));   //add leading zero to String
+        }
+
+        return hexString.toString();
     }
 
     public void writeMultipartBody(Map<String, String> parameterMap, String encoding) throws IOException {

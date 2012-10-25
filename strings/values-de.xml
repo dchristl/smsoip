@@ -87,9 +87,7 @@ fileName: strings.xml
     <string name="noNetworkAvailable">Netzwerk nicht aktiviert!</string>
     <string name="smsSend_Success">SMS wurde übermittelt</string>
     <string name="timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
-    <string name="sureQuit">SMSoIP beenden?</string>
-    <string name="yesOption">Ja</string>
-    <string name="noOption">Nein</string>
+    <string name="press_back_again">Erneut drücken zum Beenden</string>
     <string name="checkCredentials">Zugangsdaten werden überprüft.</string>
     <string name="noCredentials">Zugangsdaten unvollständig</string>
     <string name="openNetworkSettings">Netzwerkeinstellungen</string>
@@ -265,8 +263,8 @@ fileName: strings.xml
         nicht verfügbar? Sende mir eine E-Mail.
     </string>
     <string name="rate_app_message">Du benutzt nun SMSoIP schon einige Zeit.\nWenn dir die App gefällt und du einen
-        Moment Zeit hast, würde es mich freuen, wenn du
-        SMSoIP bei Google Play bewertest.\nVielen Dank für deine Unterstützung!
+        Moment Zeit hast, wäre es schön, wenn du SMSoIP und/oder dein benutztes Plugin bei Google Play
+        bewertest.\nVielen Dank für deine Unterstützung!
     </string>
     <string name="rate_app_title">Zufrieden mit SMSoIP?</string>
     <string name="rate_no_thanks">Nein, Danke</string>
@@ -680,4 +678,6 @@ fileName: strings.xml
         dem
         Senden mit Hilfe des Auge-Buttons.
     </string>
+    <string name="result">%1$s SMS erfolgreich gesendet zu %2$s %3$s, zu Kosten von €%4$s.</string>
+    <string name="timePartial">um %1$s</string>
 </resources>

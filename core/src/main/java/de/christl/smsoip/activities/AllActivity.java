@@ -69,6 +69,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
     private static AllActivity context;
     private Drawable backgroundImage;
+    private Long lastMillis;
 
     protected AllActivity() {
         context = this;
@@ -181,24 +182,21 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            showQuitMessage();
+            showQuitToast();
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    private void showQuitMessage() {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                    killAll();
-                }
-            }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.sureQuit)).setPositiveButton(getString(R.string.yesOption), dialogClickListener)
-                .setNegativeButton(getString(R.string.noOption), dialogClickListener).show();
+    private void showQuitToast() {
+        long currentMillis = System.currentTimeMillis();
+        if (lastMillis == null || lastMillis + 2000 < currentMillis) {
+            Toast.makeText(this, R.string.press_back_again, Toast.LENGTH_SHORT).show();
+            lastMillis = currentMillis;
+        } else {
+            killAll();
+        }
+
     }
 
     protected Dialog onCreateDialog(int id) {

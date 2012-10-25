@@ -49,7 +49,7 @@ public class SloonoOptionProvider extends OptionProvider {
     private RefreshSenderTask refreshSenderTask;
     private SloonoSupplier supplier;
     ProgressBar progressBar;
-    private Spinner numberSpinner;
+    private Spinner senderSpinner;
     private static final String SENDER_PREFIX = "sender_";
     private HashMap<Integer, String> adapterItems;
     private boolean showSenders = true;
@@ -79,7 +79,7 @@ public class SloonoOptionProvider extends OptionProvider {
             wrapper.addView(sourceIDCB);
             wrapper.addView(infoTextField);
             wrapper.addView(progressBar);
-            wrapper.addView(numberSpinner);
+            wrapper.addView(senderSpinner);
             wrapper.addView(refreshView);
             freeLayout.addView(wrapper);
         }
@@ -128,14 +128,14 @@ public class SloonoOptionProvider extends OptionProvider {
                         if (adapterItems.size() == 0) {
                             infoTextField.setVisibility(View.VISIBLE);
                             infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
-                            numberSpinner.setVisibility(View.GONE);
+                            senderSpinner.setVisibility(View.GONE);
                         } else {
                             infoTextField.setVisibility(View.GONE);
-                            numberSpinner.setVisibility(View.VISIBLE);
+                            senderSpinner.setVisibility(View.VISIBLE);
                         }
                     } else {
                         refreshView.setVisibility(View.GONE);
-                        numberSpinner.setVisibility(View.GONE);
+                        senderSpinner.setVisibility(View.GONE);
                         infoTextField.setVisibility(View.VISIBLE);
                         infoTextField.setText(getTextByResourceId(R.string.given_number));
                     }
@@ -160,7 +160,7 @@ public class SloonoOptionProvider extends OptionProvider {
                     if (refreshSenderTask != null) {
                         refreshSenderTask.cancel(true);
                     }
-                    numberSpinner.setVisibility(View.GONE);
+                    senderSpinner.setVisibility(View.GONE);
                     progressBar.setVisibility(View.VISIBLE);
                     infoTextField.setVisibility(View.GONE);
                     refreshSenderTask = new RefreshSenderTask(SloonoOptionProvider.this);
@@ -169,12 +169,12 @@ public class SloonoOptionProvider extends OptionProvider {
             });
         }
         //alway create a new spinner, otherwise data gets not updated
-        numberSpinner = new Spinner(context);
+        senderSpinner = new Spinner(context);
         sourceIDCB.setChecked(false);
-        numberSpinner.setVisibility(View.GONE);
+        senderSpinner.setVisibility(View.GONE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(20, 0, 0, 0);
-        numberSpinner.setLayoutParams(layoutParams);
+        senderSpinner.setLayoutParams(layoutParams);
         refreshSpinner(context);
 
     }
@@ -185,7 +185,7 @@ public class SloonoOptionProvider extends OptionProvider {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, values);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.notifyDataSetChanged();
-        numberSpinner.setAdapter(adapter);
+        senderSpinner.setAdapter(adapter);
     }
 
     @Override
@@ -223,11 +223,11 @@ public class SloonoOptionProvider extends OptionProvider {
         progressBar.setVisibility(View.GONE);
         refreshAdapterItems();
         if (adapterItems.size() > 0) {
-            numberSpinner.setVisibility(View.VISIBLE);
+            senderSpinner.setVisibility(View.VISIBLE);
             infoTextField.setVisibility(View.GONE);
-            refreshSpinner(numberSpinner.getContext());
+            refreshSpinner(senderSpinner.getContext());
         } else {
-            numberSpinner.setVisibility(View.GONE);
+            senderSpinner.setVisibility(View.GONE);
         }
     }
 
@@ -310,4 +310,25 @@ public class SloonoOptionProvider extends OptionProvider {
         progressBar.setVisibility(View.GONE);
         infoTextField.setText(message);
     }
+
+    public String getSender() {
+        String out = null;
+        if (sourceIDCB.isChecked()) {
+            if (senderSpinner.getSelectedItemId() != Spinner.INVALID_POSITION) {
+                String selectedItem = (String) senderSpinner.getSelectedItem();
+                for (Map.Entry<Integer, String> integerStringEntry : adapterItems.entrySet()) {
+                    if (integerStringEntry.getValue().equals(selectedItem)) {
+                        out = integerStringEntry.getKey().toString();
+                        break;
+                    }
+                }
+            } else {
+                out = null;
+            }
+        } else {
+            out = "1";
+        }
+        return out;
+    }
+
 }

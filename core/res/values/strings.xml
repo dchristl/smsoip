@@ -52,9 +52,7 @@
     <string name="noNetworkAvailable">Network not activated!</string>
     <string name="smsSend_Success">Message transmitted</string>
     <string name="timeOutReached">Timeout reached! Please try again later</string>
-    <string name="sureQuit">Quit SMSoIP?</string>
-    <string name="yesOption">Yes</string>
-    <string name="noOption">No</string>
+    <string name="press_back_again">Press back again to quit SMSoIP.</string>
     <string name="checkCredentials">Pass will be checked.</string>
     <string name="noCredentials">Credentials incomplete</string>
     <string name="openNetworkSettings">Networksettings</string>
@@ -217,7 +215,7 @@
     <string name="provider_changelog">Show changes</string>
     <string name="provider_changelog_description">See last plugin changes.</string>
     <string name="rate_app_message">You now uses SMSoIP some time.\nIf you like the app, please take a moment to
-        rate it on Google Play. Thanks for your
+        rate SMSoIP and/or a plugin on Google Play. Thanks for your
         support!
     </string>
     <string name="rate_app_title">Enjoying SMSoIP?</string>
