@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,25 +72,16 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return refreshInformations(true);
     }
 
-    private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
+    private synchronized SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
         if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
                 return result;
             }
         }
-        String tmpUrl = REFRESH_URL;
-        HttpURLConnection con;
-        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-        con.setReadTimeout(TIMEOUT);
-        con.setConnectTimeout(TIMEOUT);
-        con.setRequestProperty("User-Agent", TARGET_AGENT);
-        con.setRequestMethod("GET");
-        StringBuilder cookieBuilder = new StringBuilder();
-        for (String sessionCookie : sessionCookies) {
-            cookieBuilder.append(sessionCookie).append(";");
-        }
-        con.setRequestProperty("Cookie", cookieBuilder.toString());
+        UrlConnectionFactory factory = new UrlConnectionFactory(REFRESH_URL, UrlConnectionFactory.METHOD_GET);
+        factory.setCookies(sessionCookies);
+        HttpURLConnection con = factory.create();
         return processRefreshReturn(con.getInputStream());
     }
 
@@ -149,6 +139,9 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException {
         sessionCookies = new ArrayList<String>(2);
         String tmpUrl;
+        if (userName != null && !userName.contains("@")) {
+            userName += "@freenet.de";
+        }
         tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
 
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
@@ -159,7 +152,9 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         String sidCookie = UrlConnectionFactory.findCookieByName(headerFields, "SID");
         if (sidCookie == null) {
-            return SMSActionResult.LOGIN_FAILED_ERROR();
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
+            smsActionResult.setRetryMakesSense(false);
+            return smsActionResult;
         }
         sessionCookies.add(sidCookie);
 

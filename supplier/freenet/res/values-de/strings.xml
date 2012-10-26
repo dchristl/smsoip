@@ -18,9 +18,12 @@
   -->
 
 <resources>
-    <string name="text_refresh_informations">Alle: %1$d Bezahlte: %2$d</string>
+    <string name="text_refresh_informations">Alle: %1$d\nBezahlte: %2$d</string>
     <string name="text_save_in_sent">SMS im Postausgang speichern</string>
     <string name="text_save_in_sent_long">Speichert gesendete SMS zusätzlich im \"Gesendete\" - Ordner des
         Mail Accounts.
+    </string>
+    <string name="login_failed">Login fehlgeschlagen. Beachte das nach 3 fehlerhaften Versuchen eine Sicherheitssperre
+        von 10 Minuten greift!
     </string>
 </resources>
