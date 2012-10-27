@@ -331,4 +331,34 @@ public class SloonoOptionProvider extends OptionProvider {
         return out;
     }
 
+
+    @Override
+    public int getTextMessageLength() {
+        return 100;    //just for inputfilter
+    }
+
+    @Override
+    public int getMaxMessageCount() {
+        return 16;  //just for inputfilter
+    }
+
+
+    @Override
+    public int getLengthDependentSMSCount(int textLength) {
+        if (textLength < 161) {
+            return 1;
+        } else if (textLength < 609) {
+            int smsCount = Math.round((textLength / 152));
+            smsCount = textLength % 152 == 0 ? smsCount : smsCount + 1;
+            return smsCount;
+        } else if (textLength < 801) {
+            return 5;
+        } else {
+            textLength -= 800;
+            int smsCount = Math.round((textLength / 160));
+            smsCount = textLength % 160 == 0 ? smsCount : smsCount + 1;
+            return smsCount + 5;
+        }
+    }
+
 }

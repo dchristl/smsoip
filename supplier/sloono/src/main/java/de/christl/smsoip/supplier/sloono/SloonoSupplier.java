@@ -20,6 +20,7 @@ package de.christl.smsoip.supplier.sloono;
 
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
@@ -36,6 +37,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,7 +51,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
     private static final String ENCODING = "UTF-8";
 
     private static final String LOGIN_BALANCE_URL = "http://www.sloono.de/API/httpkonto.php?return=xml&";
-    private static final String SEND_URL = "http://www.sloono.de/API/xmlsms.php";
+    private static final String SEND_URL = "http://www.sloono.de/API/httpsms.php?return=xml&action=info&";
     private static final int BASIC = 1;
     private static final int PRO = 2;
 
@@ -189,69 +191,67 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
+        FireSMSResultList out = new FireSMSResultList(receivers.size());
+        for (Receiver receiver : receivers) {
+            StringBuilder tmpUrl = new StringBuilder();
+            try {
+                String userName = provider.getUserName();
+                String password = provider.getPassword();
+                tmpUrl.append(SEND_URL + "user=").append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&password=").append(getMD5String(password == null ? "" : password));
+            } catch (NoSuchAlgorithmException e) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
+            }
 
-        StringBuilder tmpUrl = new StringBuilder();
-        try {
-            String userName = provider.getUserName();
-            String password = provider.getPassword();
-            tmpUrl.append(SEND_URL + "user=").append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&password=").append(getMD5String(password == null ? "" : password));
-        } catch (NoSuchAlgorithmException e) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
-        }
+            int sendMethod = findSendMethod(spinnerText);
+            tmpUrl.append("&typ=").append(sendMethod);
+            String time = "0";
+            if (dateTime != null) {
+                time = String.valueOf(dateTime.getCalendar().getTimeInMillis() / 1000L);
+            }
+            tmpUrl.append("&timestamp=").append(time);
 
-        int sendMethod = findSendMethod(spinnerText);
-        tmpUrl.append("&typ=").append(sendMethod);
-        String time = "0";
-        if (dateTime != null) {
-            time = String.valueOf(dateTime.getCalendar().getTimeInMillis() / 1000L);
-        }
-        tmpUrl.append("&timestamp=").append(time);
-        tmpUrl.append("&text=").append(URLEncoder.encode(smsText, ENCODING));
-        if (sendMethod == PRO) {
-            String sender = provider.getSender();
-            if (sender == null) {
-                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
+            tmpUrl.append("&text=").append(URLEncoder.encode(smsText, ENCODING));
+            if (sendMethod == PRO) {
+                String sender = provider.getSender();
+                if (sender == null) {
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
+                }
+                tmpUrl.append("&from=").append(sender);
             }
-            tmpUrl.append("&from=").append(sender);
-        }
-        String toString = "";
-        for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
-            String receiver = receivers.get(i).getReceiverNumber();
-            toString += "(" + receiver.replaceAll("^00", "+") + ")";
-            if (i + 1 != receivers.size()) {
-                toString += ",";
+            String toString = receiver.getReceiverNumber();
+            tmpUrl.append("&to=").append(URLEncoder.encode(toString, ENCODING));
+            UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString(), UrlConnectionFactory.METHOD_GET);
+            try {
+                HttpURLConnection httpURLConnection = factory.create();
+                Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "", Parser.xmlParser());
+                try {
+                    int returnCode = Integer.parseInt(parse.select("answer code").text());
+                    if (returnCode == 101) {
+                        SMSActionResult result = resolveResult(parse);
+                        out.add(new FireSMSResult(receiver, result));
+                    } else {
+                        out.add(new FireSMSResult(receiver, translateReturnCodeToSMSActionResult(returnCode)));
+
+                    }
+                } catch (NumberFormatException e) {
+                    out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR()));
+                }
+            } catch (SocketTimeoutException e) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+            } catch (IOException e) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
             }
         }
-        tmpUrl.append("&to=").append(URLEncoder.encode(toString, ENCODING));
-        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString(), UrlConnectionFactory.METHOD_GET);
-        HttpURLConnection httpURLConnection = factory.create();
-        Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "", Parser.xmlParser());
-        try {
-            int returnCode = Integer.parseInt(parse.select("answer code").text());
-            if (returnCode == 101) {
-                SMSActionResult result = resolveResult(parse);
-                return FireSMSResultList.getAllInOneResult(result, receivers);
-            } else {
-                return FireSMSResultList.getAllInOneResult(translateReturnCodeToSMSActionResult(returnCode), receivers);
-            }
-        } catch (NumberFormatException e) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
-        }
+        return out;
     }
 
     private SMSActionResult resolveResult(Document parse) {
         String resultTextRaw = provider.getTextByResourceId(R.string.result);
-        String timeRaw = provider.getTextByResourceId(R.string.timePartial);
         String smsCount = parse.select("answer info sms").text();
         String target = parse.select("answer info ziel").text();
         String costs = parse.select("answer info kosten").text();
-        String timeShift = parse.select("answer info versenden").text();
-        String time = "";
-        if (!timeShift.equals("Sofort")) {
-            time = String.format(timeRaw, timeShift);
-        }
 
-        return SMSActionResult.UNKNOWN_ERROR(String.format(resultTextRaw, smsCount, target, time, costs));
+        return SMSActionResult.UNKNOWN_ERROR(String.format(resultTextRaw, smsCount, target, costs));
     }
 
     private int findSendMethod(String spinnerText) {
