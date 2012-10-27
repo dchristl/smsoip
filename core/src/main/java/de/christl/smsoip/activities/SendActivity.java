@@ -18,7 +18,10 @@
 
 package de.christl.smsoip.activities;
 
-import android.app.*;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -92,7 +95,7 @@ public class SendActivity extends AllActivity {
     private static final int PICK_CONTACT_REQUEST = 0;
 
     private CharSequence signsconstant;
-    private ProgressDialog progressDialog;
+    private Dialog progressDialog;
 
     private Mode mode = Mode.NORMAL;
 
@@ -185,8 +188,7 @@ public class SendActivity extends AllActivity {
         setContentView(R.layout.sendactivity);
         signsconstant = getText(R.string.smssigns);
         setAutoSuggestField();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
+        progressDialog = new SendMessageDialog(this);
         smssigns = (TextView) findViewById(R.id.smssigns);
         smssigns.setText(String.format(signsconstant.toString(), 0, 0));
         mode = settings.getBoolean(SettingsConst.GLOBAL_ENABLE_COMPACT_MODE, false) ? Mode.COMPACT : Mode.NORMAL;
@@ -527,13 +529,11 @@ public class SendActivity extends AllActivity {
     private void setSendButton() {
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
-        final CharSequence progressText = getText(R.string.smscomitted);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if (!preSendCheck() || progressDialog == null) {
                     return;
                 }
-                progressDialog.setMessage(progressText);
                 progressDialog.show();
                 new Thread(new RunnableFactory(SendActivity.this, progressDialog).getFireSMSAndUpdateUIRunnable()).start();
             }

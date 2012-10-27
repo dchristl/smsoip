@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.activities;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.util.Log;
@@ -36,11 +36,11 @@ public class RunnableFactory {
 
 
     private SendActivity sendActivity;
-    private ProgressDialog progressDialog;
+    private Dialog progressDialog;
     private Handler updateUIHandler;
 
 
-    RunnableFactory(SendActivity sendActivity, ProgressDialog progressDialog) {
+    RunnableFactory(SendActivity sendActivity, Dialog progressDialog) {
         this.sendActivity = sendActivity;
         this.progressDialog = progressDialog;
         updateUIHandler = new Handler();
