@@ -254,7 +254,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
         String target = parse.select("answer info ziel").text();
         String costs = parse.select("answer info kosten").text();
 
-        return SMSActionResult.UNKNOWN_ERROR(String.format(resultTextRaw, smsCount, target, costs));
+        return SMSActionResult.NO_ERROR(String.format(resultTextRaw, smsCount, target, costs));
     }
 
     private int findSendMethod(String spinnerText) {
