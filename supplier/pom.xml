@@ -43,6 +43,7 @@
         <module>fishtext</module>
         <module>directbox</module>
         <module>sloono</module>
+        <module>smsrevolution</module>
     </modules>
 
     <dependencies>
