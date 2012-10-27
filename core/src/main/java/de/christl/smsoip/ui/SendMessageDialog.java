@@ -43,6 +43,7 @@ public class SendMessageDialog extends Dialog {
         setTitle(R.string.smscomitted);
         ImageView image = (ImageView) findViewById(R.id.image);
         image.setImageResource(R.drawable.ic_menu_send);
+        image.setPadding(20, 10, 20, 10);
     }
 
 

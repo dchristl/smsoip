@@ -236,6 +236,10 @@
     <string name="rate_yes">Bewerten</string>
     <string name="rate_remind_me_later">Später</string>
 
+
     <string name="provider_changelog">Was ist neu?</string>
     <string name="provider_changelog_description">Schaue dir die letzten Änderungen im Plugin an.</string>
+
+    <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
+    <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
 </resources>

@@ -663,22 +663,28 @@ public class SendActivity extends AllActivity {
             @Override
             public void onClick(View view) {
                 String oldText = textField.getText().toString();
-                Pattern p = Pattern.compile("\\s[a-zA-Z]");
-                Matcher m = p.matcher(oldText);
-                StringBuffer sb = new StringBuffer();
-                boolean result = m.find();
-                // Loop through and create a new String
-                // with the replacements
-                while (result) {
-                    String hit = oldText.substring(m.start(), m.end()).trim().toUpperCase();
-                    m.appendReplacement(sb, hit);
-                    result = m.find();
-                }
-                // Add the last segment of input to
-                // the new String
-                m.appendTail(sb);
+                if (!oldText.equals("")) {
+                    Pattern p = Pattern.compile("\\s[a-zA-Z]");
+                    Matcher m = p.matcher(oldText);
+                    StringBuffer sb = new StringBuffer();
+                    boolean result = m.find();
+                    // Loop through and create a new String
+                    // with the replacements
+                    while (result) {
+                        String hit = oldText.substring(m.start(), m.end()).trim().toUpperCase();
+                        m.appendReplacement(sb, hit);
+                        result = m.find();
+                    }
+                    // Add the last segment of input to
+                    // the new String
+                    m.appendTail(sb);
 
-                textField.setText(sb.toString().replaceAll("\\s", ""));
+                    textField.setText(sb.toString().replaceAll("\\s", ""));
+                } else {
+                    toast.setText(R.string.nothing_to_shorten);
+                    toast.show();
+                }
+
             }
         });
     }
@@ -771,7 +777,12 @@ public class SendActivity extends AllActivity {
         final AlertDialog alert = builder.create();
         clearButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                alert.show();
+                if (!textField.getText().toString().equals("") || !receiverField.getText().toString().equals("")) {
+                    alert.show();
+                } else {
+                    toast.setText(R.string.nothing_to_clear);
+                    toast.show();
+                }
             }
         });
     }
