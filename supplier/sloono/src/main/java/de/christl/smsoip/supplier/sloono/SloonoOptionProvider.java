@@ -54,6 +54,9 @@ public class SloonoOptionProvider extends OptionProvider {
     private HashMap<Integer, String> adapterItems;
     private boolean showSenders = true;
 
+    private Boolean checkBoxState;
+    private Integer spinnerItem;
+
     public SloonoOptionProvider(SloonoSupplier sloonoSupplier) {
         supplier = sloonoSupplier;
     }
@@ -139,7 +142,7 @@ public class SloonoOptionProvider extends OptionProvider {
                         infoTextField.setVisibility(View.VISIBLE);
                         infoTextField.setText(getTextByResourceId(R.string.given_number));
                     }
-
+                    checkBoxState = isChecked;
                 }
             });
         }
@@ -170,12 +173,32 @@ public class SloonoOptionProvider extends OptionProvider {
         }
         //alway create a new spinner, otherwise data gets not updated
         senderSpinner = new Spinner(context);
-        sourceIDCB.setChecked(false);
-        senderSpinner.setVisibility(View.GONE);
+        senderSpinner.setVisibility(sourceIDCB.isChecked() ? View.VISIBLE : View.GONE);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(20, 0, 0, 0);
         senderSpinner.setLayoutParams(layoutParams);
         refreshSpinner(context);
+        senderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinnerItem = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        if (checkBoxState != null) {
+            sourceIDCB.setChecked(checkBoxState);
+        }
+        if (spinnerItem != null && spinnerItem != Spinner.INVALID_POSITION) {
+            senderSpinner.setSelection(spinnerItem, true);
+        }
+        boolean checked = sourceIDCB.isChecked();
+        sourceIDCB.setChecked(!checked); //force a recall of the listener to set correct visibility
+        sourceIDCB.setChecked(checked); //force a recall of the listener to set correct visibility
 
     }
 
@@ -195,8 +218,8 @@ public class SloonoOptionProvider extends OptionProvider {
     }
 
     public void resetState() {
-        sourceIDCB.setChecked(true);//force the listener if its already unchecked
-        sourceIDCB.setChecked(false);
+        checkBoxState = null;
+        spinnerItem = null;
     }
 
     private void refreshAdapterItems() {
@@ -232,8 +255,8 @@ public class SloonoOptionProvider extends OptionProvider {
     }
 
     public void saveSenders(HashMap<Integer, String> numbers) {
+        removeOldNumbers();
         if (numbers.size() > 0) {
-            removeOldNumbers();
             SharedPreferences.Editor edit = getSettings().edit();
             for (Map.Entry<Integer, String> integerStringEntry : numbers.entrySet()) {
                 edit.putString(SENDER_PREFIX + getUserName() + "." + integerStringEntry.getKey(), integerStringEntry.getValue());

@@ -259,6 +259,8 @@ fileName: strings.xml
     <string name="rate_no_thanks">No, Thanks</string>
     <string name="rate_yes">Rate</string>
     <string name="rate_remind_me_later">Remind me later</string>
+    <string name="nothing_to_shorten">No text to shorten.</string>
+    <string name="nothing_to_clear">No inputs to clear.</string>
 
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
@@ -650,7 +652,7 @@ fileName: strings.xml
     </string>
     <string name="given_number">Phone number</string>
     <string name="pleaseWait">Please wait</string>
-    <string name="not_yet_refreshed">Not yet refreshed</string>
+    <string name="not_yet_refreshed">Refresh by eye button.</string>
     <string-array name="array_spinner">
         <item>Basic SMS</item>
         <item>Pro SMS (with SI)</item>
@@ -659,8 +661,7 @@ fileName: strings.xml
     <string name="default_type_long">Choose your preselected send type</string>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="text_refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button.
+        button or unckeck the box to send with your phone number.
     </string>
-    <string name="result">%1$s message(s) sent to %2$s %3$s,at a cost of €%4$s.</string>
-    <string name="timePartial">at %1$s</string>
+    <string name="result">%1$s message(s) sent to %2$s at a cost of €%3$s.</string>
 </resources>

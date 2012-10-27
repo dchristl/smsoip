@@ -225,6 +225,7 @@
     <string name="nothing_to_shorten">No text to shorten.</string>
     <string name="nothing_to_clear">No inputs to clear.</string>
 
+    <string name="hintAddReceivers">Hint: Add one or more receivers to show conversations.</string>
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>

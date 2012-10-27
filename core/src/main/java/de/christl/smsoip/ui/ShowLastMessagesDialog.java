@@ -92,6 +92,7 @@ public class ShowLastMessagesDialog extends Dialog {
         }
         if (receiverList.isEmpty()) {
             findViewById(R.id.lastConversation).setVisibility(View.GONE);
+            findViewById(R.id.hintAddReceivers).setVisibility(View.VISIBLE);
             return;
         }
         LinearLayout layout = (LinearLayout) findViewById(R.id.conversationLayout);

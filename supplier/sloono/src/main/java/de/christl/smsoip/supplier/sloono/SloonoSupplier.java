@@ -48,10 +48,10 @@ import java.util.List;
 public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
     SloonoOptionProvider provider;
 
-    private static final String ENCODING = "UTF-8";
+    private static final String ENCODING = "ISO-8859-1";
 
     private static final String LOGIN_BALANCE_URL = "http://www.sloono.de/API/httpkonto.php?return=xml&";
-    private static final String SEND_URL = "http://www.sloono.de/API/httpsms.php?return=xml&action=info&";
+    private static final String SEND_URL = "http://www.sloono.de/API/httpsms.php?return=xml&action=send&";
     private static final int BASIC = 1;
     private static final int PRO = 2;
 
@@ -226,7 +226,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
                 Document parse = Jsoup.parse(httpURLConnection.getInputStream(), ENCODING, "", Parser.xmlParser());
                 try {
                     int returnCode = Integer.parseInt(parse.select("answer code").text());
-                    if (returnCode == 101) {
+                    if (returnCode == 101 || returnCode == 100) {
                         SMSActionResult result = resolveResult(parse);
                         out.add(new FireSMSResult(receiver, result));
                     } else {
@@ -241,6 +241,9 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
             } catch (IOException e) {
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
             }
+        }
+        if (out.getResult().equals(FireSMSResultList.SendResult.SUCCESS)) {
+            provider.resetState();//reset cb state
         }
         return out;
     }
@@ -320,8 +323,8 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
                         numberMap.put(Integer.parseInt(tag.getName().replace("kennung", "")) + 1, sender.text());
                     }
                 }
+                provider.saveSenders(numberMap);
                 if (numberMap.size() > 0) {
-                    provider.saveSenders(numberMap);
                     return SMSActionResult.NO_ERROR();
                 } else {
                     return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_numbers_maintened));

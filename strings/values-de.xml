@@ -271,8 +271,12 @@ fileName: strings.xml
     <string name="rate_yes">Bewerten</string>
     <string name="rate_remind_me_later">Später</string>
 
+
     <string name="provider_changelog">Was ist neu?</string>
     <string name="provider_changelog_description">Schaue dir die letzten Änderungen im Plugin an.</string>
+
+    <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
+    <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
 </resources>
 
 <!--String resources for:
@@ -669,7 +673,7 @@ fileName: strings.xml
     </string>
     <string name="given_number">Handynummer</string>
     <string name="pleaseWait">Bitte warten</string>
-    <string name="not_yet_refreshed">Noch nicht bestimmt</string>
+    <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
     <string-array name="array_spinner">
         <item>Basic SMS</item>
         <item>Pro SMS (mit AK)</item>
@@ -679,8 +683,7 @@ fileName: strings.xml
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="text_refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
-        Senden mit Hilfe des Auge-Buttons.
+        Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
     </string>
-    <string name="result">%1$s SMS erfolgreich gesendet zu %2$s %3$s, zu Kosten von €%4$s.</string>
-    <string name="timePartial">um %1$s</string>
+    <string name="result">%1$s SMS erfolgreich gesendet zu %2$s zum Preis von €%3$s.</string>
 </resources>
