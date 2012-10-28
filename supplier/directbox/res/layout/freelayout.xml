@@ -32,35 +32,45 @@
               android:textSize="18dp"
             />
     <TableLayout android:layout_width="fill_parent"
-                 android:layout_height="wrap_content"
+                 android:layout_height="fill_parent"
                  android:stretchColumns="1"
                  android:shrinkColumns="*"
             >
-        <TableRow>
+        <TableRow android:id="@+id/freeLayouTableRow"
+                >
             <CheckBox android:id="@+id/sourceCB"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:layout_marginLeft="20dp"
                     />
             <LinearLayout
-                    android:layout_gravity="center"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-
                     >
                 <TextView android:id="@+id/infoText"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
+                          android:layout_width="fill_parent"
+                          android:layout_height="fill_parent"
+                          android:gravity="center"
+                          android:layout_gravity="center"
+
+                        />
+                <ImageButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
                         />
                 <Spinner android:id="@+id/sourceSpinner"
-                         android:layout_width="wrap_content"
+                         android:layout_width="fill_parent"
                          android:layout_height="wrap_content"
                          android:visibility="gone"
+                         android:gravity="center"
+                         android:ellipsize="end"
                         />
-                <ProgressBar android:id="@+id/progressView"
+                <ProgressBar android:id="@+id/progressBar"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
+                             android:layout_gravity="center"
+                             android:gravity="center"
                              android:visibility="gone"
+
                         />
             </LinearLayout>
 
@@ -68,6 +78,7 @@
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:layout_marginRight="20dp"
+                         android:visibility="gone"
                     />
         </TableRow>
 

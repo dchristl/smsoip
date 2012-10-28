@@ -26,12 +26,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.text.TextUtils;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -42,11 +38,9 @@ import java.util.Map;
 public class DirectboxOptionProvider extends OptionProvider {
 
     private static String providerName = "DirectBOX";
-    private TextView header;
-    private LinearLayout wrapper;
     private TextView infoTextField;
     private CheckBox sourceIDCB;
-    private ImageButton refreshView;
+    private ImageButton refreshButton;
     private RefreshNumbersTask refreshNumberTask;
     private DirectboxSupplier directboxSupplier;
     private Spinner numberSpinner;
@@ -58,6 +52,7 @@ public class DirectboxOptionProvider extends OptionProvider {
     private static final String STATE_SPINNER = "state.checkbox";
     private Boolean checkBoxState;
     private Integer spinnerItem;
+    private ProgressBar progressBar;
 
     public DirectboxOptionProvider(DirectboxSupplier directboxSupplier) {
         super(providerName);
@@ -81,122 +76,87 @@ public class DirectboxOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-//        buildContent(freeLayout.getContext());
         XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
         View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
-        refreshView = (ImageButton) freeLayoutView.findViewById(R.id.eyeButton);
-        refreshView.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
-        infoTextField = (TextView) freeLayoutView.findViewById(R.id.infoText);
-        infoTextField.setText(getTextByResourceId(R.string.text_without_si));
-        header = (TextView) freeLayoutView.findViewById(R.id.header);
-        header.setText(getTextByResourceId(R.string.text_sender));
-//        freeLayout.setOrientation(LinearLayout.VERTICAL);
-//        freeLayout.addView(header);
-//        wrapper.removeAllViews();
-//        wrapper.addView(sourceIDCB);
-//        wrapper.addView(infoTextField);
-//        wrapper.addView(numberSpinner);
-//        wrapper.addView(refreshView);
-//        freeLayout.addView(wrapper);
+        buildContent(freeLayoutView);
+
     }
 
-    private void buildContent(Context context) {
+    private void buildContent(View freeLayoutView) {
+        ((TextView) freeLayoutView.findViewById(R.id.header)).setText(getTextByResourceId(R.string.sender));
+        progressBar = (ProgressBar) freeLayoutView.findViewById(R.id.progressBar);
+        refreshButton = (ImageButton) freeLayoutView.findViewById(R.id.eyeButton);
+        refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (refreshNumberTask != null) {
+                    refreshNumberTask.cancel(true);
+                }
+                numberSpinner.setVisibility(View.GONE);
+                infoTextField.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                refreshNumberTask = new RefreshNumbersTask(DirectboxOptionProvider.this);
+                refreshNumberTask.execute(null, null);
+            }
+        });
+        infoTextField = (TextView) freeLayoutView.findViewById(R.id.infoText);
+        infoTextField.setText(getTextByResourceId(R.string.without_si));
+        View.OnClickListener l = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sourceIDCB.setChecked(true);
+            }
+        };
+        infoTextField.setOnClickListener(l);
+        freeLayoutView.findViewById(R.id.freeLayouTableRow).setOnClickListener(l);
+
+        numberSpinner = (Spinner) freeLayoutView.findViewById(R.id.sourceSpinner);
         refreshAdapterItems();
+        refreshSpinner(freeLayoutView.getContext());
+        sourceIDCB = (CheckBox) freeLayoutView.findViewById(R.id.sourceCB);
+        sourceIDCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    refreshButton.setVisibility(View.VISIBLE);
+                    if (adapterItems.size() == 0) {
+                        infoTextField.setVisibility(View.VISIBLE);
+                        infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+                        numberSpinner.setVisibility(View.GONE);
+                    } else {
+                        infoTextField.setVisibility(View.GONE);
+                        numberSpinner.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    refreshButton.setVisibility(View.GONE);
+                    numberSpinner.setVisibility(View.GONE);
+                    infoTextField.setVisibility(View.VISIBLE);
+                    infoTextField.setText(getTextByResourceId(R.string.without_si));
+                }
+
+
+            }
+        });
         String defaultSendType = getSettings().getString(PROVIDER_DEFAULT_TYPE, "");
         String[] spinnerItems = getArrayByResourceId(R.array.array_spinner);
         boolean startWithSourceIdentifier = defaultSendType.equals(spinnerItems[1]);
-
-        if (header == null) {
-            header = new TextView(context);
-            header.setText(getTextByResourceId(R.string.text_sender));
-            header.setGravity(Gravity.CENTER);
-            header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        } else {
-            ViewGroup parent = (ViewGroup) header.getParent();
-            if (parent != null) {          //remove an already assigned view from its parent to avoid exception
-                parent.removeView(header);
-            }
-        }
-        if (wrapper == null) {
-            wrapper = new LinearLayout(context);
-        } else {
-            ViewGroup parent = (ViewGroup) wrapper.getParent();
-            if (parent != null) {
-                parent.removeView(wrapper);
-            }
-        }
-        if (infoTextField == null) {
-            infoTextField = new TextView(context);
-            infoTextField.setText(getTextByResourceId(R.string.text_without_si));
-            infoTextField.setGravity(Gravity.LEFT);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 0, 0, 0);
-            layoutParams.weight = 2.0f;
-            infoTextField.setLayoutParams(layoutParams);
-            infoTextField.setEllipsize(TextUtils.TruncateAt.END);
-            infoTextField.setSingleLine(true);
-        }
-        if (sourceIDCB == null) {
-            sourceIDCB = new CheckBox(context);
-            sourceIDCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        refreshView.setVisibility(View.VISIBLE);
-                        if (adapterItems.size() == 0) {
-                            infoTextField.setVisibility(View.VISIBLE);
-                            infoTextField.setText(getTextByResourceId(R.string.text_not_yet_refreshed));
-                            numberSpinner.setVisibility(View.GONE);
-                        } else {
-                            infoTextField.setVisibility(View.GONE);
-                            numberSpinner.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        refreshView.setVisibility(View.GONE);
-                        numberSpinner.setVisibility(View.GONE);
-                        infoTextField.setVisibility(View.VISIBLE);
-                        infoTextField.setText(getTextByResourceId(R.string.text_without_si));
-                    }
-                    checkBoxState = isChecked;
-
-                }
-            });
-        }
-        if (refreshView == null) {
-            refreshView = new ImageButton(context);
-            refreshView.setVisibility(View.GONE);
-            refreshView.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 0, 0, 0);
-            refreshView.setLayoutParams(layoutParams);
-            refreshView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (refreshNumberTask != null) {
-                        refreshNumberTask.cancel(true);
-                    }
-                    numberSpinner.setVisibility(View.GONE);
-                    infoTextField.setVisibility(View.VISIBLE);
-                    refreshNumberTask = new RefreshNumbersTask(DirectboxOptionProvider.this);
-                    refreshNumberTask.execute(null, null);
-                }
-            });
-        }
-        //alway create a new spinner, otherwise data gets not updated
-        numberSpinner = new Spinner(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(20, 0, 0, 0);
-        numberSpinner.setLayoutParams(layoutParams);
-        refreshSpinner(context);
+        sourceIDCB.setChecked(startWithSourceIdentifier);
         if (checkBoxState != null) {
-            startWithSourceIdentifier = checkBoxState;
+            sourceIDCB.setChecked(checkBoxState);
+
         }
-        if (spinnerItem != null && spinnerItem != Spinner.INVALID_POSITION) {
-            numberSpinner.setSelection(spinnerItem);
+        if (spinnerItem != null && spinnerItem != Spinner.INVALID_POSITION && spinnerItem < adapterItems.size()) {
+            numberSpinner.setSelection(spinnerItem, true);
+
         }
-        numberSpinner.setVisibility(startWithSourceIdentifier ? View.VISIBLE : View.GONE);
-        sourceIDCB.setChecked(!startWithSourceIdentifier);//set it to "old" before to force a refresh by calling listener
-        sourceIDCB.setChecked(startWithSourceIdentifier);//get this from the options
+        boolean checked = sourceIDCB.isChecked();
+        sourceIDCB.setChecked(!checked); //force a recall of the listener to set correct visibility
+        sourceIDCB.setChecked(checked); //force a recall of the listener to set correct visibility
+
+        //reset all states to get fresh values
+        checkBoxState = null;
+        spinnerItem = null;
     }
 
     private void refreshSpinner(Context context) {
@@ -206,16 +166,6 @@ public class DirectboxOptionProvider extends OptionProvider {
         numberSpinner.setAdapter(adapter);
     }
 
-    @Override
-    public void setCurrentAccountId(Integer currentAccountId) {
-        super.setCurrentAccountId(currentAccountId);
-        resetState();
-    }
-
-    public void resetState() {
-        checkBoxState = null;
-        spinnerItem = null;
-    }
 
     private void refreshAdapterItems() {
         adapterItems = new ArrayList<String>();
@@ -228,23 +178,28 @@ public class DirectboxOptionProvider extends OptionProvider {
         }
     }
 
-    public TextView getTextField() {
-        return infoTextField;
-    }
 
     public DirectboxSupplier getDirectboxSupplier() {
         return directboxSupplier;
     }
 
     public void refreshDropDownAfterSuccesfulUpdate() {
+        progressBar.setVisibility(View.GONE);
         refreshAdapterItems();
         if (adapterItems.size() > 0) {
             numberSpinner.setVisibility(View.VISIBLE);
-            infoTextField.setVisibility(View.GONE);
             refreshSpinner(numberSpinner.getContext());
         } else {
+            infoTextField.setVisibility(View.VISIBLE);
+            infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
             numberSpinner.setVisibility(View.GONE);
         }
+    }
+
+    public void setErrorMessageOnUpdate(String message) {
+        progressBar.setVisibility(View.GONE);
+        infoTextField.setVisibility(View.VISIBLE);
+        infoTextField.setText(message);
     }
 
     public void saveNumbers(List<String> numbers) {
@@ -278,10 +233,10 @@ public class DirectboxOptionProvider extends OptionProvider {
         String[] prefArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(prefArray);
         listPref.setEntryValues(prefArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(prefArray[0]);
         out.add(listPref);
         return out;
@@ -296,8 +251,9 @@ public class DirectboxOptionProvider extends OptionProvider {
 
     @Override
     public void onActivityPaused(Bundle outState) {
-        outState.putInt(STATE_SPINNER, numberSpinner.getSelectedItemPosition());
-        outState.putBoolean(STATE_CHECKBOX, sourceIDCB.isChecked());
+        saveState();
+        outState.putInt(STATE_SPINNER, spinnerItem);
+        outState.putBoolean(STATE_CHECKBOX, checkBoxState);
     }
 
     public boolean isSIActivated() {
@@ -307,5 +263,11 @@ public class DirectboxOptionProvider extends OptionProvider {
     public String getSender() {
         Object selectedItem = numberSpinner.getSelectedItem();
         return selectedItem == null ? null : String.valueOf(selectedItem);
+    }
+
+
+    public void saveState() {
+        checkBoxState = sourceIDCB.isChecked();
+        spinnerItem = numberSpinner.getSelectedItemPosition();
     }
 }

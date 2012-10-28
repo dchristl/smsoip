@@ -144,11 +144,10 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin != null && optionsCalled) {
             smSoIPPlugin.getProvider().refresh();
             settings = PreferenceManager.getDefaultSharedPreferences(this);
-            setFullTitle();
             if (currentAccountIndex != null) { //set back the current account
                 smSoIPPlugin.getProvider().setCurrentAccountId(currentAccountIndex);
-                setFullTitle();
             }
+            setFullTitle();
             float fontSize = settings.getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
             ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
             textField.refreshTextModules();

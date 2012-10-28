@@ -149,7 +149,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         String balance = smsContingent.text();
         smsPrepaid = prepaidContingent.get(0).text().replaceAll("\\\\n", "").trim();
         sms = prepaidContingent.get(1).text().replaceAll("\\\\n", "").trim();
-        String balanceText = String.format(provider.getTextByResourceId(R.string.text_balance), balance, smsPrepaid, sms);
+        String balanceText = String.format(provider.getTextByResourceId(R.string.balance), balance, smsPrepaid, sms);
         return SMSActionResult.NO_ERROR(balanceText);
     }
 
@@ -167,6 +167,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         refreshInformations(true); //refresh the informations to get fresh data
@@ -184,7 +185,8 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
                 smsCosts *= 2;
             }
             if (availableSMS < smsCosts) {
-                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_balance)), receivers);
+                provider.saveState();
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_balance)), receivers);
             }
         }
 
@@ -235,7 +237,8 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         if (provider.isSIActivated()) {
             String sender = provider.getSender();
             if (sender == null) {
-                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
+                provider.saveState();
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.refresh_sender_first)), receivers);
             } else {
                 fromString = sender;
             }
@@ -248,8 +251,8 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
         HttpURLConnection httpURLConnection = factory.writeBody(bodyString.toString());
         SMSActionResult smsActionResult = processSendReturn(httpURLConnection.getInputStream());
-        if (smsActionResult.isSuccess()) {
-            provider.resetState();//reset cb state
+        if (!smsActionResult.isSuccess()) {
+            provider.saveState();
         }
         return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
     }

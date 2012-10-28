@@ -592,17 +592,14 @@ fileName: strings.xml
         <item>Without source identifier</item>
         <item>With source identifier</item>
     </string-array>
-    <string name="text_login_failed">Login failed. Please check if your username includes the domain \'@directbox.com\'.
-    </string>
-    <string name="text_balance">Balance: %1$s\nSMS-Prepaid: %2$s\nSMS-Packet: %3$s</string>
-    <string name="text_sender">Sender</string>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_without_si">Without source identifier</string>
-    <string name="text_pleaseWait">Please wait</string>
-    <string name="text_not_yet_refreshed">Not yet refreshed</string>
-    <string name="text_refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye button.</string>
-    <string name="text_no_balance">You do not have enough credit to send this text message.</string>
+    <string name="balance">Balance: %1$s\nSMS-Prepaid: %2$s\nSMS-Packet: %3$s</string>
+    <string name="sender">Sender</string>
+    <string name="default_type">Default send type</string>
+    <string name="default_type_long">Choose your preselected send type</string>
+    <string name="without_si">Without source identifier</string>
+    <string name="not_yet_refreshed">Not yet refreshed</string>
+    <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye button.</string>
+    <string name="no_balance">You do not have enough credit to send this text message.</string>
 </resources>
 <!--String resources for:
 project: sloono

@@ -20,55 +20,23 @@ package de.christl.smsoip.supplier.directbox;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
 import de.christl.smsoip.constant.SMSActionResult;
 import org.acra.ACRA;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class RefreshNumbersTask extends AsyncTask<Void, String, SMSActionResult> {
-    private TextView infoTextField;
-    private String waitText;
-    private Timer timer;
     private DirectboxOptionProvider directboxOptionProvider;
-    private boolean update = true;
 
     public RefreshNumbersTask(DirectboxOptionProvider directboxOptionProvider) {
         this.directboxOptionProvider = directboxOptionProvider;
-        this.infoTextField = directboxOptionProvider.getTextField();
-//        waitText = directboxOptionProvider.getTextByResourceId(R.string.text_pleaseWait);
     }
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
-        TimerTask task = new TimerTask() {
-            private String dots = ".";
 
-            @Override
-            public void run() {
-                if (dots.length() == 3) {
-                    dots = ".";
-                } else {
-                    dots += ".";
-                }
-                if (!RefreshNumbersTask.this.isCancelled()) {
-                    publishProgress(waitText + dots);
-                }
-            }
-
-            @Override
-            public boolean cancel() {
-                publishProgress(null, null);
-                return super.cancel();
-            }
-        };
-
-        timer = new Timer();
-        timer.schedule(task, 0, 500);
         try {
             return directboxOptionProvider.getDirectboxSupplier().resolveNumbers();
         } catch (SocketTimeoutException e) {
@@ -83,30 +51,13 @@ public class RefreshNumbersTask extends AsyncTask<Void, String, SMSActionResult>
         }
     }
 
-    @Override
-    protected void onProgressUpdate(String... values) {
-        if (update) {
-            infoTextField.setText(values[0]);
-        }
-    }
-
-    @Override
-    protected void onCancelled() {
-        if (timer != null) {
-            timer.cancel();
-        }
-        update = false;
-        super.onCancelled();
-    }
 
     @Override
     protected void onPostExecute(SMSActionResult smsActionResult) {
-        update = false;
-        timer.cancel();
         if (smsActionResult.isSuccess()) {
             directboxOptionProvider.refreshDropDownAfterSuccesfulUpdate();
         } else {
-            infoTextField.setText(smsActionResult.getMessage());
+            directboxOptionProvider.setErrorMessageOnUpdate(smsActionResult.getMessage());
         }
     }
 }
