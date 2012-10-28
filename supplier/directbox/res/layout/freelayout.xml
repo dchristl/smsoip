@@ -45,7 +45,7 @@
                     />
             <LinearLayout
                     >
-                <TextView android:id="db_infoText"
+                <TextView android:id="@+id/db_infoText"
                           android:layout_width="fill_parent"
                           android:layout_height="fill_parent"
                           android:gravity="center"
