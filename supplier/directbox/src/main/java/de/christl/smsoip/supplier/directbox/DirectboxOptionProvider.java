@@ -75,6 +75,11 @@ public class DirectboxOptionProvider extends OptionProvider {
     }
 
     @Override
+    protected Integer getChangelogResourceId() {
+        return R.raw.changelog;
+    }
+
+    @Override
     public void getFreeLayout(LinearLayout freeLayout) {
         XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
         View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
@@ -83,9 +88,9 @@ public class DirectboxOptionProvider extends OptionProvider {
     }
 
     private void buildContent(View freeLayoutView) {
-        ((TextView) freeLayoutView.findViewById(R.id.header)).setText(getTextByResourceId(R.string.sender));
-        progressBar = (ProgressBar) freeLayoutView.findViewById(R.id.progressBar);
-        refreshButton = (ImageButton) freeLayoutView.findViewById(R.id.eyeButton);
+        ((TextView) freeLayoutView.findViewById(R.id.db_header)).setText(getTextByResourceId(R.string.sender));
+        progressBar = (ProgressBar) freeLayoutView.findViewById(R.id.db_progressBar);
+        refreshButton = (ImageButton) freeLayoutView.findViewById(R.id.db_eyeButton);
         refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +105,7 @@ public class DirectboxOptionProvider extends OptionProvider {
                 refreshNumberTask.execute(null, null);
             }
         });
-        infoTextField = (TextView) freeLayoutView.findViewById(R.id.infoText);
+        infoTextField = (TextView) freeLayoutView.findViewById(R.id.db_infoText);
         infoTextField.setText(getTextByResourceId(R.string.without_si));
         View.OnClickListener l = new View.OnClickListener() {
             @Override
@@ -109,12 +114,12 @@ public class DirectboxOptionProvider extends OptionProvider {
             }
         };
         infoTextField.setOnClickListener(l);
-        freeLayoutView.findViewById(R.id.freeLayouTableRow).setOnClickListener(l);
+        freeLayoutView.findViewById(R.id.db_freeLayouTableRow).setOnClickListener(l);
 
-        numberSpinner = (Spinner) freeLayoutView.findViewById(R.id.sourceSpinner);
+        numberSpinner = (Spinner) freeLayoutView.findViewById(R.id.db_sourceSpinner);
         refreshAdapterItems();
         refreshSpinner(freeLayoutView.getContext());
-        sourceIDCB = (CheckBox) freeLayoutView.findViewById(R.id.sourceCB);
+        sourceIDCB = (CheckBox) freeLayoutView.findViewById(R.id.db_sourceCB);
         sourceIDCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

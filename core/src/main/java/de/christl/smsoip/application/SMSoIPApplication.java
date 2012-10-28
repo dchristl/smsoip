@@ -48,7 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-@ReportsCrashes(formKey = "dDFEZFF5R1FzTWlNVHkzdnJFaGVDTUE6MQ", mode = ReportingInteractionMode.NOTIFICATION,
+@ReportsCrashes(formKey = "dHFQMDVSRnliXzcyWkZkZDZHTlc0TGc6MQ", mode = ReportingInteractionMode.NOTIFICATION,
         resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
         resNotifTickerText = R.string.crash_notif_ticker_text,
         resNotifTitle = R.string.crash_notif_title,

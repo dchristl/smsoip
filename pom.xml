@@ -252,7 +252,7 @@
             <dependency>
                 <groupId>com.google.ads</groupId>
                 <artifactId>admob</artifactId>
-                <version>6.1.0</version>
+                <version>6.2.1</version>
             </dependency>
             <dependency>
                 <groupId>com.mobclix</groupId>
@@ -273,7 +273,7 @@
             <dependency>
                 <groupId>ch.acra</groupId>
                 <artifactId>acra</artifactId>
-                <version>4.3.0</version>
+                <version>4.4.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

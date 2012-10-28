@@ -25,7 +25,7 @@
               android:paddingTop="5dp"
               android:paddingBottom="5dp"
         >
-    <TextView android:id="@+id/header"
+    <TextView android:id="@+id/db_header"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
@@ -36,16 +36,16 @@
                  android:stretchColumns="1"
                  android:shrinkColumns="*"
             >
-        <TableRow android:id="@+id/freeLayouTableRow"
+        <TableRow android:id="@+id/db_freeLayouTableRow"
                 >
-            <CheckBox android:id="@+id/sourceCB"
+            <CheckBox android:id="@+id/db_sourceCB"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:layout_marginLeft="20dp"
                     />
             <LinearLayout
                     >
-                <TextView android:id="@+id/infoText"
+                <TextView android:id="db_infoText"
                           android:layout_width="fill_parent"
                           android:layout_height="fill_parent"
                           android:gravity="center"
@@ -57,14 +57,14 @@
                         android:layout_height="wrap_content"
                         android:visibility="invisible"
                         />
-                <Spinner android:id="@+id/sourceSpinner"
+                <Spinner android:id="@+id/db_sourceSpinner"
                          android:layout_width="fill_parent"
                          android:layout_height="wrap_content"
                          android:visibility="gone"
                          android:gravity="center"
                          android:ellipsize="end"
                         />
-                <ProgressBar android:id="@+id/progressBar"
+                <ProgressBar android:id="@+id/db_progressBar"
                              android:layout_width="wrap_content"
                              android:layout_height="wrap_content"
                              android:layout_gravity="center"
@@ -74,7 +74,7 @@
                         />
             </LinearLayout>
 
-            <ImageButton android:id="@+id/eyeButton"
+            <ImageButton android:id="@+id/db_eyeButton"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:layout_marginRight="20dp"
