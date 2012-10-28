@@ -21,6 +21,7 @@ package de.christl.smsoip.supplier.directbox;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -28,6 +29,7 @@ import android.preference.Preference;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -79,15 +81,23 @@ public class DirectboxOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        buildContent(freeLayout.getContext());
-        freeLayout.setOrientation(LinearLayout.VERTICAL);
-        freeLayout.addView(header);
-        wrapper.removeAllViews();
-        wrapper.addView(sourceIDCB);
-        wrapper.addView(infoTextField);
-        wrapper.addView(numberSpinner);
-        wrapper.addView(refreshView);
-        freeLayout.addView(wrapper);
+//        buildContent(freeLayout.getContext());
+        XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+        View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
+        refreshView = (ImageButton) freeLayoutView.findViewById(R.id.eyeButton);
+        refreshView.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        infoTextField = (TextView) freeLayoutView.findViewById(R.id.infoText);
+        infoTextField.setText(getTextByResourceId(R.string.text_without_si));
+        header = (TextView) freeLayoutView.findViewById(R.id.header);
+        header.setText(getTextByResourceId(R.string.text_sender));
+//        freeLayout.setOrientation(LinearLayout.VERTICAL);
+//        freeLayout.addView(header);
+//        wrapper.removeAllViews();
+//        wrapper.addView(sourceIDCB);
+//        wrapper.addView(infoTextField);
+//        wrapper.addView(numberSpinner);
+//        wrapper.addView(refreshView);
+//        freeLayout.addView(wrapper);
     }
 
     private void buildContent(Context context) {

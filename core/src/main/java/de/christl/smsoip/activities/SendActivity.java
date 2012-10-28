@@ -325,6 +325,7 @@ public class SendActivity extends AllActivity {
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
         View timeShiftDescr = findViewById(R.id.timeShiftDescr);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
+        View sendingTimeInnerLayout = findViewById(R.id.sendingTimeInnerLayout);
         final Button pickDay = (Button) findViewById(R.id.pickDay);
         final Button pickHour = (Button) findViewById(R.id.pickHour);
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
@@ -359,12 +360,14 @@ public class SendActivity extends AllActivity {
                 }
             };
             final CheckBox pickTimeCheckBox = (CheckBox) findViewById(R.id.pickTime);
-            timeText.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener switchCheckBoxListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     pickTimeCheckBox.setChecked(true);
                 }
-            });
+            };
+            timeText.setOnClickListener(switchCheckBoxListener);
+            sendingTimeInnerLayout.setOnClickListener(switchCheckBoxListener);
             final View.OnClickListener pickHourListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -402,7 +405,7 @@ public class SendActivity extends AllActivity {
                         timeText.setText(R.string.now);
                         timeText.setVisibility(View.VISIBLE);
                         pickHour.setVisibility(View.GONE);
-                        pickDay.setVisibility(View.INVISIBLE);
+                        pickDay.setVisibility(View.GONE);
                         dateTime = null;
                     }
 
@@ -413,9 +416,10 @@ public class SendActivity extends AllActivity {
             timeShiftLayout.setVisibility(View.GONE);
             timeShiftDescr.setVisibility(View.GONE);
             timeText.setOnClickListener(null);
+            sendingTimeInnerLayout.setOnClickListener(null);
             timeText.setText(R.string.now);
             pickHour.setVisibility(View.GONE);
-            pickDay.setVisibility(View.INVISIBLE);
+            pickDay.setVisibility(View.GONE);
         }
     }
 

@@ -69,6 +69,9 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
         sessionId = new ArrayList<String>();
         StringBuilder bodyString = new StringBuilder();
+        if (userName != null && !userName.contains("@")) {
+            userName = userName + "@directbox.com";
+        }
         bodyString.append(SendConstants.USER_NAME_FIELD_ID).append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&");
         bodyString.append(SendConstants.PASSWORD_FIELD_ID).append(URLEncoder.encode(password == null ? "" : password, ENCODING)).append("&");
         bodyString.append(SendConstants.VIEWSTATE_LOGIN_PARAM).append("&");
@@ -83,28 +86,20 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         factory.setTargetAgent(TARGET_AGENT);
         HttpURLConnection httpURLConnection = factory.writeBody(bodyString.toString());
         if (httpURLConnection == null) {
-            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.setRetryMakesSense(false);
-            return smsActionResult;
+            return SMSActionResult.NETWORK_ERROR();
         }
         Map<String, List<String>> headerFields = httpURLConnection.getHeaderFields();
         InputStream inputStream = httpURLConnection.getInputStream();
         if (headerFields == null || headerFields.size() == 0 || inputStream == null) {
-            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.setRetryMakesSense(false);
-            return smsActionResult;
+            return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String response = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
         if (!response.contains("overview.aspx")) {
-            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.setRetryMakesSense(false);
-            return smsActionResult;
+            return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String tmpSessionId = UrlConnectionFactory.findCookieByName(headerFields, COOKIE_NAME.toUpperCase());
         if (tmpSessionId == null || tmpSessionId.equals("")) {
-            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
-            smsActionResult.setRetryMakesSense(false);
-            return smsActionResult;
+            return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         sessionId.add(tmpSessionId.replaceAll(";.*", ""));
         return SMSActionResult.LOGIN_SUCCESSFUL();

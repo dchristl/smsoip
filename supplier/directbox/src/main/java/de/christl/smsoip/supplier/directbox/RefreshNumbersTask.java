@@ -40,7 +40,7 @@ public class RefreshNumbersTask extends AsyncTask<Void, String, SMSActionResult>
     public RefreshNumbersTask(DirectboxOptionProvider directboxOptionProvider) {
         this.directboxOptionProvider = directboxOptionProvider;
         this.infoTextField = directboxOptionProvider.getTextField();
-        waitText = directboxOptionProvider.getTextByResourceId(R.string.text_pleaseWait);
+//        waitText = directboxOptionProvider.getTextByResourceId(R.string.text_pleaseWait);
     }
 
     @Override
