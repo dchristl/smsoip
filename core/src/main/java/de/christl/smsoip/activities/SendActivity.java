@@ -325,7 +325,7 @@ public class SendActivity extends AllActivity {
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
         View timeShiftDescr = findViewById(R.id.timeShiftDescr);
         final TextView timeText = (TextView) findViewById(R.id.timeText);
-        View sendingTimeInnerLayout = findViewById(R.id.sendingTimeInnerLayout);
+        View sendingTimeInnerLayout = findViewById(R.id.timeShiftLayout);
         final Button pickDay = (Button) findViewById(R.id.pickDay);
         final Button pickHour = (Button) findViewById(R.id.pickHour);
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
