@@ -72,6 +72,10 @@ public class AppRating {
                     String uri = context.getString(R.string.market_alternative_rate_url);
                     context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
                 }
+                if (editor != null) {
+                    editor.putBoolean(RATING_DISABLED, true);
+                    editor.commit();
+                }
                 dialog.dismiss();
             }
         });
