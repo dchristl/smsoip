@@ -182,7 +182,7 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppRating.showRateDialogIfNeeded(this);
+        new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
         signsconstant = getText(R.string.smssigns);

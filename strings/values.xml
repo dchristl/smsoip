@@ -28,6 +28,8 @@ fileName: storedependent.xml
     <string name="market_alternative">https://play.google.com/store/search?q=SMSoIP</string>
     <string name="adfree_market_url">market://details?id=de.christl.smsoip.adfree</string>
     <string name="adfree_alternative">https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</string>
+    <string name="market_rate_url">market://details?id=de.christl.smsoip</string>
+    <string name="market_alternative_rate_url">https://play.google.com/store/apps/details?id=de.christl.smsoip</string>
 </resources>
 
 <!--String resources for:
@@ -252,7 +254,7 @@ fileName: strings.xml
     <string name="provider_changelog">Show changes</string>
     <string name="provider_changelog_description">See last plugin changes.</string>
     <string name="rate_app_message">You now uses SMSoIP some time.\nIf you like the app, please take a moment to
-        rate SMSoIP and/or a plugin on Google Play. Thanks for your
+        rate SMSoIP and/or a plugin on store. Thanks for your
         support!
     </string>
     <string name="rate_app_title">Enjoying SMSoIP?</string>

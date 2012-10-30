@@ -22,4 +22,6 @@
     <string name="market_alternative">http://www.androidpit.de/de/android/developer/2118568/Danny</string>
     <string name="adfree_market_url">http://www.androidpit.de/de/android/market/apps/app/de.christl.smsoip.adfree/SMSoIP-Donate-Plugin</string>
     <string name="adfree_alternative">http://www.androidpit.de/de/android/market/apps/app/de.christl.smsoip.adfree/SMSoIP-Donate-Plugin</string>
+    <string name="market_rate_url">http://www.androidpit.de/de/android/market/apps/app/de.christl.smsoip/SMSoIP</string>
+    <string name="market_alternative_rate_url">market://details?id=de.christl.smsoip</string>
 </resources>

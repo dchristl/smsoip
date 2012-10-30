@@ -26,8 +26,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -83,8 +85,27 @@ public class DirectboxOptionProvider extends OptionProvider {
     public void getFreeLayout(LinearLayout freeLayout) {
         XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
         View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
-        buildContent(freeLayoutView);
+        printCildren(freeLayout);
+        Log.e("christl", "R.id.db_progressBar = " + R.id.db_progressBar);
+        Log.e("christl", "R.id.db_eyeButton = " + R.id.db_eyeButton);
+        Log.e("christl", "R.id.db_header = " + R.id.db_header);
+        Log.e("christl", "R.id.db_sourceCB = " + R.id.db_sourceCB);
+        Log.e("christl", "R.id.db_sourceSpinner = " + R.id.db_sourceSpinner);
+        Log.e("christl", "R.id.db_infoText = " + R.id.db_infoText);
+//        buildContent(freeLayoutView);
 
+    }
+
+    private void printCildren(ViewGroup freeLayout) {
+        int childcount = freeLayout.getChildCount();
+        for (int i = 0; i < childcount; i++) {
+            View v = freeLayout.getChildAt(i);
+            Log.e("christl", "v = " + v);
+            Log.e("christl", "vID = " + v.getId());
+            if (v instanceof ViewGroup) {
+                printCildren(((ViewGroup) v));
+            }
+        }
     }
 
     private void buildContent(View freeLayoutView) {

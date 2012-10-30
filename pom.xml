@@ -75,7 +75,7 @@
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.3.2</version>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <id>ALIGN APK</id>
@@ -83,7 +83,7 @@
                         <goals>
                             <goal>zipalign</goal>
                         </goals>
-                    </execution>
+                       </execution>
                     <execution>
                         <id>UPDATE MANIFEST</id>
                         <goals>
@@ -102,6 +102,9 @@
                     <sign>
                         <debug>false</debug>
                     </sign>
+                    <zipalign>
+                        <skip>false</skip>
+                    </zipalign>
                     <sdk>
                         <path>${jayway.sdk.path}</path>
                         <platform>15</platform>

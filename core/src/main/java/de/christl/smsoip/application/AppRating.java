@@ -24,16 +24,21 @@ import android.net.Uri;
 import de.christl.smsoip.R;
 
 public class AppRating {
-    private final static String MARKET_URL = "market://details?id=de.christl.smsoip";
-    private final static String ALTERNATIVE_URL = "https://play.google.com/store/apps/details?id=de.christl.smsoip";
 
 
     private final static int LAUNCHES_UNTIL_PROMPT = 30;
     public static final String LAUNCH_COUNT = "launch.count";
     public static final String RATING_DISABLED = "rating.disabled";
+    private Context context;
+    private SharedPreferences prefs;
 
-    public static void showRateDialogIfNeeded(Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences("de.christl.smsoip.rating", 0);
+    public AppRating(Context context) {
+        this.context = context;
+        prefs = context.getSharedPreferences("de.christl.smsoip.rating", 0);
+    }
+
+    public void showRateDialogIfNeeded() {
+
         if (prefs.getBoolean(RATING_DISABLED, false)) {
             return;
         }
@@ -46,13 +51,13 @@ public class AppRating {
 
         // Wait at least n days before opening
         if (launchCount >= LAUNCHES_UNTIL_PROMPT) {
-            showRateDialog(mContext, editor);
+            showRateDialog(editor);
         }
 
         editor.commit();
     }
 
-    public static void showRateDialog(final Context context, final SharedPreferences.Editor editor) {
+    private void showRateDialog(final SharedPreferences.Editor editor) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.rate_app_title);
         builder.setMessage(R.string.rate_app_message);
@@ -61,9 +66,11 @@ public class AppRating {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL)));
+                    String uri = context.getString(R.string.market_rate_url);
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
                 } catch (ActivityNotFoundException e) {
-                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ALTERNATIVE_URL)));
+                    String uri = context.getString(R.string.market_alternative_rate_url);
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
                 }
                 dialog.dismiss();
             }
