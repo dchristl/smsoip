@@ -17,7 +17,7 @@
   -->
 
 <resources>
-    <string name="text_alternate_not_allowed_yet">not yet allowed</string>
+    <string name="text_alternate_not_allowed_yet">Not allowed yet</string>
     <string name="text_default_type">Default send type</string>
     <string name="text_default_type_long">Choose your preselected send type</string>
     <string-array name="array_spinner">
