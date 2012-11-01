@@ -68,9 +68,10 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         int sendIndex = findSendMethod(spinnerText);
-        UrlConnectionFactory factory = new UrlConnectionFactory(TARGET_URL + "&" + sidURLString);
+
         FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
+            UrlConnectionFactory factory = new UrlConnectionFactory(TARGET_URL + "&" + sidURLString);
             try {
                 String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, ENCODING);
                 switch (sendIndex) {
