@@ -205,7 +205,7 @@ public class SendActivity extends AllActivity {
         setLastInfoButton();
         setLastMessagesButton();
         addModeSwitcher();
-        boolean isResumed = savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null && !savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER).equals("");
+        boolean isResumed = savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null && !savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER).equals("") && SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER)) != null;
         if (isResumed) {  //activity was killed and is resumed
             smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             smSoIPPlugin.getProvider().afterActivityKilledAndOnCreateCalled(savedInstanceState);
