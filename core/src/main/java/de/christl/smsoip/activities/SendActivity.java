@@ -828,7 +828,12 @@ public class SendActivity extends AllActivity {
         if (writeToDatabaseEnabled) {
             StringBuilder message = new StringBuilder();
             if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
-                message.append(getString(R.string.applicationName)).append(" (").append(smSoIPPlugin.getProviderName());
+                OptionProvider provider = smSoIPPlugin.getProvider();
+                message.append(getString(R.string.applicationName)).append(" (");
+                if (provider.getAccounts().size() > 1) {
+                    message.append(provider.getUserName()).append("@");
+                }
+                message.append(provider.getProviderName());
                 message.append("): ");
             }
             message.append(textField.getText());
