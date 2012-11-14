@@ -1127,11 +1127,11 @@ public class SendActivity extends AllActivity {
         globalOption.setIcon(R.drawable.ic_menu_compose);
         if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) {
             MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, R.string.changeProvider);
-            switchSupplier.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            switchSupplier.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1) {
             MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, R.string.changeAccount);
-            switchAccount.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            switchAccount.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         if (smSoIPPlugin != null) {
             Drawable iconDrawable = smSoIPPlugin.getProvider().getIconDrawable();
