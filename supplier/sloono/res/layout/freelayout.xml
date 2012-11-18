@@ -52,7 +52,8 @@
                           android:layout_height="fill_parent"
                           android:gravity="center"
                           android:layout_gravity="center"
-                          android:text="askashahj"
+                          android:ellipsize="end"
+                          android:singleLine="true"
                         />
                 <Spinner android:id="@+id/db_sourceSpinner"
                          android:layout_width="fill_parent"
@@ -69,8 +70,6 @@
                              android:visibility="gone"
 
                         />
-                <!--just for layout height-->
-
             </LinearLayout>
 
             <ImageButton android:id="@+id/db_eyeButton"
