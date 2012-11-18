@@ -260,7 +260,7 @@
             <dependency>
                 <groupId>com.mobclix</groupId>
                 <artifactId>mobclix</artifactId>
-                <version>4.0.2</version>
+                <version>4.0.3</version>
             </dependency>
             <dependency>
                 <groupId>com.actionbarsherlock</groupId>

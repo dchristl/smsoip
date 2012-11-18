@@ -1,8 +1,3 @@
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: storedependent.xml
--->
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -20,6 +15,13 @@ fileName: storedependent.xml
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: storedependent.xml
+-->
+
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
     <string name="visit_plugin_page_description">Find more plugins on Google Play</string>
@@ -485,39 +487,39 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_return_100">SMS sucessfully sent.</string>
-    <string name="text_return_101">MMS successfully sent.</string>
-    <string name="text_return_111">IP ban active.</string>
-    <string name="text_return_112">Wrong credentials.</string>
-    <string name="text_return_120">Sender missing. Please try again.</string>
-    <string name="text_return_121">Sending type missing.</string>
-    <string name="text_return_122">Text missing.</string>
-    <string name="text_return_123">Receiver missing.</string>
-    <string name="text_return_129">Wrong sender. Please try again.</string>
-    <string name="text_return_130">Gateway problems.</string>
-    <string name="text_return_134">Invalid receiver number.</string>
-    <string name="text_return_140">No balance.</string>
-    <string name="text_return_150">SMS blacklist.</string>
-    <string name="text_return_161">Free messages not yet available.</string>
-    <string name="text_return_162">No free messages left.</string>
-    <string name="text_return_170">Wrong date.</string>
-    <string name="text_return_171">Date in past.</string>
-    <string name="text_return_172">Too many numbers.</string>
-    <string name="text_return_unknown">Unknown problem:</string>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
+    <string name="return_100">SMS sucessfully sent.</string>
+    <string name="return_101">MMS successfully sent.</string>
+    <string name="return_111">IP ban active.</string>
+    <string name="return_112">Wrong credentials.</string>
+    <string name="return_120">Sender missing. Please try again.</string>
+    <string name="return_121">Sending type missing.</string>
+    <string name="return_122">Text missing.</string>
+    <string name="return_123">Receiver missing.</string>
+    <string name="return_129">Wrong sender. Please try again.</string>
+    <string name="return_130">Gateway problems.</string>
+    <string name="return_134">Invalid receiver number.</string>
+    <string name="return_140">No balance.</string>
+    <string name="return_150">SMS blacklist.</string>
+    <string name="return_161">Free messages not yet available.</string>
+    <string name="return_162">No free messages left.</string>
+    <string name="return_170">Wrong date.</string>
+    <string name="return_171">Date in past.</string>
+    <string name="return_172">Too many numbers.</string>
+    <string name="return_unknown">Unknown problem:</string>
+    <string name="default_type">Default send type</string>
+    <string name="default_type_long">Choose your preselected send type</string>
+    <string name="mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
     </string>
-    <string name="text_multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not
+    <string name="multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not
         allowed for this sending type.
     </string>
-    <string name="text_landline_outside_germany">Landline messages are not allowed outside Germany.</string>
-    <string name="text_refresh_informations">Free: %1$s\nBalance: %2$s</string>
-    <string name="text_next">Next: %1$s</string>
-    <string name="text_sender">Sender</string>
-    <string name="text_automatic">Assign automatically</string>
-    <string name="text_show_sender">Show sender</string>
-    <string name="text_show_sender_description">Show the possibility to change the sender. If disabled the automatically assigned sender will always be used.</string>
+    <string name="landline_outside_germany">Landline messages are not allowed outside Germany.</string>
+    <string name="refresh_informations">Free: %1$s\nBalance: %2$s</string>
+    <string name="next">Next: %1$s</string>
+    <string name="sender">Sender</string>
+    <string name="automatic">Assign automatically</string>
+    <string name="show_sender">Show sender</string>
+    <string name="show_sender_description">Show the possibility to change the sender. If disabled the automatically assigned sender will always be used.</string>
     <string-array name="array_spinner">
         <item>FREE (without SI)</item>
         <item>SPEED (without SI, GW 2|10)</item>

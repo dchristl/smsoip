@@ -501,40 +501,40 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_return_100">SMS erfolgreich gesendet.</string>
-    <string name="text_return_101">MMS erfolgreich gesendet.</string>
-    <string name="text_return_111">IP Sperre aktiv.</string>
-    <string name="text_return_112">Falsche Zugangsdaten.</string>
-    <string name="text_return_120">Absender fehlt. Bitte erneut probieren.</string>
-    <string name="text_return_121">Sendetyp fehlt.</string>
-    <string name="text_return_122">Text fehlt.</string>
-    <string name="text_return_123">Empfänger fehlt.</string>
-    <string name="text_return_129">Falscher Absender. Bitte erneut probieren.</string>
-    <string name="text_return_130">Gateway Probleme.</string>
-    <string name="text_return_134">Rufnummer ungültig.</string>
-    <string name="text_return_140">Kein Guthaben.</string>
-    <string name="text_return_150">SMS-Sperre.</string>
-    <string name="text_return_161">Kostenlose SMS noch nicht möglich.</string>
-    <string name="text_return_162">Keine kostenlosen SMS verfügbar.</string>
-    <string name="text_return_170">Falsches Datum.</string>
-    <string name="text_return_171">Datum in der Vergangenheit.</string>
-    <string name="text_return_172">Zu viele Nummern.</string>
-    <string name="text_return_unknown">Unbekannter Fehler:</string>
-    <string name="text_refresh_informations">Free: %1$s\nGuthaben: %2$s</string>
-    <string name="text_default_type">Standardsendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_mixing_not_allowed">Das Vermischen von deutschen und ausländischen Telefonnummern wird nicht
+    <string name="return_100">SMS erfolgreich gesendet.</string>
+    <string name="return_101">MMS erfolgreich gesendet.</string>
+    <string name="return_111">IP Sperre aktiv.</string>
+    <string name="return_112">Falsche Zugangsdaten.</string>
+    <string name="return_120">Absender fehlt. Bitte erneut probieren.</string>
+    <string name="return_121">Sendetyp fehlt.</string>
+    <string name="return_122">Text fehlt.</string>
+    <string name="return_123">Empfänger fehlt.</string>
+    <string name="return_129">Falscher Absender. Bitte erneut probieren.</string>
+    <string name="return_130">Gateway Probleme.</string>
+    <string name="return_134">Rufnummer ungültig.</string>
+    <string name="return_140">Kein Guthaben.</string>
+    <string name="return_150">SMS-Sperre.</string>
+    <string name="return_161">Kostenlose SMS noch nicht möglich.</string>
+    <string name="return_162">Keine kostenlosen SMS verfügbar.</string>
+    <string name="return_170">Falsches Datum.</string>
+    <string name="return_171">Datum in der Vergangenheit.</string>
+    <string name="return_172">Zu viele Nummern.</string>
+    <string name="return_unknown">Unbekannter Fehler:</string>
+    <string name="refresh_informations">Free: %1$s\nGuthaben: %2$s</string>
+    <string name="default_type">Standardsendetyp</string>
+    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+    <string name="mixing_not_allowed">Das Vermischen von deutschen und ausländischen Telefonnummern wird nicht
         unterstützt.
     </string>
-    <string name="text_multiple_receivers_not_allowed">Das Senden an mehrere Empfänger außerhalb Deutschalands wird beim
+    <string name="multiple_receivers_not_allowed">Das Senden an mehrere Empfänger außerhalb Deutschalands wird beim
         gewählten Sendetyp nicht unterstützt.
     </string>
-    <string name="text_landline_outside_germany">Festnetz-SMS werden nur in Deutschland unterstützt.</string>
-    <string name="text_next">Nächste: %1$s</string>
-    <string name="text_sender">Absender</string>
-    <string name="text_automatic">Automatisch bestimmen</string>
-    <string name="text_show_sender">Absender anzeigen.</string>
-    <string name="text_show_sender_description">Zeigt die Möglichkeit den Absender zu ändern an, andernfalls wird immer
+    <string name="landline_outside_germany">Festnetz-SMS werden nur in Deutschland unterstützt.</string>
+    <string name="next">Nächste: %1$s</string>
+    <string name="sender">Absender</string>
+    <string name="automatic">Automatisch bestimmen</string>
+    <string name="show_sender">Absender anzeigen.</string>
+    <string name="show_sender_description">Zeigt die Möglichkeit den Absender zu ändern an, andernfalls wird immer
         der automatisch bestimmte Absender genutzt.
     </string>
     <string-array name="array_spinner">

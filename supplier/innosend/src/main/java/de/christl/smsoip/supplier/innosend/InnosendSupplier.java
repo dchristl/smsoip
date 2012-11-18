@@ -118,7 +118,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         if (!result.isSuccess()) {
             return result;
         }
-        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
+        String tmpText = provider.getTextByResourceId(R.string.refresh_informations);
 
         UrlConnectionFactory infoFactory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
         List<String> cookies = new ArrayList<String>();
@@ -141,7 +141,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         for (Element strongElement : strongElements) {
             String nextText = strongElement.text();
             if (nextText.contains(":") && !nextText.equals(":")) {
-                freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.text_next), nextText);
+                freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.next), nextText);
                 break;
             }
         }
@@ -216,20 +216,24 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
         SMSActionResult result = refreshSession();
         if (!result.isSuccess()) {
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         int sendMethod = findSendMethod(spinnerText);
         Boolean isForeign = isForeign(receivers);
         if (isForeign == null) {
-            String msg = provider.getTextByResourceId(R.string.text_mixing_not_allowed);
+            String msg = provider.getTextByResourceId(R.string.mixing_not_allowed);
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(msg), receivers);
         }
         if (sendMethod == SPEED && isForeign && receivers.size() > 1) {
-            String msg = provider.getTextByResourceId(R.string.text_multiple_receivers_not_allowed);
+            String msg = provider.getTextByResourceId(R.string.multiple_receivers_not_allowed);
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(msg), receivers);
         }
         if (sendMethod == LANDLINE && isForeign) {
-            String msg = provider.getTextByResourceId(R.string.text_landline_outside_germany);
+            String msg = provider.getTextByResourceId(R.string.landline_outside_germany);
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(msg), receivers);
         }
         StringBuilder tmpUrl = new StringBuilder(GATEWAY_URL);
@@ -291,6 +295,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             } else {
                 sender = findSenderAndWriteIfAvailable();
                 if (sender.equals("")) {
+                    provider.saveState();
                     return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
                 }
             }
@@ -307,7 +312,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         int returnInt = Integer.parseInt(returnValue.replaceAll("\\D.*", ""));     //replace if there are some special chars behind, like the time in free sms
         if (returnInt == 100 || returnInt == 101) {           //write the last input as suggest for the sending
             provider.writeFreeInputSender();
-            provider.resetState();
+        } else {
+            provider.saveState();
         }
         return FireSMSResultList.getAllInOneResult(getErrorMessageByResult(returnInt), receivers);
     }
@@ -386,47 +392,47 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     private SMSActionResult getErrorMessageByResult(int returnInt) {
         switch (returnInt) {
             case 100:
-                return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.text_return_100));
+                return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.return_100));
             case 101:
-                return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.text_return_101));
+                return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.return_101));
             case 111:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_111));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_111));
             case 112:
-                SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_112));
+                SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_112));
                 smsActionResult.setRetryMakesSense(false);
                 return smsActionResult;
             case 120:
                 provider.resetSender();
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_120));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_120));
             case 121:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_121));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_121));
             case 122:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_122));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_122));
             case 123:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_123));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_123));
             case 129:
                 provider.resetSender();
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_129));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_129));
             case 130:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_130));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_130));
             case 134:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_134));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_134));
             case 140:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_140));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_140));
             case 150:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_150));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_150));
             case 161:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_161));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_161));
             case 162:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_162));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_162));
             case 170:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_170));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_170));
             case 171:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_171));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_171));
             case 172:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_172));
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_172));
             default:
-                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_unknown) + " " + returnInt);
+                return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_unknown) + " " + returnInt);
         }
     }
 

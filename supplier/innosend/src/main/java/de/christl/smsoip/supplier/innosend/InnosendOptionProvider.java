@@ -20,6 +20,7 @@ package de.christl.smsoip.supplier.innosend;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -27,8 +28,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -59,15 +59,12 @@ public class InnosendOptionProvider extends OptionProvider {
     private boolean senderVisible = false;
 
 
-    private EditText sender;
-    private TextView header;
-    private LinearLayout wrapper;
+    private EditText senderText;
     private CheckBox freeInputCB;
     private TextView senderDisabledText;
     private String textBeforeActivityKilled;
     private Boolean checkBoxStateBeforeActivityKilled;
-    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
-    private boolean reset = false;
+    private ViewGroup parentTableRow;
 
     public InnosendOptionProvider() {
         super(PROVIDER_NAME);
@@ -140,17 +137,17 @@ public class InnosendOptionProvider extends OptionProvider {
         String[] typeArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(typeArray);
         listPref.setEntryValues(typeArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
         CheckBoxPreference showSenderCB = new CheckBoxPreference(context);
         showSenderCB.setDefaultValue(true);
         showSenderCB.setKey(PROVIDER_SHOW_SENDER);
-        showSenderCB.setTitle(getTextByResourceId(R.string.text_show_sender));
-        showSenderCB.setSummary(getTextByResourceId(R.string.text_show_sender_description));
+        showSenderCB.setTitle(getTextByResourceId(R.string.show_sender));
+        showSenderCB.setSummary(getTextByResourceId(R.string.show_sender_description));
         out.add(showSenderCB);
         return out;
     }
@@ -191,7 +188,7 @@ public class InnosendOptionProvider extends OptionProvider {
     public String getSenderFromFieldOrOptions() {
         String out = getDefaultSender();
         if (freeInputCB.isChecked()) {
-            out = sender.getText().toString();
+            out = senderText.getText().toString();
         }
         return out;
 
@@ -221,139 +218,96 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        buildLayoutsContent(freeLayout.getContext());
-        freeLayout.setOrientation(LinearLayout.VERTICAL);
-        if (senderVisible && getSettings().getBoolean(PROVIDER_SHOW_SENDER, true)) {
-            if (checkBoxStateBeforeActivityKilled != null) {
-                if (checkBoxStateBeforeActivityKilled) {
-                    sender.setText(textBeforeActivityKilled);
-                    setCheckBoxWithoutListener(true);
-                    sender.setVisibility(View.VISIBLE);
+        XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+        LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
+        resolveChildren(freeLayout);
+        buildLayoutsContent();
+        boolean freeLayoutVisible = senderVisible && getSettings().getBoolean(PROVIDER_SHOW_SENDER, true);
+        freeLayout.setVisibility(freeLayoutVisible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * childs have to be resolved by its tree in structure, findViewById seems not to work on every device
+     *
+     * @param freeLayout
+     */
+    private void resolveChildren(ViewGroup freeLayout) {
+        parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
+        LinearLayout parentLinearLayout = (LinearLayout) parentTableRow.getChildAt(1);
+        freeInputCB = (CheckBox) parentTableRow.getChildAt(0);
+        senderDisabledText = (TextView) parentLinearLayout.getChildAt(0);
+        senderText = (EditText) parentLinearLayout.getChildAt(1);
+        setInputFiltersForEditText();
+        //set the heading
+        ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
+    }
+
+    private void setInputFiltersForEditText() {
+        int length = 16;
+        InputFilter maxLengthFilter = new InputFilter.LengthFilter(length);//max 16 chars allowed
+        InputFilter specialCharsFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        senderText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
+        senderText.setText(getSenderFromOptions());
+    }
+
+
+    private void buildLayoutsContent() {
+
+        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    senderText.setVisibility(View.VISIBLE);
                     senderDisabledText.setVisibility(View.GONE);
                 } else {
-                    freeInputCB.setChecked(false);
-                }
-            } else {
-                if (!freeInputCB.isChecked()) {
-                    sender.setVisibility(View.GONE);
+                    senderText.setVisibility(View.GONE);
                     senderDisabledText.setVisibility(View.VISIBLE);
                 }
-            }
-            String senderFromOptions = getDefaultSender();
-            if (senderFromOptions == null) {
-                senderFromOptions = getTextByResourceId(R.string.text_automatic);
-            }
-            senderDisabledText.setText(senderFromOptions);
-            if (reset) {
-                freeInputCB.setChecked(false);
-                reset = false;
-            }
-            wrapper.removeAllViews();
-            wrapper.addView(freeInputCB);
-            wrapper.addView(sender);
-            wrapper.addView(senderDisabledText);
-            freeLayout.addView(header);
-            freeLayout.addView(wrapper);
-        } else {                          //revert everything
-            freeInputCB.setChecked(false);
-            senderDisabledText.setText("");
-            sender.setText("");
-        }
-    }
 
-    private void setCheckBoxWithoutListener(boolean b) {
-        freeInputCB.setOnCheckedChangeListener(null);
-        freeInputCB.setChecked(b);
+            }
+
+
+        };
         freeInputCB.setOnCheckedChangeListener(onCheckedChangeListener);
-    }
 
-
-    private void buildLayoutsContent(Context context) {
-        if (sender == null) {
-            sender = new EditText(context);
-            int length = 16;
-            InputFilter maxLengthFilter = new InputFilter.LengthFilter(length);//max 16 chars allowed
-            InputFilter specialCharsFilter = new InputFilter() {
-                @Override
-                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    for (int i = start; i < end; i++) {
-                        if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
-                            return "";
-                        }
-                    }
-                    return null;
-                }
-            };
-            sender.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
-            sender.setMinEms(7);
-            sender.setMaxEms(length);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 0, 0, 0);
-            layoutParams.weight = 2.0f;
-            sender.setLayoutParams(layoutParams);
-        }
-
-        if (freeInputCB == null) {
-            freeInputCB = new CheckBox(context);
-            onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        sender.setVisibility(View.VISIBLE);
-                        senderDisabledText.setVisibility(View.GONE);
-                        sender.setText(getSenderFromOptions());
-                        //revert them, so on the next time it will handle as usual
-                        checkBoxStateBeforeActivityKilled = null;
-                        textBeforeActivityKilled = null;
-                    } else {
-                        sender.setVisibility(View.GONE);
-                        senderDisabledText.setVisibility(View.VISIBLE);
-                    }
-
-                }
-
-
-            };
-            freeInputCB.setOnCheckedChangeListener(onCheckedChangeListener);
-        }
-
-        if (senderDisabledText == null) {
-            senderDisabledText = new TextView(context);
-            senderDisabledText.setGravity(Gravity.LEFT);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 0, 0, 0);
-            layoutParams.weight = 2.0f;
-            senderDisabledText.setLayoutParams(layoutParams);
-            senderDisabledText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    freeInputCB.setChecked(!freeInputCB.isChecked());
-                }
-            });
-        }
-
-        if (header == null) {
-            header = new TextView(context);
-            header.setText(getTextByResourceId(R.string.text_sender));
-            header.setGravity(Gravity.CENTER);
-            header.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        } else {
-            ViewGroup parent = (ViewGroup) header.getParent();
-            if (parent != null) {          //remove an already assigned view from its parent to avoid exception
-                parent.removeView(header);
+        View.OnClickListener l = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                freeInputCB.setChecked(!freeInputCB.isChecked());
             }
+        };
+        senderDisabledText.setOnClickListener(l);
+        String senderFromOptions = getDefaultSender();
+        if (senderFromOptions == null) {
+            senderFromOptions = getTextByResourceId(R.string.automatic);
+        }
+        senderDisabledText.setText(senderFromOptions);
+        parentTableRow.setOnClickListener(l);
+        if (checkBoxStateBeforeActivityKilled != null) {
+            freeInputCB.setChecked(checkBoxStateBeforeActivityKilled);
+
+        }
+        boolean checked = freeInputCB.isChecked();
+        freeInputCB.setChecked(!checked); //force a recall of the listener to set correct visibility
+        freeInputCB.setChecked(checked); //force a recall of the listener to set correct visibility
+        if (textBeforeActivityKilled != null) {
+            senderText.setText(textBeforeActivityKilled);
+
         }
 
-        if (wrapper == null) {
-            wrapper = new LinearLayout(context);
-        } else {
-            ViewGroup parent = (ViewGroup) wrapper.getParent();
-            if (parent != null) {
-                parent.removeView(wrapper);
-            }
-        }
-
-
+        //reset all states to get fresh values
+        checkBoxStateBeforeActivityKilled = null;
+        textBeforeActivityKilled = null;
     }
 
     private String getSenderFromOptions() {
@@ -376,13 +330,14 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void onActivityPaused(Bundle outState) {
-        outState.putString(STATE_SENDER_INPUT, sender.getText().toString());
-        outState.putBoolean(STATE_CHECKBOX, freeInputCB.isChecked());
+        saveState();
+        outState.putString(STATE_SENDER_INPUT, textBeforeActivityKilled);
+        outState.putBoolean(STATE_CHECKBOX, checkBoxStateBeforeActivityKilled);
     }
 
     public void writeFreeInputSender() {
         if (freeInputCB != null && freeInputCB.isChecked()) {
-            String toWrite = sender.getText().toString();
+            String toWrite = senderText.getText().toString();
             String userName = getUserName();
             if (toWrite != null && !toWrite.equals("") && userName != null && !userName.equals("")) {
                 SharedPreferences.Editor edit = getSettings().edit();
@@ -392,9 +347,8 @@ public class InnosendOptionProvider extends OptionProvider {
         }
     }
 
-    public void resetState() {
-        textBeforeActivityKilled = null;
-        checkBoxStateBeforeActivityKilled = null;
-        reset = true;
+    public void saveState() {
+        textBeforeActivityKilled = senderText.getText().toString();
+        checkBoxStateBeforeActivityKilled = freeInputCB.isChecked();
     }
 }
