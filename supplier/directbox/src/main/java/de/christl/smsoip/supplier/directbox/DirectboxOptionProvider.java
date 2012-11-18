@@ -26,7 +26,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +54,7 @@ public class DirectboxOptionProvider extends OptionProvider {
     private Boolean checkBoxState;
     private Integer spinnerItem;
     private ProgressBar progressBar;
+    private ViewGroup parentTableRow;
 
     public DirectboxOptionProvider(DirectboxSupplier directboxSupplier) {
         super(providerName);
@@ -85,33 +85,29 @@ public class DirectboxOptionProvider extends OptionProvider {
     public void getFreeLayout(LinearLayout freeLayout) {
         XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
         View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
-        printCildren(freeLayout);
-        Log.e("christl", "R.id.db_progressBar = " + R.id.db_progressBar);
-        Log.e("christl", "R.id.db_eyeButton = " + R.id.db_eyeButton);
-        Log.e("christl", "R.id.db_header = " + R.id.db_header);
-        Log.e("christl", "R.id.db_sourceCB = " + R.id.db_sourceCB);
-        Log.e("christl", "R.id.db_sourceSpinner = " + R.id.db_sourceSpinner);
-        Log.e("christl", "R.id.db_infoText = " + R.id.db_infoText);
-//        buildContent(freeLayoutView);
+        resolveChildren(freeLayout);
+        buildContent(freeLayoutView);
 
     }
 
-    private void printCildren(ViewGroup freeLayout) {
-        int childcount = freeLayout.getChildCount();
-        for (int i = 0; i < childcount; i++) {
-            View v = freeLayout.getChildAt(i);
-            Log.e("christl", "v = " + v);
-            Log.e("christl", "vID = " + v.getId());
-            if (v instanceof ViewGroup) {
-                printCildren(((ViewGroup) v));
-            }
-        }
+    /**
+     * childs have to be resolved by its tree in structure, findViewById seems not to work on every device
+     *
+     * @param freeLayout
+     */
+    private void resolveChildren(ViewGroup freeLayout) {
+        parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
+        LinearLayout parentLinearLayout = (LinearLayout) parentTableRow.getChildAt(1);
+        sourceIDCB = (CheckBox) parentTableRow.getChildAt(0);
+        refreshButton = (ImageButton) parentTableRow.getChildAt(2);
+        progressBar = (ProgressBar) parentLinearLayout.getChildAt(2);
+        infoTextField = (TextView) parentLinearLayout.getChildAt(0);
+        numberSpinner = (Spinner) parentLinearLayout.getChildAt(1);
+        //set the heading
+        ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
     }
 
     private void buildContent(View freeLayoutView) {
-        ((TextView) freeLayoutView.findViewById(R.id.db_header)).setText(getTextByResourceId(R.string.sender));
-        progressBar = (ProgressBar) freeLayoutView.findViewById(R.id.db_progressBar);
-        refreshButton = (ImageButton) freeLayoutView.findViewById(R.id.db_eyeButton);
         refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +122,6 @@ public class DirectboxOptionProvider extends OptionProvider {
                 refreshNumberTask.execute(null, null);
             }
         });
-        infoTextField = (TextView) freeLayoutView.findViewById(R.id.db_infoText);
         infoTextField.setText(getTextByResourceId(R.string.without_si));
         View.OnClickListener l = new View.OnClickListener() {
             @Override
@@ -135,12 +130,10 @@ public class DirectboxOptionProvider extends OptionProvider {
             }
         };
         infoTextField.setOnClickListener(l);
-        freeLayoutView.findViewById(R.id.db_freeLayouTableRow).setOnClickListener(l);
+        parentTableRow.setOnClickListener(l);
 
-        numberSpinner = (Spinner) freeLayoutView.findViewById(R.id.db_sourceSpinner);
         refreshAdapterItems();
         refreshSpinner(freeLayoutView.getContext());
-        sourceIDCB = (CheckBox) freeLayoutView.findViewById(R.id.db_sourceCB);
         sourceIDCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
