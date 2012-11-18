@@ -199,6 +199,7 @@ public class SMSRevolutionSupplier implements TimeShiftSupplier, ExtendedSMSSupp
                 String password = provider.getPassword();
                 tmpUrl.append(SEND_URL + "user=").append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&password=").append(getMD5String(password == null ? "" : password));
             } catch (NoSuchAlgorithmException e) {
+                provider.saveState();
                 return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
             }
 
@@ -214,6 +215,7 @@ public class SMSRevolutionSupplier implements TimeShiftSupplier, ExtendedSMSSupp
             if (sendMethod == PRO) {
                 String sender = provider.getSender();
                 if (sender == null) {
+                    provider.saveState();
                     return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
                 }
                 tmpUrl.append("&from=").append(sender);
@@ -230,20 +232,21 @@ public class SMSRevolutionSupplier implements TimeShiftSupplier, ExtendedSMSSupp
                         SMSActionResult result = resolveResult(parse);
                         out.add(new FireSMSResult(receiver, result));
                     } else {
+                        provider.saveState();
                         out.add(new FireSMSResult(receiver, translateReturnCodeToSMSActionResult(returnCode)));
 
                     }
                 } catch (NumberFormatException e) {
+                    provider.saveState();
                     out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR()));
                 }
             } catch (SocketTimeoutException e) {
+                provider.saveState();
                 out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
             } catch (IOException e) {
+                provider.saveState();
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
             }
-        }
-        if (out.getResult().equals(FireSMSResultList.SendResult.SUCCESS)) {
-            provider.resetState();//reset cb state
         }
         return out;
     }

@@ -20,8 +20,6 @@ package de.christl.smsoip.supplier.smsrevolution;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import de.christl.smsoip.constant.SMSActionResult;
 import org.acra.ACRA;
 
@@ -30,21 +28,17 @@ import java.net.SocketTimeoutException;
 
 
 public class RefreshSenderTask extends AsyncTask<Void, Boolean, SMSActionResult> {
-    private TextView infoTextField;
-    private ProgressBar progressBar;
     private SMSRevolutionOptionProvider SMSRevolutionProvider;
 
     public RefreshSenderTask(SMSRevolutionOptionProvider SMSRevolutionProvider) {
         this.SMSRevolutionProvider = SMSRevolutionProvider;
-        this.infoTextField = SMSRevolutionProvider.getTextField();
-        this.progressBar = SMSRevolutionProvider.getProgressBar();
     }
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
 
         try {
-            return SMSRevolutionProvider.getSupplier().resolveNumbers();
+            return SMSRevolutionProvider.getSMSRevolutionSupplier().resolveNumbers();
         } catch (SocketTimeoutException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.TIMEOUT_ERROR();
@@ -63,7 +57,7 @@ public class RefreshSenderTask extends AsyncTask<Void, Boolean, SMSActionResult>
         if (smsActionResult.isSuccess()) {
             SMSRevolutionProvider.refreshDropDownAfterSuccesfulUpdate();
         } else {
-           SMSRevolutionProvider.setErrorTextAfterSenderUpdate(smsActionResult.getMessage());
+            SMSRevolutionProvider.setErrorTextAfterSenderUpdate(smsActionResult.getMessage());
         }
     }
 }

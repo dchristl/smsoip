@@ -124,7 +124,6 @@ public class SloonoOptionProvider extends OptionProvider {
                     infoTextField.setVisibility(View.VISIBLE);
                     infoTextField.setText(getTextByResourceId(R.string.given_number));
                 }
-                checkBoxState = isChecked;
             }
         });
         progressBar.setVisibility(View.GONE);

@@ -20,8 +20,6 @@ package de.christl.smsoip.supplier.sloono;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import de.christl.smsoip.constant.SMSActionResult;
 import org.acra.ACRA;
 
@@ -30,14 +28,10 @@ import java.net.SocketTimeoutException;
 
 
 public class RefreshSenderTask extends AsyncTask<Void, Boolean, SMSActionResult> {
-    private TextView infoTextField;
-    private ProgressBar progressBar;
     private SloonoOptionProvider sloonoProvider;
 
     public RefreshSenderTask(SloonoOptionProvider sloonoProvider) {
         this.sloonoProvider = sloonoProvider;
-        this.infoTextField = sloonoProvider.getTextField();
-        this.progressBar = sloonoProvider.getProgressBar();
     }
 
     @Override
