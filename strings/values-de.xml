@@ -667,10 +667,7 @@ fileName: strings.xml
     <string name="return_unknown">Unbekannter Fehler: %1$s.</string>
     <string name="balance">Kontostand: %1$s</string>
     <string name="sender">Absender</string>
-    <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absender vor
-        dem
-        Senden mit Hilfe des Auge-Buttons.
-    </string>
+
     <string name="given_number">Handynummer</string>
     <string name="pleaseWait">Bitte warten</string>
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
@@ -681,7 +678,7 @@ fileName: strings.xml
     <string name="default_type">Standard Absendetyp</string>
     <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
-    <string name="text_refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
+    <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
         Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
     </string>
@@ -731,10 +728,6 @@ fileName: strings.xml
     <string name="return_unknown">Unbekannter Fehler: %1$s.</string>
     <string name="balance">Kontostand: %1$s</string>
     <string name="sender">Absender</string>
-    <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absender vor
-        dem
-        Senden mit Hilfe des Auge-Buttons.
-    </string>
     <string name="given_number">Handynummer</string>
     <string name="pleaseWait">Bitte warten</string>
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
@@ -745,7 +738,7 @@ fileName: strings.xml
     <string name="default_type">Standard Absendetyp</string>
     <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
-    <string name="text_refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
+    <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
         Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
     </string>

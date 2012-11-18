@@ -216,7 +216,7 @@ public class SloonoSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
                 String sender = provider.getSender();
                 if (sender == null) {
                     provider.saveState();
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_refresh_sender_first)), receivers);
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.refresh_sender_first)), receivers);
                 }
                 tmpUrl.append("&from=").append(sender);
             }
