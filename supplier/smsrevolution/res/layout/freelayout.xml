@@ -34,7 +34,7 @@
     <TableLayout android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
                  android:stretchColumns="1"
-                 android:shrinkColumns="*"
+                 android:shrinkColumns="1"
             >
         <TableRow android:id="@+id/db_freeLayouTableRow"
                 >
