@@ -34,15 +34,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextWatcher;
+import android.text.*;
 import android.text.format.DateFormat;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
@@ -130,6 +130,7 @@ public class SendActivity extends AllActivity {
     private AsyncTask<Boolean, Boolean, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
     private MobclixMMABannerXLAdView adView;
+    private ColorStateList defaultColor;
 
 
     @Override
@@ -182,6 +183,8 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //save the default color of textview
         new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
@@ -194,6 +197,7 @@ public class SendActivity extends AllActivity {
         toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         //disable inputs on field
         setSearchButton();
+        setCustomActionBar();
         setClearButton();
         setRefreshButton();
         setSigButton();
@@ -241,6 +245,12 @@ public class SendActivity extends AllActivity {
         showChangelogIfNeeded();
         setViewByMode(mode);
         ErrorReporterStack.put(LogConst.ON_CREATE);
+    }
+
+    private void setCustomActionBar() {
+        ActionBar supportActionBar = getSupportActionBar();
+        supportActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        supportActionBar.setCustomView(R.layout.actionbar);
     }
 
     private void setAutoSuggestField() {
@@ -502,10 +512,23 @@ public class SendActivity extends AllActivity {
     }
 
     private void setFullTitle() {
-        OptionProvider provider = smSoIPPlugin.getProvider();
+        final OptionProvider provider = smSoIPPlugin.getProvider();
         String userName = provider.getUserName() == null ? getString(R.string.account_no_account) : provider.getUserName();
-        setTitle(userName);
+
+        TextView actionBarText = (TextView) findViewById(R.id.actionBarText);
+        actionBarText.setSelected(true);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(userName + " (" + provider.getProviderName() + ")");
+        spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.WHITE), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.GRAY), userName.length() + 1, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        actionBarText.setText(spannableStringBuilder);
         setSuppliersLayout();
+        Drawable iconDrawable = smSoIPPlugin.getProvider().getIconDrawable();
+        View viewById = findViewById(R.id.actionBarLogo);
+        if (iconDrawable != null) {
+            viewById.setBackgroundDrawable(iconDrawable);
+        } else {
+            viewById.setBackgroundResource(R.drawable.icon);
+        }
     }
 
     private void setPreselectedContact(Uri data) {
@@ -830,9 +853,7 @@ public class SendActivity extends AllActivity {
             if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
                 OptionProvider provider = smSoIPPlugin.getProvider();
                 message.append(getString(R.string.applicationName)).append(" (");
-                if (provider.getAccounts().size() > 1) {
-                    message.append(provider.getUserName()).append("@");
-                }
+                message.append(provider.getUserName()).append("@");
                 message.append(provider.getProviderName());
                 message.append("): ");
             }
@@ -868,9 +889,6 @@ public class SendActivity extends AllActivity {
 
     public void updateSMScounter() {
         Editable charSequence = textField.getText();
-
-        //save the default color of textview
-        ColorStateList defaultColor = new TextView(getApplicationContext()).getTextColors();
         OptionProvider provider = smSoIPPlugin.getProvider();
         int messageLength = provider.getTextMessageLength();
         int maxMessageCount = provider.getMaxMessageCount();
@@ -889,10 +907,10 @@ public class SendActivity extends AllActivity {
             if (smsCount > maxMessageCount) {
                 smssigns.setTextColor(Color.rgb(255, 0, 0));
             } else {
-                smssigns.setTextColor(defaultColor);
+                smssigns.setTextColor(getDefaultColor());
             }
         } else {
-            smssigns.setTextColor(defaultColor);
+            smssigns.setTextColor(getDefaultColor());
         }
         smssigns.setText(String.format(signsconstant.toString(), textLength, smsCount));
     }
@@ -1132,14 +1150,6 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1) {
             MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, R.string.changeAccount);
             switchAccount.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        }
-        if (smSoIPPlugin != null) {
-            Drawable iconDrawable = smSoIPPlugin.getProvider().getIconDrawable();
-            if (iconDrawable != null) {
-                getSupportActionBar().setIcon(iconDrawable);
-            } else {
-                getSupportActionBar().setIcon(R.drawable.icon);
-            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -1453,4 +1463,10 @@ public class SendActivity extends AllActivity {
     }
 
 
+    public ColorStateList getDefaultColor() {
+        if (defaultColor == null) {
+            defaultColor = new TextView(getApplicationContext()).getTextColors();
+        }
+        return defaultColor;
+    }
 }
