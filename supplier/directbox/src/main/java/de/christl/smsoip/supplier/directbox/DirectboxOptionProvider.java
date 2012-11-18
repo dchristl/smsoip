@@ -49,8 +49,8 @@ public class DirectboxOptionProvider extends OptionProvider {
 
     private static final String SENDER_PREFIX = "sender_";
     private ArrayList<String> adapterItems;
-    private static final String STATE_CHECKBOX = "state.checkbox";
-    private static final String STATE_SPINNER = "state.checkbox";
+    private static final String STATE_CHECKBOX = "directbox.state.checkbox";
+    private static final String STATE_SPINNER = "directbox.state.checkbox";
     private Boolean checkBoxState;
     private Integer spinnerItem;
     private ProgressBar progressBar;
@@ -75,11 +75,11 @@ public class DirectboxOptionProvider extends OptionProvider {
     public int getMaxMessageCount() {
         return 1;
     }
-
-    @Override
-    protected Integer getChangelogResourceId() {
-        return R.raw.changelog;
-    }
+    //removed, caused NPE on twice call, needs a research
+//    @Override
+//    protected Integer getChangelogResourceId() {
+//        return R.raw.changelog;
+//    }
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
