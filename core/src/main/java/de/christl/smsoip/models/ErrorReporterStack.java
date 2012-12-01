@@ -21,6 +21,7 @@ package de.christl.smsoip.models;
 import org.acra.ACRA;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * abstract class for errorreporting aka action log
@@ -30,6 +31,17 @@ public abstract class ErrorReporterStack {
 
     public static void put(String action) {
         stack.add(action);
+        if (stack.size() > 30) {
+            int i = 0;
+            for (Iterator<String> iterator = stack.iterator(); iterator.hasNext(); ) {
+                iterator.next();
+                if (i > 10) {
+                    iterator.remove();
+                }
+                i++;
+
+            }
+        }
         updateErrorReport();
     }
 

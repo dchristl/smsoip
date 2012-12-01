@@ -21,6 +21,7 @@ package de.christl.smsoip.activities.settings.preferences;
 import android.app.Activity;
 import android.content.Context;
 import android.preference.Preference;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.AdViewListener;
 import de.christl.smsoip.application.SMSoIPApplication;
+import org.acra.ACRA;
 
 public class AdPreference extends Preference {
 
@@ -43,19 +45,24 @@ public class AdPreference extends Preference {
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            if (adView == null) {
-                Activity activity = (Activity) getContext();
-                adView = new MobclixMMABannerXLAdView(activity);
-                adView.setRefreshTime(10000);
-                adView.addMobclixAdViewListener(new AdViewListener(getContext()));
+        try {
+            if (SMSoIPApplication.getApp().isAdsEnabled()) {
+                if (adView == null) {
+                    Activity activity = (Activity) getContext();
+                    adView = new MobclixMMABannerXLAdView(activity);
+                    adView.setRefreshTime(10000);
+                    adView.addMobclixAdViewListener(new AdViewListener(getContext()));
+                } else {
+                    ((ViewGroup) adView.getParent()).removeView(adView);
+                }
+                ((LinearLayout) view).addView(adView);
+                adView.getAd();
             } else {
-                ((ViewGroup) adView.getParent()).removeView(adView);
+                view.setVisibility(View.GONE);
             }
-            ((LinearLayout) view).addView(adView);
-            adView.getAd();
-        } else {
-            view.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            ACRA.getErrorReporter().handleSilentException(e);
         }
         return view;
     }

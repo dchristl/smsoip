@@ -159,7 +159,11 @@ public class SendActivity extends AllActivity {
             invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
-        insertAds();
+        try {
+            insertAds();
+        } catch (Exception e) {
+            ACRA.getErrorReporter().handleSilentException(e);
+        }
     }
 
     private void insertAds() {
@@ -722,6 +726,7 @@ public class SendActivity extends AllActivity {
             public void onClick(View view) {
                 Map<String, String> textModules = textField.getTextModules();
                 if (textModules.size() > 1) {
+                    removeDialog(DIALOG_TEXT_MODULES);//force a reload
                     showDialog(DIALOG_TEXT_MODULES);
                 } else if (textModules.size() == 1) {
                     for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {

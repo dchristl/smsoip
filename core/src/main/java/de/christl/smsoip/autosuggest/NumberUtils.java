@@ -40,7 +40,7 @@ public abstract class NumberUtils {
     private static final Pattern NUMBER_INPUT = Pattern.compile("00[0-9]+");
 
     public static String fixNumber(String rawNumber) {
-        String out = rawNumber;
+        String out = rawNumber == null ? "" : rawNumber;
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
         if (!out.startsWith("+") && !out.startsWith("00")) {   //area code not already added
             out = out.replaceFirst("^0", "");        //replace leading zero
