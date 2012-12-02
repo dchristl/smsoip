@@ -285,4 +285,12 @@ public abstract class OptionProvider {
     protected Integer getChangelogResourceId() {
         return null;
     }
+
+    /**
+     * method will be called when accounts are updated, added or deleted
+     * override this method to clean up old options
+     */
+    public void onAccountsChanged() {
+        //do nothing
+    }
 }

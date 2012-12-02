@@ -65,7 +65,7 @@ public class ProviderPreferences extends BackgroundPreferenceActivity {
     private PreferenceScreen initPreferences() {
         PreferenceScreen root = preferenceManager.createPreferenceScreen(this);
         if (provider.hasAccounts()) {
-            root.addPreference(new MultipleAccountsPreference(this, preferenceManager));
+            root.addPreference(new MultipleAccountsPreference(this, preferenceManager, provider));
         }
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);

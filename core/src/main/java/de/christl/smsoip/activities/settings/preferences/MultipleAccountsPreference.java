@@ -33,6 +33,7 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 /**
@@ -42,16 +43,17 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 public class MultipleAccountsPreference extends ListPreference {
 
 
-
     private SharedPreferences preferences;
     private AccountModelsList accountModels = new AccountModelsList();
     private MultipleAccountsPreferenceAdapter listAdapter;
     private ProviderPreferences providerPreferences;
+    private OptionProvider provider;
     private SharedPreferences.Editor editor;
 
-    public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences) {
+    public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences, OptionProvider provider) {
         super(providerPreferences, null);
         this.providerPreferences = providerPreferences;
+        this.provider = provider;
         this.preferences = preferences.getSharedPreferences();
         init();
     }
@@ -122,6 +124,7 @@ public class MultipleAccountsPreference extends ListPreference {
             editor.putInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, listAdapter.getDefaultAccount());
             editor.commit();
             setDefaultAccountInSummary();
+            provider.onAccountsChanged();
         }
         ErrorReporterStack.put(LogConst.SHOW_USER_NAME_PASSWORD_DIALOG_CLOSED);
     }
