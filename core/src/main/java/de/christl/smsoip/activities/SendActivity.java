@@ -521,9 +521,14 @@ public class SendActivity extends AllActivity {
 
         TextView actionBarText = (TextView) findViewById(R.id.actionBarText);
         actionBarText.setSelected(true);
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(userName + " (" + provider.getProviderName() + ")");
+        String providerTitleString = " (" + provider.getProviderName() + ")";
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(userName);
         spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.WHITE), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.GRAY), userName.length() + 1, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if (!userName.toLowerCase().contains(provider.getProviderName().toLowerCase())) {
+            spannableStringBuilder.append(providerTitleString);
+            spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.GRAY), userName.length() + 1, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
         actionBarText.setText(spannableStringBuilder);
         setSuppliersLayout();
         actionBarText.setOnClickListener(new View.OnClickListener() {
