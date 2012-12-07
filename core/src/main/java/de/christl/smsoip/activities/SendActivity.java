@@ -526,6 +526,18 @@ public class SendActivity extends AllActivity {
         spannableStringBuilder.setSpan(new ForegroundColorSpan(Color.GRAY), userName.length() + 1, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         actionBarText.setText(spannableStringBuilder);
         setSuppliersLayout();
+        actionBarText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OptionProvider provider = smSoIPPlugin.getProvider();
+                Map<Integer, AccountModel> accounts = provider.getAccounts();
+                if (accounts.size() > 0) {
+                    showAccountDialog();
+                } else {
+                    startOptionActivity();
+                }
+            }
+        });
         Drawable iconDrawable = smSoIPPlugin.getProvider().getIconDrawable();
         View viewById = findViewById(R.id.actionBarLogo);
         if (iconDrawable != null) {
@@ -533,6 +545,12 @@ public class SendActivity extends AllActivity {
         } else {
             viewById.setBackgroundResource(R.drawable.icon);
         }
+        viewById.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProvidersDialog();
+            }
+        });
     }
 
     private void setPreselectedContact(Uri data) {
