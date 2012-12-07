@@ -21,7 +21,7 @@ package de.christl.smsoip.models;
 import org.acra.ACRA;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.ConcurrentModificationException;
 
 /**
  * abstract class for errorreporting aka action log
@@ -29,20 +29,23 @@ import java.util.Iterator;
 public abstract class ErrorReporterStack {
     private static ArrayList<String> stack = new ArrayList<String>();
 
-    public static void put(String action) {
+    public synchronized static void put(String action) {
         stack.add(action);
-        if (stack.size() > 30) {
-            int i = 0;
-            for (Iterator<String> iterator = stack.iterator(); iterator.hasNext(); ) {
-                iterator.next();
-                if (i > 10) {
-                    iterator.remove();
+        try {
+            if (stack.size() > 30) {
+                ArrayList<String> tmpList = new ArrayList<String>(stack);
+                int i = 0;
+                for (String next : tmpList) {
+                    if (i > 10) {
+                        stack.remove(next);
+                    }
+                    i++;
                 }
-                i++;
-
             }
+            updateErrorReport();
+        } catch (ConcurrentModificationException e) {  //should not be s show stopper
+            ACRA.getErrorReporter().handleSilentException(e);
         }
-        updateErrorReport();
     }
 
     private static void updateErrorReport() {
