@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.*;
@@ -209,6 +210,10 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             showActionBarButtons.setTitle(R.string.button_visibiliy);
             showActionBarButtons.setSummary(R.string.button_visibiliy_description);
             root.addPreference(showActionBarButtons);
+        } else {
+            SharedPreferences.Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            edit.remove(SettingsConst.GLOBAL_BUTTON_VISIBILITY);
+            edit.commit();
         }
 
         PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
