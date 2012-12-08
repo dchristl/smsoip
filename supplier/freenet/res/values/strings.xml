@@ -23,4 +23,12 @@
     <string name="text_save_in_sent_long">Text messages will be saved in "Sent" - folder of mail account.</string>
     <string name="login_failed">Login failed. Consider that you will be banned for 10 minutes after 3 failed logins!
     </string>
+    <string name="default_type">Default send type</string>
+    <string name="default_type_long">Choose your preselected send type</string>
+    <string-array name="array_spinner">
+        <item>Default SMS (without SI)</item>
+        <item>Default SMS (with SI)</item>
+        <item>Quick SMS (without SI)</item>
+        <item>Quick SMS (with SI)</item>
+    </string-array>
 </resources>

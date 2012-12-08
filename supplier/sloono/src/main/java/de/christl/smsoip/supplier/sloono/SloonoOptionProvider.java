@@ -228,10 +228,6 @@ public class SloonoOptionProvider extends OptionProvider {
         }
     }
 
-    public TextView getTextField() {
-        return infoTextField;
-    }
-
     public SloonoSupplier getSloonoSupplier() {
         return supplier;
     }
