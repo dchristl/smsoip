@@ -40,6 +40,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,12 +49,15 @@ import java.util.regex.Pattern;
  */
 public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
+    Pattern NUMBERS_JSON_PATTERN = Pattern.compile("\"menuRows\":\\[(.+?)\\]");
+    Pattern NUMBER_SUBSTRING_PATTERN = Pattern.compile("\\{(.+?)\\}");
     private FreenetOptionProvider provider;
 
     private static final String LOGIN_URL = "https://auth.freenet.de/portal/login.php";
     private static final String HOME_URL = "http://webmail.freenet.de/login/index.html";
     private static final String REFRESH_URL = "http://webmail.freenet.de/Global/Action/StatusBarGet";
     private static final String SEND_URL = "http://webmail.freenet.de/Sms/Action/Send?myAction=send&";
+    private static final String BALANCE_URL = "http://webmail.freenet.de/Sms/View/Send";
     private List<String> sessionCookies;
     private static final String ENCODING = "ISO-8859-1";
 
@@ -95,18 +99,15 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             p = Pattern.compile("[0-9]+");
             m = p.matcher(messageJSONObject);
             Integer allSMS = null;
-            Integer paidSMS = null;
             while (m.find()) {
                 if (allSMS == null) {
                     allSMS = Integer.parseInt(messageJSONObject.substring(m.start(), m.end()));
-                } else if (paidSMS == null) {
-                    paidSMS = Integer.parseInt(messageJSONObject.substring(m.start(), m.end()));
                 } else {
                     break;
                 }
             }
-            if (allSMS != null && paidSMS != null) {
-                return SMSActionResult.NO_ERROR(String.format(out, allSMS, paidSMS));
+            if (allSMS != null) {
+                return SMSActionResult.NO_ERROR(String.format(out, allSMS));
             }
 
         }
@@ -197,7 +198,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         FireSMSResultList out = new FireSMSResultList(receivers.size());
         //currently only free sms supported, for paid accounts change will be here
         for (Receiver receiver : receivers) {
-            String tmpUrl = SEND_URL + "&senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver.getReceiverNumber() + "&smsText=" + message;
+            String tmpUrl = SEND_URL + "senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver.getReceiverNumber() + "&smsText=" + message;
             if (dateTime != null) {
                 tmpUrl += String.format("&later=1&day=%02d&month=%02d&year=%d&hours=%02d&minutes=%02d", dateTime.getDay(), dateTime.getMonth() + 1, dateTime.getYear(), dateTime.getHour(), dateTime.getMinute());
             }
@@ -240,7 +241,43 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return true;
     }
 
-    public SMSActionResult resolveNumbers() throws IOException{
-        return SMSActionResult.UNKNOWN_ERROR();
+
+    public SMSActionResult resolveNumbers() throws IOException {
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return result;
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_URL);
+        factory.setCookies(sessionCookies);
+        HttpURLConnection con = factory.create();
+
+        Map<String, String> numbers = new TreeMap<String, String>();
+
+        String returnAsString = UrlConnectionFactory.inputStream2DebugString(con.getInputStream(), ENCODING);
+        Matcher m = NUMBERS_JSON_PATTERN.matcher(returnAsString);
+        while (m.find()) {
+            String s = m.group(1);
+            Matcher matcher = NUMBER_SUBSTRING_PATTERN.matcher(s);
+            while (matcher.find()) {
+                String matchingRow = matcher.group(1);
+                String numberPresentation = matchingRow.replaceAll(".*rowText\":\"", "");
+                numberPresentation = numberPresentation.replaceAll("\".*", "");
+                String number = matchingRow.replaceAll(".*EMO_Sms.setSender\\('", "");
+                number = number.replaceAll("'.*", "");
+                //replace all valid characters to check if its really a number and not the mail address
+                String tmpNumber = number.replaceAll("\\+", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(" ", "");
+                if (tmpNumber.matches("\\d+")) {    //just numbers
+                    numbers.put(numberPresentation, number);
+
+                }
+
+            }
+        }
+
+        if (numbers.isEmpty()) {
+            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_senders_available));
+        }
+        provider.saveNumbers(numbers);
+        return SMSActionResult.NO_ERROR();
     }
 }
