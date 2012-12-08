@@ -19,19 +19,21 @@
 package de.christl.smsoip.supplier.freenet;
 
 import android.content.Context;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.view.ViewGroup;
+import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class for Freenet options
@@ -42,12 +44,22 @@ public class FreenetOptionProvider extends OptionProvider {
 
     public static final String PROVIDER_SAVE_IN_SENT = "provider.saveInSent";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private static final String SENDER_PREFIX = "sender_";
 
-
+    private Integer spinnerItem;
+    private ProgressBar progressBar;
+    private ViewGroup parentTableRow;
+    private TextView infoTextField;
+    private ImageButton refreshButton;
+    private ArrayList<String> adapterItems;
+    private Spinner numberSpinner;
     private boolean showSenders = true;
+    private RefreshNumbersTask refreshNumberTask;
+    private FreenetSupplier freenetSupplier;
 
-    public FreenetOptionProvider() {
+    public FreenetOptionProvider(FreenetSupplier freenetSupplier) {
         super(providerName);
+        this.freenetSupplier = freenetSupplier;
     }
 
 
@@ -95,7 +107,7 @@ public class FreenetOptionProvider extends OptionProvider {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                    case 3:
+                    case 2:
                         showSenders = false;
                         break;
                     default:
@@ -113,5 +125,100 @@ public class FreenetOptionProvider extends OptionProvider {
         int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
         defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
         spinner.setSelection(defaultPosition);
+    }
+
+    @Override
+    public void getFreeLayout(LinearLayout freeLayout) {
+        if (showSenders) {
+            XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+            View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
+            resolveChildren(freeLayout);
+            buildContent(freeLayoutView);
+        }
+
+    }
+
+    /**
+     * childs have to be resolved by its tree in structure, findViewById seems not to work on every device
+     *
+     * @param freeLayout
+     */
+    private void resolveChildren(ViewGroup freeLayout) {
+        parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
+        LinearLayout parentLinearLayout = (LinearLayout) parentTableRow.getChildAt(0);
+        refreshButton = (ImageButton) parentTableRow.getChildAt(1);
+        progressBar = (ProgressBar) parentLinearLayout.getChildAt(2);
+        infoTextField = (TextView) parentLinearLayout.getChildAt(0);
+        numberSpinner = (Spinner) parentLinearLayout.getChildAt(1);
+        //set the heading
+        ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
+    }
+
+    private void buildContent(View freeLayoutView) {
+        refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (refreshNumberTask != null) {
+                    refreshNumberTask.cancel(true);
+                }
+                numberSpinner.setVisibility(View.GONE);
+                infoTextField.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                refreshNumberTask = new RefreshNumbersTask(FreenetOptionProvider.this);
+                refreshNumberTask.execute(null, null);
+            }
+        });
+        infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+
+        refreshAdapterItems();
+        refreshSpinner(freeLayoutView.getContext());
+
+        if (spinnerItem != null && spinnerItem != Spinner.INVALID_POSITION && spinnerItem < adapterItems.size()) {
+            numberSpinner.setSelection(spinnerItem, true);
+        }
+        spinnerItem = null;
+    }
+
+
+    private void refreshAdapterItems() {
+        adapterItems = new ArrayList<String>();
+        Map<String, ?> stringMap = getSettings().getAll();
+        for (Map.Entry<String, ?> stringEntry : stringMap.entrySet()) {
+            String key = stringEntry.getKey();
+            if (key.startsWith(SENDER_PREFIX + getUserName())) {
+                adapterItems.add((String) stringEntry.getValue());
+            }
+        }
+    }
+
+    private void refreshSpinner(Context context) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, adapterItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.notifyDataSetChanged();
+        numberSpinner.setAdapter(adapter);
+    }
+
+    public void refreshDropDownAfterSuccesfulUpdate() {
+        progressBar.setVisibility(View.GONE);
+        refreshAdapterItems();
+        if (adapterItems.size() > 0) {
+            numberSpinner.setVisibility(View.VISIBLE);
+            refreshSpinner(numberSpinner.getContext());
+        } else {
+            infoTextField.setVisibility(View.VISIBLE);
+            infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+            numberSpinner.setVisibility(View.GONE);
+        }
+    }
+
+    public void setErrorMessageOnUpdate(String message) {
+        progressBar.setVisibility(View.GONE);
+        infoTextField.setVisibility(View.VISIBLE);
+        infoTextField.setText(message);
+    }
+
+    public FreenetSupplier getFreenetSupplier() {
+        return freenetSupplier;
     }
 }

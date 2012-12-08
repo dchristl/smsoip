@@ -58,7 +58,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String ENCODING = "ISO-8859-1";
 
     public FreenetSupplier() {
-        provider = new FreenetOptionProvider();
+        provider = new FreenetOptionProvider(this);
     }
 
 
@@ -238,5 +238,9 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     @Override
     public boolean isSendTypeTimeShiftCapable(String spinnerText) {
         return true;
+    }
+
+    public SMSActionResult resolveNumbers() throws IOException{
+        return SMSActionResult.UNKNOWN_ERROR();
     }
 }
