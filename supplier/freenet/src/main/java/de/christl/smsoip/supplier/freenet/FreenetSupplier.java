@@ -94,7 +94,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private SMSActionResult processRefreshReturn(InputStream is) throws IOException {
         String message = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
-        String out = provider.getTextByResourceId(R.string.text_refresh_informations);
+        String out = provider.getTextByResourceId(R.string.refresh_informations);
         Pattern p = Pattern.compile("SMS.*?\\}"); //get the SMS JSON object
         Matcher m = p.matcher(message);
         while (m.find()) {

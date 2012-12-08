@@ -365,9 +365,9 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_refresh_informations">Balance: %1$d</string>
-    <string name="text_save_in_sent">Save messages in "sent" folder</string>
-    <string name="text_save_in_sent_long">Text messages will be saved in "Sent" - folder of mail account.</string>
+    <string name="refresh_informations">Balance: %1$d</string>
+    <string name="save_in_sent">Save messages in "sent" folder</string>
+    <string name="save_in_sent_long">Text messages will be saved in "Sent" - folder of mail account.</string>
     <string name="login_failed">Login failed. Consider that you will be banned for 10 minutes after 3 failed logins!
     </string>
     <string name="sender">Sender</string>
@@ -376,7 +376,8 @@ fileName: strings.xml
     <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye
         button.
     </string>
-
+    <string name="only_free_account">Freenet basic only</string>
+    <string name="only_free_account_description">Enable this if you only have a basic account. Advanced options will be disabled and more space is available on screen.</string>
     <string name="default_type">Default send type</string>
     <string name="default_type_long">Choose your preselected send type</string>
     <string-array name="array_spinner">

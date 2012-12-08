@@ -48,6 +48,7 @@ public class FreenetOptionProvider extends OptionProvider {
     private static final String DIVIDER = " | ";
 
     public static final String PROVIDER_SAVE_IN_SENT = "provider.saveInSent";
+    public static final String PROVIDER_ONLY_BASIC = "provider.onlyBasic";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private static final String SENDER_PREFIX = "sender_";
     private static final String SENDER_LAST_NUMBER_PREFIX = "sender_last_";
@@ -81,7 +82,7 @@ public class FreenetOptionProvider extends OptionProvider {
     @Override
     public List<Preference> getAdditionalPreferences(Context context) {
         List<Preference> out = new ArrayList<Preference>();
-        ListPreference listPref = new ListPreference(context);
+        final ListPreference listPref = new ListPreference(context);
         String[] typeArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(typeArray);
         listPref.setEntryValues(typeArray);
@@ -89,56 +90,78 @@ public class FreenetOptionProvider extends OptionProvider {
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
         listPref.setTitle(getTextByResourceId(R.string.default_type));
         listPref.setSummary(getTextByResourceId(R.string.default_type_long));
+        listPref.setEnabled(!getSettings().getBoolean(PROVIDER_ONLY_BASIC, false));
         listPref.setDefaultValue(typeArray[0]);
+        CheckBoxPreference basicOnly = new CheckBoxPreference(context);
+        basicOnly.setKey(PROVIDER_ONLY_BASIC);
+        basicOnly.setTitle(getTextByResourceId(R.string.only_free_account));
+        basicOnly.setSummary(getTextByResourceId(R.string.only_free_account_description));
+        basicOnly.setDefaultValue(false);
+        basicOnly.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                listPref.setEnabled(!((Boolean) newValue));
+                return true;
+            }
+        });
+        out.add(basicOnly);
         out.add(listPref);
-        CheckBoxPreference checkNoFreeSMSAvailable = new CheckBoxPreference(context);
-        checkNoFreeSMSAvailable.setKey(PROVIDER_SAVE_IN_SENT);
-        checkNoFreeSMSAvailable.setTitle(getTextByResourceId(R.string.text_save_in_sent));
-        checkNoFreeSMSAvailable.setSummary(getTextByResourceId(R.string.text_save_in_sent_long));
-        out.add(checkNoFreeSMSAvailable);
+        CheckBoxPreference saveInSent = new CheckBoxPreference(context);
+        saveInSent.setKey(PROVIDER_SAVE_IN_SENT);
+        saveInSent.setTitle(getTextByResourceId(R.string.save_in_sent));
+        saveInSent.setSummary(getTextByResourceId(R.string.save_in_sent_long));
+        out.add(saveInSent);
         return out;
     }
 
 
     @Override
     public void createSpinner(final SendActivity sendActivity, Spinner spinner) {
-        final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
-        spinner.setVisibility(View.VISIBLE);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                    case 2:
-                        showSenders = false;
-                        break;
-                    default:
-                        showSenders = true;
-                        break;
+        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
+        if (!basicOnly) {
+            final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
+            spinner.setVisibility(View.VISIBLE);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch (position) {
+                        case 0:
+                        case 2:
+                            showSenders = false;
+                            break;
+                        default:
+                            showSenders = true;
+                            break;
+                    }
+                    sendActivity.updateAfterReceiverCountChanged();
                 }
-                sendActivity.updateAfterReceiverCountChanged();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
-        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
-        defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
-        spinner.setSelection(defaultPosition);
+                }
+            });
+            int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
+            defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
+            spinner.setSelection(defaultPosition);
+        } else {
+            super.createSpinner(sendActivity, spinner);
+        }
+
     }
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        if (showSenders) {
+        if (showSenders && !getSettings().getBoolean(PROVIDER_ONLY_BASIC, false)) {
             XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
             View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
             resolveChildren(freeLayout);
             buildContent(freeLayoutView);
+        } else {
+
         }
 
     }
@@ -226,8 +249,12 @@ public class FreenetOptionProvider extends OptionProvider {
     }
 
     public String getSender() {
-        Object selectedItem = numberSpinner.getSelectedItem();
-        return selectedItem == null ? null : adapterItems.get(String.valueOf(selectedItem));
+        if (numberSpinner != null && numberSpinner.getVisibility() == View.VISIBLE) {
+            Object selectedItem = numberSpinner.getSelectedItem();
+            return selectedItem == null ? null : adapterItems.get(String.valueOf(selectedItem));
+        } else {
+            return null;
+        }
     }
 
     private void refreshAdapterItems() {
