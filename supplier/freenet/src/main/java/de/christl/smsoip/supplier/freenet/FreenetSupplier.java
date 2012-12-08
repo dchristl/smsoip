@@ -18,7 +18,6 @@
 
 package de.christl.smsoip.supplier.freenet;
 
-import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
@@ -60,6 +59,10 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String BALANCE_URL = "http://webmail.freenet.de/Sms/View/Send";
     private List<String> sessionCookies;
     private static final String ENCODING = "ISO-8859-1";
+    private static final int DEFAULT_WO_SI = 0;
+    private static final int DEFAULT_W_SI = 1;
+    private static final int QUICK_WO_SI = 2;
+    private static final int QUICK_W_SI = 3;
 
     public FreenetSupplier() {
         provider = new FreenetOptionProvider(this);
@@ -184,46 +187,71 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
-        return sendSMS(smsText, receivers, null);
+        return sendSMS(smsText, receivers, null, spinnerText);
     }
 
-    //    myAction=send&from=&senderName=service%40freenet.de&defaultEmailSender=&to=01745686886&smsText=Test+zeitversetzt&later=1&day=24&month=07&year=2012&hours=22&minutes=09&smsToSent=1
-    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTime) throws IOException {
+    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTime, String spinnerText) throws IOException {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
-        String message = URLEncoder.encode(smsText, ENCODING);
 
+        String message = URLEncoder.encode(smsText, ENCODING);
+        int sendMethod = findSendMethod(spinnerText);
+        String sender = null;
+        if (sendMethod == DEFAULT_W_SI || sendMethod == QUICK_W_SI) {
+            sender = provider.getSender();
+            if (sender == null) {
+                provider.saveState();
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.refresh_sender_first)), receivers);
+            } else {
+                sender = URLEncoder.encode(sender, ENCODING);
+            }
+        }
         FireSMSResultList out = new FireSMSResultList(receivers.size());
         //currently only free sms supported, for paid accounts change will be here
         for (Receiver receiver : receivers) {
-            String tmpUrl = SEND_URL + "senderName=service%40freenet.de&defaultEmailSender=&to=" + receiver.getReceiverNumber() + "&smsText=" + message;
+            StringBuilder tmpUrl = new StringBuilder(SEND_URL);
+            tmpUrl.append("senderName=service%40freenet.de&defaultEmailSender=&to=");
+            tmpUrl.append(receiver.getReceiverNumber()).append("&smsText=").append(message);
             if (dateTime != null) {
-                tmpUrl += String.format("&later=1&day=%02d&month=%02d&year=%d&hours=%02d&minutes=%02d", dateTime.getDay(), dateTime.getMonth() + 1, dateTime.getYear(), dateTime.getHour(), dateTime.getMinute());
+                tmpUrl.append(String.format("&later=1&day=%02d&month=%02d&year=%d&hours=%02d&minutes=%02d", dateTime.getDay(), dateTime.getMonth() + 1, dateTime.getYear(), dateTime.getHour(), dateTime.getMinute()));
+            }
+            if (sendMethod == DEFAULT_W_SI || sendMethod == QUICK_W_SI) {
+                tmpUrl.append("&from=").append(sender);
+            }
+            if (sendMethod == QUICK_WO_SI || sendMethod == QUICK_W_SI) {
+                tmpUrl.append("&quick=1");
             }
             if (provider.getSettings().getBoolean(FreenetOptionProvider.PROVIDER_SAVE_IN_SENT, false)) {
-                tmpUrl += "&smsToSent=1";
+                tmpUrl.append("&smsToSent=1");
             }
             try {
-                UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+                UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl.toString());
                 factory.setCookies(sessionCookies);
                 HttpURLConnection con = factory.create();
                 out.add(new FireSMSResult(receiver, processFireSMSReturn(con.getInputStream())));
             } catch (SocketTimeoutException stoe) {
-                Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+                provider.saveState();
                 out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
             } catch (IOException e) {
-                Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                provider.saveState();
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
             }
+        }
+        FireSMSResultList.SendResult sendResult = out.getResult();
+        if (sendResult.equals(FireSMSResultList.SendResult.SUCCESS) || sendResult.equals(FireSMSResultList.SendResult.BOTH)) {
+            provider.saveLastSender();
+        } else {
+            provider.saveState();
         }
         return out;
     }
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
-        return sendSMS(smsText, receivers, dateTime);
+        return sendSMS(smsText, receivers, dateTime, spinnerText);
     }
 
     @Override
@@ -265,7 +293,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 String number = matchingRow.replaceAll(".*EMO_Sms.setSender\\('", "");
                 number = number.replaceAll("'.*", "");
                 //replace all valid characters to check if its really a number and not the mail address
-                String tmpNumber = number.replaceAll("\\+", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(" ", "");
+                String tmpNumber = number.replaceAll("\\+", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(" ", "").replaceAll("/", "").replaceAll("\\\\", "");
                 if (tmpNumber.matches("\\d+")) {    //just numbers
                     numbers.put(numberPresentation, number);
 
@@ -279,5 +307,19 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         provider.saveNumbers(numbers);
         return SMSActionResult.NO_ERROR();
+    }
+
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        int sendType = DEFAULT_WO_SI;
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                sendType = i;
+            }
+        }
+
+        return sendType;
     }
 }

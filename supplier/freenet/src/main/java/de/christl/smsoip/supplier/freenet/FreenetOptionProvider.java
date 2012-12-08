@@ -50,6 +50,7 @@ public class FreenetOptionProvider extends OptionProvider {
     public static final String PROVIDER_SAVE_IN_SENT = "provider.saveInSent";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private static final String SENDER_PREFIX = "sender_";
+    private static final String SENDER_LAST_NUMBER_PREFIX = "sender_last_";
 
     private Integer spinnerItem;
     private ProgressBar progressBar;
@@ -186,9 +187,11 @@ public class FreenetOptionProvider extends OptionProvider {
             numberSpinner.setVisibility(View.VISIBLE);
         }
 
-
+        int lastSavedSender = getLastSender();
         if (spinnerItem != null && spinnerItem != Spinner.INVALID_POSITION && spinnerItem < adapterItems.size()) {
             numberSpinner.setSelection(spinnerItem, true);
+        } else if (lastSavedSender != Spinner.INVALID_POSITION && lastSavedSender < adapterItems.size()) {
+            numberSpinner.setSelection(lastSavedSender, true);
         }
         spinnerItem = null;
     }
@@ -209,15 +212,15 @@ public class FreenetOptionProvider extends OptionProvider {
                 }
                 edit.remove(stringEntry.getKey());
             }
-//            if (stringEntry.getKey().startsWith(SENDER_FREE_LAST_INPUT_PREFIX)) {
-//                String currAccountName = stringEntry.getKey().replaceAll(SENDER_FREE_LAST_INPUT_PREFIX, "");
-//                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
-//                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
-//                        continue Outer;
-//                    }
-//                }
-//                edit.remove(stringEntry.getKey());
-//            }
+            if (stringEntry.getKey().startsWith(SENDER_LAST_NUMBER_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_LAST_NUMBER_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
         }
         edit.commit();
     }
@@ -285,11 +288,33 @@ public class FreenetOptionProvider extends OptionProvider {
             if (key.startsWith(SENDER_PREFIX + getUserName())) {
                 edit.remove(key);
             }
+            if (key.startsWith(SENDER_LAST_NUMBER_PREFIX + getUserName())) {
+                edit.remove(key);
+            }
         }
         edit.commit();
     }
 
     public FreenetSupplier getFreenetSupplier() {
         return freenetSupplier;
+    }
+
+    public void saveState() {
+        spinnerItem = numberSpinner.getSelectedItemPosition();
+    }
+
+    public void saveLastSender() {
+        if (numberSpinner.getVisibility() == View.VISIBLE) {
+            Object selectedItem = numberSpinner.getSelectedItem();
+            if (selectedItem != null) {
+                SharedPreferences.Editor edit = getSettings().edit();
+                edit.putInt(SENDER_LAST_NUMBER_PREFIX + getUserName(), numberSpinner.getSelectedItemPosition());
+                edit.commit();
+            }
+        }
+    }
+
+    private int getLastSender() {
+        return getSettings().getInt(SENDER_LAST_NUMBER_PREFIX + getUserName(), Spinner.INVALID_POSITION);
     }
 }
