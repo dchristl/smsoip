@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.option.OptionProvider;
 
 import java.util.ArrayList;
@@ -190,6 +191,35 @@ public class FreenetOptionProvider extends OptionProvider {
             numberSpinner.setSelection(spinnerItem, true);
         }
         spinnerItem = null;
+    }
+
+    @Override
+    public void onAccountsChanged() {
+        SharedPreferences.Editor edit = getSettings().edit();
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+            if (stringEntry.getKey().startsWith(SENDER_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+//            if (stringEntry.getKey().startsWith(SENDER_FREE_LAST_INPUT_PREFIX)) {
+//                String currAccountName = stringEntry.getKey().replaceAll(SENDER_FREE_LAST_INPUT_PREFIX, "");
+//                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+//                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+//                        continue Outer;
+//                    }
+//                }
+//                edit.remove(stringEntry.getKey());
+//            }
+        }
+        edit.commit();
     }
 
     public String getSender() {
