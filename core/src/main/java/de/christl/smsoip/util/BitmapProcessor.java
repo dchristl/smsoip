@@ -134,7 +134,7 @@ public class BitmapProcessor {
         if (bitmap != null) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-            bitmap.recycle();
+//            bitmap.recycle();
             return new ByteArrayInputStream(bos.toByteArray());
         }
         return null;

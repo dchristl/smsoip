@@ -99,7 +99,7 @@ public class ChosenContactsDialog extends Dialog {
                 bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
             }
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true);
-            bmp.recycle();
+//            bmp.recycle();
             imageView.setImageBitmap(scaledBitmap);
             imageView.setFocusable(true);
             View.OnClickListener checkBoxChangeListener = new View.OnClickListener() {
@@ -128,13 +128,13 @@ public class ChosenContactsDialog extends Dialog {
 
     }
 
-    @Override
-    public void dismiss() {
-        super.dismiss();
-        for (Bitmap bitmap : bitmaps) {
-            bitmap.recycle();
-        }
-    }
+//    @Override
+//    public void dismiss() {
+//        super.dismiss();
+//        for (Bitmap bitmap : bitmaps) {
+//            bitmap.recycle();
+//        }
+//    }
 
     public void redraw() {
         this.onCreate(null);
