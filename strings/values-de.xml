@@ -280,6 +280,10 @@ fileName: strings.xml
     <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
     <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
     <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um letzte Konversationen anzuzeigen!</string>
+    <string name="button_visibiliy">Buttonsichtbarkeit (ActionBar)</string>
+    <string name="button_visibiliy_description">Steuere die Sichtbarkeit der Buttons für Anbieter- oder Benutzerwechsel.
+        Das Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
+    </string>
 </resources>
 
 <!--String resources for:
@@ -661,7 +665,7 @@ fileName: strings.xml
     <string name="return_207">Keine gültigen XML-Daten.</string>
     <string name="return_208">Ungültiger SMS-Typ.</string>
     <string name="return_300">Systemfehler! Wenden Sie sich an info@sloono.de!</string>
-    <string name="return_301">SMS konnte nich versendet werden.</string>
+    <string name="return_301">SMS konnte nicht versendet werden.</string>
     <string name="return_302">Verbindungsfehler.</string>
     <string name="return_400">Wartungsarbeiten! Der Dienst steht zur Zeit nicht zur Verfügung.</string>
     <string name="return_unknown">Unbekannter Fehler: %1$s.</string>
@@ -722,7 +726,7 @@ fileName: strings.xml
     <string name="return_207">Keine gültigen XML-Daten.</string>
     <string name="return_208">Ungültiger SMS-Typ.</string>
     <string name="return_300">Systemfehler! Wenden Sie sich an info@sms-revolutions.ch!</string>
-    <string name="return_301">SMS konnte nich versendet werden.</string>
+    <string name="return_301">SMS konnte nicht versendet werden.</string>
     <string name="return_302">Verbindungsfehler.</string>
     <string name="return_400">Wartungsarbeiten! Der Dienst steht zur Zeit nicht zur Verfügung.</string>
     <string name="return_unknown">Unbekannter Fehler: %1$s.</string>

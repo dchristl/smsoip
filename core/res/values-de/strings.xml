@@ -243,4 +243,8 @@
     <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
     <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
     <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um letzte Konversationen anzuzeigen!</string>
+    <string name="button_visibiliy">Buttonsichtbarkeit (ActionBar)</string>
+    <string name="button_visibiliy_description">Steuere die Sichtbarkeit der Buttons für Anbieter- oder Benutzerwechsel.
+        Das Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
+    </string>
 </resources>

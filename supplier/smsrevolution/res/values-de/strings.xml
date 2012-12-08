@@ -31,7 +31,7 @@
     <string name="return_207">Keine gültigen XML-Daten.</string>
     <string name="return_208">Ungültiger SMS-Typ.</string>
     <string name="return_300">Systemfehler! Wenden Sie sich an info@sms-revolutions.ch!</string>
-    <string name="return_301">SMS konnte nich versendet werden.</string>
+    <string name="return_301">SMS konnte nicht versendet werden.</string>
     <string name="return_302">Verbindungsfehler.</string>
     <string name="return_400">Wartungsarbeiten! Der Dienst steht zur Zeit nicht zur Verfügung.</string>
     <string name="return_unknown">Unbekannter Fehler: %1$s.</string>

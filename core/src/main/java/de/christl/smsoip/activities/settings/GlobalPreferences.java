@@ -190,6 +190,27 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         enableCompactMode.setTitle(R.string.enable_compact_mode);
         enableCompactMode.setSummary(R.string.enable_compact_mode_description);
         root.addPreference(enableCompactMode);
+        Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        boolean showButtonOption = false;
+        if (providerEntries.size() > 1) {
+            showButtonOption = true;
+        } else {
+            for (SMSoIPPlugin smSoIPPlugin : providerEntries.values()) {
+                if (smSoIPPlugin.getProvider().getAccounts().size() > 1) {
+                    showButtonOption = true;
+                    break;
+                }
+            }
+        }
+        if (showButtonOption) {
+            final CheckBoxPreference showActionBarButtons = new CheckBoxPreference(this);
+            showActionBarButtons.setDefaultValue(true);
+            showActionBarButtons.setKey(SettingsConst.GLOBAL_BUTTON_VISIBILITY);
+            showActionBarButtons.setTitle(R.string.button_visibiliy);
+            showActionBarButtons.setSummary(R.string.button_visibiliy_description);
+            root.addPreference(showActionBarButtons);
+        }
+
         PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
         backgroundImageIntent.setTitle(R.string.background_image);
         backgroundImageIntent.setSummary(R.string.background_image_description);

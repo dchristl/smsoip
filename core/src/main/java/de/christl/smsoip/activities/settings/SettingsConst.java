@@ -26,7 +26,7 @@ public abstract class SettingsConst {
     private SettingsConst() {
     }
 
-    public static final String GLOBAL_SIGNATURE = "global.signature";
+    public static final String GLOBAL_BUTTON_VISIBILITY = "global.button.visibility";
     public static final String GLOBAL_DEFAULT_PROVIDER = "global.default.provider";
     public static final String GLOBAL_AREA_CODE = "global.area.code";
     public static final String GLOBAL_ENABLE_NETWORK_CHECK = "global.enable.network.check";

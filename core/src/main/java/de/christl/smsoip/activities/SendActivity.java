@@ -149,6 +149,7 @@ public class SendActivity extends AllActivity {
                 smSoIPPlugin.getProvider().setCurrentAccountId(currentAccountIndex);
             }
             setFullTitle();
+            invalidateOptionsMenu();//if user disables/enables button
             float fontSize = settings.getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
             ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
             textField.refreshTextModules();
@@ -1166,16 +1167,17 @@ public class SendActivity extends AllActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuItem item = menu.add(0, PROVIDER_OPTION, Menu.CATEGORY_SECONDARY, R.string.provider_settings);
         item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         MenuItem globalOption = menu.add(0, GLOBAL_OPTION, Menu.CATEGORY_SECONDARY, R.string.program_settings);
         globalOption.setIcon(R.drawable.ic_menu_compose);
-        if (SMSoIPApplication.getApp().getProviderEntries().size() > 1) {
+        boolean actionBarButtonsVisible = settings.getBoolean(SettingsConst.GLOBAL_BUTTON_VISIBILITY, true);
+        boolean providerChangeVisibility = SMSoIPApplication.getApp().getProviderEntries().size() > 1;
+        if (providerChangeVisibility && actionBarButtonsVisible) {
             MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, R.string.changeProvider);
             switchSupplier.setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
-        if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1) {
+        if (smSoIPPlugin != null && smSoIPPlugin.getProvider().getAccounts().size() > 1 && actionBarButtonsVisible) {
             MenuItem switchAccount = menu.add(0, OPTION_SWITCH_ACCOUNT, Menu.CATEGORY_SYSTEM, R.string.changeAccount);
             switchAccount.setIcon(R.drawable.ic_menu_rotate).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
