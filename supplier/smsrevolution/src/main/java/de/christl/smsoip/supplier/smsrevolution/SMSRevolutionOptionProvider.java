@@ -56,9 +56,6 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
     private static final String STATE_SPINNER = "smsrevo.state.checkbox";
 
 
-    private static final String PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT = "provider.check.for.old.settings.count";
-    private static final int CHECK_FOR_OLD_SETTINGS = 10;
-
     private Boolean checkBoxState;
     private Integer spinnerItem;
     private ViewGroup parentTableRow;
@@ -85,34 +82,26 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
         freeLayout.setVisibility(showSenders ? View.VISIBLE : View.GONE);
         resolveChildren(freeLayout);
         buildContent(freeLayoutView);
-        removeOldSettings();
     }
 
-    private void removeOldSettings() {
-        int checkOldSettingsCount = getSettings().getInt(PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT, 0);
+    @Override
+    public void onAccountsChanged() {
         SharedPreferences.Editor edit = getSettings().edit();
-        if (checkOldSettingsCount > CHECK_FOR_OLD_SETTINGS) {
-            Map<Integer, AccountModel> accounts = getAccounts();
-            Map<String, ?> allSettings = getSettings().getAll();
-            Outer:
-            for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
-                String key = stringEntry.getKey();
-                if (key.startsWith(SENDER_PREFIX)) {
-                    String currAccountName = key.replaceAll(SENDER_PREFIX, "");
-                    currAccountName = currAccountName.substring(0, currAccountName.lastIndexOf("."));
-                    for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
-                        if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
-                            continue Outer;
-                        }
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+            String key = stringEntry.getKey();
+            if (key.startsWith(SENDER_PREFIX)) {
+                String currAccountName = key.replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$","");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
                     }
-                    edit.remove(key);
                 }
-
+                edit.remove(key);
             }
-            edit.remove(PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT);
-        } else {
 
-            edit.putInt(PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT, ++checkOldSettingsCount);
         }
         edit.commit();
     }
@@ -228,10 +217,6 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
         }
     }
 
-    public TextView getTextField() {
-        return infoTextField;
-    }
-
     public SMSRevolutionSupplier getSMSRevolutionSupplier() {
         return supplier;
     }
@@ -316,10 +301,6 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
         return out;
-    }
-
-    public ProgressBar getProgressBar() {
-        return progressBar;
     }
 
     public void setErrorTextAfterSenderUpdate(String message) {
