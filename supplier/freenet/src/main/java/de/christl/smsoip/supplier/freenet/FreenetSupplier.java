@@ -266,7 +266,18 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public boolean isSendTypeTimeShiftCapable(String spinnerText) {
-        return true;
+        int sendMethod = findSendMethod(spinnerText);
+        boolean out;
+        switch (sendMethod) {
+            case QUICK_W_SI:
+            case QUICK_WO_SI:
+                out = false;
+                break;
+            default:
+                out = true;
+                break;
+        }
+        return out;
     }
 
 

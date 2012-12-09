@@ -48,7 +48,7 @@ public class FreenetOptionProvider extends OptionProvider {
     private static final String DIVIDER = " | ";
 
     public static final String PROVIDER_SAVE_IN_SENT = "provider.saveInSent";
-    public static final String PROVIDER_ONLY_BASIC = "provider.onlyBasic";
+    //    public static final String PROVIDER_ONLY_BASIC = "provider.onlyBasic";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private static final String SENDER_PREFIX = "sender_";
     private static final String SENDER_LAST_NUMBER_PREFIX = "sender_last_";
@@ -62,7 +62,6 @@ public class FreenetOptionProvider extends OptionProvider {
     private boolean showSenders = true;
     private RefreshNumbersTask refreshNumberTask;
     private FreenetSupplier freenetSupplier;
-    private Spinner spinner;
 
     public FreenetOptionProvider(FreenetSupplier freenetSupplier) {
         super(PROVIDERNAME);
@@ -91,21 +90,21 @@ public class FreenetOptionProvider extends OptionProvider {
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
         listPref.setTitle(getTextByResourceId(R.string.default_type));
         listPref.setSummary(getTextByResourceId(R.string.default_type_long));
-        listPref.setEnabled(!getSettings().getBoolean(PROVIDER_ONLY_BASIC, false));
+//        listPref.setEnabled(!getSettings().getBoolean(PROVIDER_ONLY_BASIC, false));
         listPref.setDefaultValue(typeArray[0]);
-        CheckBoxPreference basicOnly = new CheckBoxPreference(context);
-        basicOnly.setKey(PROVIDER_ONLY_BASIC);
-        basicOnly.setTitle(getTextByResourceId(R.string.only_free_account));
-        basicOnly.setSummary(getTextByResourceId(R.string.only_free_account_description));
-        basicOnly.setDefaultValue(false);
-        basicOnly.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                listPref.setEnabled(!((Boolean) newValue));
-                return true;
-            }
-        });
-        out.add(basicOnly);
+//        CheckBoxPreference basicOnly = new CheckBoxPreference(context);
+//        basicOnly.setKey(PROVIDER_ONLY_BASIC);
+//        basicOnly.setTitle(getTextByResourceId(R.string.only_free_account));
+//        basicOnly.setSummary(getTextByResourceId(R.string.only_free_account_description));
+//        basicOnly.setDefaultValue(false);
+//        basicOnly.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//            @Override
+//            public boolean onPreferenceChange(Preference preference, Object newValue) {
+//                listPref.setEnabled(!((Boolean) newValue));
+//                return true;
+//            }
+//        });
+//        out.add(basicOnly);
         out.add(listPref);
         CheckBoxPreference saveInSent = new CheckBoxPreference(context);
         saveInSent.setKey(PROVIDER_SAVE_IN_SENT);
@@ -118,7 +117,8 @@ public class FreenetOptionProvider extends OptionProvider {
 
     @Override
     public void createSpinner(final SendActivity sendActivity, Spinner spinner) {
-        this.spinner = spinner;
+//        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
+//        if (!basicOnly) {
         final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
         spinner.setVisibility(View.VISIBLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
@@ -152,19 +152,12 @@ public class FreenetOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
-        if (showSenders && !basicOnly) {
-            if (spinner != null) {
-                spinner.setVisibility(View.VISIBLE);
-            }
+//        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
+        if (showSenders) {
             XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
             View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
             resolveChildren(freeLayout);
             buildContent(freeLayoutView);
-        } else if (basicOnly) {
-            if (spinner != null) {
-                spinner.setVisibility(View.GONE);
-            }
         }
 
     }
