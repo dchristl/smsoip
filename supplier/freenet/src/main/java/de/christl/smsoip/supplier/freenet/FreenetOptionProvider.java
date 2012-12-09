@@ -62,6 +62,7 @@ public class FreenetOptionProvider extends OptionProvider {
     private boolean showSenders = true;
     private RefreshNumbersTask refreshNumberTask;
     private FreenetSupplier freenetSupplier;
+    private Spinner spinner;
 
     public FreenetOptionProvider(FreenetSupplier freenetSupplier) {
         super(PROVIDERNAME);
@@ -117,51 +118,53 @@ public class FreenetOptionProvider extends OptionProvider {
 
     @Override
     public void createSpinner(final SendActivity sendActivity, Spinner spinner) {
-        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
-        if (!basicOnly) {
-            final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
-            spinner.setVisibility(View.VISIBLE);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position) {
-                        case 0:
-                        case 2:
-                            showSenders = false;
-                            break;
-                        default:
-                            showSenders = true;
-                            break;
-                    }
-                    sendActivity.updateAfterReceiverCountChanged();
+        this.spinner = spinner;
+        final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
+        spinner.setVisibility(View.VISIBLE);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                    case 2:
+                        showSenders = false;
+                        break;
+                    default:
+                        showSenders = true;
+                        break;
                 }
+                sendActivity.updateAfterReceiverCountChanged();
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
-            int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
-            defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
-            spinner.setSelection(defaultPosition);
-        } else {
-            super.createSpinner(sendActivity, spinner);
-        }
+            }
+        });
+        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
+        defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
+        spinner.setSelection(defaultPosition);
 
     }
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        if (showSenders && !getSettings().getBoolean(PROVIDER_ONLY_BASIC, false)) {
+        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
+        if (showSenders && !basicOnly) {
+            if (spinner != null) {
+                spinner.setVisibility(View.VISIBLE);
+            }
             XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
             View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
             resolveChildren(freeLayout);
             buildContent(freeLayoutView);
-        } else {
-
+        } else if (basicOnly) {
+            if (spinner != null) {
+                spinner.setVisibility(View.GONE);
+            }
         }
 
     }
