@@ -44,6 +44,7 @@
         <module>directbox</module>
         <module>sloono</module>
         <module>smsrevolution</module>
+        <module>sms77</module>
     </modules>
 
     <dependencies>

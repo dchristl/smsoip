@@ -766,3 +766,55 @@ fileName: strings.xml
     </string>
     <string name="result">%1$s SMS erfolgreich gesendet zu %2$s zum Preis von CHF%3$s.</string>
 </resources>
+<!--String resources for:
+project: sms77
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="balance">Guthaben: %1$s €</string>
+
+    <string name="return_100">SMS wurde erfolgreich verschickt</string>
+    <string name="return_101">Versand an mindestens einen Empfänger fehlgeschlagen</string>
+    <string name="return_201">Ländercode für diesen SMS-Typ nicht gültig. Bitte als Basic SMS verschicken</string>
+    <string name="return_202">Empfängernummer ungültig</string>
+    <string name="return_300">Bitte Benutzer/Passwort angeben</string>
+    <string name="return_301">Variable to nicht gesetzt</string>
+    <string name="return_304">Variable type nicht gesetzt</string>
+    <string name="return_305">Variable text nicht gesetzt</string>
+    <string name="return_306">Absendernummer ungültig</string>
+    <string name="return_307">Variable url nicht gesetzt</string>
+    <string name="return_400">type ungültig</string>
+    <string name="return_401">Variable text ist zu lang</string>
+    <string name="return_402">Reloadsperre – Diese SMS wurde bereits innerhalb der letzten 90 Sekunden verschickt
+    </string>
+    <string name="return_500">Zu wenig Guthaben vorhanden</string>
+    <string name="return_600">Carrier Zustellung misslungen</string>
+    <string name="return_801">Logodatei nicht angegeben</string>
+    <string name="return_802">Logodatei existiert nicht</string>
+    <string name="return_803">Klingelton nicht angegeben</string>
+    <string name="return_900">Benutzer/Passwort-Kombination falsch</string>
+    <string name="return_902">http API für diesen Account deaktiviert</string>
+    <string name="return_903">Server IP ist falsch</string>
+
+    <string name="return_unknown_error">Unbekannter Fehler: %1$d</string>
+</resources>

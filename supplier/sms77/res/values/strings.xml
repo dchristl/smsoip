@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="balance">Balance: %1$s €</string>
+
+    <string name="return_100">SMS sent succesful</string>
+    <string name="return_101">Sent failed to a minimum of one receiver</string>
+    <string name="return_201">Country code invalid for this sms type. Please send via basic sms</string>
+    <string name="return_202">Receiver number invalid</string>
+    <string name="return_300">Please add user and passwaord</string>
+    <string name="return_301">Variable to not set</string>
+    <string name="return_304">Variable type not set</string>
+    <string name="return_305">Variable text not set</string>
+    <string name="return_306">Sender number invalid</string>
+    <string name="return_307">Variable url not set</string>
+    <string name="return_400">type invalid</string>
+    <string name="return_401">Variable text too long</string>
+    <string name="return_402">Reload block – SMS was sent in last 90 seconds
+    </string>
+    <string name="return_500">Balance too low</string>
+    <string name="return_600">Carrier delivery failed</string>
+    <string name="return_801">Logo file not set</string>
+    <string name="return_802">Logo file does not exist</string>
+    <string name="return_803">Ringtone not set</string>
+    <string name="return_900">Wrong credentials</string>
+    <string name="return_902">http API deactivated for this account</string>
+    <string name="return_903">Wrong server ip</string>
+    <string name="return_unknown_error">Unknown Error: %1$d</string>
+
+</resources>
