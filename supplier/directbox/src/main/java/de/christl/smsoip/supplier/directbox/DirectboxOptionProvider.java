@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.option.OptionProvider;
 
 import java.util.ArrayList;
@@ -288,5 +289,25 @@ public class DirectboxOptionProvider extends OptionProvider {
     public void saveState() {
         checkBoxState = sourceIDCB.isChecked();
         spinnerItem = numberSpinner.getSelectedItemPosition();
+    }
+
+    @Override
+    public void onAccountsChanged() {
+        SharedPreferences.Editor edit = getSettings().edit();
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+            if (stringEntry.getKey().startsWith(SENDER_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$",""); //replace everything ends with dot and number
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+        }
+        edit.commit();
     }
 }

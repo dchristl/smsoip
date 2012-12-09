@@ -225,7 +225,7 @@ public class FreenetOptionProvider extends OptionProvider {
         Outer:
         for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
             if (stringEntry.getKey().startsWith(SENDER_PREFIX)) {
-                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "");
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$","");
                 for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
                     if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
                         continue Outer;
