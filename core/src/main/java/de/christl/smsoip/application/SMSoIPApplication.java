@@ -135,7 +135,10 @@ public class SMSoIPApplication extends Application {
                         PackageInfo packageInfo = getPackageManager().getPackageInfo(installedApplication.packageName, 0);
                         plugins.add(new SMSoIPPlugin(installedApplication, packageInfo, resourcesForApplication));
                     } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
-                        adsEnabled = false;
+                        PackageManager manager = getPackageManager();
+                        if (manager.checkSignatures(getPackageName(), PLUGIN_ADFREE_PREFIX) == PackageManager.SIGNATURE_MATCH) {
+                            adsEnabled = false;
+                        }
                     }
                 }
                 readOutPlugins();
