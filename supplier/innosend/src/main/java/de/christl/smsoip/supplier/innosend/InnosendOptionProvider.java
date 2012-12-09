@@ -48,7 +48,6 @@ public class InnosendOptionProvider extends OptionProvider {
     private static final String PROVIDER_NAME = "Innosend";
     public static final String SENDER_RESOLVED_PREFIX = "sender_";
     private static final String SENDER_FREE_LAST_INPUT_PREFIX = "sender_free_last_input_";
-    public static final int CHECK_FOR_OLD_SETTINGS = 10;
 
 
     private int messageLength = 160;
@@ -57,7 +56,6 @@ public class InnosendOptionProvider extends OptionProvider {
     public static final String PROVIDER_SHOW_SENDER = "provider.show.sender";
     private static final String STATE_SENDER_INPUT = "sender.input";
     private static final String STATE_CHECKBOX = "sender.checkbox";
-    private static final String PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT = "provider.check.for.old.settings.count";
     private int maxReceiverCount = 1;
     private int maxMessageCount = 1;
     private boolean senderVisible = false;
@@ -228,40 +226,34 @@ public class InnosendOptionProvider extends OptionProvider {
         buildLayoutsContent();
         boolean freeLayoutVisible = senderVisible && getSettings().getBoolean(PROVIDER_SHOW_SENDER, true);
         freeLayout.setVisibility(freeLayoutVisible ? View.VISIBLE : View.GONE);
-        removeOldSettings();
     }
 
-    private void removeOldSettings() {
-        int checkOldSettingsCount = getSettings().getInt(PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT, 0);
-        SharedPreferences.Editor edit = getSettings().edit();
-        if (checkOldSettingsCount > CHECK_FOR_OLD_SETTINGS) {
-            Map<Integer, AccountModel> accounts = getAccounts();
-            Map<String, ?> allSettings = getSettings().getAll();
-            Outer:
-            for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
-                if (stringEntry.getKey().startsWith(SENDER_RESOLVED_PREFIX)) {
-                    String currAccountName = stringEntry.getKey().replaceAll(SENDER_RESOLVED_PREFIX, "");
-                    for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
-                        if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
-                            continue Outer;
-                        }
-                    }
-                    edit.remove(stringEntry.getKey());
-                }
-                if (stringEntry.getKey().startsWith(SENDER_FREE_LAST_INPUT_PREFIX)) {
-                    String currAccountName = stringEntry.getKey().replaceAll(SENDER_FREE_LAST_INPUT_PREFIX, "");
-                    for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
-                        if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
-                            continue Outer;
-                        }
-                    }
-                    edit.remove(stringEntry.getKey());
-                }
-            }
-            edit.remove(PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT);
-        } else {
 
-            edit.putInt(PROVIDER_CHECK_FOR_OLD_SETTINGS_COUNT, ++checkOldSettingsCount);
+    @Override
+    public void onAccountsChanged() {
+        SharedPreferences.Editor edit = getSettings().edit();
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+            if (stringEntry.getKey().startsWith(SENDER_RESOLVED_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_RESOLVED_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+            if (stringEntry.getKey().startsWith(SENDER_FREE_LAST_INPUT_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_FREE_LAST_INPUT_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
         }
         edit.commit();
     }
