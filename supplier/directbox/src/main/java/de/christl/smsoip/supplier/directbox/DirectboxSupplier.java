@@ -268,19 +268,19 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
             }
             return SMSActionResult.NO_ERROR(text.toString());
         }
-        String errorText = "";
+        StringBuilder errorText = new StringBuilder();
         Elements error = parse.select("span#ctl00_ContentPlaceHolder_lblErrorMessage");
         if (error.size() == 1) {
-            errorText = error.text();
+            errorText = new StringBuilder(error.text());
         } else {
             Elements errorElements = parse.select(".error");
             for (Element errorElement : errorElements) {
                 if (!errorElement.attr("style").contains("display:none")) {
-                    errorText += errorElement.text();
+                    errorText.append(errorElement.text());
                 }
             }
         }
-        return errorText.equals("") ? SMSActionResult.UNKNOWN_ERROR() : SMSActionResult.UNKNOWN_ERROR(errorText);
+        return errorText.capacity() == 0 ? SMSActionResult.UNKNOWN_ERROR() : SMSActionResult.UNKNOWN_ERROR(errorText.toString());
     }
 
     @Override

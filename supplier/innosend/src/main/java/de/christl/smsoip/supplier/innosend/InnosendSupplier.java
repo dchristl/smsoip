@@ -134,7 +134,8 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         for (Element element : select) {
             freeSMS.append(element.text());
             if (freeSMS.toString().equals("SMS")) {
-                freeSMS = new StringBuilder("0 " + freeSMS);
+                freeSMS = new StringBuilder("0 ");
+                freeSMS.append(freeSMS);
             }
         }
         Elements strongElements = parse.select("div.modulecont div div p strong");
@@ -146,16 +147,16 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
             }
         }
         Elements balances = parse.select("ul#mainlevel-account li");
-        String balance = "";
+        StringBuilder balance = new StringBuilder();
         for (Element element : balances) {
             if (element.text().contains("Guthaben:")) {
-                balance = element.text().replaceAll("Guthaben:", "").replaceAll("[^\\p{Print}]", "");
-                balance += " €";
+                balance = new StringBuilder(element.text().replaceAll("Guthaben:", "").replaceAll("[^\\p{Print}]", ""));
+                balance.append(" €");
                 break;
             }
         }
 
-        return SMSActionResult.NO_ERROR(String.format(tmpText, freeSMS, balance));
+        return SMSActionResult.NO_ERROR(String.format(tmpText, freeSMS, balance.toString()));
 
     }
 
