@@ -19,7 +19,6 @@
 package de.christl.smsoip.provider.versioned;
 
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
@@ -27,7 +26,6 @@ import de.christl.smsoip.option.OptionProvider;
 import java.io.IOException;
 import java.util.List;
 
-@APIVersion(minVersion = 14)
 public interface ExtendedSMSSupplier {
 
     /**

@@ -23,7 +23,6 @@ import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
-import dalvik.system.PathClassLoader;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
@@ -39,9 +38,7 @@ public class SMSoIPPlugin {
     private ApplicationInfo installedApplication;
     private PackageInfo packageInfo;
     private Resources resources;
-    private PathClassLoader classLoader;
     private Set<String> availableClasses = new HashSet<String>();
-    private int minAPIVersion;
     private ExtendedSMSSupplier supplier;
     private boolean timeShiftCapable = false;
 
@@ -55,16 +52,9 @@ public class SMSoIPPlugin {
         return installedApplication.sourceDir;
     }
 
-    public void setClassLoader(PathClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
 
     public void addAvailableClass(String s) {
         availableClasses.add(s);
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
     }
 
 
@@ -95,14 +85,6 @@ public class SMSoIPPlugin {
 
     public String getSupplierClassName() {
         return supplier.getClass().getCanonicalName();
-    }
-
-    public void setMinAPIVersion(int minVersion) {
-        this.minAPIVersion = minVersion;
-    }
-
-    public int getMinAPIVersion() {
-        return minAPIVersion;
     }
 
     public void setSupplier(ExtendedSMSSupplier supplier) {

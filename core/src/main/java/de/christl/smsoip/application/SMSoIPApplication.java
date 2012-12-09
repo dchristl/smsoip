@@ -37,7 +37,6 @@ import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
-import de.christl.smsoip.annotations.APIVersion;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
@@ -68,7 +67,6 @@ public class SMSoIPApplication extends Application {
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
     private boolean adsEnabled = true;
-    private int versionNumber;
     private Integer installedPackages;
     private static Activity currentActivity;
 
@@ -126,8 +124,6 @@ public class SMSoIPApplication extends Application {
             List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
 //refresh only if not yet done and if a new application is installed
             if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
-                versionNumber = ExtendedSMSSupplier.class.getAnnotation(APIVersion.class).minVersion();
-                ACRA.getErrorReporter().putCustomData("APIVersion", String.valueOf(versionNumber));
                 plugins = new ArrayList<SMSoIPPlugin>();
                 for (ApplicationInfo installedApplication : installedApplications) {
                     if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
@@ -163,7 +159,6 @@ public class SMSoIPApplication extends Application {
             String sourceDir = plugin.getSourceDir();
             DexFile apkDir = new DexFile(sourceDir);
             PathClassLoader pathClassLoader = new PathClassLoader(sourceDir, getClassLoader());
-            plugin.setClassLoader(pathClassLoader);
             Enumeration<String> classFileEntries = apkDir.entries();
             while (classFileEntries.hasMoreElements()) {
                 String s = classFileEntries.nextElement();
@@ -176,18 +171,8 @@ public class SMSoIPApplication extends Application {
                     Class<?>[] aClassInterfaces = aClass.getInterfaces();
                     if (aClassInterfaces != null && ExtendedSMSSupplier.class.isAssignableFrom(aClass)) {
 
-                        int minVersion = getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass);
                         ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
-                        plugin.setMinAPIVersion(minVersion);
                         plugin.setSupplier(smsSupplier);
-                        if (versionNumber > minVersion) {
-                            pluginsToOld.put(aClass.getCanonicalName(), plugin);
-                            break;
-                        } else if (minVersion > versionNumber) {
-                            pluginsToNew.put(aClass.getCanonicalName(), plugin);
-                            break;
-
-                        }
                         loadedProviders.put(aClass.getCanonicalName(), plugin);
                         break;
                     }
@@ -206,69 +191,12 @@ public class SMSoIPApplication extends Application {
     private void buildAdditionalAcraInformations() {
         StringBuilder builder = new StringBuilder();
         for (SMSoIPPlugin smSoIPPlugin : loadedProviders.values()) {
-            builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
+            builder.append(smSoIPPlugin.getProviderName()).append(":");
             builder.append(" ").append(smSoIPPlugin.getVersion()).append("\n");
-        }
-        builder.append("<to old>:\n");
-        for (Map.Entry<String, SMSoIPPlugin> stringSMSoIPPluginEntry : pluginsToOld.entrySet()) {
-            SMSoIPPlugin smSoIPPlugin = stringSMSoIPPluginEntry.getValue();
-            String canonicalName = stringSMSoIPPluginEntry.getKey();
-            if (smSoIPPlugin.getSupplier() != null) {
-                builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
-                builder.append(" ").append(smSoIPPlugin.getVersion());
-            } else {
-                builder.append(canonicalName);
-            }
-            builder.append("\n");
-        }
-        builder.append("<to new>:\n");
-        for (Map.Entry<String, SMSoIPPlugin> stringSMSoIPPluginEntry : pluginsToNew.entrySet()) {
-            SMSoIPPlugin smSoIPPlugin = stringSMSoIPPluginEntry.getValue();
-            String canonicalName = stringSMSoIPPluginEntry.getKey();
-            if (smSoIPPlugin.getSupplier() != null) {
-                builder.append(smSoIPPlugin.getProviderName()).append(":").append(smSoIPPlugin.getMinAPIVersion());
-                builder.append(" ").append(smSoIPPlugin.getVersion());
-            } else {
-                builder.append(canonicalName);
-            }
-            builder.append("\n");
         }
         ACRA.getErrorReporter().putCustomData("PLUGINS", builder.toString());
     }
 
-    /**
-     * find out the correct API Version defined by interface used
-     *
-     * @param aClass Interface extending SMSSupplier
-     * @return the found version
-     */
-    private int getPluginsMinApiVersion(Class<ExtendedSMSSupplier> aClass) {
-        int out = 13;
-        if (aClass.getSuperclass() == null || aClass.getSuperclass().equals(Object.class)) {
-            Class<?>[] interfaces = aClass.getInterfaces();
-            boolean found = false;
-            for (Class<?> anInterface : interfaces) {
-                APIVersion annotation = anInterface.getAnnotation(APIVersion.class);
-                if (annotation != null) {
-                    out = annotation.minVersion();
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                for (Class<?> anInterface : interfaces) {
-                    if (ExtendedSMSSupplier.class.isAssignableFrom(anInterface)) {
-                        return getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) anInterface);
-                    }
-                }
-            }
-        } else if (aClass.equals(ExtendedSMSSupplier.class)) {
-            return out;
-        } else {
-            return getPluginsMinApiVersion((Class<ExtendedSMSSupplier>) aClass.getSuperclass());
-        }
-        return out;
-    }
 
     public static SMSoIPApplication getApp() {
         return app;
@@ -278,22 +206,9 @@ public class SMSoIPApplication extends Application {
         return loadedProviders;
     }
 
-    public int getMinAPIVersion(ExtendedSMSSupplier smsSupplier) {
-        return loadedProviders.get(smsSupplier.getClass().getCanonicalName()).getMinAPIVersion();
-    }
-
 
     public SMSoIPPlugin getSMSoIPPluginBySupplierName(String className) {
         return loadedProviders.get(className);
-    }
-
-    private ClassLoader getClassLoaderForClass(String className) {
-        for (SMSoIPPlugin plugin : plugins) {
-            if (plugin.isClassAvailable(className)) {
-                return plugin.getClassLoader();
-            }
-        }
-        return null;
     }
 
 

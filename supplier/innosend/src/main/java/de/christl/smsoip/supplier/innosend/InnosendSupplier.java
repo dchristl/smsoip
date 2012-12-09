@@ -130,18 +130,18 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
         if (select.size() == 0) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
-        String freeSMS = "";
+        StringBuilder freeSMS = new StringBuilder();
         for (Element element : select) {
-            freeSMS = element.text();
-            if (freeSMS.equals("SMS")) {
-                freeSMS = "0 " + freeSMS;
+            freeSMS.append(element.text());
+            if (freeSMS.toString().equals("SMS")) {
+                freeSMS = new StringBuilder("0 " + freeSMS);
             }
         }
         Elements strongElements = parse.select("div.modulecont div div p strong");
         for (Element strongElement : strongElements) {
             String nextText = strongElement.text();
             if (nextText.contains(":") && !nextText.equals(":")) {
-                freeSMS += "\n" + String.format(provider.getTextByResourceId(R.string.next), nextText);
+                freeSMS.append("\n").append(String.format(provider.getTextByResourceId(R.string.next), nextText));
                 break;
             }
         }

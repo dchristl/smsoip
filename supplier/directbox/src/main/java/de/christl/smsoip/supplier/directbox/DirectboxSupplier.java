@@ -261,12 +261,12 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         Document parse = Jsoup.parse(resultStream, "UTF-8", "");   //uses UTF-8 on website, but not for sending
         Elements select = parse.select("span#ctl00_ContentPlaceHolder_successMessage");
         if (select.size() == 1) {
-            String text = select.text();
+            StringBuilder text = new StringBuilder(select.text());
             Elements numbers = parse.select("div#KnownRecipientListView span");
             for (Element number : numbers) {
-                text += "<br/>" + number.text();
+                text.append("<br/>").append(number.text());
             }
-            return SMSActionResult.NO_ERROR(text);
+            return SMSActionResult.NO_ERROR(text.toString());
         }
         String errorText = "";
         Elements error = parse.select("span#ctl00_ContentPlaceHolder_lblErrorMessage");

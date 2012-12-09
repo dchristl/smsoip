@@ -1316,9 +1316,9 @@ public class SendActivity extends AllActivity {
                 CharSequence[] items = new CharSequence[filteredAccounts.size()];
                 int i = 0;
                 final Map<Integer, Integer> charAccountRel = new HashMap<Integer, Integer>(filteredAccounts.size());
-                for (Integer index : filteredAccounts.keySet()) {
-                    items[i] = filteredAccounts.get(index).getUserName();
-                    charAccountRel.put(i++, index);
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : filteredAccounts.entrySet()) {
+                    items[i] = integerAccountModelEntry.getValue().getUserName();
+                    charAccountRel.put(i++, integerAccountModelEntry.getKey());
                 }
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
