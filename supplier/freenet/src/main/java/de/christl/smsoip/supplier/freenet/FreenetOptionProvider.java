@@ -180,7 +180,7 @@ public class FreenetOptionProvider extends OptionProvider {
 
     private void buildContent(View freeLayoutView) {
         refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener refreshNumbersListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (refreshNumberTask != null) {
@@ -192,8 +192,10 @@ public class FreenetOptionProvider extends OptionProvider {
                 refreshNumberTask = new RefreshNumbersTask(FreenetOptionProvider.this);
                 refreshNumberTask.execute(null, null);
             }
-        });
+        };
+        refreshButton.setOnClickListener(refreshNumbersListener);
         infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+        infoTextField.setOnClickListener(refreshNumbersListener);
 
         refreshAdapterItems();
         refreshSpinner(freeLayoutView.getContext());
