@@ -51,7 +51,7 @@ public class DirectboxOptionProvider extends OptionProvider {
     private static final String SENDER_PREFIX = "sender_";
     private ArrayList<String> adapterItems;
     private static final String STATE_CHECKBOX = "directbox.state.checkbox";
-    private static final String STATE_SPINNER = "directbox.state.checkbox";
+    private static final String STATE_SPINNER = "directbox.state.spinner";
     private Boolean checkBoxState;
     private Integer spinnerItem;
     private ProgressBar progressBar;

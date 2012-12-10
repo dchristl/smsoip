@@ -38,7 +38,7 @@ public class SMS77Supplier implements ExtendedSMSSupplier {
     private OptionProvider provider;
 
     private static final String ENCODING = "ISO-8859-1";
-    private static final String API_URL = "http://gateway.sms77.de/";
+    private static final String API_URL = "https://gateway.sms77.de/";
     private static final String SEND_URL = API_URL + "media.php?";
     private static final String BALANCE_URL = API_URL + "balance.php?";
     private static final String USER_PASS = "u=%s&p=%s";
