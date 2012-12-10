@@ -24,7 +24,9 @@ import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +35,7 @@ import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public class SMS77Supplier implements ExtendedSMSSupplier {
+public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private OptionProvider provider;
 
@@ -169,5 +171,25 @@ public class SMS77Supplier implements ExtendedSMSSupplier {
     @Override
     public OptionProvider getProvider() {
         return provider;
+    }
+
+    @Override
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
+        return null;
+    }
+
+    @Override
+    public int getMinuteStepSize() {
+        return 1;
+    }
+
+    @Override
+    public int getDaysInFuture() {
+        return 365 * 5; //five years should be enough
+    }
+
+    @Override
+    public boolean isSendTypeTimeShiftCapable(String spinnerText) {
+        return true;
     }
 }

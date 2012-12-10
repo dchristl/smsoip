@@ -990,6 +990,9 @@ public class SendActivity extends AllActivity {
             } catch (UnsupportedEncodingException e) {
                 Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
+            } catch (NumberFormatException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
             } catch (SocketTimeoutException e) {
                 Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
