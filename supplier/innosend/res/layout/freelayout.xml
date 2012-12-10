@@ -25,46 +25,44 @@
               android:paddingTop="5dp"
               android:paddingBottom="5dp"
         >
-    <TextView android:id="@+id/db_header"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:textSize="18dp"
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18dp"
             />
     <TableLayout android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
                  android:stretchColumns="1"
                  android:shrinkColumns="1"
             >
-        <TableRow android:id="@+id/db_freeLayouTableRow"
+        <TableRow
                 >
-            <CheckBox android:id="@+id/db_sourceCB"
-                      android:layout_width="wrap_content"
-                      android:layout_height="48dp"
-                      android:layout_marginLeft="20dp"
+            <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="20dp"
                     />
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     >
-                <TextView android:id="@+id/db_infoText"
-                          android:layout_width="fill_parent"
+                <TextView android:layout_width="fill_parent"
                           android:layout_height="fill_parent"
                           android:gravity="center"
                           android:layout_gravity="center"
                           android:ellipsize="end"
                           android:singleLine="true"
                         />
-                <EditText android:id="@+id/sender"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:visibility="gone"
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
                         />
             </LinearLayout>
 
         </TableRow>
 
     </TableLayout>
-
 
 </LinearLayout>
