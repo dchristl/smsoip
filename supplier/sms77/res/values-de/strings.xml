@@ -19,6 +19,7 @@
 
 <resources>
     <string name="balance">Guthaben: %1$s €</string>
+    <string name="sender">Absender</string>
 
     <string name="return_100">SMS wurde erfolgreich verschickt</string>
     <string name="return_101">Versand an mindestens einen Empfänger fehlgeschlagen</string>

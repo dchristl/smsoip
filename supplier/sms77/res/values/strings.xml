@@ -20,6 +20,7 @@
 <resources>
 
     <string name="balance">Balance: %1$s €</string>
+    <string name="sender">Sender</string>
 
     <string name="return_100">SMS sent succesful</string>
     <string name="return_101">Sent failed to a minimum of one receiver</string>
