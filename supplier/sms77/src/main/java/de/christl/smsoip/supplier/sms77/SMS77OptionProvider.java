@@ -59,7 +59,7 @@ public class SMS77OptionProvider extends OptionProvider {
         LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
         resolveChildren(freeLayout);
 //        buildLayoutsContent();
-        freeLayout.setVisibility(View.VISIBLE);
+        freeLayout.setVisibility(senderVisible ? View.VISIBLE : View.GONE);
     }
 
 

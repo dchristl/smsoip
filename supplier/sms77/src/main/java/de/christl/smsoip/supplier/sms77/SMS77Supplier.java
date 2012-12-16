@@ -67,6 +67,9 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             int returnCode;
             try {
                 returnCode = Integer.parseInt(returnVal);
+                if (returnCode == 0) {                        //return succesful if balance is Zero
+                    return SMSActionResult.LOGIN_SUCCESSFUL();
+                }
             } catch (NumberFormatException e) {
                 return SMSActionResult.UNKNOWN_ERROR(returnVal);
             }
@@ -97,6 +100,9 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             int returnCode;
             try {
                 returnCode = Integer.parseInt(returnVal);
+                if (returnCode == 0) {                        //return succesful if balance is Zero
+                    return SMSActionResult.NO_ERROR(String.format(provider.getTextByResourceId(R.string.balance), returnVal));
+                }
             } catch (NumberFormatException e) {
                 return SMSActionResult.UNKNOWN_ERROR(returnVal);
             }
@@ -153,9 +159,9 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             case 803:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_803));
             case 900:
-                SMSActionResult smsActionResult1 = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_900));
-                smsActionResult1.setRetryMakesSense(false);
-                return smsActionResult1;
+                SMSActionResult loginFailedError = SMSActionResult.LOGIN_FAILED_ERROR();
+                loginFailedError.setMessage(provider.getTextByResourceId(R.string.return_900));
+                return loginFailedError;
             case 902:
                 return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_902));
             case 903:
