@@ -187,8 +187,8 @@ public class MultipleAccountsPreference extends ListPreference {
                     } else {
                         accountModel.setUserName(userName);
                         accountModel.setPassWord(pass);
-                        listAdapter.notifyDataSetChanged();
                     }
+                    listAdapter.notifyDataSetChanged();
                 }
                 dialog.dismiss();
             }
