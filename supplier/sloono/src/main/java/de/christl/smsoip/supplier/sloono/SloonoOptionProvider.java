@@ -95,7 +95,11 @@ public class SloonoOptionProvider extends OptionProvider {
             String key = stringEntry.getKey();
             if (key.startsWith(SENDER_PREFIX)) {
                 String currAccountName = key.replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$", "");
-                currAccountName = currAccountName.substring(0, currAccountName.lastIndexOf("."));
+                int end = currAccountName.lastIndexOf(".");
+                if (end < 0) {
+                    continue; //current account is not set
+                }
+                currAccountName = currAccountName.substring(0, end);
                 for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
                     if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
                         continue Outer;

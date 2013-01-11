@@ -93,7 +93,12 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
         for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
             String key = stringEntry.getKey();
             if (key.startsWith(SENDER_PREFIX)) {
-                String currAccountName = key.replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$","");
+                String currAccountName = key.replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$", "");
+                int end = currAccountName.lastIndexOf(".");
+                if (end < 0) {
+                    continue; //current account is not set
+                }
+                currAccountName = currAccountName.substring(0, end);
                 for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
                     if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
                         continue Outer;
