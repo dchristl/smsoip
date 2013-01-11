@@ -953,6 +953,8 @@ public class SendActivity extends AllActivity {
             }
         });
 
+        searchButton.setVisibility(SMSoIPApplication.getApp().isPickActionAvailable() ? View.VISIBLE : View.GONE);
+
     }
 
     private void setSpinner() {
@@ -1154,7 +1156,7 @@ public class SendActivity extends AllActivity {
         }
         if (smSoIPPlugin != null && receiverList.size() >= smSoIPPlugin.getProvider().getMaxReceiverCount()) {
             searchButton.setVisibility(View.GONE);
-        } else {
+        } else if (SMSoIPApplication.getApp().isPickActionAvailable()) {
             searchButton.setVisibility(View.VISIBLE);
         }
     }

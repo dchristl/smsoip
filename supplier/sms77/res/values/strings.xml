@@ -32,7 +32,7 @@
     <string name="return_305">Variable text not set</string>
     <string name="return_306">Sender number invalid</string>
     <string name="return_307">Variable url not set</string>
-    <string name="return_400">type invalid</string>
+    <string name="return_400">Invalid type</string>
     <string name="return_401">Variable text too long</string>
     <string name="return_402">Reload block – SMS was sent in last 90 seconds
     </string>

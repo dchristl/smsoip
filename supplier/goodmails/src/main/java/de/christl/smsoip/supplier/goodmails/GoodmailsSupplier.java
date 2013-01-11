@@ -167,7 +167,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         httpURLConnection.getHeaderFields(); //fire
 
         URL url = httpURLConnection.getURL();
-        if (url != null && url.getQuery().contains("sid")) {
+        if (url != null && url.getQuery() != null && url.getQuery().contains("sid")) {
             sidURLString = url.getQuery().replaceAll(".*sid", "sid").replaceAll("&.*", "");
             return SMSActionResult.LOGIN_SUCCESSFUL();
         }

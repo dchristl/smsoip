@@ -21,6 +21,7 @@ package de.christl.smsoip.application;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -31,6 +32,7 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import dalvik.system.DexFile;
@@ -69,6 +71,7 @@ public class SMSoIPApplication extends Application {
     private boolean adsEnabled = true;
     private Integer installedPackages;
     private static Activity currentActivity;
+    private boolean pickActionAvailable = true;
 
     public static Activity getCurrentActivity() {
         return currentActivity;
@@ -87,6 +90,12 @@ public class SMSoIPApplication extends Application {
         setWriteToDBAvailable();
         initProviders();
         checkHash();
+        checkForContactAvailability();
+    }
+
+    private void checkForContactAvailability() {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        pickActionAvailable = getPackageManager().resolveActivity(pickIntent, 0) != null;
     }
 
     private void checkHash() {
@@ -231,6 +240,10 @@ public class SMSoIPApplication extends Application {
 
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
+    }
+
+    public boolean isPickActionAvailable() {
+        return pickActionAvailable;
     }
 
     public String getTextByResourceId(OptionProvider optionProvider, int resourceId) {

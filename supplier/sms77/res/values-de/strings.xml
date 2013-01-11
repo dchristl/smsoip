@@ -31,7 +31,7 @@
     <string name="return_305">Variable text nicht gesetzt</string>
     <string name="return_306">Absendernummer ungültig</string>
     <string name="return_307">Variable url nicht gesetzt</string>
-    <string name="return_400">type ungültig</string>
+    <string name="return_400">Typ ungültig</string>
     <string name="return_401">Variable text ist zu lang</string>
     <string name="return_402">Reloadsperre – Diese SMS wurde bereits innerhalb der letzten 90 Sekunden verschickt
     </string>
