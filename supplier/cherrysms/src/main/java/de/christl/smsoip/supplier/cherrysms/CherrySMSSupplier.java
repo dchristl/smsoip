@@ -66,7 +66,7 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
         InputStream inputStream = httpURLConnection.getInputStream();
 
         String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
-        if (returnValue.equals("")) {
+        if (returnValue.equals("") || returnValue.equals("connect_timeout")) { //special return value
             return SMSActionResult.NETWORK_ERROR();
         }
         int returnInt = Integer.parseInt(returnValue);
