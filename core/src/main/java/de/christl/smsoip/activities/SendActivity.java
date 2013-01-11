@@ -244,7 +244,7 @@ public class SendActivity extends AllActivity {
         } else {     // fresh create call on activity so do the default behaviour
             Uri data = getIntent().getData();
             getAndSetSupplier(data);
-            setPreselectedContact(data);
+            setPreselectedContact(getIntent());
             updateInfoTextSilent();
         }
         showChangelogIfNeeded();
@@ -559,7 +559,8 @@ public class SendActivity extends AllActivity {
         });
     }
 
-    private void setPreselectedContact(Uri data) {
+    private void setPreselectedContact(Intent intent) {
+        Uri data = intent.getData();
         if (data != null) {
             String givenNumber;
             ErrorReporterStack.put(LogConst.SET_PRESELECTED_CONTACT);
@@ -575,6 +576,18 @@ public class SendActivity extends AllActivity {
                     contactByNumber.setRawNumber(givenNumber, getString(R.string.no_phone_type_label));
                 }
                 addReceiver(contactByNumber);
+
+                SMSInputEditText smsInputEditText = (SMSInputEditText) findViewById(R.id.textInput);
+                //setting the cursor at the end
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
+                    Object smsBody = extras.get("sms_body");
+                    if (smsBody != null && !smsBody.equals("")) {
+                        smsInputEditText.append(smsBody.toString());
+                    }
+                }
+                smsInputEditText.requestFocus();
+                smsInputEditText.processReplacement();
             }
         }
 
@@ -1489,7 +1502,7 @@ public class SendActivity extends AllActivity {
      */
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setPreselectedContact(intent.getData());
+        setPreselectedContact(intent);
     }
 
 
