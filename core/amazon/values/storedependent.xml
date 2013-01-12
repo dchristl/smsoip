@@ -16,11 +16,11 @@
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources>
-    <string name="market_plugin_url">http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin</string>
+    <string name="market_plugin_url">amzn://apps/android?s=smsoip+plugin</string>
     <string name="visit_plugin_page_description">Find more plugins on Amazon</string>
-    <string name="market_alternative">http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmobile-apps&amp;field-keywords=smsoip+plugin</string>
-    <string name="adfree_market_url">http://www.amazon.com/gp/product/B009L2LIN6</string>
+    <string name="market_alternative">http://www.amazon.com/gp/mas/dl/android?s=smsoip+plugin</string>
+    <string name="adfree_market_url">amzn://android?p=de.christl.smsoip.adfree</string>
     <string name="adfree_alternative">http://www.amazon.com/gp/product/B009L2LIN6</string>
     <string name="market_rate_url">http://www.amazon.com/gp/product/B009L1YGY0</string>
-    <string name="market_alternative_rate_url">market://details?id=de.christl.smsoip</string>
+    <string name="market_alternative_rate_url">http://www.amazon.com/gp/product/B009L1YGY0</string>
 </resources>
