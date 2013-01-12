@@ -628,7 +628,7 @@ public class SendActivity extends AllActivity {
         //only change if own scheme is used and
         if (data != null && receiverField.getReceiverList().size() == 0 && data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
             if (!data.isOpaque()) {
-                String provider = data.getQueryParameter("provider");
+                String provider = getIntent().getExtras().getString("provider");
                 if (provider != null && !provider.equals("")) {
                     supplier = provider;
                 }

@@ -18,6 +18,9 @@
   -->
 
 <resources>
+    <string name="core_not_installed">SMSoIP ist nicht installiert.\nBitte vom Store nachinstallieren, damit das Plugin
+        funktioniert.
+    </string>
     <string-array name="array_spinner">
         <item>Ohne Absenderkennung (1 Credit/SMS)</item>
         <item>Mit Absenderkennung (2 Credits/SMS)</item>

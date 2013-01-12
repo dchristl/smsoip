@@ -18,6 +18,9 @@
   -->
 
 <resources>
+
+    <string name="core_not_installed">SMSoIP not installed.\nPlease install it from store to make this plugin work.
+    </string>
     <string-array name="array_spinner">
         <item>Without source identifier (1 Credit/SMS)</item>
         <item>With source identifier (2 Credits/SMS)</item>

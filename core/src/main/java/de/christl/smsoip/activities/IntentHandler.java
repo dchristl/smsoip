@@ -41,8 +41,10 @@ public class IntentHandler {
         if (action.equals(Intent.ACTION_SENDTO)) {
             Uri data = intent.getData();
             if (data != null) {
-                findReceiver(context, data.getSchemeSpecificPart());
-
+                String number = data.getSchemeSpecificPart();
+                if (number != null && !number.equals("")) {
+                    findAndSetReceiver(context, number);
+                }
             }
 
             Bundle extras = intent.getExtras();
@@ -72,14 +74,17 @@ public class IntentHandler {
                 String scheme = data.getScheme();
                 Bundle extras = intent.getExtras();
                 if (scheme != null && scheme.equals(SMSReceiver.SMSOIP_SCHEME) && extras != null) {
-                    findReceiver(context, extras.getString(SMSReceiver.NUMBER_PARAM));
+                    String number = extras.getString(SMSReceiver.NUMBER_PARAM);
+                    if (number != null && !number.equals("")) {
+                        findAndSetReceiver(context, number);
+                    }
                 }
             }
 
         }
     }
 
-    private void findReceiver(Context context, String number) {
+    private void findAndSetReceiver(Context context, String number) {
         number = NumberUtils.fixNumber(number);
         givenReceiver = DatabaseHandler.findContactByNumber(number, context);
         if (givenReceiver == null) {
