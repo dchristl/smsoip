@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import de.christl.smsoip.R;
 import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.receiver.SMSReceiver;
 
 
 public class IntentHandler {
@@ -69,6 +70,21 @@ public class IntentHandler {
                 }
                 smsText = builder.toString();
             }
+        } else if (action.equals(Intent.ACTION_MAIN)) {
+            Uri data = intent.getData();
+            if (data != null) {
+                String scheme = data.getScheme();
+                Bundle extras = intent.getExtras();
+                if (scheme != null && scheme.equals(SMSReceiver.SMSOIP_SCHEME) && extras != null) {
+                    String number = extras.getString(SMSReceiver.NUMBER_PARAM);
+                    givenReceiver = DatabaseHandler.findContactByNumber(number, context);
+                    if (givenReceiver == null) {
+                        givenReceiver = new Receiver(context.getString(R.string.unknown));
+                        givenReceiver.setRawNumber(number, context.getString(R.string.no_phone_type_label));
+                    }
+                }
+            }
+
         }
     }
 
@@ -82,32 +98,3 @@ public class IntentHandler {
     }
 }
 
-//        if (data != null) {
-//            String givenReceiver;
-//            ErrorReporterStack.put(LogConst.SET_PRESELECTED_CONTACT);
-//            if (data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
-//                givenReceiver = data.getQueryParameter(SMSReceiver.NUMBER_PARAM);
-//            } else {
-//                givenReceiver = data.getSchemeSpecificPart();
-//            }
-//            if (givenReceiver != null && !givenReceiver.equals("")) {
-//                Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenReceiver, this);
-//                if (contactByNumber == null) {
-//                    contactByNumber = new Receiver(getString(R.string.unknown));
-//                    contactByNumber.setRawNumber(givenReceiver, getString(R.string.no_phone_type_label));
-//                }
-//                addReceiver(contactByNumber);
-//
-//                SMSInputEditText smsInputEditText = (SMSInputEditText) findViewById(R.id.textInput);
-//                //setting the cursor at the end
-//                Bundle extras = intent.getExtras();
-//                if (extras != null) {
-//                    Object smsBody = extras.get("sms_body");
-//                    if (smsBody != null && !smsBody.equals("")) {
-//                        smsInputEditText.append(smsBody.toString());
-//                    }
-//                }
-//                smsInputEditText.requestFocus();
-//                smsInputEditText.processReplacement();
-//            }
-//        }

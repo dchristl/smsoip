@@ -188,7 +188,6 @@ public class SendActivity extends AllActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //save the default color of textview
         new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
