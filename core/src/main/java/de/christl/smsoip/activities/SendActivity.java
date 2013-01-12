@@ -1231,7 +1231,7 @@ public class SendActivity extends AllActivity {
         } else { //only one  other than the current
             Integer accountIndex = provider.getCurrentAccountIndex();
             for (Integer accountId : accounts.keySet()) {
-                if (!accountIndex.equals(accountId)) {
+                if (accountIndex != null && accountId != null && !accountIndex.equals(accountId)) {
                     switchAccount(accountId);
                     break;
                 }
