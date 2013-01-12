@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import de.christl.smsoip.R;
+import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.receiver.SMSReceiver;
 
@@ -40,12 +41,7 @@ public class IntentHandler {
         if (action.equals(Intent.ACTION_SENDTO)) {
             Uri data = intent.getData();
             if (data != null) {
-                String number = data.getSchemeSpecificPart();
-                givenReceiver = DatabaseHandler.findContactByNumber(number, context);
-                if (givenReceiver == null) {
-                    givenReceiver = new Receiver(context.getString(R.string.unknown));
-                    givenReceiver.setRawNumber(number, context.getString(R.string.no_phone_type_label));
-                }
+                findReceiver(context, data.getSchemeSpecificPart());
 
             }
 
@@ -76,15 +72,19 @@ public class IntentHandler {
                 String scheme = data.getScheme();
                 Bundle extras = intent.getExtras();
                 if (scheme != null && scheme.equals(SMSReceiver.SMSOIP_SCHEME) && extras != null) {
-                    String number = extras.getString(SMSReceiver.NUMBER_PARAM);
-                    givenReceiver = DatabaseHandler.findContactByNumber(number, context);
-                    if (givenReceiver == null) {
-                        givenReceiver = new Receiver(context.getString(R.string.unknown));
-                        givenReceiver.setRawNumber(number, context.getString(R.string.no_phone_type_label));
-                    }
+                    findReceiver(context, extras.getString(SMSReceiver.NUMBER_PARAM));
                 }
             }
 
+        }
+    }
+
+    private void findReceiver(Context context, String number) {
+        number = NumberUtils.fixNumber(number);
+        givenReceiver = DatabaseHandler.findContactByNumber(number, context);
+        if (givenReceiver == null) {
+            givenReceiver = new Receiver(context.getString(R.string.unknown));
+            givenReceiver.setRawNumber(number, context.getString(R.string.no_phone_type_label));
         }
     }
 
