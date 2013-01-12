@@ -253,20 +253,27 @@ public abstract class DatabaseHandler {
             return builder;
         }
         ContentResolver cr = context.getContentResolver();
-        InputStream stream;
-        try {
-            stream = cr.openInputStream(uri);
-        } catch (FileNotFoundException e) {
-            return builder;
-        }
-
+        InputStream stream = null;
         int ch;
         try {
-            while ((ch = stream.read()) != -1)
+            stream = cr.openInputStream(uri);
+            while ((ch = stream.read()) != -1) {
                 builder.append((char) ch);
+            }
+        } catch (FileNotFoundException e) {
+            return builder;
         } catch (IOException e) {
             return builder;
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
+
+
         return builder;
     }
 }
