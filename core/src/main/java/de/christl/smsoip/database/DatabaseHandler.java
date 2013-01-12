@@ -32,6 +32,9 @@ import de.christl.smsoip.picker.DateTimeObject;
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -241,5 +244,29 @@ public abstract class DatabaseHandler {
                 "  END";
 
         return context.getContentResolver().query(uri, projection, selection, null, orderby);
+    }
+
+
+    public static StringBuilder resolveTextFileContent(Uri uri, Context context) {
+        StringBuilder builder = new StringBuilder();
+        if (uri == null || context == null) {
+            return builder;
+        }
+        ContentResolver cr = context.getContentResolver();
+        InputStream stream;
+        try {
+            stream = cr.openInputStream(uri);
+        } catch (FileNotFoundException e) {
+            return builder;
+        }
+
+        int ch;
+        try {
+            while ((ch = stream.read()) != -1)
+                builder.append((char) ch);
+        } catch (IOException e) {
+            return builder;
+        }
+        return builder;
     }
 }

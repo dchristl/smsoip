@@ -560,38 +560,24 @@ public class SendActivity extends AllActivity {
     }
 
     private void setPreselectedContact(Intent intent) {
-        Uri data = intent.getData();
-        if (data != null) {
-            String givenNumber;
-            ErrorReporterStack.put(LogConst.SET_PRESELECTED_CONTACT);
-            if (data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
-                givenNumber = data.getQueryParameter(SMSReceiver.NUMBER_PARAM);
-            } else {
-                givenNumber = data.getSchemeSpecificPart();
-            }
-            if (givenNumber != null && !givenNumber.equals("")) {
-                Receiver contactByNumber = DatabaseHandler.findContactByNumber(givenNumber, this);
-                if (contactByNumber == null) {
-                    contactByNumber = new Receiver(getString(R.string.unknown));
-                    contactByNumber.setRawNumber(givenNumber, getString(R.string.no_phone_type_label));
-                }
-                addReceiver(contactByNumber);
-
-                SMSInputEditText smsInputEditText = (SMSInputEditText) findViewById(R.id.textInput);
-                //setting the cursor at the end
-                Bundle extras = intent.getExtras();
-                if (extras != null) {
-                    Object smsBody = extras.get("sms_body");
-                    if (smsBody != null && !smsBody.equals("")) {
-                        smsInputEditText.append(smsBody.toString());
-                    }
-                }
-                smsInputEditText.requestFocus();
-                smsInputEditText.processReplacement();
-            }
+        IntentHandler handler = new IntentHandler(intent, this);
+        SMSInputEditText smsInputEditText = (SMSInputEditText) findViewById(R.id.textInput);
+        Receiver givenReceiver = handler.getGivenReceiver();
+        boolean numberSet = givenReceiver != null;
+        if (numberSet) {
+            addReceiver(givenReceiver);
         }
-
+        String smsBody = handler.getSmsText();
+        boolean smsBodySet = smsBody != null && !smsBody.equals("");
+        if (smsBodySet) {
+            smsInputEditText.append(smsBody);
+        }
+        if (numberSet) { //when number given, set focus to the sms input field
+            smsInputEditText.requestFocus();
+            smsInputEditText.processReplacement();
+        }
     }
+
 
     private void setSendButton() {
 
