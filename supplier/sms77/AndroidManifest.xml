@@ -19,5 +19,11 @@
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
     <application android:icon="@drawable/icon" android:label="SMSoIP SMS77 Plugin">
+        <activity android:name=".SMS77InfoDialogActivity" android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.INFO"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
