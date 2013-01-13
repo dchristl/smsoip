@@ -18,19 +18,10 @@
   -->
 
 <resources>
-    <string name="core_not_installed">SMSoIP ist nicht installiert.\nBitte vom Store nachinstallieren, damit das Plugin
-        funktioniert.
-    </string>
     <string-array name="array_spinner">
         <item>Ohne Absenderkennung (1 Credit/SMS)</item>
         <item>Mit Absenderkennung (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_default_type">Standard Absendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_need_account">Noch keinen Account?</string>
-    <string name="text_need_account_long">Du willst einen Account anlegen und gleichzeitig die Weiterentwicklung von
-        SMSoIP unterstützen. Dann nutze diesen Link, um dich anzumelden.
-    </string>
     <string name="text_refresh_informations">Verbleibende Credits: %1$d</string>
     <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'

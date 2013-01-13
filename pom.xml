@@ -11,6 +11,7 @@
 
     <modules>
         <module>core</module>
+        <module>supplier-lib</module>
         <module>supplier</module>
         <module>adfree</module>
         <module>widget</module>
@@ -83,7 +84,7 @@
                         <goals>
                             <goal>zipalign</goal>
                         </goals>
-                       </execution>
+                    </execution>
                     <execution>
                         <id>UPDATE MANIFEST</id>
                         <goals>
@@ -150,7 +151,7 @@
                         <id>CONCATENATE STRINGS</id>
                         <configuration>
                             <source><![CDATA[
-                                if (project.packaging == 'apk') {
+                                if (project.packaging == 'apk' || project.packaging == 'apklib') {
                                     def outputFolder = new File(project.properties.getProperty('output.folder') + '/strings')
                                     if (project.name == 'SMSoIP-core') {
                                         outputFolder.deleteDir();   // create folder if does not exist

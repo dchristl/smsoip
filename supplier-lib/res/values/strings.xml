@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) Danny Christl 2012.
+  ~ Copyright (c) Danny Christl 2013.
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -16,17 +16,13 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto"
-          android:versionCode="5" android:versionName="1.0.4" package="de.christl.smsoip.supplier.cherrysms">
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP Cherry-SMS Plugin">
-        <activity android:name=".CherryInfoDialogActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.INFO"/>
-            </intent-filter>
-        </activity>
-    </application>
+<resources>
 
-</manifest>
+    <string name="core_not_installed_head">SMSoIP not installed!</string>
+    <string name="core_not_installed">This is just a plugin and SMSoIP is needed to make this plugin work.\nPlease
+        install it from store.
+    </string>
+    <string name="text_default_type">Default send type</string>
+    <string name="text_default_type_long">Choose your preselected send type</string>
+</resources>

@@ -16,7 +16,7 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.cherrysms;
+package de.christl.smsoip.activities;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -28,24 +28,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-public class InfoDialogActivity extends Activity {
+public abstract class InfoDialogActivity extends Activity {
 
     public static final String SMSOIP_SCHEME = "smsoip";
     public static final String PROVIDER_EXTRA = "provider";
-    public static final String VALUE = "de.christl.smsoip.supplier.cherrysms.CherrySMSSupplier";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_Dialog);
+        getIntent().setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.scheme(SMSOIP_SCHEME);
         Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-        sendIntent.putExtra(PROVIDER_EXTRA, VALUE);
+        sendIntent.putExtra(PROVIDER_EXTRA, getSupplierName());
         sendIntent.setData(uriBuilder.build());
         sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             startActivity(sendIntent);
             this.finish();
         } catch (ActivityNotFoundException e) {
+            setTitle(R.string.core_not_installed_head);
             TextView editText = new TextView(this);
             editText.setText(R.string.core_not_installed);
             addContentView(editText, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -53,4 +55,6 @@ public class InfoDialogActivity extends Activity {
         }
 
     }
+
+    protected abstract String getSupplierName();
 }

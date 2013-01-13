@@ -18,19 +18,10 @@
   -->
 
 <resources>
-
-    <string name="core_not_installed">SMSoIP not installed.\nPlease install it from store to make this plugin work.
-    </string>
     <string-array name="array_spinner">
         <item>Without source identifier (1 Credit/SMS)</item>
         <item>With source identifier (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_need_account">No account yet?</string>
-    <string name="text_need_account_long">You want to create a new account and want to support further development of
-        SMSoIP. Please create an account by this link.
-    </string>
     <string name="text_refresh_informations">Remaining credits: %1$d</string>
     <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
         like \'00491721234567\'

@@ -54,5 +54,11 @@
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>de.christl.SMSoIP</groupId>
+            <artifactId>supplier-lib</artifactId>
+            <version>${project.parent.version}</version>
+            <type>apklib</type>
+        </dependency>
     </dependencies>
 </project>
