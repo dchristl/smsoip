@@ -30,7 +30,7 @@
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>gmx</artifactId>
-    <version>1.3.4</version>
+    <version>1.4.0</version>
     <packaging>apk</packaging>
 
 </project>

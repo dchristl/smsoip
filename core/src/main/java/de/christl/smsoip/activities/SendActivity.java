@@ -1132,11 +1132,12 @@ public class SendActivity extends AllActivity {
         LinearLayout freeLayout = (LinearLayout) findViewById(R.id.freeLayout);
         freeLayout.removeAllViews();
         freeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        instanciationCounter++;
         if (smSoIPPlugin != null) {
             try {
                 smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
             } catch (Exception e) {
-                ACRA.getErrorReporter().putCustomData("instanciatedId", String.valueOf(instanciationCounter++));
+                ACRA.getErrorReporter().putCustomData("instanciatedId", String.valueOf(instanciationCounter));
                 ACRA.getErrorReporter().handleSilentException(e);
                 freeLayout.setVisibility(View.GONE);
             }
