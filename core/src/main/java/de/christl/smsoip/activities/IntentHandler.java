@@ -30,8 +30,11 @@ import de.christl.smsoip.receiver.SMSReceiver;
 
 public class IntentHandler {
 
+    public static final String EXTRA_PROVIDER = "provider";
+    public static final String EXTRA_SMS_BODY = "sms_body";
     private Receiver givenReceiver;
     private String smsText;
+    private String supplier;
 
     public IntentHandler(Intent intent, Context context) {
         String action = intent.getAction();
@@ -49,7 +52,7 @@ public class IntentHandler {
 
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                Object smsBody = extras.get("sms_body");
+                Object smsBody = extras.get(EXTRA_SMS_BODY);
                 if (smsBody != null && !smsBody.equals("")) {
                     smsText = smsBody.toString();
                 }
@@ -78,6 +81,13 @@ public class IntentHandler {
                     if (number != null && !number.equals("")) {
                         findAndSetReceiver(context, number);
                     }
+
+                    if (!data.isOpaque()) {
+                        String provider = extras.getString(EXTRA_PROVIDER);
+                        if (provider != null && !provider.equals("")) {
+                            supplier = provider;
+                        }
+                    }
                 }
             }
 
@@ -100,6 +110,10 @@ public class IntentHandler {
 
     public String getSmsText() {
         return smsText;
+    }
+
+    public String getSupplier() {
+        return supplier;
     }
 }
 

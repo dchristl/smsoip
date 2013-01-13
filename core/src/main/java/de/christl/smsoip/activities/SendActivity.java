@@ -71,7 +71,6 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
-import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.ui.*;
 import org.acra.ACRA;
 import org.apache.http.message.BasicNameValuePair;
@@ -242,8 +241,9 @@ public class SendActivity extends AllActivity {
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
             Uri data = getIntent().getData();
-            getAndSetSupplier(data);
-            setPreselectedContact(getIntent());
+            IntentHandler handler = new IntentHandler(getIntent(), this);
+            getAndSetSupplier(handler);
+            setPreselectedContact(handler);
             updateInfoTextSilent();
         }
         showChangelogIfNeeded();
@@ -558,8 +558,7 @@ public class SendActivity extends AllActivity {
         });
     }
 
-    private void setPreselectedContact(Intent intent) {
-        IntentHandler handler = new IntentHandler(intent, this);
+    private void setPreselectedContact(IntentHandler handler) {
         SMSInputEditText smsInputEditText = (SMSInputEditText) findViewById(R.id.textInput);
         Receiver givenReceiver = handler.getGivenReceiver();
         boolean numberSet = givenReceiver != null;
@@ -623,19 +622,12 @@ public class SendActivity extends AllActivity {
     }
 
 
-    private void getAndSetSupplier(Uri data) {
+    private void getAndSetSupplier(IntentHandler handler) {
         String supplier = "";
         //only change if own scheme is used and
-        if (data != null && receiverField.getReceiverList().size() == 0 && data.getScheme().equals(SMSReceiver.SMSOIP_SCHEME)) {
-            if (!data.isOpaque()) {
-                String provider = getIntent().getExtras().getString("provider");
-                if (provider != null && !provider.equals("")) {
-                    supplier = provider;
-                }
-            } else {
-                //this hould not happen normally
-                ACRA.getErrorReporter().handleSilentException(new IllegalArgumentException(data.toString()));
-            }
+        String givenSupplier = handler.getSupplier();
+        if (givenSupplier != null && receiverField.getReceiverList().size() == 0) {
+            supplier = givenSupplier;
         }
         if (supplier.equals("")) {
             supplier = settings.getString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, "");
@@ -1487,7 +1479,8 @@ public class SendActivity extends AllActivity {
      */
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setPreselectedContact(intent);
+        IntentHandler handler = new IntentHandler(intent, this);
+        setPreselectedContact(handler);
     }
 
 
