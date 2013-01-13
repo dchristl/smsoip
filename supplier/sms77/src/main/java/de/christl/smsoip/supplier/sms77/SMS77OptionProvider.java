@@ -32,8 +32,7 @@ import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -42,8 +41,21 @@ public class SMS77OptionProvider extends OptionProvider {
     private static final String PROVIDER_NAME = "SMS77";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private int messageCount = 10;
-    private EditText senderText;
+    private EditText senderFreeText;
     private boolean senderVisible = false;
+    private boolean showFreeText = false;
+    private ViewGroup parentTableRow;
+    private ImageButton refreshButton;
+    private ProgressBar progressBar;
+    private TextView infoTextField;
+    private Spinner senderSpinner;
+
+    private Integer spinnerItem;
+    private HashMap<Integer, String> adapterItems;
+    private RefreshNumbersTask refreshNumberTask;
+
+    private static final String SENDER_PREFIX = "sender_";
+    private static final String SENDER_LAST_NUMBER_PREFIX = "sender_last_";
 
     public SMS77OptionProvider() {
         super(PROVIDER_NAME);
@@ -56,11 +68,108 @@ public class SMS77OptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
-        LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
-        resolveChildren(freeLayout);
-//        buildLayoutsContent();
-        freeLayout.setVisibility(senderVisible ? View.VISIBLE : View.GONE);
+        if (senderVisible) {
+            int resourceId = showFreeText ? R.layout.freelayout_text : R.layout.freelayout_dropdown;
+            XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(resourceId);
+            ViewGroup freeLayoutView = (ViewGroup) LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
+            resolveChildren(freeLayout);
+            if (showFreeText) {
+                resolveFreeTextChildren();
+            } else {
+                resolveFreeLayoutsDropDownChildren();
+                buildContent(freeLayoutView);
+            }
+        }
+    }
+
+    private void buildContent(View freeLayoutView) {
+        refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        View.OnClickListener refreshNumbersListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (refreshNumberTask != null) {
+                    refreshNumberTask.cancel(true);
+                }
+                senderSpinner.setVisibility(View.GONE);
+                infoTextField.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                refreshNumberTask = new RefreshNumbersTask(SMS77OptionProvider.this);
+                refreshNumberTask.execute(null, null);
+            }
+        };
+        refreshButton.setOnClickListener(refreshNumbersListener);
+        infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+        infoTextField.setOnClickListener(refreshNumbersListener);
+
+        refreshAdapterItems();
+        refreshSpinner(freeLayoutView.getContext());
+        if (adapterItems.size() == 0) {
+            infoTextField.setVisibility(View.VISIBLE);
+            infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+            senderSpinner.setVisibility(View.GONE);
+        } else {
+            infoTextField.setVisibility(View.GONE);
+            senderSpinner.setVisibility(View.VISIBLE);
+        }
+
+        int lastSavedSender = getLastSender();
+        if (spinnerItem != null && spinnerItem != Spinner.INVALID_POSITION && spinnerItem < adapterItems.size()) {
+            senderSpinner.setSelection(spinnerItem, true);
+        } else if (lastSavedSender != Spinner.INVALID_POSITION && lastSavedSender < adapterItems.size()) {
+            senderSpinner.setSelection(lastSavedSender, true);
+        }
+        spinnerItem = null;
+    }
+
+    private void refreshSpinner(Context context) {
+        List<String> values = new LinkedList<String>(adapterItems.values());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, values);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.notifyDataSetChanged();
+        senderSpinner.setAdapter(adapter);
+    }
+
+    private int getLastSender() {
+        return getSettings().getInt(SENDER_LAST_NUMBER_PREFIX + getUserName(), Spinner.INVALID_POSITION);
+    }
+
+    private void resolveFreeLayoutsDropDownChildren() {
+        LinearLayout parentLinearLayout = (LinearLayout) parentTableRow.getChildAt(0);
+        refreshButton = (ImageButton) parentTableRow.getChildAt(1);
+        progressBar = (ProgressBar) parentLinearLayout.getChildAt(2);
+        infoTextField = (TextView) parentLinearLayout.getChildAt(0);
+        senderSpinner = (Spinner) parentLinearLayout.getChildAt(1);
+
+    }
+
+    private void refreshAdapterItems() {
+        adapterItems = new HashMap<Integer, String>(5);
+        Map<String, ?> stringMap = getSettings().getAll();
+        for (Map.Entry<String, ?> stringEntry : stringMap.entrySet()) {
+            String key = stringEntry.getKey();
+            if (key.startsWith(SENDER_PREFIX + getUserName())) {
+                int number = Integer.parseInt(key.replace(SENDER_PREFIX + getUserName() + ".", ""));
+                adapterItems.put(number, String.valueOf(stringEntry.getValue()));
+            }
+        }
+    }
+
+    private void resolveChildren(ViewGroup freeLayout) {
+        if (refreshNumberTask != null) {
+            refreshNumberTask.cancel(true);
+        }
+        parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
+        //set the heading
+        ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
+    }
+
+    private void resolveFreeTextChildren() {
+        senderFreeText = (EditText) parentTableRow.getChildAt(0);
+//        if (freeTextContent != null) {
+//            senderFreeText.setText(freeTextContent);
+//            freeTextContent = null;
+//        }
+        setInputFiltersForEditText();
     }
 
 
@@ -78,25 +187,12 @@ public class SMS77OptionProvider extends OptionProvider {
                 return null;
             }
         };
-        senderText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
-        senderText.setText(getSenderFromOptions());
+        senderFreeText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
+        senderFreeText.setText(getSenderFromOptions());
     }
 
     private CharSequence getSenderFromOptions() {
         return "";
-    }
-
-    /**
-     * childs have to be resolved by its tree in structure, findViewById seems not to work on every device
-     *
-     * @param freeLayout
-     */
-    private void resolveChildren(ViewGroup freeLayout) {
-        ViewGroup parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
-        senderText = (EditText) parentTableRow.getChildAt(0);
-        setInputFiltersForEditText();
-        //set the heading
-        ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
     }
 
 
@@ -111,24 +207,31 @@ public class SMS77OptionProvider extends OptionProvider {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
+                    default:
                     case 0:  //BASIC
                         senderVisible = false;
                         messageCount = 10;
+                        showFreeText = false;
                         break;
-                    case 1: //QUALITY
+                    case 1: //QUALITY (DropDown)
                         senderVisible = true;
+                        showFreeText = false;
                         messageCount = 10;
                         break;
-                    case 2:  //LANDLINE
+                    case 2: //QUALITY (Freetext)
+                        senderVisible = true;
+                        showFreeText = true;
+                        messageCount = 10;
+                        break;
+                    case 3:  //LANDLINE
                         senderVisible = false;
+                        showFreeText = false;
                         messageCount = 1;
                         break;
-                    case 3:   //FLASH
+                    case 4:   //FLASH
                         senderVisible = false;
+                        showFreeText = false;
                         messageCount = 1;
-                        break;
-                    default: //OTHER
-
                         break;
 
                 }

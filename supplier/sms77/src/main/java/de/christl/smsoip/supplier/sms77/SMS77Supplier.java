@@ -47,9 +47,10 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String USER_PASS = "u=%s&p=%s";
 
     private static final int SEND_BASIC = 0;
-    private static final int SEND_QUALITY = 1;
-    private static final int SEND_LANDLINE = 2;
-    private static final int SEND_FLASH = 3;
+    private static final int SEND_QUALITY_NUMBER = 1;
+    private static final int SEND_QUALITY_FREE = 2;
+    private static final int SEND_LANDLINE = 3;
+    private static final int SEND_FLASH = 4;
 
 
     public SMS77Supplier() {
@@ -148,7 +149,8 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             case SEND_BASIC:
                 urlBuilder.append("basicplus");
                 break;
-            case SEND_QUALITY:
+            case SEND_QUALITY_FREE:
+            case SEND_QUALITY_NUMBER:
                 urlBuilder.append("quality");
                 break;
             case SEND_LANDLINE:
@@ -182,24 +184,6 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         }
         return out;
-//        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
-//        InputStream httpURLConnection = factory.create().getInputStream();
-//        String returnVal = UrlConnectionFactory.inputStream2DebugString(httpURLConnection);
-//        if (returnVal.contains(".")) {
-//            return SMSActionResult.NO_ERROR(String.format(provider.getTextByResourceId(R.string.balance), returnVal));
-//        } else {
-//            int returnCode;
-//            try {
-//                returnCode = Integer.parseInt(returnVal);
-//                if (returnCode == 0) {                        //return succesful if balance is Zero
-//                    return SMSActionResult.NO_ERROR(String.format(provider.getTextByResourceId(R.string.balance), returnVal));
-//                }
-//            } catch (NumberFormatException e) {
-//                return SMSActionResult.UNKNOWN_ERROR(returnVal);
-//            }
-//            return translateCodeToActionResult(returnCode);
-//        }
-//        return null;
     }
 
     private SMSActionResult translateCodeToActionResult(int code) throws IOException {
