@@ -31,8 +31,6 @@
     </string>
     <string name="only_free_account">Freenet basic only</string>
     <string name="only_free_account_description">Enable this if you only have a basic account. Advanced options will be disabled and more space is available on screen.</string>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string-array name="array_spinner">
         <item>Default SMS (without SI)</item>
         <item>Default SMS (with SI)</item>
