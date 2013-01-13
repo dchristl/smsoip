@@ -19,7 +19,7 @@
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
     <application android:icon="@drawable/icon" android:label="SMSoIP SMS-Revolution Plugin">
-        <activity android:name=".SMSRevoInfoDialogActivity">
+        <activity android:name=".SMSRevoInfoDialogActivity" android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.INFO"/>

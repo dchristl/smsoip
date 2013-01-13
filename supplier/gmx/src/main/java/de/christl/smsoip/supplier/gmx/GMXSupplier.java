@@ -93,17 +93,17 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                     try {
                         freeSMS = Integer.parseInt(split[3]);
                     } catch (NumberFormatException e) {
-                        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)), receivers);
+                        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.free_messages_could_not_resolved)), receivers);
                     }
                     int messageLength = getProvider().getTextMessageLength();
                     int smsCount = Math.round((smsText.length() / messageLength));
                     smsCount = smsText.length() % messageLength == 0 ? smsCount : smsCount + 1;
                     noFreeAvailable = !((receivers.size() * smsCount) <= freeSMS);
                 } else {
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_free_messages_could_not_resolved)), receivers);
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.free_messages_could_not_resolved)), receivers);
                 }
                 if (noFreeAvailable) {
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_no_free_messages_available)), receivers);
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_free_messages_available)), receivers);
                 }
             }
         }
@@ -397,7 +397,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             provider.setAccountChanged(false);
             return SMSActionResult.LOGIN_SUCCESSFUL();
         }
-        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_error));
+        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
         smsActionResult.setRetryMakesSense(false);
         return smsActionResult;
     }

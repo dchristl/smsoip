@@ -18,11 +18,27 @@
   -->
 
 <resources>
-    <string name="text_check_no_free_available">Überprüfe auf kostenlose SMS</string>
-    <string name="text_check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
+    <string-array name="array_spinner">
+        <item>Mit Handynummer</item>
+        <item>Mit Freitext</item>
+    </string-array>
+    <string name="check_no_free_available">Überprüfe auf kostenlose SMS</string>
+    <string name="check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
         sind.
     </string>
-    <string name="text_no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
-    <string name="text_free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden. Senden abgebrochen!</string>
-    <string name="text_login_error">Zugangsdaten fehlerhaft. Der Benutzername muss inkl. Domain, z.B. \'@gmx.de\' oder \'@gmx.net\' angegeben werden.</string>
+    <string name="no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
+    <string name="free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden.
+        Senden abgebrochen!
+    </string>
+    <string name="login_error">Zugangsdaten fehlerhaft. Der Benutzername muss inkl. Domain, z.B. \'@gmx.de\' oder
+        \'@gmx.net\' angegeben werden.
+    </string>
+    <string name="sender">Absender</string>
+    <string name="default_number">Standardnummer</string>
+    <string name="no_numbers_maintened">Keine Absender gefunden.</string>
+    <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
+        dem
+        Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
+    </string>
+    <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
 </resources>

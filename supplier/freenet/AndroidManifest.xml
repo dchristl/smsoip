@@ -21,7 +21,7 @@
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
     <application android:icon="@drawable/icon" android:label="SMSoIP Freenet Plugin">
-        <activity android:name=".FreenetInfoDialogActivity">
+        <activity android:name=".FreenetInfoDialogActivity" android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.INFO"/>

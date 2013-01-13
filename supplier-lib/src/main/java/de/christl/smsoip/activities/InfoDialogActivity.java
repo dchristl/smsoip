@@ -34,9 +34,8 @@ public abstract class InfoDialogActivity extends Activity {
     public static final String PROVIDER_EXTRA = "provider";
 
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Dialog);
-        getIntent().setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        super.onCreate(savedInstanceState);
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.scheme(SMSOIP_SCHEME);
         Intent sendIntent = new Intent(Intent.ACTION_MAIN);
