@@ -44,7 +44,6 @@ public class CherrySMSOptionProvider extends OptionProvider {
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
 
-    private static final String SUPPORT_URL = "http://www.cherry-sms.com/?ref=RBSYJMGF";
 
     public CherrySMSOptionProvider() {
         super(providerName);

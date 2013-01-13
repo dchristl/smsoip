@@ -44,8 +44,6 @@
         <item>Basic SMS</item>
         <item>Pro SMS (with SI)</item>
     </string-array>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
         button or unckeck the box to send with your phone number.

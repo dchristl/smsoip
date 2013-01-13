@@ -140,7 +140,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
         Document parse = Jsoup.parse(s, ENCODING, "");
         if (parse.text().equals(NOT_ALLOWED_YET)) {
-            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_alternate_not_allowed_yet));
+            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.alternate_not_allowed_yet));
         }
         Elements select = parse.select("div#sms-message-container");
         if (select.size() == 1 && select.text().equals(MESSAGE_SENT_SUCCESSFUL)) {

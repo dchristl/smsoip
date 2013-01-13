@@ -45,8 +45,6 @@
         <item>Basic SMS</item>
         <item>Pro SMS (mit AK)</item>
     </string-array>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem

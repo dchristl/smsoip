@@ -19,5 +19,11 @@
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
     <application android:icon="@drawable/icon" android:label="SMSoIP Goodmails Plugin">
+        <activity android:name=".GoodmailsInfoDialogActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.INFO"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
