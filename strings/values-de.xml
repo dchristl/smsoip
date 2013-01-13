@@ -287,6 +287,40 @@ fileName: strings.xml
 </resources>
 
 <!--String resources for:
+project: supplier-lib
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="core_not_installed_head">SMSoIP ist nicht installiert!</string>
+    <string name="core_not_installed">Dies ist nur ein Plugin und SMSoIP wird benötigt, damit das Plugin
+        funktioniert.\nBitte vom Store nachinstallieren.
+    </string>
+
+    <string name="default_type">Standard Absendetyp</string>
+    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+
+</resources>
+<!--String resources for:
 project: gmx
 values folder: values-de
 fileName: strings.xml
@@ -311,13 +345,29 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_check_no_free_available">Überprüfe auf kostenlose SMS</string>
-    <string name="text_check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
+    <string-array name="array_spinner">
+        <item>Mit Handynummer</item>
+        <item>Mit Freitext</item>
+    </string-array>
+    <string name="check_no_free_available">Überprüfe auf kostenlose SMS</string>
+    <string name="check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
         sind.
     </string>
-    <string name="text_no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
-    <string name="text_free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden. Senden abgebrochen!</string>
-    <string name="text_login_error">Zugangsdaten fehlerhaft. Der Benutzername muss inkl. Domain, z.B. \'@gmx.de\' oder \'@gmx.net\' angegeben werden.</string>
+    <string name="no_free_messages_available">Nicht genügend kostenlose SMS verfügbar.</string>
+    <string name="free_messages_could_not_resolved">Anzahl der kostenlosen SMS konnten nicht bestimmt werden.
+        Senden abgebrochen!
+    </string>
+    <string name="login_error">Zugangsdaten fehlerhaft. Der Benutzername muss inkl. Domain, z.B. \'@gmx.de\' oder
+        \'@gmx.net\' angegeben werden.
+    </string>
+    <string name="sender">Absender</string>
+    <string name="default_number">Standardnummer</string>
+    <string name="no_numbers_maintened">Keine Absender gefunden.</string>
+    <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
+        dem
+        Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
+    </string>
+    <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
 </resources>
 <!--String resources for:
 project: goodmails
@@ -343,9 +393,7 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_alternate_not_allowed_yet">Noch nicht verfügbar</string>
-    <string name="text_default_type">Standard Absendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+    <string name="alternate_not_allowed_yet">Noch nicht verfügbar</string>
     <string-array name="array_spinner">
         <item>Kostenlose SMS (0 Credits)</item>
         <item>Standard SMS (10 Credits)</item>
@@ -392,11 +440,9 @@ fileName: strings.xml
         dem Senden mit Hilfe des Auge-Buttons.
     </string>
     <string name="only_free_account">Nur Freenet Basic</string>
-    <string name="only_free_account_description">Aktiviere dies falls du nur einen Basic-Account besitzt.Zusätzliche
+    <string name="only_free_account_description">Aktiviere dies falls du nur einen Basic-Account besitzt. Zusätzliche
         Optionen werden nicht mehr angezeigt.
     </string>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string-array name="array_spinner">
         <item>Standard SMS (ohne AK)</item>
         <item>Standard SMS (mit AK)</item>
@@ -436,8 +482,6 @@ fileName: strings.xml
         <item>Power-SMS 300 (20 Credits)</item>
         <item>Power-SMS 300 mit AK (30 Credits)</item>
     </array>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="wrong_number">Falsche Nummer</string>
     <string name="send_as_flash">Als Flash-SMS schicken</string>
     <string name="show_flash">Flash-Versand anzeigen</string>
@@ -474,12 +518,6 @@ fileName: strings.xml
         <item>Ohne Absenderkennung (1 Credit/SMS)</item>
         <item>Mit Absenderkennung (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_default_type">Standard Absendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_need_account">Noch keinen Account?</string>
-    <string name="text_need_account_long">Du willst einen Account anlegen und gleichzeitig die Weiterentwicklung von
-        SMSoIP unterstützen. Dann nutze diesen Link, um dich anzumelden.
-    </string>
     <string name="text_refresh_informations">Verbleibende Credits: %1$d</string>
     <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'
@@ -543,8 +581,6 @@ fileName: strings.xml
     <string name="return_172">Zu viele Nummern.</string>
     <string name="return_unknown">Unbekannter Fehler:</string>
     <string name="refresh_informations">Free: %1$s\nGuthaben: %2$s</string>
-    <string name="default_type">Standardsendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="mixing_not_allowed">Das Vermischen von deutschen und ausländischen Telefonnummern wird nicht
         unterstützt.
     </string>
@@ -596,12 +632,10 @@ fileName: strings.xml
         <item>Mit Absenderkennung</item>
         <item>Anonym</item>
     </string-array>
-    <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
+    <string name="login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'
     </string>
-    <string name="text_default_type">Standard Absendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_balance">Guthaben: %1$s</string>
+    <string name="balance">Guthaben: %1$s</string>
 </resources>
 <!--String resources for:
 project: directbox
@@ -635,8 +669,6 @@ fileName: strings.xml
 
     <string name="sender">Absender</string>
     <string name="balance">Guthaben: %1$s\nSMS-Prepaid: %2$s\nSMS-Paket: %3$s</string>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="without_si">Ohne Absenderkennung</string>
     <string name="not_yet_refreshed">Noch nicht bestimmt</string>
     <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absendernummern vor
@@ -697,8 +729,6 @@ fileName: strings.xml
         <item>Basic SMS</item>
         <item>Pro SMS (mit AK)</item>
     </string-array>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
@@ -757,8 +787,6 @@ fileName: strings.xml
         <item>Basic SMS</item>
         <item>Pro SMS (mit AK)</item>
     </string-array>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
@@ -792,6 +820,7 @@ fileName: strings.xml
 
 <resources>
     <string name="balance">Guthaben: %1$s €</string>
+    <string name="sender">Absender</string>
 
     <string name="return_100">SMS wurde erfolgreich verschickt</string>
     <string name="return_101">Versand an mindestens einen Empfänger fehlgeschlagen</string>
@@ -803,7 +832,7 @@ fileName: strings.xml
     <string name="return_305">Variable text nicht gesetzt</string>
     <string name="return_306">Absendernummer ungültig</string>
     <string name="return_307">Variable url nicht gesetzt</string>
-    <string name="return_400">type ungültig</string>
+    <string name="return_400">Typ ungültig</string>
     <string name="return_401">Variable text ist zu lang</string>
     <string name="return_402">Reloadsperre – Diese SMS wurde bereits innerhalb der letzten 90 Sekunden verschickt
     </string>
@@ -815,6 +844,11 @@ fileName: strings.xml
     <string name="return_900">Benutzer/Passwort-Kombination falsch</string>
     <string name="return_902">http API für diesen Account deaktiviert</string>
     <string name="return_903">Server IP ist falsch</string>
-
     <string name="return_unknown_error">Unbekannter Fehler: %1$d</string>
+    <string-array name="array_spinner">
+        <item>Basic plus</item>
+        <item>Quality</item>
+        <item>Festnetz</item>
+        <item>Flash</item>
+    </string-array>
 </resources>

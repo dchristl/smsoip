@@ -41,6 +41,7 @@ import java.util.List;
 public class SMS77OptionProvider extends OptionProvider {
     private static final String PROVIDER_NAME = "SMS77";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private int messageCount = 10;
     private EditText senderText;
     private boolean senderVisible = false;
 
@@ -112,15 +113,19 @@ public class SMS77OptionProvider extends OptionProvider {
                 switch (position) {
                     case 0:  //BASIC
                         senderVisible = false;
+                        messageCount = 10;
                         break;
                     case 1: //QUALITY
                         senderVisible = true;
+                        messageCount = 10;
                         break;
                     case 2:  //LANDLINE
                         senderVisible = false;
+                        messageCount = 1;
                         break;
                     case 3:   //FLASH
                         senderVisible = false;
+                        messageCount = 1;
                         break;
                     default: //OTHER
 
@@ -155,5 +160,28 @@ public class SMS77OptionProvider extends OptionProvider {
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
         return out;
+    }
+
+    @Override
+    public int getTextMessageLength() {
+        return 160;    //just for inputfilter
+    }
+
+    @Override
+    public int getMaxMessageCount() {
+        return messageCount;  //just for inputfilter
+    }
+
+
+    @Override
+    public int getLengthDependentSMSCount(int textLength) {
+        if (textLength < 161) {
+            return 1;
+        } else {
+            textLength -= 160;
+            int smsCount = Math.round((textLength / 153));
+            smsCount = textLength % 153 == 0 ? smsCount : smsCount + 1;
+            return smsCount + 1;
+        }
     }
 }

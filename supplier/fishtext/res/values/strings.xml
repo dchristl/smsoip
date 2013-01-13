@@ -22,10 +22,8 @@
         <item>With source identifier</item>
         <item>Anonymous</item>
     </string-array>
-    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+    <string name="login_failed">Login failed. Please check if your username is your number in international format,
         like \'00441721234567\'
     </string>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_balance">Balance: %1$s</string>
+    <string name="balance">Balance: %1$s</string>
 </resources>

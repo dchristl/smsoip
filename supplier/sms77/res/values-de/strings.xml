@@ -44,8 +44,6 @@
     <string name="return_902">http API für diesen Account deaktiviert</string>
     <string name="return_903">Server IP ist falsch</string>
     <string name="return_unknown_error">Unbekannter Fehler: %1$d</string>
-    <string name="default_type">Standard Absendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string-array name="array_spinner">
         <item>Basic plus</item>
         <item>Quality</item>

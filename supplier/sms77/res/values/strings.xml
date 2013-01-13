@@ -45,8 +45,6 @@
     <string name="return_902">http API deactivated for this account</string>
     <string name="return_903">Wrong server ip</string>
     <string name="return_unknown_error">Unknown Error: %1$d</string>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
 
     <string-array name="array_spinner">
         <item>Basic plus</item>

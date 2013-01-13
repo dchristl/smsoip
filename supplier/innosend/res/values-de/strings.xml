@@ -38,8 +38,6 @@
     <string name="return_172">Zu viele Nummern.</string>
     <string name="return_unknown">Unbekannter Fehler:</string>
     <string name="refresh_informations">Free: %1$s\nGuthaben: %2$s</string>
-    <string name="default_type">Standardsendetyp</string>
-    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
     <string name="mixing_not_allowed">Das Vermischen von deutschen und ausländischen Telefonnummern wird nicht
         unterstützt.
     </string>

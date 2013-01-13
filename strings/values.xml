@@ -1,3 +1,8 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: storedependent.xml
+-->
 <!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
@@ -15,13 +20,6 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: storedependent.xml
--->
-
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
     <string name="visit_plugin_page_description">Find more plugins on Google Play</string>
@@ -277,6 +275,39 @@ fileName: strings.xml
 </resources>
 
 <!--String resources for:
+project: supplier-lib
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="core_not_installed_head">SMSoIP not installed!</string>
+    <string name="core_not_installed">This is just a plugin and SMSoIP is needed to make this plugin work.\nPlease
+        install it from store.
+    </string>
+    <string name="default_type">Default send type</string>
+    <string name="default_type_long">Choose your preselected send type</string>
+</resources>
+<!--String resources for:
 project: gmx
 values folder: values
 fileName: strings.xml
@@ -301,11 +332,26 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_check_no_free_available">Check for no free messages</string>
-    <string name="text_check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
-    <string name="text_no_free_messages_available">Not enough free messages available.</string>
-    <string name="text_free_messages_could_not_resolved">Count of free messages couldn\'t be obtained. Sending canceled!</string>
-    <string name="text_login_error">Login failed. Please check if your username includes the domain, i.e. \'@gmx.de\' or \'@gmx.net\'.</string>
+    <string-array name="array_spinner">
+        <item>With phonenumber</item>
+        <item>With free source id</item>
+    </string-array>
+    <string name="check_no_free_available">Check for no free messages</string>
+    <string name="check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
+    <string name="no_free_messages_available">Not enough free messages available.</string>
+    <string name="free_messages_could_not_resolved">Count of free messages couldn\'t be obtained. Sending
+        canceled!
+    </string>
+    <string name="login_error">Login failed. Please check if your username includes the domain, i.e. \'@gmx.de\' or
+        \'@gmx.net\'.
+    </string>
+    <string name="sender">Sender</string>
+    <string name="default_number">Default number</string>
+    <string name="no_numbers_maintened">No senders found.</string>
+    <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
+        button or unckeck the box to send with your phone number.
+    </string>
+    <string name="not_yet_refreshed">Refresh by eye button.</string>
 </resources>
 <!--String resources for:
 project: goodmails
@@ -331,9 +377,7 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="text_alternate_not_allowed_yet">Not allowed yet</string>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="alternate_not_allowed_yet">Not allowed yet</string>
     <string-array name="array_spinner">
         <item>Free SMS (0 Credits)</item>
         <item>Default SMS (10 Credits)</item>
@@ -378,8 +422,6 @@ fileName: strings.xml
     </string>
     <string name="only_free_account">Freenet basic only</string>
     <string name="only_free_account_description">Enable this if you only have a basic account. Advanced options will be disabled and more space is available on screen.</string>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string-array name="array_spinner">
         <item>Default SMS (without SI)</item>
         <item>Default SMS (with SI)</item>
@@ -419,8 +461,6 @@ fileName: strings.xml
         <item>Power-SMS 300 (20 Credits)</item>
         <item>Power-SMS 300 with SI (30 Credits)</item>
     </string-array>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="wrong_number">Wrong number</string>
     <string name="send_as_flash">Send as flash message</string>
     <string name="show_flash">Show flash message</string>
@@ -458,12 +498,6 @@ fileName: strings.xml
         <item>Without source identifier (1 Credit/SMS)</item>
         <item>With source identifier (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_need_account">No account yet?</string>
-    <string name="text_need_account_long">You want to create a new account and want to support further development of
-        SMSoIP. Please create an account by this link.
-    </string>
     <string name="text_refresh_informations">Remaining credits: %1$d</string>
     <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
         like \'00491721234567\'
@@ -526,8 +560,6 @@ fileName: strings.xml
     <string name="return_171">Date in past.</string>
     <string name="return_172">Too many numbers.</string>
     <string name="return_unknown">Unknown problem:</string>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
     </string>
     <string name="multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not
@@ -578,12 +610,10 @@ fileName: strings.xml
         <item>With source identifier</item>
         <item>Anonymous</item>
     </string-array>
-    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+    <string name="login_failed">Login failed. Please check if your username is your number in international format,
         like \'00441721234567\'
     </string>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_balance">Balance: %1$s</string>
+    <string name="balance">Balance: %1$s</string>
 </resources>
 <!--String resources for:
 project: directbox
@@ -616,8 +646,6 @@ fileName: strings.xml
     </string-array>
     <string name="balance">Balance: %1$s\nSMS-Prepaid: %2$s\nSMS-Packet: %3$s</string>
     <string name="sender">Sender</string>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="without_si">Without source identifier</string>
     <string name="not_yet_refreshed">Not yet refreshed</string>
     <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye button.</string>
@@ -674,8 +702,6 @@ fileName: strings.xml
         <item>Basic SMS</item>
         <item>Pro SMS (with SI)</item>
     </string-array>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
         button or unckeck the box to send with your phone number.
@@ -733,8 +759,6 @@ fileName: strings.xml
         <item>Basic SMS</item>
         <item>Pro SMS (with SI)</item>
     </string-array>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
         button or unckeck the box to send with your phone number.
@@ -768,6 +792,7 @@ fileName: strings.xml
 <resources>
 
     <string name="balance">Balance: %1$s €</string>
+    <string name="sender">Sender</string>
 
     <string name="return_100">SMS sent succesful</string>
     <string name="return_101">Sent failed to a minimum of one receiver</string>
@@ -779,7 +804,7 @@ fileName: strings.xml
     <string name="return_305">Variable text not set</string>
     <string name="return_306">Sender number invalid</string>
     <string name="return_307">Variable url not set</string>
-    <string name="return_400">type invalid</string>
+    <string name="return_400">Invalid type</string>
     <string name="return_401">Variable text too long</string>
     <string name="return_402">Reload block – SMS was sent in last 90 seconds
     </string>
@@ -792,5 +817,12 @@ fileName: strings.xml
     <string name="return_902">http API deactivated for this account</string>
     <string name="return_903">Wrong server ip</string>
     <string name="return_unknown_error">Unknown Error: %1$d</string>
+
+    <string-array name="array_spinner">
+        <item>Basic plus</item>
+        <item>Quality</item>
+        <item>Landline</item>
+        <item>Flash</item>
+    </string-array>
 
 </resources>

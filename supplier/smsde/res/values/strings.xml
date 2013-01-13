@@ -25,8 +25,6 @@
         <item>Power-SMS 300 (20 Credits)</item>
         <item>Power-SMS 300 with SI (30 Credits)</item>
     </string-array>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="wrong_number">Wrong number</string>
     <string name="send_as_flash">Send as flash message</string>
     <string name="show_flash">Show flash message</string>

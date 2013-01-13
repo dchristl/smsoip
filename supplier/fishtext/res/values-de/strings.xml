@@ -22,10 +22,8 @@
         <item>Mit Absenderkennung</item>
         <item>Anonym</item>
     </string-array>
-    <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
+    <string name="login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'
     </string>
-    <string name="text_default_type">Standard Absendetyp</string>
-    <string name="text_default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
-    <string name="text_balance">Guthaben: %1$s</string>
+    <string name="balance">Guthaben: %1$s</string>
 </resources>

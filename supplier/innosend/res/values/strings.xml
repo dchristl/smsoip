@@ -37,8 +37,6 @@
     <string name="return_171">Date in past.</string>
     <string name="return_172">Too many numbers.</string>
     <string name="return_unknown">Unknown problem:</string>
-    <string name="default_type">Default send type</string>
-    <string name="default_type_long">Choose your preselected send type</string>
     <string name="mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
     </string>
     <string name="multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not

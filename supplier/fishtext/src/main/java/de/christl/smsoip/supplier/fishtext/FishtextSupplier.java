@@ -70,13 +70,13 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
         HttpURLConnection con = factory.writeBody(String.format(LOGIN_BODY, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING)));
         Map<String, List<String>> headerFields = con.getHeaderFields();
         if (headerFields == null || headerFields.size() == 0) {
-            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
             smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
         sessionID = UrlConnectionFactory.findCookieByName(headerFields, SESSION_ID_COOKIE.toUpperCase());
         if (sessionID == null || sessionID.equals("")) {
-            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
             smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
         }
@@ -113,7 +113,7 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
         Document parse = Jsoup.parse(inputStream, ENCODING, "");
         String text = parse.select("#balanceCounter").text();
         if (text != null && !text.equals("")) {
-            text = String.format(provider.getTextByResourceId(R.string.text_balance), text);
+            text = String.format(provider.getTextByResourceId(R.string.balance), text);
             return SMSActionResult.NO_ERROR(text);
         }
         return SMSActionResult.UNKNOWN_ERROR();
