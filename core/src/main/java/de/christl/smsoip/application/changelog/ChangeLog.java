@@ -215,12 +215,15 @@ public class ChangeLog {
 
     private String getLog(boolean full, InputStream logToShowIs) {
         sb = new StringBuffer();
+        BufferedReader br = null;
+        InputStreamReader streamReader = null;
         try {
             if (logToShowIs == null) {
                 int logToShow = full ? R.raw.welcome : R.raw.changelog;
                 logToShowIs = context.getResources().openRawResource(logToShow);
             }
-            BufferedReader br = new BufferedReader(new InputStreamReader(logToShowIs));
+            streamReader = new InputStreamReader(logToShowIs);
+            br = new BufferedReader(streamReader);
 
             String line;
             boolean advanceToEOVS = false; // if true: ignore further version sections
@@ -274,9 +277,23 @@ public class ChangeLog {
                 }
             }
             this.closeList();
-            br.close();
+
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), e.getMessage());
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (streamReader != null) {
+                    streamReader.close();
+                }
+                if (logToShowIs != null) {
+                    logToShowIs.close();
+                }
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+            }
         }
 
         return sb.toString();

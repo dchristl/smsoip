@@ -23,6 +23,6 @@
     <string name="core_not_installed">This is just a plugin and SMSoIP is needed to make this plugin work.\nPlease
         install it from store.
     </string>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
+    <string name="default_type">Default send type</string>
+    <string name="default_type_long">Choose your preselected send type</string>
 </resources>

@@ -76,10 +76,10 @@ public class CherrySMSOptionProvider extends OptionProvider {
         String[] typeArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(typeArray);
         listPref.setEntryValues(typeArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
         return out;

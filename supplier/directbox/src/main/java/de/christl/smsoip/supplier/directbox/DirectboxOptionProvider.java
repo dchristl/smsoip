@@ -76,6 +76,7 @@ public class DirectboxOptionProvider extends OptionProvider {
     public int getMaxMessageCount() {
         return 1;
     }
+
     //removed, caused NPE on twice call, needs a research
 //    @Override
 //    protected Integer getChangelogResourceId() {
@@ -299,7 +300,7 @@ public class DirectboxOptionProvider extends OptionProvider {
         Outer:
         for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
             if (stringEntry.getKey().startsWith(SENDER_PREFIX)) {
-                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$",""); //replace everything ends with dot and number
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$", ""); //replace everything ends with dot and number
                 for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
                     if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
                         continue Outer;
