@@ -130,6 +130,7 @@ public class SendActivity extends AllActivity {
     private Integer currentAccountIndex;
     private MobclixMMABannerXLAdView adView;
     private ColorStateList defaultColor;
+    private int instanciationCounter = 0;
 
 
     @Override
@@ -1132,7 +1133,13 @@ public class SendActivity extends AllActivity {
         freeLayout.removeAllViews();
         freeLayout.setOrientation(LinearLayout.HORIZONTAL);
         if (smSoIPPlugin != null) {
-            smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
+            try {
+                smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
+            } catch (Exception e) {
+                ACRA.getErrorReporter().putCustomData("instanciatedId", String.valueOf(instanciationCounter++));
+                ACRA.getErrorReporter().handleSilentException(e);
+                freeLayout.setVisibility(View.GONE);
+            }
         }
     }
 
