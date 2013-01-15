@@ -1134,13 +1134,13 @@ public class SendActivity extends AllActivity {
         freeLayout.setOrientation(LinearLayout.HORIZONTAL);
         instanciationCounter++;
         if (smSoIPPlugin != null) {
-//            try {
+            try {
                 smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
-//            } catch (Exception e) {
-//                ACRA.getErrorReporter().putCustomData("instanciatedId", String.valueOf(instanciationCounter));
-//                ACRA.getErrorReporter().handleSilentException(e);
-//                freeLayout.setVisibility(View.GONE);
-//            }
+            } catch (Exception e) {
+                ACRA.getErrorReporter().putCustomData("instanciatedId", String.valueOf(instanciationCounter));
+                ACRA.getErrorReporter().handleSilentException(e);
+                freeLayout.setVisibility(View.GONE);
+            }
         }
     }
 
