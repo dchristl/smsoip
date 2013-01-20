@@ -74,39 +74,28 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
         return refreshInformations(true);
     }
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
         return refreshInformations(false);
     }
 
 
-    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) {
+    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) throws IOException {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
                 return result;
             }
         }
-        try {
-            //first get the login cookie
-            UrlConnectionFactory factory = new UrlConnectionFactory(HOME_PAGE, UrlConnectionFactory.METHOD_GET);
-            factory.setCookies(sessionCookies);
-            HttpURLConnection con = factory.create();
-            return processRefreshInformations(con.getInputStream());
-        } catch (SocketTimeoutException stoe)
-
-        {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
-            return SMSActionResult.NETWORK_ERROR();
-
-        }
+        //first get the login cookie
+        UrlConnectionFactory factory = new UrlConnectionFactory(HOME_PAGE, UrlConnectionFactory.METHOD_GET);
+        factory.setCookies(sessionCookies);
+        HttpURLConnection con = factory.create();
+        return processRefreshInformations(con.getInputStream());
     }
 
     SMSActionResult processRefreshInformations(InputStream inputStream) throws IOException {
@@ -130,57 +119,49 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
 
     @Override
-    public synchronized SMSActionResult checkCredentials(String userName, String password) {
+    public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException {
         //FIRST STEP
         Vector<String> tmpSessionCookies = new Vector<String>();
-        try {
-            UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_FIRST_STEP_URL, UrlConnectionFactory.METHOD_GET);
-            //first get the login cookie
-            HttpURLConnection con = factory.create();
-            Map<String, List<String>> headerFields = con.getHeaderFields();
-            if (headerFields == null) {
-                return SMSActionResult.NETWORK_ERROR();
-            }
-            String firstCookie = "C_SMSDE_ID";
-            String firstCookiePattern = firstCookie + ".*=.*";
-            String smsDeCookie = UrlConnectionFactory.findCookieByPattern(headerFields, firstCookiePattern);
-            if (smsDeCookie == null) {
-                return SMSActionResult.NETWORK_ERROR(); //not possible if network available
-            }
-            tmpSessionCookies.add(smsDeCookie.replaceAll(";.*", ""));
-            //now we have the login idependent id cookie
-            factory = new UrlConnectionFactory(LOGIN_SECOND_STEP_URL);
-            factory.setCookies(tmpSessionCookies);
-            factory.setFollowRedirects(false);
-            String userNamePasswordBody = "username=" + userName + "&passwd=" + password;
-            con = factory.writeBody(userNamePasswordBody);
-            headerFields = con.getHeaderFields();
-            if (headerFields == null || tmpSessionCookies.size() == 0) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            //get the login cookie
-            String tmpSessionCookie = tmpSessionCookies.get(0);
-            tmpSessionCookie = tmpSessionCookie.replaceAll("=.*", "");
-            sessionCookies = new Vector<String>();
-            String cSmsdeUid = "C_SMSDE_UID";
-            String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, cSmsdeUid);
-            if (c_smsde_uid_cookie == null) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(cSmsdeUid, tmpSessionCookie));
-            String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
-            sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));
-            if (sessionCookies.size() != 2) {
-                return SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            return SMSActionResult.LOGIN_SUCCESSFUL();
-        } catch (SocketTimeoutException stoe) {
-            Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
-            return SMSActionResult.TIMEOUT_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "IOException", e);
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_FIRST_STEP_URL, UrlConnectionFactory.METHOD_GET);
+        //first get the login cookie
+        HttpURLConnection con = factory.create();
+        Map<String, List<String>> headerFields = con.getHeaderFields();
+        if (headerFields == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
+        String firstCookie = "C_SMSDE_ID";
+        String firstCookiePattern = firstCookie + ".*=.*";
+        String smsDeCookie = UrlConnectionFactory.findCookieByPattern(headerFields, firstCookiePattern);
+        if (smsDeCookie == null) {
+            return SMSActionResult.NETWORK_ERROR(); //not possible if network available
+        }
+        tmpSessionCookies.add(smsDeCookie.replaceAll(";.*", ""));
+        //now we have the login idependent id cookie
+        factory = new UrlConnectionFactory(LOGIN_SECOND_STEP_URL);
+        factory.setCookies(tmpSessionCookies);
+        factory.setFollowRedirects(false);
+        String userNamePasswordBody = "username=" + userName + "&passwd=" + password;
+        con = factory.writeBody(userNamePasswordBody);
+        headerFields = con.getHeaderFields();
+        if (headerFields == null || tmpSessionCookies.size() == 0) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        //get the login cookie
+        String tmpSessionCookie = tmpSessionCookies.get(0);
+        tmpSessionCookie = tmpSessionCookie.replaceAll("=.*", "");
+        sessionCookies = new Vector<String>();
+        String cSmsdeUid = "C_SMSDE_UID";
+        String c_smsde_uid_cookie = UrlConnectionFactory.findCookieByName(headerFields, cSmsdeUid);
+        String c_smsde_uid1_cookie = UrlConnectionFactory.findCookieByName(headerFields, "C_SMSDE_UID1");
+        if (c_smsde_uid_cookie == null || c_smsde_uid1_cookie == null) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        sessionCookies.add(c_smsde_uid_cookie.replaceAll(";.*", "").replaceAll(cSmsdeUid, tmpSessionCookie));
+        sessionCookies.add(c_smsde_uid1_cookie.replaceAll(";.*", ""));
+        if (sessionCookies.size() != 2) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        return SMSActionResult.LOGIN_SUCCESSFUL();
     }
 
 
@@ -189,7 +170,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
             if (receiverNumber.length() <= 7) {
-                out.append(getProvider().getTextByResourceId(R.string.text_wrong_number)).append(": ").append(receiver.getReceiverNumber()).append("\n");
+                out.append(getProvider().getTextByResourceId(R.string.wrong_number)).append(": ").append(receiver.getReceiverNumber()).append("\n");
             }
         }
         return out.toString();
@@ -249,24 +230,25 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         return sendSMS(smsText, receivers, spinnerText, null);
     }
 
-    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) {
+
+    private FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTimeObject) throws IOException {
         String errorText = preCheckNumbers(receivers);
         if (!errorText.equals("")) {
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(errorText), receivers);
+        }
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         int sendIndex = findSendMethod(spinnerText, smsText);
         FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
-            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
-            if (!result.isSuccess()) {
-                out.add(new FireSMSResult(receiver, result));
-                continue;
-            }
+
             String prefix = receiverNumber.substring(0, 7);
             String number = receiverNumber.substring(7);
             try {
@@ -274,66 +256,70 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 if (sendIndex == TYPE_FREE) {
                     smsText += " / sms.de";
                 }
-                String body = String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING));
+                StringBuilder body = new StringBuilder(String.format("prefix=%s&target_phone=%s&msg=%s", URLEncoder.encode(prefix, ENCODING), number, URLEncoder.encode(smsText, ENCODING)));
                 boolean flagSet = provider.getSettings().getBoolean(InputPatcher.SHOW_RETURN_FROM_SERVER, false);
                 switch (sendIndex) {
                     case TYPE_POWER_160:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=0";
-                        body += "&smslength=160";
-                        body += "&which_page=power-sms+160";    //this is for output of send type
+                        body.append("&empfcount=1");
+                        body.append("&oadc=0");
+                        body.append("&smslength=160");
+                        body.append("&which_page=power-sms+160");    //this is for output of send type
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+160"; //this is for the return message
+                            body.append("&which_page_international=power-sms-international+160"); //this is for the return message
                         }
                         break;
                     case TYPE_POWER_160_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=1";
-                        body += "&smslength=160";
-                        body += "&which_page=power-sms+160";
+                        body.append("&empfcount=1");
+                        body.append("&oadc=1");
+                        body.append("&smslength=160");
+                        body.append("&which_page=power-sms+160");
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+160";
+                            body.append("&which_page_international=power-sms-international+160");
                         }
                         break;
                     case TYPE_POWER_300:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=0";
-                        body += "&smslength=300";
-                        body += "&which_page=power-sms+300";
+                        body.append("&empfcount=1");
+                        body.append("&oadc=0");
+                        body.append("&smslength=300");
+                        body.append("&which_page=power-sms+300");
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+300";
+                            body.append("&which_page_international=power-sms-international+300");
                         }
                         break;
                     case TYPE_POWER_300_SI:
                         factory = new UrlConnectionFactory(SEND_POWER_PAGE);
-                        body += "&empfcount=1";
-                        body += "&oadc=1";
-                        body += "&smslength=300";
-                        body += "&which_page=power-sms+300";
+                        body.append("&empfcount=1");
+                        body.append("&oadc=1");
+                        body.append("&smslength=300");
+                        body.append("&which_page=power-sms+300");
                         if (!flagSet) {
-                            body += "&which_page_international=power-sms-international+300";
+                            body.append("&which_page_international=power-sms-international+300");
                         }
                         break;
                     case TYPE_FREE:
                     default:
                         factory = new UrlConnectionFactory(SEND_FREE_PAGE);
-                        body += "&smslength=151";
+                        body.append("&smslength=151");
                         break;
                 }
                 if (dateTimeObject != null) {
-                    body += "&schedule=set";
+                    body.append("&schedule=set");
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    body += "&day=" + sdf.format(dateTimeObject.getCalendar().getTime());
-                    body += "&hour=" + dateTimeObject.getHour();
-                    body += "&minute=" + dateTimeObject.getMinute();
+                    body.append("&day=").append(sdf.format(dateTimeObject.getCalendar().getTime()));
+                    body.append("&hour=").append(dateTimeObject.getHour());
+                    body.append("&minute=").append(dateTimeObject.getMinute());
+                }
+                if (provider.isFlash()) {
+                    body.append("&flashsms=1");
                 }
                 factory.setCookies(sessionCookies);
-                HttpURLConnection con = factory.writeBody(body);
+                HttpURLConnection con = factory.writeBody(body.toString());
                 SMSDeSendResult sendResult = processSendReturn(con.getInputStream());
                 if (sendResult.isSuccess()) {
+                    provider.reset();
                     out.add(new FireSMSResult(receiver, SMSActionResult.NO_ERROR(sendResult.getMessage())));
                 } else {
                     out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(sendResult.getMessage())));
@@ -352,7 +338,7 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     @Override
-    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) {
+    public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
         return sendSMS(smsText, receivers, spinnerText, dateTime);
     }
 
@@ -371,4 +357,6 @@ public class SMSDeSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         int sendType = findSendMethod(spinnerText, "");
         return sendType != TYPE_FREE;
     }
+
+
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="core_not_installed_head">SMSoIP ist nicht installiert!</string>
+    <string name="core_not_installed">Dies ist nur ein Plugin und SMSoIP wird benötigt, damit das Plugin
+        funktioniert.\nBitte vom Store nachinstallieren.
+    </string>
+
+    <string name="default_type">Standard Absendetyp</string>
+    <string name="default_type_long">Wähle den automatisch vorausgewählten Typ für das Absenden</string>
+
+</resources>

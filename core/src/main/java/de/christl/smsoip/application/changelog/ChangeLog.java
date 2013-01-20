@@ -84,15 +84,12 @@ public class ChangeLog {
 
         // get version numbers
         this.lastVersion = sp.getString(VERSION_KEY, "");
-        Log.d(TAG, "lastVersion: " + lastVersion);
         try {
             this.thisVersion = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), 0).versionName;
         } catch (NameNotFoundException e) {
             this.thisVersion = "?";
-            Log.e(TAG, "could not get version name from manifest!");
         }
-        Log.d(TAG, "appVersion: " + this.thisVersion);
 
         // save new version number to preferences
         SharedPreferences.Editor editor = sp.edit();
@@ -144,28 +141,53 @@ public class ChangeLog {
         return this.getDialog(false);
     }
 
+    public AlertDialog getWelcomeDialog() {
+        return this.getDialog(true);
+    }
+
+
     private AlertDialog getDialog(boolean full) {
         LayoutInflater factory = LayoutInflater.from(context);
         final View dialogView = factory.inflate(R.layout.changelogdialog, null);
         WebView wv = (WebView) dialogView.findViewById(R.id.webView);
         wv.setBackgroundColor(0); // transparent
         // wv.getSettings().setDefaultTextEncodingName("utf-8");
-        wv.loadDataWithBaseURL(null, this.getLog(full), "text/html", "UTF-8", null);
-
+        wv.loadDataWithBaseURL(null, this.getLog(full, null), "text/html", "UTF-8", null);
         AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        int changelog_title = full ? R.string.welcome_title : R.string.changelog_title;
         builder.setTitle(context.getResources().getString(
-                R.string.changelog_title))
+                changelog_title))
                 .setView(dialogView)
-                .setCancelable(false)
                 .setPositiveButton(
                         context.getResources().getString(
-                                R.string.text_ok),
+                                R.string.ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         });
+        return builder.create();
+    }
 
+    public AlertDialog getChangelogDialogByView(InputStream dialogContent) {
+        LayoutInflater factory = LayoutInflater.from(context);
+        final View dialogView = factory.inflate(R.layout.changelogdialog, null);
+        WebView wv = (WebView) dialogView.findViewById(R.id.webView);
+        wv.setBackgroundColor(0); // transparent
+        // wv.getSettings().setDefaultTextEncodingName("utf-8");
+        wv.loadDataWithBaseURL(null, this.getLog(true, dialogContent), "text/html", "UTF-8", null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        builder.setTitle(context.getResources().getString(
+                R.string.changelog_title))
+                .setView(dialogView)
+                .setPositiveButton(
+                        context.getResources().getString(
+                                R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
         return builder.create();
     }
 
@@ -174,15 +196,9 @@ public class ChangeLog {
      *         installed version of your app (what's new)
      */
     public String getLog() {
-        return this.getLog(false);
+        return this.getLog(false, null);
     }
 
-    /**
-     * @return HTML which displays full change log
-     */
-    public String getFullLog() {
-        return this.getLog(true);
-    }
 
     /**
      * modes for HTML-Lists (bullet, numbered)
@@ -197,12 +213,17 @@ public class ChangeLog {
     private StringBuffer sb = null;
     private static final String EOCL = "END_OF_CHANGE_LOG";
 
-    private String getLog(boolean full) {
-        // read changelog.txt file
+    private String getLog(boolean full, InputStream logToShowIs) {
         sb = new StringBuffer();
+        BufferedReader br = null;
+        InputStreamReader streamReader = null;
         try {
-            InputStream ins = context.getResources().openRawResource(R.raw.changelog);
-            BufferedReader br = new BufferedReader(new InputStreamReader(ins));
+            if (logToShowIs == null) {
+                int logToShow = full ? R.raw.welcome : R.raw.changelog;
+                logToShowIs = context.getResources().openRawResource(logToShow);
+            }
+            streamReader = new InputStreamReader(logToShowIs);
+            br = new BufferedReader(streamReader);
 
             String line;
             boolean advanceToEOVS = false; // if true: ignore further version sections
@@ -256,9 +277,23 @@ public class ChangeLog {
                 }
             }
             this.closeList();
-            br.close();
+
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), e.getMessage());
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+                if (streamReader != null) {
+                    streamReader.close();
+                }
+                if (logToShowIs != null) {
+                    logToShowIs.close();
+                }
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+            }
         }
 
         return sb.toString();
@@ -285,7 +320,6 @@ public class ChangeLog {
         this.listMode = Listmode.NONE;
     }
 
-    private static final String TAG = "ChangeLog";
 
     /**
      * manually set the last version name - for testing purposes only

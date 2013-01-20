@@ -21,6 +21,8 @@ package de.christl.smsoip.connection;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class UrlConnectionFactory {
      */
     private int timeout = 10000;
     private List<String> cookies;
+    private Map<String, String> requestProperties;
     private HttpURLConnection con;
     private boolean followRedirects = true;
 
@@ -63,7 +66,9 @@ public class UrlConnectionFactory {
         con = (HttpURLConnection) new URL(url).openConnection();
         con.setReadTimeout(timeout);
         con.setConnectTimeout(timeout);
-        con.setRequestProperty("User-Agent", targetAgent);
+        if (targetAgent != null) {
+            con.setRequestProperty("User-Agent", targetAgent);
+        }
         con.setRequestMethod(method);
         con.setInstanceFollowRedirects(followRedirects);
         if (cookies != null) {
@@ -73,6 +78,12 @@ public class UrlConnectionFactory {
                 cookieBuilder.append(sessionCookie).append(i + 1 < sessionCookiesSize ? "; " : "");
             }
             con.setRequestProperty("Cookie", cookieBuilder.toString());
+        }
+        if (requestProperties != null) {
+            for (Map.Entry<String, String> stringStringEntry : requestProperties.entrySet()) {
+                con.setRequestProperty(stringStringEntry.getKey(), stringStringEntry.getValue());
+            }
+
         }
         return con;
     }
@@ -117,12 +128,19 @@ public class UrlConnectionFactory {
         return returnFromServer.toString();
     }
 
+    /**
+     * find the cookie by given name, the cookie must use uppercase letters
+     *
+     * @param headerFields
+     * @param cookieName
+     * @return
+     */
     public static String findCookieByName(Map<String, List<String>> headerFields, String cookieName) {
         for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
             String cookieList = stringListEntry.getKey();
             if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
                 for (String cookie : stringListEntry.getValue()) {
-                    if (cookie != null && cookie.toUpperCase().startsWith(cookieName + "=")) {
+                    if (cookie != null && cookie.toUpperCase().startsWith(cookieName.toUpperCase() + "=")) {
                         return cookie;
                     }
                 }
@@ -165,6 +183,10 @@ public class UrlConnectionFactory {
         this.cookies = cookies;
     }
 
+    public void setRequestProperties(Map<String, String> requestProperties) {
+        this.requestProperties = requestProperties;
+    }
+
     public void setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
     }
@@ -186,6 +208,19 @@ public class UrlConnectionFactory {
             create();
         }
         return con;
+    }
+
+    public static String getMD5String(String stringToEncode, String encoding) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        byte[] bytesOfMessage = stringToEncode.getBytes(encoding);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] thedigest = md.digest(bytesOfMessage);
+        StringBuilder hexString = new StringBuilder();
+        for (byte aThedigest : thedigest) {
+            String hexStringRaw = Integer.toHexString(0xFF & aThedigest);
+            hexString.append(("00" + hexStringRaw).substring(hexStringRaw.length()));   //add leading zero to String
+        }
+
+        return hexString.toString();
     }
 
     public void writeMultipartBody(Map<String, String> parameterMap, String encoding) throws IOException {

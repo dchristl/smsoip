@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<resources>
+    <string name="market_plugin_url">amzn://apps/android?s=smsoip+plugin</string>
+    <string name="visit_plugin_page_description">Finde mehr Plugins bei Amazon</string>
+    <string name="market_alternative">http://www.amazon.com/gp/mas/dl/android?s=smsoip+plugin</string>
+    <string name="adfree_market_url">amzn://android?p=de.christl.smsoip.adfree</string>
+    <string name="adfree_alternative">http://www.amazon.com/gp/product/B009L2LIN6</string>
+    <string name="market_rate_url">http://www.amazon.com/gp/product/B009L1YGY0</string>
+    <string name="market_alternative_rate_url">http://www.amazon.com/gp/product/B009L1YGY0</string>
+</resources>

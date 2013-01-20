@@ -25,15 +25,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.autosuggest.NameNumberEntry;
-import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.models.Message;
 import de.christl.smsoip.picker.DateTimeObject;
+import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -76,8 +77,8 @@ public abstract class DatabaseHandler {
         return out;
     }
 
-    private static String translateTypeToString(Context context, int value) {
-        return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.text_no_phone_type_label));
+    public static String translateTypeToString(Context context, int value) {
+        return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.no_phone_type_label));
     }
 
 
@@ -106,8 +107,7 @@ public abstract class DatabaseHandler {
                 }
                 query.close();
             } catch (IllegalArgumentException e) {
-                Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
-                ErrorReporter instance = ErrorReporter.getInstance();
+                ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
 
@@ -129,9 +129,9 @@ public abstract class DatabaseHandler {
                 String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
                 Receiver receiver = findContactByNumber(number, context);
                 if (receiver == null) {
-                    String text = context.getString(R.string.text_unknown);
+                    String text = context.getString(R.string.unknown);
                     receiver = new Receiver(text);
-                    receiver.setRawNumber(number, context.getString(R.string.text_unknown));//TODO exchange by correct type
+                    receiver.setRawNumber(number, context.getString(R.string.unknown));
 
                 }
                 out.put(receiver, msg);
@@ -189,20 +189,17 @@ public abstract class DatabaseHandler {
                 context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
             }
         } catch (Exception e) {
-            Log.e(DatabaseHandler.class.getCanonicalName(), "", e);
-            ErrorReporter.getInstance().handleSilentException(e);
+            ACRA.getErrorReporter().handleSilentException(e);
         }
     }
 
 
-    public static Receiver findContactByNumber(String givenNumber, Context context) {
+    public static Receiver findContactByNumber(String rawNumber, Context context) {
         Receiver out = null;
         String name;
         String[] projection = new String[]{
-                ContactsContract.PhoneLookup.DISPLAY_NAME,
-                ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
-
-        String encodedNumber = Uri.encode(givenNumber);
+                ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID, ContactsContract.Contacts.PHOTO_ID};
+        String encodedNumber = Uri.encode(rawNumber);
         if (!encodedNumber.equals("")) {
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
             try {
@@ -211,51 +208,72 @@ public abstract class DatabaseHandler {
                 if (query.moveToFirst()) {
                     name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
                     if (name == null || name.equals("")) {
-                        name = context.getString(R.string.text_unknown);
+                        name = context.getString(R.string.unknown);
                     }
                     out = new Receiver(name);
-                    out.setRawNumber(givenNumber, context.getString(R.string.text_unknown));        //TODO check if type is available her
+                    out.setRawNumber(rawNumber, context.getString(R.string.unknown));
                 }
                 query.close();
             } catch (IllegalArgumentException e) {
-                Log.e(DatabaseHandler.class.getCanonicalName(), "This is caused by findContactByNumber", e);
-                ErrorReporter instance = ErrorReporter.getInstance();
+                ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
-
                 instance.handleSilentException(e);
             }
         }
         return out;
     }
 
-    public static List<NameNumberEntry> getAllContactsWithPhoneNumber(Context context) {
-        List<NameNumberEntry> out = new ArrayList<NameNumberEntry>();
-        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-        while (cursor.moveToNext()) {
-            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-            String contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            boolean hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0;
-            if (hasPhone) {
-                //add contact to list if has number
+    /**
+     * get the cursor by search term
+     * return is ordered by mobile
+     *
+     * @param context
+     * @param searchTerm
+     * @return
+     */
+    public static Cursor getDBCursor(Context context, CharSequence searchTerm) {
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE};
+        String selection = searchTerm == null ? null : ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " LIKE '%" + searchTerm + "%' OR " + ContactsContract.CommonDataKinds.Phone.NUMBER + " LIKE '%" + searchTerm + "%'";
 
-                Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                List<NameNumberEntry> addAfterMobileList = new ArrayList<NameNumberEntry>();
-                while (phones.moveToNext()) {
-                    String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    int phoneType = phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-                    NameNumberEntry nameNumberEntry = new NameNumberEntry(contactName, NumberUtils.fixNumber(phoneNumber), translateTypeToString(context, phoneType));
-                    if (phoneType == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE) {
-                        out.add(nameNumberEntry);
-                    } else {
-                        addAfterMobileList.add(nameNumberEntry);
-                    }
+        String orderby = "CASE WHEN " + ContactsContract.CommonDataKinds.Phone.TYPE + " = " + ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE
+                + " THEN 0" +
+                " ELSE 1" +
+                "  END";
+
+        return context.getContentResolver().query(uri, projection, selection, null, orderby);
+    }
+
+
+    public static StringBuilder resolveTextFileContent(Uri uri, Context context) {
+        StringBuilder builder = new StringBuilder();
+        if (uri == null || context == null) {
+            return builder;
+        }
+        ContentResolver cr = context.getContentResolver();
+        InputStream stream = null;
+        int ch;
+        try {
+            stream = cr.openInputStream(uri);
+            while ((ch = stream.read()) != -1) {
+                builder.append((char) ch);
+            }
+        } catch (FileNotFoundException e) {
+            return builder;
+        } catch (IOException e) {
+            return builder;
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException ignored) {
                 }
-                out.addAll(addAfterMobileList);
-                phones.close();
             }
         }
-        cursor.close();
-        return out;
+
+
+        return builder;
     }
 }

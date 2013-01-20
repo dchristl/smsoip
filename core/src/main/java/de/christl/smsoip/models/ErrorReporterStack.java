@@ -18,9 +18,10 @@
 
 package de.christl.smsoip.models;
 
-import org.acra.ErrorReporter;
+import org.acra.ACRA;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 /**
  * abstract class for errorreporting aka action log
@@ -28,16 +29,30 @@ import java.util.ArrayList;
 public abstract class ErrorReporterStack {
     private static ArrayList<String> stack = new ArrayList<String>();
 
-    public static void put(String action) {
+    public synchronized static void put(String action) {
         stack.add(action);
-        updateErrorReport();
+        try {
+            if (stack.size() > 30) {
+                ArrayList<String> tmpList = new ArrayList<String>(stack);
+                int i = 0;
+                for (String next : tmpList) {
+                    if (i > 10) {
+                        stack.remove(next);
+                    }
+                    i++;
+                }
+            }
+            updateErrorReport();
+        } catch (ConcurrentModificationException e) {  //should not be s show stopper
+            ACRA.getErrorReporter().handleSilentException(e);
+        }
     }
 
     private static void updateErrorReport() {
         int z = 0;
         int size = stack.size();
         for (int i = size; i > 0; i--) {
-            ErrorReporter.getInstance().putCustomData("action_" + z, stack.get(i - 1));
+            ACRA.getErrorReporter().putCustomData("action_" + z, stack.get(i - 1));
             z++;
             if (z >= 10) {
                 break;

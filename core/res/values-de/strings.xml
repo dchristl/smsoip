@@ -18,119 +18,116 @@
   -->
 
 <resources>
-    <string name="button_send">Senden</string>
-    <string name="text_changeProvider">Anbieter</string>
-    <string name="text_chooseProvider">Anbieter auswählen</string>
-    <string name="text_provider_settings">Anbietereinstellungen</string>
-    <string name="text_program_settings">Programmeinstellungen</string>
-    <string name="text_mainmenu">Hauptmenü</string>
-    <string name="text_exit">Beenden</string>
-    <string name="text_optionTitle">Optionen für</string>
-    <string name="text_username">Benutzername</string>
-    <string name="text_password">Passwort</string>
-    <string name="text_signature">Signatur</string>
-    <string name="text_signature_description">Die Signatur, die zur Nachricht hinzugefügt werden kann.
-    </string>
-    <string name="button_save">Speichern</string>
-    <string name="hint_receiverField">Name oder Nummmer</string>
-    <string name="hint_smsText">Nachricht</string>
-    <string name="hint_sendernumber">Absender</string>
-    <string name="text_chooseType">Sendetyp</string>
-    <string formatted="false" name="text_smssigns">%s Zeichen (%s SMS)</string>
-    <string name="text_pickNumber">Nummer für %1$s auswählen:</string>
-    <string name="text_noNumber">Keine Nummer für %1$s gefunden</string>
-    <string name="text_smscomitted">SMS wird gesendet</string>
-    <string name="text_ok">OK</string>
-    <string name="text_cancel">Abbrechen</string>
-    <string name="text_wantClear">Alle eingegebenen Daten werden gelöscht!</string>
-    <string name="text_error">Fehler</string>
-    <string name="text_success">Erfolg</string>
-    <string name="text_noNetwork">Netzwerkfehler</string>
-    <string name="text_unknown_error">Unbekannter Fehler</string>
-    <string name="text_loginFailed">Zugangsdaten fehlerhaft!</string>
-    <string name="text_user_cancelled">Abbruch durch Nutzer</string>
-    <string name="text_loginSuccessful">Login erfolgreich</string>
-    <string name="text_notyetrefreshed">Noch nicht aktualisiert</string>
-    <string name="text_click">(Klick)</string>
+    <string name="send">Senden</string>
+    <string name="changeProvider">Anbieter</string>
+    <string name="chooseProvider">Anbieter auswählen</string>
+    <string name="provider_settings">Anbietereinstellungen</string>
+    <string name="program_settings">Programmeinstellungen</string>
+    <string name="exit">Beenden</string>
+    <string name="username">Benutzername</string>
+    <string name="password">Passwort</string>
+    <string name="save">Speichern</string>
+    <string name="receiverField">Name oder Nummer</string>
+    <string name="smsText">Nachricht</string>
+    <string name="sendernumber">Absender</string>
+    <string name="chooseType">Sendetyp</string>
+    <string formatted="false" name="smssigns">%s Zeichen (%s SMS)</string>
+    <string name="pickNumber">Nummer für %1$s auswählen:</string>
+    <string name="noNumber">Keine Nummer für %1$s gefunden</string>
+    <string name="smscomitted">SMS wird gesendet</string>
+    <string name="ok">OK</string>
+    <string name="wantClear">Alle eingegebenen Daten werden gelöscht!</string>
+    <string name="error">Fehler</string>
+    <string name="success">Erfolg</string>
+    <string name="noNetwork">Netzwerkfehler</string>
+    <string name="unknown_error">Unbekannter Fehler</string>
+    <string name="loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="user_cancelled">Abbruch durch Nutzer</string>
+    <string name="loginSuccessful">Login erfolgreich</string>
+    <string name="notyetrefreshed">Noch nicht aktualisiert</string>
+    <string name="tap">(Tippe)</string>
     <string name="description">Senden von SMS über diverse Anbieter</string>
-    <string name="text_pleaseWait">Bitte warten</string>
-    <string name="text_noNumberInput">Keine Nummer eingegeben!</string>
-    <string name="text_noTextInput">Kein Text eingegeben!</string>
-    <string name="text_noNetworkAvailable">Netzwerk nicht aktiviert!</string>
-    <string name="text_smsSend_Success">SMS wurde übermittelt</string>
-    <string name="text_timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
-    <string name="text_sureQuit">SMSoIP beenden?</string>
-    <string name="text_saveChanges">Änderungen speichern?</string>
-    <string name="text_yesOption">Ja</string>
-    <string name="text_noOption">Nein</string>
-    <string name="text_checkCredentials">Zugangsdaten werden überprüft.</string>
-    <string name="text_noCredentials">Zugangsdaten unvollständig</string>
-    <string name="button_openNetworkSettings">Netzwerkeinstellungen</string>
-    <string name="button_activateWLAN">W-LAN aktivieren</string>
-    <string name="text_not_yet_allowed">Senden noch nicht möglich</string>
-    <string name="text_no_providers">Keine Anbieter verfügbar.\nBitte nachinstallieren.\nProgram wird geschlossen!
+    <string name="noNumberInput">Keine Nummer eingegeben!</string>
+    <string name="noTextInput">Kein Text eingegeben!</string>
+    <string name="noNetworkAvailable">Netzwerk nicht aktiviert!</string>
+    <string name="smsSend_Success">SMS wurde übermittelt</string>
+    <string name="timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
+    <string name="press_back_again">Erneut drücken zum Beenden</string>
+    <string name="checkCredentials">Zugangsdaten werden überprüft.</string>
+    <string name="noCredentials">Zugangsdaten unvollständig</string>
+    <string name="openNetworkSettings">Netzwerkeinstellungen</string>
+    <string name="activateWLAN">W-LAN aktivieren</string>
+    <string name="no_providers">Es ist kein Plugin installiert.\nSMSoIP benötigt mindestens ein Plugin, um zu
+        funktionieren.\nDu wirst zur Plugin-Seite weitergeleitet.
     </string>
-    <string name="text_default_provider">Standardanbieter</string>
-    <string name="text_default_provider_description">Der Standardanbieter der automatisch beim Starten der App
-        ausgewählt ist
+    <string name="default_provider">Standardanbieter</string>
+    <string name="default_provider_description">Der Standardanbieter der automatisch beim Starten der App
+        ausgewählt ist.
     </string>
-    <string name="text_no_default_Provider">Keiner (jedesmal fragen)</string>
-    <string name="text_visit_project_page">Homepage besuchen</string>
-    <string name="text_visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen</string>
-    <string name="text_visit_plugin_page">Plugins suchen</string>
-    <string name="text_visit_plugin_page_description">Finde weitere Plugins bei Google Play</string>
-    <string name="text_area_code">Standardländercode</string>
-    <string name="text_area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
+    <string name="no_default_Provider">Keiner (jedesmal fragen)</string>
+    <string name="visit_project_page">Homepage besuchen</string>
+    <string name="visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen.</string>
+    <string name="visit_plugin_page">Plugins suchen</string>
+    <string name="donate_plugin_page">Werbung entfernen</string>
+    <string name="donate_plugin_page_description">Entferne die Werbung und unterstütze die Weiterentwicklung durch
+        Kauf des Donate Plugins.
+    </string>
+    <string name="reshow_welcome">Willkommensdialog anschauen</string>
+    <string name="reshow_welcome_description">Schaue dir den Willkommensdialog noch einmal für eine kurze
+        Einführung an.
+    </string>
+    <string name="area_code">Standardländercode</string>
+    <string name="area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
     </string>
-    <string name="text_reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
-    <string name="text_checkLogin">Zugangsdaten überprüfen</string>
-    <string name="text_deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
-    <string name="text_too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
+    <string name="reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
+    <string name="deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
         Applikation updaten:
     </string>
-    <string name="text_enable_network_check">Netzwerküberprüfung aktivieren</string>
-    <string name="text_enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
+    <string name="enable_network_check">Netzwerküberprüfung aktivieren</string>
+    <string name="enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
         ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
     </string>
-    <string name="text_enable_info_update">Auto Aktualisierung</string>
-    <string name="text_enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie
+    <string name="enable_info_update">Auto Aktualisierung</string>
+    <string name="enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie
         kostenlose SMS automatisch aktualisiert.
     </string>
-    <string name="text_enable_provider_output">Anbieterausgabe aktivieren</string>
-    <string name="text_enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
-        versehen (z.B. \'SMSoIP (GMX)\')
+    <string name="enable_provider_output">Anbieterausgabe aktivieren</string>
+    <string name="enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
+        versehen (z.B. \'SMSoIP (GMX)\').
     </string>
     <string name="name_heading">Name</string>
     <string name="number_heading">Nummer</string>
-    <string name="text_unknown">Unbekannt</string>
-    <string name="text_max_receivers_reached">Maximale Anzahl von %1$s Empfänger erreicht. Empfänger
+    <string name="unknown">Unbekannt</string>
+    <string name="max_receivers_reached">Maximale Anzahl von %1$s Empfänger erreicht. Empfänger
         konnte nicht hinzugefügt werden.
     </string>
-    <string name="text_too_much_receivers">Die maximale Anzahl der Empfänger ist %1$s. Überschüssige
+    <string name="too_much_receivers">Die maximale Anzahl der Empfänger ist %1$s. Überschüssige
         Empfänger wurden entfernt!
     </string>
-    <string name="text_add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
-    <string name="text_no_phone_type_label">Andere</string>
-    <string name="text_write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
-    <string name="text_write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes
+    <string name="add_contact_by_number_dialog">Telefonnummer hinzufügen</string>
+    <string name="no_phone_type_label">Andere</string>
+    <string name="write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
+    <string name="write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes.
     </string>
-    <string name="text_not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
-    <string name="text_pick_for_disabling">Klick zum Entfernen</string>
-    <string name="text_receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
-    <string name="text_account_list">Account-Verwaltung</string>
-    <string name="text_account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
-        &lt;%1$s&gt;
+    <string name="not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
+    <string name="pick_for_disabling">Klick zum Entfernen</string>
+    <string name="receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
+    <string name="account_list">Account-Verwaltung</string>
+    <string name="account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
+        &lt;%1$s&gt;.
     </string>
-    <string name="text_account_add_account">Account hinzufügen</string>
-    <string name="text_account_no_account">Nicht gesetzt</string>
-    <string name="text_changeAccount">Account</string>
-    <string name="text_chooseAccount">Account auswählen</string>
-    <string name="text_partial_success">Teilweiser Erfolg</string>
+    <string name="account_add_account">Account hinzufügen</string>
+    <string name="account_no_account">Nicht gesetzt</string>
+    <string name="changeAccount">Account</string>
+    <string name="chooseAccount">Account auswählen</string>
+    <string name="partial_success">Teilweiser Erfolg</string>
     <string name="changelog_title">Was ist neu</string>
-    <string name="text_lastMessage">Letzte Nachricht</string>
-    <string name="text_lastConversation">Letzte Konversationen</string>
-    <string name="text_clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>
+    <string name="welcome_title">Willkommen bei SMSoIP</string>
+    <string name="lastMessage">Letzte Nachricht</string>
+    <string name="lastConversation">Letzte Konversationen</string>
+    <string name="clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>
     <string name="crash_toast_text">Uuups! Das sollte nicht passieren, bitte sende einen Fehlerbericht an den
         Entwickler!
     </string>
@@ -150,37 +147,105 @@
     <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
         behoben.
     </string>
-    <string name="text_now">Sofort</string>
-    <string name="text_sending_time">Sendezeitpunkt</string>
-    <string name="text_time_in_past">Sendezeitpunkt ist in der Vergangenheit!</string>
-    <string name="text_enable_compact_mode">Kompaktmodus</string>
-    <string name="text_enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
+    <string name="now">Sofort</string>
+    <string name="sending_time">Sendezeitpunkt</string>
+    <string name="time_in_past">Sendezeitpunkt ist in der Vergangenheit!</string>
+    <string name="enable_compact_mode">Kompaktmodus</string>
+    <string name="enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
     </string>
-    <string name="text_sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
-    <string name="text_react_on_incoming_sms">SMS-Benachrichtigung</string>
-    <string name="text_react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten und
+    <string name="sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
+    <string name="react_on_incoming_sms">SMS-Benachrichtigung</string>
+    <string name="react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten und
         Hinweis in der Benachrichtigungsleiste.
     </string>
-    <string name="text_receiver_activated">Aktiviere Überwachung</string>
-    <string name="text_receiver_activated_description">Aktiviere die Benachrichtigung durch SMSoIP bei
+    <string name="receiver_activated">Aktiviere Überwachung</string>
+    <string name="receiver_activated_description">Aktiviere die Benachrichtigung durch SMSoIP bei
         empfangenen SMS. Damit kann direkt auf die Nachricht mit SMSoIP geantwortet werden.
     </string>
-    <string name="text_only_one_notfication">Nur einmal benachrichtigen</string>
-    <string name="text_only_one_notfication_description">Bei mehreren eingehenden SMS gleichzeitig
+    <string name="only_one_notfication">Nur einmal benachrichtigen</string>
+    <string name="only_one_notfication_description">Bei mehreren eingehenden SMS gleichzeitig
         wird nur einmal benachrichtigt. Es kann dann nur auf die zuletzt eingegangene SMS geantwortet werden.
     </string>
-    <string name="text_choose_ringtone">Benachrichtigungston</string>
-    <string name="text_choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
-    <string name="text_abort_broadcast">Verhindere andere Benachrichtigungen</string>
-    <string name="text_abort_broadcast_description">Alle weiteren Benachrichtigungen anderer Apps (wie etwa die
-        Standard-SMS-App) geben keine Benachrichtigungen.
-    </string>
-    <string name="text_warning">Warnung</string>
-    <string name="text_warning_disable_notification">Dies Option kann Probleme mit Apps verursachen, die ebenfalls auf
-        empfangene SMS reagieren. Bei Problemen diese Option bitte wieder deaktivieren.
-    </string>
-    <string name="text_inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
+    <string name="choose_ringtone">Benachrichtigungston</string>
+    <string name="choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
+    <string name="warning">Warnung</string>
+    <string name="inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
         Korrektheit und sende noch einmal.
     </string>
-    <string name="text_false_inputs_corrected">Fehlerhafte Empfängereingaben entfernt!</string>
+    <string name="category_base">Grundeinstellungen</string>
+    <string name="category_layout">Aussehen</string>
+    <string name="category_behaviour">Verhalten</string>
+    <string name="category_stuff">Sonstiges/Hilfe</string>
+    <string name="font_size">Schriftgröße ändern</string>
+    <string name="font_size_description">Ändere die Schriftgröße des Nachrichtentextes.</string>
+    <string name="font_size_dialog_description">Hinweis: Klicke auf den Beispieltext, um auf die
+        Standardeinstellungen zurückzusetzen.
+    </string>
+    <string name="youtube_video">Erklärungsvideo anschauen</string>
+    <string name="youtube_video_description">Öffne Youtube, um ein kurzes Erklärungsvideo zu SMSoIP auf Youtube
+        anzuschauen.
+    </string>
+    <string name="background_image">Hintergrundbild setzen</string>
+    <string name="background_image_description">Tausche das Hintergrundbild von SMSoIP durch ein Bild aus der
+        Galerie aus.
+    </string>
+    <string name="background_image_dialog">Wähle ein Bild aus der Foto-Galerie oder setze den Bildschirmhintergrund
+        zurück.
+    </string>
+    <string name="background_image_dialog_pick">Galerie</string>
+    <string name="background_image_dialog_reset">Standard</string>
+    <string name="background_will_be_set">Hintergrundbild wird verarbeitet und gesetzt.</string>
+    <string name="background_set_error">Fehler beim Setzen des Hintergrundes aufgetreten.</string>
+    <string name="no_last_message">Keine eingehenden Nachrichten</string>
+    <string name="no_conversation">Keine Konversation</string>
+    <string name="module_preference">Textbausteine</string>
+    <string name="module_preference_description">Verwalte deine Textbausteine für schnellere Texteingabe.
+    </string>
+    <string name="key">Schlüssel</string>
+    <string name="value">Ersetzung</string>
+    <string name="delete">Entfernen</string>
+    <string name="add_module">Textbaustein hinzufügen</string>
+    <string name="key_too_short">Der Schlüssel muss mindestens aus zwei Zeichen bestehen.</string>
+    <string name="key_already_exist">Der Schlüssel existiert bereits.</string>
+    <string name="empty_value">Keinen Wert eingegeben.</string>
+    <string name="modules_explanation">Was sind Textbausteine?</string>
+    <string name="modules_explanation_description">Zeigt eine kleine Erklärung wofür Textbausteine da sind und wie
+        man sie benutzt.
+    </string>
+    <string name="modules_explanation_description_full">Textbausteine bestehen aus einem Schlüssel (Shortcut) und
+        einer Ersetzung. Diese helfen dabei häufig wiederkehrende Texte schneller einzugeben.\nIn SMSoIP werden die
+        Textbausteine für schnellere Eingaben in das Nachrichtenfeld genutzt und können auf drei Arten gestartet
+        werden:\n-durch Eingabe des Schlüssels, gefolgt von einem Leerzeichen\n-durch Eingabe des Schlüssels, gefolgt
+        von der Enter-Taste des Keyboards oder\n-durch Drücken des Pfeil-Knopfes rechts unterhalb des
+        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du, indem du als Schlüssel ein kurze
+        Buchstabenfolge benutzt, die aber kein normales Wort ist, damit die Textbausteine nicht mit der normalen
+        Texteingabe kollidieren.
+    </string>
+    <string name="homepage">https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version</string>
+    <string name="notification_url">http://smsoip.funpic.de/messages/de/info.xml</string>
+    <string name="contact_developer">Entwickler kontaktieren</string>
+    <string name="contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
+        nicht verfügbar? Sende mir eine E-Mail.
+    </string>
+    <string name="rate_app_message">Du benutzt nun SMSoIP schon einige Zeit.\nWenn dir die App gefällt und du einen
+        Moment Zeit hast, wäre es schön, wenn du SMSoIP und/oder dein benutztes Plugin im Store
+        bewertest.\nVielen Dank für deine Unterstützung!
+    </string>
+    <string name="rate_app_title">Zufrieden mit SMSoIP?</string>
+    <string name="rate_no_thanks">Nein, Danke</string>
+    <string name="rate_yes">Bewerten</string>
+    <string name="rate_remind_me_later">Später</string>
+
+
+    <string name="provider_changelog">Was ist neu?</string>
+    <string name="provider_changelog_description">Schaue dir die letzten Änderungen im Plugin an.</string>
+
+    <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
+    <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
+    <string name="no_text_modules">Keine Textmodule gepflegt.</string>
+    <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um letzte Konversationen anzuzeigen!</string>
+    <string name="button_visibiliy">Buttonsichtbarkeit (ActionBar)</string>
+    <string name="button_visibiliy_description">Buttons für Anbieter- oder Benutzerwechsel anzeigen/ausblenden. Das
+        Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
+    </string>
 </resources>

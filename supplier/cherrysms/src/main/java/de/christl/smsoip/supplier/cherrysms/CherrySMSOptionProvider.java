@@ -19,13 +19,9 @@
 package de.christl.smsoip.supplier.cherrysms;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceScreen;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -48,7 +44,6 @@ public class CherrySMSOptionProvider extends OptionProvider {
 
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
 
-    private static final String SUPPORT_URL = "http://www.cherry-sms.com/?ref=RBSYJMGF";
 
     public CherrySMSOptionProvider() {
         super(providerName);
@@ -80,18 +75,12 @@ public class CherrySMSOptionProvider extends OptionProvider {
         String[] typeArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(typeArray);
         listPref.setEntryValues(typeArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(typeArray[0]);
         out.add(listPref);
-        PreferenceScreen intentPref = ((PreferenceActivity) context).getPreferenceManager().createPreferenceScreen(context);
-        intentPref.setIntent(new Intent().setAction(Intent.ACTION_VIEW)
-                .setData(Uri.parse(SUPPORT_URL)));
-        intentPref.setTitle(getTextByResourceId(R.string.text_need_account));
-        intentPref.setSummary(getTextByResourceId(R.string.text_need_account_long));
-        out.add(intentPref);
         return out;
     }
 

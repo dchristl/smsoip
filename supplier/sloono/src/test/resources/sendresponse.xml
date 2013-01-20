@@ -1,0 +1,30 @@
+<!--?xml version="1.0" encoding="utf-8" standalone="yes"?-->
+<answer>
+    <code>101</code>
+    <codetext>
+        Erfolgreiche Abfrage
+    </codetext>
+    <info>
+        <text>
+            adad
+        </text>
+        <zeichen>
+            4
+        </zeichen>
+        <sms>
+            1
+        </sms>
+        <absenderkennung>
+            Keine
+        </absenderkennung>
+        <ziel>
+            +49(174)2383886
+        </ziel>
+        <kosten>
+            0.028
+        </kosten>
+        <versenden>
+            23.10.2012 20:55:41
+        </versenden>
+    </info>
+</answer>

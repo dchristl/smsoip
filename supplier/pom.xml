@@ -25,7 +25,7 @@
     <parent>
         <groupId>de.christl</groupId>
         <artifactId>SMSoIP</artifactId>
-        <version>2.4.3</version>
+        <version>2.6.7</version>
     </parent>
 
     <groupId>de.christl.SMSoIP</groupId>
@@ -39,6 +39,12 @@
         <module>freenet</module>
         <module>smsde</module>
         <module>cherrysms</module>
+        <module>innosend</module>
+        <module>fishtext</module>
+        <module>directbox</module>
+        <module>sloono</module>
+        <module>smsrevolution</module>
+        <module>sms77</module>
     </modules>
 
     <dependencies>
@@ -47,6 +53,12 @@
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.christl.SMSoIP</groupId>
+            <artifactId>supplier-lib</artifactId>
+            <version>${project.parent.version}</version>
+            <type>apklib</type>
         </dependency>
     </dependencies>
 </project>

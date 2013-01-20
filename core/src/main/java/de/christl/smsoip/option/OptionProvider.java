@@ -20,15 +20,19 @@ package de.christl.smsoip.option;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.Preference;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.application.SMSoIPApplication;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +50,7 @@ public abstract class OptionProvider {
     private SharedPreferences settings;
     private Map<Integer, AccountModel> accounts;
     private Integer currentAccountId = null;
+    private boolean accountChanged = false;
 
     /**
      * default constructor, use the other one for give a name to the provider otherwise classname will be used
@@ -121,6 +126,7 @@ public abstract class OptionProvider {
             password = null;
         }
 
+        accountChanged = true;
     }
 
     public String getUserName() {
@@ -169,6 +175,22 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 
+    @Deprecated
+    /**
+     * @deprecated use getXMLResourceByResourceId instead
+     */
+    public final XmlResourceParser getLayoutResourceByResourceId(int layoutId) {
+        return getXMLResourceByResourceId(layoutId);
+    }
+
+    public final XmlResourceParser getXMLResourceByResourceId(int xmlId) {
+        return SMSoIPApplication.getApp().getXMLResourceByResourceId(this, xmlId);
+    }
+
+    public final InputStream getRawResourceByResourceId(int resourceId) {
+        return SMSoIPApplication.getApp().getRawResourceByResourceId(this, resourceId);
+    }
+
     protected final String getTextByResourceId(int resourceId, int quantity) {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId, quantity);
     }
@@ -211,5 +233,68 @@ public abstract class OptionProvider {
      */
     public int getLengthDependentSMSCount(int textLength) {
         return 0;
+    }
+
+    /**
+     * returns if the user has clicked on switch account button
+     * <b>resetting this have to be done in plugin itself</b>
+     *
+     * @return
+     */
+    public boolean isAccountChanged() {
+        return accountChanged;
+    }
+
+    public void setAccountChanged(boolean accountChanged) {
+        this.accountChanged = accountChanged;
+    }
+
+    /**
+     * call by some suppliers needed a special
+     *
+     * @param freeLayout
+     */
+    public void getFreeLayout(LinearLayout freeLayout) {
+        //do nothing by default
+    }
+
+    /**
+     * if on create method called after the activity was killed (or in background) this method will be called to restore the state
+     * of the linear layout
+     *
+     * @param savedInstanceState
+     */
+    public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
+        //do nothing by default
+    }
+
+    /**
+     * when activity gets paused this method will be called to save things in the linear layout
+     *
+     * @param outState
+     */
+    public void onActivityPaused(Bundle outState) {
+        //do nothing by default
+    }
+
+    public InputStream getChangelogInputStream() {
+        Integer i = getChangelogResourceId();
+        if (i != null) {
+            return getRawResourceByResourceId(i);
+        } else {
+            return null;
+        }
+    }
+
+    protected Integer getChangelogResourceId() {
+        return null;
+    }
+
+    /**
+     * method will be called when accounts are updated, added or deleted
+     * override this method to clean up old options
+     */
+    public void onAccountsChanged() {
+        //do nothing
     }
 }

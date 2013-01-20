@@ -22,27 +22,21 @@
         <item>Without source identifier (1 Credit/SMS)</item>
         <item>With source identifier (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_default_type">Default send type</string>
-    <string name="text_default_type_long">Choose your preselected send type</string>
-    <string name="text_need_account">No account yet?</string>
-    <string name="text_need_account_long">You want to create a new account and want to support further development of
-        SMSoIP. Please create an account by this link.
-    </string>
-    <string name="text_refresh_informations">Remaining credits: %1$d</string>
-    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+    <string name="refresh_informations">Remaining credits: %1$d</string>
+    <string name="login_failed">Login failed. Please check if your username is your number in international format,
         like \'00491721234567\'
     </string>
-    <string name="text_return_10">Recipent number is not correct</string>
-    <string name="text_return_20">Sender ID is not correct</string>
-    <string name="text_return_30">Message text is not correct</string>
-    <string name="text_return_31">Message type is not correct</string>
-    <string name="text_return_40">Route message incorrect</string>
-    <string name="text_return_50">Identification failed</string>
-    <string name="text_return_60">Not enough credits</string>
-    <string name="text_return_70">Grid is not covered by Route</string>
-    <string name="text_return_71">Feature not possible on this route</string>
-    <string name="text_return_80">Transfer to SMS-C failed</string>
-    <string name="text_return_90">Shipping available</string>
-    <string name="text_return_100">Message was succesfully sent for %1$s credits</string>
-    <string name="text_unknown_error">Unknown error code: %1$d</string>
+    <string name="return_10">Recipent number is not correct</string>
+    <string name="return_20">Sender ID is not correct</string>
+    <string name="return_30">Message text is not correct</string>
+    <string name="return_31">Message type is not correct</string>
+    <string name="return_40">Route message incorrect</string>
+    <string name="return_50">Identification failed</string>
+    <string name="return_60">Not enough credits</string>
+    <string name="return_70">Grid is not covered by Route</string>
+    <string name="return_71">Feature not possible on this route</string>
+    <string name="return_80">Transfer to SMS-C failed</string>
+    <string name="return_90">Shipping available</string>
+    <string name="return_100">Message was succesfully sent for %1$s credits</string>
+    <string name="unknown_error">Unknown error code: %1$d</string>
 </resources>

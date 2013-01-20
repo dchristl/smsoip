@@ -20,12 +20,13 @@ package de.christl.smsoip.supplier.smsde;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.view.ViewGroup;
+import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -36,8 +37,15 @@ public class SMSDeOptionProvider extends OptionProvider {
 
     private static final String PROVIDER_NAME = "SMS.de";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    public static final String PROVIDER_SHOW_FLASH = "provider.show.flash";
     private int messageLength = 142;
     private int maxReceivers = 1;
+    private boolean senderVisible = false;
+    private CheckBox cb;
+    private TextView textView;
+    private Boolean checkBoxStateBeforeActivityKilled;
+    private static final String STATE_CHECKBOX = "state.checkbox";
+    private boolean reset = false;
 
     public SMSDeOptionProvider() {
         super(PROVIDER_NAME);
@@ -67,15 +75,18 @@ public class SMSDeOptionProvider extends OptionProvider {
                     case 0:        //free
                         messageLength = 151;
                         maxReceivers = 1;
+                        senderVisible = false;
                         break;
                     case 1:    //power sms 160
                     case 2:
                         messageLength = 160;
                         maxReceivers = 5;
+                        senderVisible = true;
                         break;
                     default:                  //power sms 300
                         messageLength = 300;
                         maxReceivers = 5;
+                        senderVisible = true;
                         break;
                 }
                 sendActivity.updateSMScounter();
@@ -100,12 +111,18 @@ public class SMSDeOptionProvider extends OptionProvider {
         String[] prefArray = getArrayByResourceId(R.array.array_spinner);
         listPref.setEntries(prefArray);
         listPref.setEntryValues(prefArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.text_default_type));
+        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
         listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.text_default_type));
-        listPref.setSummary(getTextByResourceId(R.string.text_default_type_long));
+        listPref.setTitle(getTextByResourceId(R.string.default_type));
+        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
         listPref.setDefaultValue(prefArray[0]);
         out.add(listPref);
+        CheckBoxPreference showSenderCB = new CheckBoxPreference(context);
+        showSenderCB.setDefaultValue(true);
+        showSenderCB.setKey(PROVIDER_SHOW_FLASH);
+        showSenderCB.setTitle(getTextByResourceId(R.string.show_flash));
+        showSenderCB.setSummary(getTextByResourceId(R.string.show_flash_description));
+        out.add(showSenderCB);
         return out;
     }
 
@@ -117,5 +134,78 @@ public class SMSDeOptionProvider extends OptionProvider {
     @Override
     public Drawable getIconDrawable() {
         return getDrawble(R.drawable.icon);
+    }
+
+    @Override
+    public void getFreeLayout(LinearLayout freeLayout) {
+        freeLayout.setOrientation(LinearLayout.HORIZONTAL);
+        buildFreeLayoutContent(freeLayout.getContext());
+        if (senderVisible && getSettings().getBoolean(PROVIDER_SHOW_FLASH, true)) {
+            if (checkBoxStateBeforeActivityKilled != null) {
+                cb.setChecked(checkBoxStateBeforeActivityKilled);
+            }
+            freeLayout.addView(cb);
+            freeLayout.addView(textView);
+        } else {
+            cb.setChecked(false);
+        }
+        if (reset) {
+            reset = false;
+            cb.setChecked(false);
+        }
+    }
+
+    public boolean isFlash() {
+        return cb.isChecked();
+    }
+
+    private void buildFreeLayoutContent(Context context) {
+        TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0, 20);
+        if (cb == null) {
+            cb = new CheckBox(context);
+            cb.setLayoutParams(layoutParams);
+            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    checkBoxStateBeforeActivityKilled = null; //revert the setting, so next time it will work as usual
+                }
+            });
+        }
+
+        if (textView == null) {
+            textView = new TextView(context);
+            textView.setText(getTextByResourceId(R.string.send_as_flash));
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cb.setChecked(!cb.isChecked());
+                }
+            });
+            textView.setLayoutParams(layoutParams);
+        }
+        ViewGroup parent = (ViewGroup) cb.getParent();
+        if (parent != null) {
+            parent.removeView(cb);
+        }
+        parent = (ViewGroup) textView.getParent();
+        if (parent != null) {
+            parent.removeView(textView);
+        }
+    }
+
+    @Override
+    public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
+        checkBoxStateBeforeActivityKilled = savedInstanceState.getBoolean(STATE_CHECKBOX);
+    }
+
+    @Override
+    public void onActivityPaused(Bundle outState) {
+        outState.putBoolean(STATE_CHECKBOX, cb.isChecked());
+    }
+
+    public void reset() {
+        checkBoxStateBeforeActivityKilled = null;
+        reset = true;
     }
 }

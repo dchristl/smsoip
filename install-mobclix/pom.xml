@@ -35,7 +35,7 @@
                     <file>mobclix.jar</file>
                     <groupId>com.mobclix</groupId>
                     <artifactId>mobclix</artifactId>
-                    <version>4.0.2</version>
+                    <version>4.0.3</version>
                     <packaging>jar</packaging>
                 </configuration>
             </plugin>

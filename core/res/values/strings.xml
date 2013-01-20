@@ -18,117 +18,113 @@
   -->
 
 <resources>
-    <string name="button_send">Send</string>
-    <string name="text_changeProvider">Provider</string>
-    <string name="text_chooseProvider">Choose Provider</string>
-    <string name="text_provider_settings">Provider settings</string>
-    <string name="text_program_settings">Program settings</string>
-    <string name="text_mainmenu">Main menu</string>
-    <string name="text_exit">Quit</string>
-    <string name="text_optionTitle">Options for</string>
-    <string name="text_username">Username</string>
-    <string name="text_password">Password</string>
-    <string name="text_signature">Signature</string>
-    <string name="text_signature_description">Signature, that can be appended to message.</string>
-    <string name="button_save">Save</string>
-    <string name="hint_receiverField">Name or Number</string>
-    <string name="hint_smsText">Message</string>
-    <string name="hint_sendernumber">Sender</string>
-    <string name="text_chooseType">Sending type</string>
-    <string name="text_smssigns">%1$s characters (%2$s SMS)</string>
-    <string name="text_pickNumber">Choose number for %1$s</string>
-    <string name="text_noNumber">No number for %1$s found</string>
-    <string name="text_smscomitted">Message will be sent</string>
-    <string name="text_ok">OK</string>
-    <string name="text_cancel">Cancel</string>
-    <string name="text_wantClear">All inputs will be deleted!</string>
-    <string name="text_error">Error</string>
-    <string name="text_success">Success</string>
-    <string name="text_noNetwork">Network error</string>
-    <string name="text_unknown_error">Unknown error</string>
-    <string name="text_loginFailed">Pass invalid!</string>
-    <string name="text_user_cancelled">User canceled</string>
-    <string name="text_loginSuccessful">Login successful</string>
-    <string name="text_notyetrefreshed">Not yet refreshed</string>
-    <string name="text_click">(Click)</string>
+    <string name="send">Send</string>
+    <string name="changeProvider">Provider</string>
+    <string name="chooseProvider">Choose Provider</string>
+    <string name="provider_settings">Provider settings</string>
+    <string name="program_settings">Program settings</string>
+    <string name="exit">Quit</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="save">Save</string>
+    <string name="receiverField">Name or Number</string>
+    <string name="smsText">Message</string>
+    <string name="sendernumber">Sender</string>
+    <string name="chooseType">Sending type</string>
+    <string name="smssigns">%1$s characters (%2$s SMS)</string>
+    <string name="pickNumber">Choose number for %1$s</string>
+    <string name="noNumber">No number for %1$s found</string>
+    <string name="smscomitted">Message will be sent</string>
+    <string name="ok">OK</string>
+    <string name="wantClear">All inputs will be deleted!</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="noNetwork">Network error</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="loginFailed">Pass invalid!</string>
+    <string name="user_cancelled">User canceled</string>
+    <string name="loginSuccessful">Login successful</string>
+    <string name="notyetrefreshed">Not yet refreshed</string>
+    <string name="tap">(Tap)</string>
     <string name="description">Sending SMS by several providers</string>
-    <string name="text_pleaseWait">Please wait</string>
-    <string name="text_noNumberInput">No number entered!</string>
-    <string name="text_noTextInput">No message entered!</string>
-    <string name="text_noNetworkAvailable">Network not activated!</string>
-    <string name="text_smsSend_Success">Message transmitted</string>
-    <string name="text_timeOutReached">Timeout reached! Please try again later</string>
-    <string name="text_sureQuit">Quit SMSoIP?</string>
-    <string name="text_saveChanges">Save changes?</string>
-    <string name="text_yesOption">Yes</string>
-    <string name="text_noOption">No</string>
-    <string name="text_checkCredentials">Pass will be checked.</string>
-    <string name="text_noCredentials">Credentials incomplete</string>
-    <string name="button_openNetworkSettings">Networksettings</string>
-    <string name="button_activateWLAN">Activate Wireless LAN</string>
-    <string name="text_not_yet_allowed">Not yet allowed</string>
-    <string name="text_no_providers">No providers for sending SMS available.\nPlease add one.\nProgram will exit!
+    <string name="noNumberInput">No number entered!</string>
+    <string name="noTextInput">No message entered!</string>
+    <string name="noNetworkAvailable">Network not activated!</string>
+    <string name="smsSend_Success">Message transmitted</string>
+    <string name="timeOutReached">Timeout reached! Please try again later</string>
+    <string name="press_back_again">Press back again to quit SMSoIP.</string>
+    <string name="checkCredentials">Pass will be checked.</string>
+    <string name="noCredentials">Credentials incomplete</string>
+    <string name="openNetworkSettings">Networksettings</string>
+    <string name="activateWLAN">Activate Wireless LAN</string>
+    <string name="no_providers">No plugin is installed.\nSMSoIP needs at least one plugin to work.\nYou will be
+        redirected to plugin page.
     </string>
     <string name="applicationName">SMSoIP</string>
-    <string name="text_default_provider">Default provider</string>
-    <string name="text_default_provider_description">Choose your default provider when app is starting</string>
-    <string name="text_no_default_Provider">None (ask everytime)</string>
-    <string name="text_visit_project_page">Visit Homepage</string>
-    <string name="text_visit_project_page_description">Visit project home for help and further explanations</string>
-    <string name="text_visit_plugin_page">Find plugins</string>
-    <string name="text_visit_plugin_page_description">Find additional plugins at Google Play</string>
-    <string name="text_area_code">Default international area code</string>
-    <string name="text_area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
+    <string name="default_provider">Default provider</string>
+    <string name="default_provider_description">Choose your default provider on app startup.</string>
+    <string name="no_default_Provider">None (ask everytime)</string>
+    <string name="visit_project_page">Visit Homepage</string>
+    <string name="visit_project_page_description">Visit project home for help and further explanations</string>
+    <string name="visit_plugin_page">Find plugins</string>
+    <string name="donate_plugin_page">Remove ads</string>
+    <string name="donate_plugin_page_description">Remove the ads and support future development by buying Donate
+        Plugin.
+    </string>
+    <string name="reshow_welcome">Show welcome dialog</string>
+    <string name="reshow_welcome_description">Look at the welcome dialog again for a short introduction.</string>
+    <string name="area_code">Default international area code</string>
+    <string name="area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
         will be automatically prepended to receiver number if needed.
     </string>
-    <string name="text_reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
-    <string name="text_checkLogin">Check credentials</string>
-    <string name="text_deprecated_providers">Following plugins could not be loaded. Please update:</string>
-    <string name="text_too_new_providers">Following plugins are too new and could not be loaded. Please update
+    <string name="reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
+    <string name="deprecated_providers">Following plugins could not be loaded. Please update:</string>
+    <string name="too_new_providers">Following plugins are too new and could not be loaded. Please update
         application:
     </string>
-    <string name="text_enable_network_check">Enable network check</string>
-    <string name="text_enable_network_check_description">Enable the check on startup if network is available and shows
+    <string name="enable_network_check">Enable network check</string>
+    <string name="enable_network_check_description">Enable the check on startup if network is available and shows
         you additional options, like enabling W-LAN.
     </string>
-    <string name="text_enable_info_update">Auto update</string>
-    <string name="text_enable_info_update_description">On app startup the provider informations like free messages will
+    <string name="enable_info_update">Auto update</string>
+    <string name="enable_info_update_description">On app startup the provider informations like free messages will
         be updated.
     </string>
-    <string name="text_enable_provider_output">Enable output of provider</string>
-    <string name="text_enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP
-        (GMX)\')
+    <string name="enable_provider_output">Enable output of provider</string>
+    <string name="enable_provider_output_description">Messages going to database will be indicated (e.g. \'SMSoIP
+        (GMX)\').
     </string>
     <string name="name_heading">name</string>
     <string name="number_heading">number</string>
-    <string name="text_unknown">Unknown</string>
-    <string name="text_max_receivers_reached">Maximum of %1$s receivers reached. Receiver could not be
+    <string name="unknown">Unknown</string>
+    <string name="max_receivers_reached">Maximum of %1$s receivers reached. Receiver could not be
         appended.
     </string>
-    <string name="text_too_much_receivers">Maximum of receivers is %1$s. Surplus receivers are
+    <string name="too_much_receivers">Maximum of receivers is %1$s. Surplus receivers are
         removed!
     </string>
-    <string name="text_add_contact_by_number_dialog">Add phone number</string>
-    <string name="text_no_phone_type_label">other</string>
-    <string name="text_write_to_database">Write to internal messages outbox</string>
-    <string name="text_write_to_database_description">Write successful messages to your in-device message outbox
+    <string name="add_contact_by_number_dialog">Add phone number</string>
+    <string name="no_phone_type_label">other</string>
+    <string name="write_to_database">Write to internal messages outbox</string>
+    <string name="write_to_database_description">Write successful messages to your in-device message outbox.
     </string>
-    <string name="text_not_supported_on_device">Not supported on this device</string>
-    <string name="text_pick_for_disabling">Tap for removing</string>
-    <string name="text_receiver_added_twice">Receiver number added twice!</string>
-    <string name="text_account_list">Account management</string>
-    <string name="text_account_list_description">Manage accounts and choose the default one. Current default account is:
-        &lt;%1$s&gt;
+    <string name="not_supported_on_device">Not supported on this device</string>
+    <string name="pick_for_disabling">Tap for removing</string>
+    <string name="receiver_added_twice">Receiver number added twice!</string>
+    <string name="account_list">Account management</string>
+    <string name="account_list_description">Manage accounts and choose the default one. Current default account is:
+        &lt;%1$s&gt;.
     </string>
-    <string name="text_account_add_account">Add account</string>
-    <string name="text_account_no_account">Not set</string>
-    <string name="text_changeAccount">Account</string>
-    <string name="text_chooseAccount">Choose Account</string>
-    <string name="text_partial_success">Partial success</string>
+    <string name="account_add_account">Add account</string>
+    <string name="account_no_account">Not set</string>
+    <string name="changeAccount">Account</string>
+    <string name="chooseAccount">Choose Account</string>
+    <string name="partial_success">Partial success</string>
     <string name="changelog_title">What\'s New</string>
-    <string name="text_lastMessage">Last message</string>
-    <string name="text_lastConversation">Last conversation</string>
-    <string name="text_clickToAdd">(Click to add as receiver)</string>
+    <string name="welcome_title">Welcome to SMSoIP</string>
+    <string name="lastMessage">Last message</string>
+    <string name="lastConversation">Last conversation</string>
+    <string name="clickToAdd">(Click to add as receiver)</string>
     <string name="crash_toast_text">Ooooops! This shoud not happen, please send crash report to developer!
     </string>
     <string name="crash_notif_ticker_text">Unexpected error in SMSoIP, please send a report…</string>
@@ -139,42 +135,107 @@
     <string name="crash_dialog_text">An unexpected error occurred forcing the
         application to stop. Please make sure you have the latest version of SMSoIP and your used plugins installed.
         If this will not work, please help the developer to improve SMSoIP by sending error data,
-        all you have to do is click \'OK\'. No private data will be send.
+        all you have to do is click \'OK\'. No private data will be sent.
     </string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem and if you want to be
         contacted your mail address below:
     </string>
     <string name="crash_dialog_ok_toast">Thank you for your support! Error will be fixed as soon as possible.</string>
-    <string name="text_now">Now</string>
-    <string name="text_sending_time">Sending time</string>
-    <string name="text_time_in_past">Sending time is in past!</string>
-    <string name="text_enable_compact_mode">Compact mode</string>
-    <string name="text_enable_compact_mode_description">Use the compact mode by default (on startup)</string>
-    <string name="text_sms_receiver_settings">Message notifcation settings</string>
-    <string name="text_react_on_incoming_sms">Message notification</string>
-    <string name="text_react_on_incoming_sms_description">Change settings for the listener of incoming
+    <string name="now">Now</string>
+    <string name="sending_time">Sending time</string>
+    <string name="time_in_past">Sending time is in past!</string>
+    <string name="enable_compact_mode">Compact mode</string>
+    <string name="enable_compact_mode_description">Use the compact mode by default (on startup)</string>
+    <string name="sms_receiver_settings">Message notifcation settings</string>
+    <string name="react_on_incoming_sms">Message notification</string>
+    <string name="react_on_incoming_sms_description">Change settings for the listener of incoming
         messages in the notification bar.
     </string>
-    <string name="text_receiver_activated">Activate notification</string>
-    <string name="text_receiver_activated_description">Enable the notification on incoming messages. Then you can answer
+    <string name="receiver_activated">Activate notification</string>
+    <string name="receiver_activated_description">Enable the notification on incoming messages. Then you can answer
         directly to this message.
     </string>
-    <string name="text_only_one_notfication">Only one notification</string>
-    <string name="text_only_one_notfication_description">The notification will only be shown once on more than one
+    <string name="only_one_notfication">Only one notification</string>
+    <string name="only_one_notfication_description">The notification will only be shown once on more than one
         message at the same time. You can answer only to the last received message then.
     </string>
-    <string name="text_abort_broadcast">Prevent further notfications</string>
-    <string name="text_abort_broadcast_description">On incoming messages only SMSoIP will show notifcations. Default
-        message app will not show any message.
-    </string>
-    <string name="text_choose_ringtone">Ringtone</string>
-    <string name="text_choose_ringtone_description">Choose your ringtone for notification.</string>
-    <string name="text_warning">Warning</string>
-    <string name="text_warning_disable_notification">Activating can lead to some problems with other apps, listening to
-        incoming messages, too. If you have problems please disable this option.
-    </string>
-    <string name="text_inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
+    <string name="choose_ringtone">Ringtone</string>
+    <string name="choose_ringtone_description">Choose your ringtone for notification.</string>
+    <string name="warning">Warning</string>
+    <string name="inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>
-    <string name="text_false_inputs_corrected">Wrong receiver inputs removed!</string>
+    <string name="category_base">Base settings</string>
+    <string name="category_layout">Layout settings</string>
+    <string name="category_behaviour">Behaviour settings</string>
+    <string name="category_stuff">Miscellaneous/Help</string>
+    <string name="font_size">Change font size</string>
+    <string name="font_size_description">Change the font size of the message input field.</string>
+    <string name="font_size_dialog_description">Hint: Click on the sample text to reset to the default value.
+    </string>
+    <string name="youtube_video">Watch introduction video</string>
+    <string name="youtube_video_description">Watch a short introduction and explanation of SMSoIP at Youtube.
+    </string>
+    <string name="background_image">Set background image</string>
+    <string name="background_image_description">Change the background of SMSoIP to an image of your gallery.
+    </string>
+    <string name="background_image_dialog">Select an image from the gallery or set background back to default.
+    </string>
+    <string name="background_image_dialog_pick">Gallery</string>
+    <string name="background_image_dialog_reset">Reset</string>
+    <string name="background_will_be_set">Image will be processed and set.</string>
+    <string name="background_set_error">Error on setting background image.</string>
+    <string name="no_last_message">No incoming messages</string>
+    <string name="no_conversation">No conversation</string>
+    <string name="module_preference">Text modules</string>
+    <string name="module_preference_description">Maintain text modules for faster text input.
+    </string>
+    <string name="key">Shortcut</string>
+    <string name="value">Replacement</string>
+    <string name="delete">Delete</string>
+    <string name="add_module">Add text module</string>
+    <string name="key_too_short">The shortcut must have at least two characters.</string>
+    <string name="key_already_exist">The shortcut already exists.</string>
+    <string name="empty_value">No replacement entered.</string>
+    <string name="modules_explanation">What is a text module?</string>
+    <string name="modules_explanation_description">Show a little explanation, text modules can used for.
+    </string>
+    <string name="modules_explanation_description_full">Text modules consist of a shortcut and a replacement. They
+        help you to enter often used text faster. \nIn SMSoIP they are used for faster inputs in the message textfiels
+        and can be invoked in three different ways:\n -By input of the shortcut followed by space\n-By input of the
+        shortcut followed by enter key or\n-By pressing the arrow button on the bottom of the message field.\nThe best
+        result you will get if you choose a short word as shortcut, that is not a normal word. So text modules do not
+        collide with normal text input.
+    </string>
+    <string name="contact_developer">Contact developer</string>
+    <string name="contact_developer_description">Feedback, found a bug or your provider is not available? Send me a
+        mail.
+    </string>
+
+    <string name="provider_changelog">Show changes</string>
+    <string name="provider_changelog_description">See last plugin changes.</string>
+    <string name="rate_app_message">You now uses SMSoIP some time.\nIf you like the app, please take a moment to
+        rate SMSoIP and/or a plugin on store. Thanks for your
+        support!
+    </string>
+    <string name="rate_app_title">Enjoying SMSoIP?</string>
+    <string name="rate_no_thanks">No, Thanks</string>
+    <string name="rate_yes">Rate</string>
+    <string name="rate_remind_me_later">Remind me later</string>
+    <string name="nothing_to_shorten">No text to shorten.</string>
+    <string name="nothing_to_clear">No inputs to clear.</string>
+
+    <string name="no_text_modules">No text modules defined.</string>
+
+    <string name="hintAddReceivers">Hint: Add one or more receivers to show conversations.</string>
+
+    <string name="homepage">https://sites.google.com/site/smsoip/home</string>
+    <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>
+    <string name="youtube_intent">vnd.youtube:tcr87tEPUao</string>
+    <string name="youtube_alternative">http://www.youtube.com/watch?v=tcr87tEPUao</string>
+
+    <string name="button_visibiliy">Buttonvisibility (ActionBar)</string>
+    <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
+        also be invoked by tap on providericon or username.
+    </string>
 </resources>

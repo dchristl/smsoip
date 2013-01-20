@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="return_100">SMS sucessfully sent.</string>
+    <string name="return_101">MMS successfully sent.</string>
+    <string name="return_111">IP ban active.</string>
+    <string name="return_112">Wrong credentials.</string>
+    <string name="return_120">Sender missing. Please try again.</string>
+    <string name="return_121">Sending type missing.</string>
+    <string name="return_122">Text missing.</string>
+    <string name="return_123">Receiver missing.</string>
+    <string name="return_129">Wrong sender. Please try again.</string>
+    <string name="return_130">Gateway problems.</string>
+    <string name="return_134">Invalid receiver number.</string>
+    <string name="return_140">No balance.</string>
+    <string name="return_150">SMS blacklist.</string>
+    <string name="return_161">Free messages not yet available.</string>
+    <string name="return_162">No free messages left.</string>
+    <string name="return_170">Wrong date.</string>
+    <string name="return_171">Date in past.</string>
+    <string name="return_172">Too many numbers.</string>
+    <string name="return_unknown">Unknown problem:</string>
+    <string name="mixing_not_allowed">Mixing of german numbers and numbers of other countries is not supported.
+    </string>
+    <string name="multiple_receivers_not_allowed">Sending to multiple receivers in countries outside Germany not
+        allowed for this sending type.
+    </string>
+    <string name="landline_outside_germany">Landline messages are not allowed outside Germany.</string>
+    <string name="refresh_informations">Free: %1$s\nBalance: %2$s</string>
+    <string name="next">Next: %1$s</string>
+    <string name="sender">Sender</string>
+    <string name="automatic">Assign automatically</string>
+    <string name="show_sender">Show sender</string>
+    <string name="show_sender_description">Show the possibility to change the sender. If disabled the automatically assigned sender will always be used.</string>
+    <string-array name="array_spinner">
+        <item>FREE (without SI)</item>
+        <item>SPEED (without SI, GW 2|10)</item>
+        <item>POWER (with SI, GW 3)</item>
+        <item>TURBO (with SI, GW 4|8)</item>
+        <item>LANDLINE</item>
+    </string-array>
+</resources>

@@ -18,32 +18,64 @@
 
 package de.christl.smsoip.activities;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import com.mobclix.android.sdk.MobclixAdView;
 import com.mobclix.android.sdk.MobclixAdViewListener;
-import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.R;
 
 /**
  * Simple listener handling visibility of ads by success/error
  */
 public class AdViewListener implements MobclixAdViewListener {
 
-    public AdViewListener() {
+    private Context context;
+    private ImageView imageView;
+
+    public AdViewListener(Context context) {
+        this.context = context;
     }
 
     @Override
     public void onSuccessfulLoad(MobclixAdView mobclixAdView) {
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            mobclixAdView.setVisibility(View.VISIBLE);
-        } else {
-            mobclixAdView.setVisibility(View.GONE);
-            mobclixAdView.cancelAd();
+        mobclixAdView.setVisibility(View.VISIBLE);
+        if (imageView != null) {
+            ((ViewGroup) imageView.getParent()).removeView(imageView);
+            imageView.invalidate();
         }
+        mobclixAdView.setRefreshTime(10000);
     }
 
     @Override
     public void onFailedLoad(MobclixAdView mobclixAdView, int i) {
-        mobclixAdView.setVisibility(View.GONE);
+        mobclixAdView.setVisibility(View.VISIBLE);
+        if (imageView == null) {
+            imageView = new ImageView(context);
+            imageView.setBackgroundResource(R.drawable.ad_layer);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        String marketUrl = context.getString(R.string.adfree_market_url);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        //Market not available on device
+                        String alternativeMarketUrl = context.getString(R.string.adfree_alternative);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alternativeMarketUrl));
+                        context.startActivity(intent);
+                    }
+                }
+            });
+            mobclixAdView.addView(imageView);
+        }
+        mobclixAdView.setRefreshTime(10000);
+
     }
 
     @Override

@@ -17,27 +17,24 @@
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
-                android:id="@+id/nwdialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/nwdialog"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:gravity="center"
+             android:layout_gravity="center"
+        >
 
     <Button android:id="@+id/openNetworkSettings"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_openNetworkSettings"
+            android:text="@string/openNetworkSettings"
             />
+
     <Button android:id="@+id/activateWLAN"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_activateWLAN"
-            android:layout_below="@id/openNetworkSettings"
+            android:text="@string/activateWLAN"
             />
-    <Button android:id="@+id/cancel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/text_cancel"
-            android:layout_below="@id/activateWLAN"
-            />
-</RelativeLayout>
+
+</TableLayout>

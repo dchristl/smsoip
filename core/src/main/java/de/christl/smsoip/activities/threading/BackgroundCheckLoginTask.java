@@ -24,14 +24,20 @@ import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 
 /**
  * checks the login in background in GlobalPreferences
  */
 public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Void> {
+
     private MultipleAccountsPreference multiPreference;
     private ProgressDialog progressDialog;
 
@@ -42,14 +48,14 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
 
     @Override
     protected void onPreExecute() {
-        ErrorReporterStack.put("BackgroundCheckLoginTask started");
-        progressDialog.setMessage(multiPreference.getContext().getString(R.string.text_checkCredentials));
+        ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_STARTED);
+        progressDialog.setMessage(multiPreference.getContext().getString(R.string.checkCredentials));
         progressDialog.show();
     }
 
     @Override
     protected Void doInBackground(AccountModel... accountModels) {
-        ErrorReporterStack.put("BackgroundCheckLoginTask running");
+        ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_RUNNING);
         ExtendedSMSSupplier supplier = multiPreference.getSupplier();
         AccountModel accountModel = accountModels[0];
         String userName = accountModel.getUserName();
@@ -58,14 +64,24 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
         if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
             smsActionResult = SMSActionResult.NO_CREDENTIALS();
         } else {
-            smsActionResult = supplier.checkCredentials(userName, pass);
+            try {
+                smsActionResult = supplier.checkCredentials(userName, pass);
+            } catch (UnsupportedEncodingException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+            } catch (SocketTimeoutException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.NETWORK_ERROR();
+            }
         }
         if (progressDialog != null && progressDialog.isShowing()) {
             publishProgress(smsActionResult.getMessage());
             try {
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
+            } catch (InterruptedException ignored) {
             }
         }
         return null;
@@ -78,7 +94,7 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
 
     @Override
     protected void onPostExecute(Void nothing) {
-        ErrorReporterStack.put("BackgroundCheckLoginTask onFinish");
+        ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_ON_FINISH);
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.cancel();
         }

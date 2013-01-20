@@ -18,96 +18,55 @@
 
 package de.christl.smsoip.activities.settings;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
+import android.preference.PreferenceScreen;
+import android.preference.RingtonePreference;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 
 /**
  * managing all broadcast preferences
  */
-public class SMSReceiverPreference extends PreferenceActivity {
+public class SMSReceiverPreference extends BackgroundPreferenceActivity {
 
-    public static final String RECEIVER_ACTIVATED = "receiver.activated";
-    public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
-    public static final String RECEIVER_ABORT_BROADCAST = "receiver.abort.broadcast";
-    public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
-
-
-    private static final int SET_RINGTONE = 40;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_sms_receiver_settings));
+        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.sms_receiver_settings));
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawableResource(R.drawable.background_holo_dark);
     }
 
     private PreferenceScreen initPreferences() {
         PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
         final CheckBoxPreference receiverActive = new CheckBoxPreference(this);
         receiverActive.setDefaultValue(true);
-        receiverActive.setKey(RECEIVER_ACTIVATED);
-        receiverActive.setTitle(R.string.text_receiver_activated);
-        receiverActive.setSummary(R.string.text_receiver_activated_description);
+        receiverActive.setKey(SettingsConst.RECEIVER_ACTIVATED);
+        receiverActive.setTitle(R.string.receiver_activated);
+        receiverActive.setSummary(R.string.receiver_activated_description);
         final CheckBoxPreference showOnlyOneNotification = new CheckBoxPreference(this);
         showOnlyOneNotification.setDefaultValue(false);
-        showOnlyOneNotification.setKey(RECEIVER_ONLY_ONE_NOTFICATION);
-        showOnlyOneNotification.setTitle(R.string.text_only_one_notfication);
-        showOnlyOneNotification.setSummary(R.string.text_only_one_notfication_description);
-        boolean enabled = getPreferenceManager().getSharedPreferences().getBoolean(RECEIVER_ACTIVATED, true);
+        showOnlyOneNotification.setKey(SettingsConst.RECEIVER_ONLY_ONE_NOTFICATION);
+        showOnlyOneNotification.setTitle(R.string.only_one_notfication);
+        showOnlyOneNotification.setSummary(R.string.only_one_notfication_description);
+        boolean enabled = getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.RECEIVER_ACTIVATED, true);
         showOnlyOneNotification.setEnabled(enabled);
         final RingtonePreference ringtonePreference = new RingtonePreference(this);
         ringtonePreference.setRingtoneType(RingtoneManager.TYPE_NOTIFICATION);
         ringtonePreference.setDefaultValue(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
-        ringtonePreference.setTitle(R.string.text_choose_ringtone);
-        ringtonePreference.setSummary(R.string.text_choose_ringtone_description);
-        ringtonePreference.setKey(RECEIVER_RINGTONE_URI);
+        ringtonePreference.setTitle(R.string.choose_ringtone);
+        ringtonePreference.setSummary(R.string.choose_ringtone_description);
+        ringtonePreference.setKey(SettingsConst.RECEIVER_RINGTONE_URI);
         ringtonePreference.setEnabled(enabled);
 
-        final CheckBoxPreference abortBroadcast = new CheckBoxPreference(this);
-        abortBroadcast.setDefaultValue(false);
-        abortBroadcast.setKey(RECEIVER_ABORT_BROADCAST);
-        abortBroadcast.setTitle(R.string.text_abort_broadcast);
-        abortBroadcast.setSummary(R.string.text_abort_broadcast_description);
-        abortBroadcast.setEnabled(enabled);
-        abortBroadcast.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (abortBroadcast.isChecked()) {
-                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(SMSReceiverPreference.this);
-                    alertDialog.setTitle(R.string.text_warning);
-                    alertDialog.setMessage(getString(R.string.text_warning_disable_notification));
-                    alertDialog.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            abortBroadcast.setChecked(true);
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog.setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            abortBroadcast.setChecked(false);
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog.show();
-                    return true;
-                }
-                return false;
-            }
 
-        });
         receiverActive.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 showOnlyOneNotification.setEnabled((Boolean) newValue);
-                abortBroadcast.setEnabled((Boolean) newValue);
                 ringtonePreference.setEnabled((Boolean) newValue);
                 return true;
             }
@@ -117,9 +76,7 @@ public class SMSReceiverPreference extends PreferenceActivity {
         root.addPreference(adPreference);
         root.addPreference(showOnlyOneNotification);
         root.addPreference(ringtonePreference);
-        root.addPreference(abortBroadcast);
         return root;
     }
-
 
 }

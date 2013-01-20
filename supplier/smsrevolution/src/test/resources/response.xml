@@ -1,0 +1,30 @@
+<!--?xml version="1.0" encoding="utf-8" standalone="yes"?-->
+<answer>
+    <code>101</code>
+    <codetext>
+        Erfolgreiche Abfrage
+    </codetext>
+    <info>
+        <kontostand>
+            0,350
+        </kontostand>
+        <sms>
+            0
+        </sms>
+        <postausgang>
+            0
+        </postausgang>
+        <archiv>
+            0
+        </archiv>
+        <absender>
+            <handynummer>
+                +49(174)1234567
+            </handynummer>
+            <kennung1></kennung1>
+            <kennung2></kennung2>
+            <kennung3></kennung3>
+            <kennung4></kennung4>
+        </absender>
+    </info>
+</answer>

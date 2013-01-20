@@ -27,11 +27,33 @@
     <parent>
         <groupId>de.christl</groupId>
         <artifactId>SMSoIP</artifactId>
-        <version>2.4.3</version>
+        <version>2.6.7</version>
     </parent>
+    <profiles>
+        <profile>
+            <id>PLAY</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <classifier.name>google</classifier.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>ANDROIDPIT</id>
+            <properties>
+                <classifier.name>androidpit</classifier.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>AMAZON</id>
+            <properties>
+                <classifier.name>amazon</classifier.name>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
-
         <dependency>
             <groupId>com.google.ads</groupId>
             <artifactId>admob</artifactId>
@@ -46,19 +68,31 @@
         </dependency>
         <dependency>
             <groupId>com.actionbarsherlock</groupId>
-            <artifactId>library</artifactId>
+            <artifactId>actionbarsherlock</artifactId>
             <type>apklib</type>
         </dependency>
         <dependency>
-            <groupId>com.google.acra</groupId>
+            <groupId>ch.acra</groupId>
             <artifactId>acra</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}-${classifier.name}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${output.folder}</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
     </build>

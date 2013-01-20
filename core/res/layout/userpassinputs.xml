@@ -31,7 +31,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:text="@string/text_username"
+            android:text="@string/username"
             />
     <EditText android:id="@+id/user"
               android:layout_height="fill_parent"
@@ -43,7 +43,7 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:gravity="center"
-              android:text="@string/text_password"
+              android:text="@string/password"
             />
     <EditText android:id="@+id/pass"
               android:layout_height="fill_parent"
@@ -56,7 +56,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:text="@string/text_ok"
+            android:text="@string/ok"
             android:layout_gravity="center"
             />
 </LinearLayout>

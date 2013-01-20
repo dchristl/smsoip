@@ -49,15 +49,15 @@ public class EmoImageDialog extends Dialog {
         switch (result) {
             case SUCCESS:
                 image.setImageResource(R.drawable.ic_menu_happy);
-                setTitle(getContext().getString(R.string.text_success));
+                setTitle(getContext().getString(R.string.success));
                 break;
             case ERROR:
                 image.setImageResource(R.drawable.ic_menu_sad);
-                setTitle(getContext().getString(R.string.text_error));
+                setTitle(getContext().getString(R.string.error));
                 break;
             default:
                 image.setImageResource(R.drawable.ic_menu_schizophrenic);
-                setTitle(getContext().getString(R.string.text_partial_success));
+                setTitle(getContext().getString(R.string.partial_success));
                 break;
         }
 

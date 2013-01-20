@@ -18,9 +18,9 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import de.christl.smsoip.R;
@@ -28,15 +28,17 @@ import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
  * Prefernces for one provider
  */
-public class ProviderPreferences extends PreferenceActivity {
+public class ProviderPreferences extends BackgroundPreferenceActivity {
     public static final String SUPPLIER_CLASS_NAME = "supplierClassName";
     private SMSoIPPlugin smsSupplier;
     public static final String PROVIDER_USERNAME = "provider.username";
@@ -45,6 +47,7 @@ public class ProviderPreferences extends PreferenceActivity {
     private PreferenceManager preferenceManager;
     private OptionProvider provider;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,18 +55,17 @@ public class ProviderPreferences extends PreferenceActivity {
         String supplierClassName = (String) extras.get(SUPPLIER_CLASS_NAME);
         smsSupplier = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
         provider = smsSupplier.getProvider();
-        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.text_provider_settings) + " (" + provider.getProviderName() + ")");
+        setTitle(getText(R.string.applicationName) + " - " + getText(R.string.provider_settings) + " (" + provider.getProviderName() + ")");
         preferenceManager = getPreferenceManager();
         preferenceManager.setSharedPreferencesName(provider.getClass().getCanonicalName() + "_preferences");
         preferenceManager.setSharedPreferencesMode(MODE_PRIVATE);
         setPreferenceScreen(initPreferences());
-        getWindow().setBackgroundDrawableResource(R.drawable.background_holo_dark);
     }
 
     private PreferenceScreen initPreferences() {
         PreferenceScreen root = preferenceManager.createPreferenceScreen(this);
         if (provider.hasAccounts()) {
-            root.addPreference(new MultipleAccountsPreference(this, preferenceManager));
+            root.addPreference(new MultipleAccountsPreference(this, preferenceManager, provider));
         }
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
@@ -74,10 +76,28 @@ public class ProviderPreferences extends PreferenceActivity {
                 root.addPreference(additionalPreference);
             }
         }
+        final InputStream changelogInputStream = provider.getChangelogInputStream();
+        if (changelogInputStream != null) {
+            PreferenceScreen changelogIntent = getPreferenceManager().createPreferenceScreen(this);
+            changelogIntent.setTitle(R.string.provider_changelog);
+            changelogIntent.setSummary(R.string.provider_changelog_description);
+            changelogIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ChangeLog cl = new ChangeLog(ProviderPreferences.this);
+
+                    AlertDialog changelogDialogByView = cl.getChangelogDialogByView(changelogInputStream);
+                    changelogDialogByView.show();
+                    return true;
+                }
+            });
+            root.addPreference(changelogIntent);
+        }
         return root;
     }
 
     public ExtendedSMSSupplier getSmsSupplier() {
         return smsSupplier.getSupplier();
     }
+
 }

@@ -18,8 +18,24 @@
   -->
 
 <resources>
-    <string name="text_check_no_free_available">Check for no free messages</string>
-    <string name="text_check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
-    <string name="text_no_free_messages_available">Not enough free messages available.</string>
-    <string name="text_free_messages_could_not_resolved">Count of free messages couldn\'t be obtained. Sending canceled!</string>
+    <string-array name="array_spinner">
+        <item>With phonenumber</item>
+        <item>With free source id</item>
+    </string-array>
+    <string name="check_no_free_available">Check for no free messages</string>
+    <string name="check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
+    <string name="no_free_messages_available">Not enough free messages available.</string>
+    <string name="free_messages_could_not_resolved">Count of free messages couldn\'t be obtained. Sending
+        canceled!
+    </string>
+    <string name="login_error">Login failed. Please check if your username includes the domain, i.e. \'@gmx.de\' or
+        \'@gmx.net\'.
+    </string>
+    <string name="sender">Sender</string>
+    <string name="default_number">Default number</string>
+    <string name="no_numbers_maintened">No senders found.</string>
+    <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
+        button or unckeck the box to send with your phone number.
+    </string>
+    <string name="not_yet_refreshed">Refresh by eye button.</string>
 </resources>

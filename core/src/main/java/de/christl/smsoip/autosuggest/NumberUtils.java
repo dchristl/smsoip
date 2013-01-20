@@ -24,7 +24,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.activities.settings.GlobalPreferences;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.database.DatabaseHandler;
 
@@ -40,11 +40,11 @@ public abstract class NumberUtils {
     private static final Pattern NUMBER_INPUT = Pattern.compile("00[0-9]+");
 
     public static String fixNumber(String rawNumber) {
-        String out = rawNumber;
+        String out = rawNumber == null ? "" : rawNumber;
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(SMSoIPApplication.getApp().getApplicationContext());
         if (!out.startsWith("+") && !out.startsWith("00")) {   //area code not already added
             out = out.replaceFirst("^0", "");        //replace leading zero
-            String areaCode = settings.getString(GlobalPreferences.GLOBAL_AREA_CODE, "49");
+            String areaCode = settings.getString(SettingsConst.GLOBAL_AREA_CODE, "49");
             String prefix = "00" + areaCode;
             out = prefix + out;
         } else {
@@ -76,10 +76,6 @@ public abstract class NumberUtils {
         return builder.toString();
     }
 
-    public static String getValidatedString(String text) {
-        return getValidatedString(text, new MultiAutoCompleteTextView.CommaTokenizer(), new NameNumberValidator());
-    }
-
     public static boolean isCorrectNumberInInternationalStyle(CharSequence text) {
         Matcher matcher = NUMBER_INPUT.matcher(text);
         return matcher.matches();
@@ -95,11 +91,7 @@ public abstract class NumberUtils {
 
         @Override
         public boolean isValid(CharSequence text) {
-            boolean matches = isCorrectNameNumber(text);
-            if (!matches) {
-                matches = isCorrectNumberInInternationalStyle(text);
-            }
-            return matches;
+            return isCorrectNameNumber(text);
         }
 
 
@@ -108,14 +100,16 @@ public abstract class NumberUtils {
             Matcher matcher = JUST_NUMBERS_OR_STARTED_WITH_PLUS.matcher(invalidText);
             boolean matches = matcher.matches();
             if (matches) {
-                String fixedNumber = NumberUtils.fixNumber(invalidText.toString());
-                Receiver receiver = DatabaseHandler.findContactByNumber(fixedNumber, SMSoIPApplication.getApp().getBaseContext());
-                String textUnknown = SMSoIPApplication.getApp().getString(R.string.text_unknown);
-                NameNumberEntry tmpEntry = new NameNumberEntry(textUnknown, fixedNumber, textUnknown);
+                String rawNumber = invalidText.toString();
+                Receiver receiver = DatabaseHandler.findContactByNumber(rawNumber, SMSoIPApplication.getApp().getBaseContext());
+                String number = NumberUtils.fixNumber(rawNumber);
+                String name;
                 if (receiver != null) {
-                    tmpEntry = new NameNumberEntry(receiver.getName(), receiver.getReceiverNumber(), receiver.getNumberType());
+                    name = receiver.getName();
+                } else {
+                    name = SMSoIPApplication.getApp().getString(R.string.unknown);
                 }
-                return tmpEntry.getFieldRepresantation();
+                return name + " (" + number + ")";
             } else {
                 return "";
             }

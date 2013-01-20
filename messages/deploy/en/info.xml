@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<messages>
+    <message>
+        <id>1</id>
+        <action>1</action>
+        <title>Donate Plugin now available!</title>
+        <text>Remove ads. Support future development.</text>
+        <url>market://details?id=de.christl.smsoip.adfree</url>
+        <alternativeUrl>https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</alternativeUrl>
+        <donate>false</donate>
+    </message>
+</messages>
+
+

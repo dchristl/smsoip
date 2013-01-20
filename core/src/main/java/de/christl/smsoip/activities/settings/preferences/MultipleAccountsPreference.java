@@ -31,7 +31,9 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModelsList;
+import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 /**
@@ -45,11 +47,13 @@ public class MultipleAccountsPreference extends ListPreference {
     private AccountModelsList accountModels = new AccountModelsList();
     private MultipleAccountsPreferenceAdapter listAdapter;
     private ProviderPreferences providerPreferences;
+    private OptionProvider provider;
     private SharedPreferences.Editor editor;
 
-    public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences) {
+    public MultipleAccountsPreference(ProviderPreferences providerPreferences, PreferenceManager preferences, OptionProvider provider) {
         super(providerPreferences, null);
         this.providerPreferences = providerPreferences;
+        this.provider = provider;
         this.preferences = preferences.getSharedPreferences();
         init();
     }
@@ -57,8 +61,8 @@ public class MultipleAccountsPreference extends ListPreference {
     private void init() {
         setPersistent(false);
         setDefaultAccountInSummary();
-        setDialogTitle(R.string.text_chooseAccount);
-        setTitle(R.string.text_account_list);
+        setDialogTitle(R.string.chooseAccount);
+        setTitle(R.string.account_list);
         //needed by preference, but values will be filled later in cycle, so defined empty ones
         setEntryValues(new CharSequence[0]);
         setEntries(new CharSequence[0]);
@@ -70,8 +74,8 @@ public class MultipleAccountsPreference extends ListPreference {
 
     private void setDefaultAccountInSummary() {
         int defaultAccount = getDefaultAccount();
-        String defaultAccountName = preferences.getString(ProviderPreferences.PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.text_account_no_account));
-        setSummary(String.format(getContext().getString(R.string.text_account_list_description), defaultAccountName));
+        String defaultAccountName = preferences.getString(ProviderPreferences.PROVIDER_USERNAME + (defaultAccount == 0 ? "" : "." + defaultAccount), getContext().getString(R.string.account_no_account));
+        setSummary(String.format(getContext().getString(R.string.account_list_description), defaultAccountName));
     }
 
     private void fillAccountMap() {
@@ -95,7 +99,7 @@ public class MultipleAccountsPreference extends ListPreference {
                 }
             }
         }
-        accountModels.addFakeAsLast(getContext().getString(R.string.text_account_add_account));
+        accountModels.addFakeAsLast(getContext().getString(R.string.account_add_account));
 
     }
 
@@ -120,15 +124,16 @@ public class MultipleAccountsPreference extends ListPreference {
             editor.putInt(ProviderPreferences.PROVIDER_DEFAULT_ACCOUNT, listAdapter.getDefaultAccount());
             editor.commit();
             setDefaultAccountInSummary();
+            provider.onAccountsChanged();
         }
-        ErrorReporterStack.put("showUserNamePasswordDialog closed");
+        ErrorReporterStack.put(LogConst.SHOW_USER_NAME_PASSWORD_DIALOG_CLOSED);
     }
 
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
-        builder.setPositiveButton(R.string.text_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MultipleAccountsPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
@@ -140,7 +145,7 @@ public class MultipleAccountsPreference extends ListPreference {
         builder.setSingleChoiceItems(listAdapter, listAdapter.getDefaultAccount(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (listAdapter.getItem(which).getUserName().equals(getContext().getString(R.string.text_account_add_account))) {
+                if (listAdapter.getItem(which).getUserName().equals(getContext().getString(R.string.account_add_account))) {
                     showUserNamePasswordDialog(null);
                 } else {
                     listAdapter.setDefaultAccount(which);
@@ -155,10 +160,10 @@ public class MultipleAccountsPreference extends ListPreference {
     }
 
     public void showUserNamePasswordDialog(final AccountModel accountModel) {
-        ErrorReporterStack.put("showUserNamePasswordDialog");
+        ErrorReporterStack.put(LogConst.SHOW_USER_NAME_PASSWORD_DIALOG);
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.userpassinputs);
-        dialog.setTitle(R.string.text_account_add_account);
+        dialog.setTitle(R.string.account_add_account);
         View okButton = dialog.findViewById(R.id.okButton);
         final EditText userInput = (EditText) dialog.findViewById(R.id.user);
         final EditText passInput = (EditText) dialog.findViewById(R.id.pass);
@@ -182,8 +187,8 @@ public class MultipleAccountsPreference extends ListPreference {
                     } else {
                         accountModel.setUserName(userName);
                         accountModel.setPassWord(pass);
-                        listAdapter.notifyDataSetChanged();
                     }
+                    listAdapter.notifyDataSetChanged();
                 }
                 dialog.dismiss();
             }

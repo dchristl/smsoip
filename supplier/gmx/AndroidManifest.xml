@@ -15,11 +15,15 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="10" android:versionName="1.3.1" package="de.christl.smsoip.supplier.gmx">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="14" android:versionName="1.4.0" package="de.christl.smsoip.supplier.gmx">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
     <application android:icon="@drawable/icon" android:label="SMSoIP GMX Plugin">
+        <activity android:name=".GMXInfoDialogActivity" android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.INFO"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

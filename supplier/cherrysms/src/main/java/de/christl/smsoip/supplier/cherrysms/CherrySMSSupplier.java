@@ -29,6 +29,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -49,38 +50,32 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) {
+    public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         if (userName == null || password == null) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String tmpUrl;
         try {
             tmpUrl = getURLStringWithUserNameAndPassword(userName, password);
-        } catch (UnsupportedEncodingException e) {
-            return SMSActionResult.UNKNOWN_ERROR();
         } catch (NoSuchAlgorithmException e) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
 
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
-        try {
-            HttpURLConnection httpURLConnection = factory.create();
-            InputStream inputStream = httpURLConnection.getInputStream();
+        HttpURLConnection httpURLConnection = factory.create();
+        InputStream inputStream = httpURLConnection.getInputStream();
 
-            String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
-            int returnInt = Integer.parseInt(returnValue);
-            if (returnInt == 10 || returnInt == 60) { //expect wrong receiver number, is better than check for credits
-                return SMSActionResult.LOGIN_SUCCESSFUL();
-            }
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
+        String returnValue = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
+        if (returnValue.equals("") || returnValue.equals("connect_timeout")) { //special return value
             return SMSActionResult.NETWORK_ERROR();
-        } catch (NumberFormatException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.LOGIN_FAILED_ERROR();
         }
-
-        return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+        int returnInt = Integer.parseInt(returnValue);
+        if (returnInt == 10 || returnInt == 60) { //expect wrong receiver number, is better than check for credits
+            return SMSActionResult.LOGIN_SUCCESSFUL();
+        }
+        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
+        smsActionResult.setRetryMakesSense(false);
+        return smsActionResult;
     }
 
     private String getURLStringWithUserNameAndPassword(String userName, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -89,7 +84,7 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) {
+    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);
@@ -103,8 +98,6 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             if (sendMethod == WITH_SI) {
                 tmpUrl += "&from=1";
             }
-        } catch (UnsupportedEncodingException e) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         } catch (NoSuchAlgorithmException e) {
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         }
@@ -114,6 +107,9 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             try {
                 InputStream inputStream = factory.create().getInputStream();
                 out.add(new FireSMSResult(receiver, processFireSMSReturn(inputStream)));
+            } catch (SocketTimeoutException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "", e);
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
@@ -141,35 +137,35 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             }
             switch (returnInt) {
                 case 10:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_10));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_10));
                 case 20:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_20));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_20));
                 case 30:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_30));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_30));
                 case 31:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_31));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_31));
                 case 40:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_40));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_40));
                 case 50:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_50));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_50));
                 case 60:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_60));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_60));
                 case 70:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_70));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_70));
                 case 71:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_71));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_71));
                 case 80:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_80));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_80));
                 case 90:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_90));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_90));
                 case 100:
-                    String success = provider.getTextByResourceId(R.string.text_return_100);
+                    String success = provider.getTextByResourceId(R.string.return_100);
                     if (split.length > 1) {
                         success = String.format(success, split[1]);
                     }
                     return SMSActionResult.NO_ERROR(success);
                 default:
-                    String unknownError = provider.getTextByResourceId(R.string.text_unknown_error);
+                    String unknownError = provider.getTextByResourceId(R.string.unknown_error);
                     unknownError = String.format(unknownError, returnInt);
                     return SMSActionResult.UNKNOWN_ERROR(unknownError);
             }
@@ -193,11 +189,11 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() {
+    public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
         return refreshInformations(true);
     }
 
-    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) {
+    private SMSActionResult refreshInformations(boolean afterMessageSentSuccessful) throws IOException {
         if (!afterMessageSentSuccessful) {   //dont do a extra login if message is sent short time before
             SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
             if (!result.isSuccess()) {
@@ -205,7 +201,7 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             }
         }
 
-        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
+        String tmpText = provider.getTextByResourceId(R.string.refresh_informations);
         try {
             UrlConnectionFactory factory = new UrlConnectionFactory(getURLStringWithUserNameAndPassword(provider.getUserName(), provider.getPassword()) + "&check=guthaben", UrlConnectionFactory.METHOD_GET);
             HttpURLConnection httpURLConnection = factory.create();
@@ -213,21 +209,15 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             int returnInt = Integer.parseInt(returnValue);
             //only valid value here will be 50 (login failed, but will not reached here if creentials errous)
             return SMSActionResult.NO_ERROR(String.format(tmpText, returnInt));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.UNKNOWN_ERROR();
         } catch (NoSuchAlgorithmException e) {
             Log.e(this.getClass().getCanonicalName(), "", e);
             return SMSActionResult.UNKNOWN_ERROR();
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            return SMSActionResult.NETWORK_ERROR();
         }
 
     }
 
     @Override
-    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() {
+    public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException {
         return refreshInformations(false);
     }
 
