@@ -262,6 +262,8 @@ fileName: strings.xml
     <string name="nothing_to_shorten">No text to shorten.</string>
     <string name="nothing_to_clear">No inputs to clear.</string>
 
+    <string name="no_text_modules">No text modules defined.</string>
+
     <string name="hintAddReceivers">Hint: Add one or more receivers to show conversations.</string>
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
@@ -270,7 +272,8 @@ fileName: strings.xml
     <string name="youtube_alternative">http://www.youtube.com/watch?v=tcr87tEPUao</string>
 
     <string name="button_visibiliy">Buttonvisibility (ActionBar)</string>
-    <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can also be invoked by tap on providericon or username.
+    <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
+        also be invoked by tap on providericon or username.
     </string>
 </resources>
 
@@ -498,23 +501,23 @@ fileName: strings.xml
         <item>Without source identifier (1 Credit/SMS)</item>
         <item>With source identifier (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_refresh_informations">Remaining credits: %1$d</string>
-    <string name="text_login_failed">Login failed. Please check if your username is your number in international format,
+    <string name="refresh_informations">Remaining credits: %1$d</string>
+    <string name="login_failed">Login failed. Please check if your username is your number in international format,
         like \'00491721234567\'
     </string>
-    <string name="text_return_10">Recipent number is not correct</string>
-    <string name="text_return_20">Sender ID is not correct</string>
-    <string name="text_return_30">Message text is not correct</string>
-    <string name="text_return_31">Message type is not correct</string>
-    <string name="text_return_40">Route message incorrect</string>
-    <string name="text_return_50">Identification failed</string>
-    <string name="text_return_60">Not enough credits</string>
-    <string name="text_return_70">Grid is not covered by Route</string>
-    <string name="text_return_71">Feature not possible on this route</string>
-    <string name="text_return_80">Transfer to SMS-C failed</string>
-    <string name="text_return_90">Shipping available</string>
-    <string name="text_return_100">Message was succesfully sent for %1$s credits</string>
-    <string name="text_unknown_error">Unknown error code: %1$d</string>
+    <string name="return_10">Recipent number is not correct</string>
+    <string name="return_20">Sender ID is not correct</string>
+    <string name="return_30">Message text is not correct</string>
+    <string name="return_31">Message type is not correct</string>
+    <string name="return_40">Route message incorrect</string>
+    <string name="return_50">Identification failed</string>
+    <string name="return_60">Not enough credits</string>
+    <string name="return_70">Grid is not covered by Route</string>
+    <string name="return_71">Feature not possible on this route</string>
+    <string name="return_80">Transfer to SMS-C failed</string>
+    <string name="return_90">Shipping available</string>
+    <string name="return_100">Message was succesfully sent for %1$s credits</string>
+    <string name="unknown_error">Unknown error code: %1$d</string>
 </resources>
 <!--String resources for:
 project: innosend
@@ -818,9 +821,16 @@ fileName: strings.xml
     <string name="return_903">Wrong server ip</string>
     <string name="return_unknown_error">Unknown Error: %1$d</string>
 
+    <string name="not_yet_refreshed">Not yet refreshed.</string>
+    <string name="no_senders_available">No senders found.</string>
+    <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye
+        button.
+    </string>
+
     <string-array name="array_spinner">
         <item>Basic plus</item>
-        <item>Quality</item>
+        <item>Quality (phone number)</item>
+        <item>Quality (free SI)</item>
         <item>Landline</item>
         <item>Flash</item>
     </string-array>

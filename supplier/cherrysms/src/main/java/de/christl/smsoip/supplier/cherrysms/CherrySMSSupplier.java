@@ -73,7 +73,7 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
         if (returnInt == 10 || returnInt == 60) { //expect wrong receiver number, is better than check for credits
             return SMSActionResult.LOGIN_SUCCESSFUL();
         }
-        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_login_failed));
+        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
         smsActionResult.setRetryMakesSense(false);
         return smsActionResult;
     }
@@ -137,35 +137,35 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             }
             switch (returnInt) {
                 case 10:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_10));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_10));
                 case 20:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_20));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_20));
                 case 30:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_30));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_30));
                 case 31:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_31));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_31));
                 case 40:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_40));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_40));
                 case 50:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_50));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_50));
                 case 60:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_60));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_60));
                 case 70:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_70));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_70));
                 case 71:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_71));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_71));
                 case 80:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_80));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_80));
                 case 90:
-                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.text_return_90));
+                    return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.return_90));
                 case 100:
-                    String success = provider.getTextByResourceId(R.string.text_return_100);
+                    String success = provider.getTextByResourceId(R.string.return_100);
                     if (split.length > 1) {
                         success = String.format(success, split[1]);
                     }
                     return SMSActionResult.NO_ERROR(success);
                 default:
-                    String unknownError = provider.getTextByResourceId(R.string.text_unknown_error);
+                    String unknownError = provider.getTextByResourceId(R.string.unknown_error);
                     unknownError = String.format(unknownError, returnInt);
                     return SMSActionResult.UNKNOWN_ERROR(unknownError);
             }
@@ -201,7 +201,7 @@ public class CherrySMSSupplier implements ExtendedSMSSupplier {
             }
         }
 
-        String tmpText = provider.getTextByResourceId(R.string.text_refresh_informations);
+        String tmpText = provider.getTextByResourceId(R.string.refresh_informations);
         try {
             UrlConnectionFactory factory = new UrlConnectionFactory(getURLStringWithUserNameAndPassword(provider.getUserName(), provider.getPassword()) + "&check=guthaben", UrlConnectionFactory.METHOD_GET);
             HttpURLConnection httpURLConnection = factory.create();

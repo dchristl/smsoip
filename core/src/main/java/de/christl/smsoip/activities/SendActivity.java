@@ -746,6 +746,9 @@ public class SendActivity extends AllActivity {
                     for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {
                         textField.insertText(stringStringEntry.getValue()); //its only one in this loop, so do not break
                     }
+                } else if (textModules.size() == 0) {
+                    toast.setText(R.string.no_text_modules);
+                    toast.show();
                 }
 
             }

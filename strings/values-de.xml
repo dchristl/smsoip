@@ -279,6 +279,7 @@ fileName: strings.xml
 
     <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
     <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
+    <string name="no_text_modules">Keine Textmodule gepflegt.</string>
     <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um letzte Konversationen anzuzeigen!</string>
     <string name="button_visibiliy">Buttonsichtbarkeit (ActionBar)</string>
     <string name="button_visibiliy_description">Buttons für Anbieter- oder Benutzerwechsel anzeigen/ausblenden. Das
@@ -518,23 +519,23 @@ fileName: strings.xml
         <item>Ohne Absenderkennung (1 Credit/SMS)</item>
         <item>Mit Absenderkennung (2 Credits/SMS)</item>
     </string-array>
-    <string name="text_refresh_informations">Verbleibende Credits: %1$d</string>
-    <string name="text_login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
+    <string name="refresh_informations">Verbleibende Credits: %1$d</string>
+    <string name="login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
         Format sein, z.B. \'00491721234567\'
     </string>
-    <string name="text_return_10">Empfängernummer nicht korrekt</string>
-    <string name="text_return_20">Absender ID ist nicht korrekt</string>
-    <string name="text_return_30">Nachrichtentext nicht korrekt</string>
-    <string name="text_return_31">Nachrichtentyp ist nicht korrekt</string>
-    <string name="text_return_40">Nachrichtenroute ist nicht korrekt</string>
-    <string name="text_return_50">Zugangsdaten fehlerhaft</string>
-    <string name="text_return_60">Nicht genügend Credits vorhanden</string>
-    <string name="text_return_70">Netz wird von Route nicht unterstützt</string>
-    <string name="text_return_71">Feature auf dieser Route nicht möglich</string>
-    <string name="text_return_80">Übertragung an SMS-C nicht möglich</string>
-    <string name="text_return_90">Versand möglich</string>
-    <string name="text_return_100">SMS wurde erfolgreich für %1$s Credits versendet</string>
-    <string name="text_unknown_error">Unbekannter Fehlercode: %1$d</string>
+    <string name="return_10">Empfängernummer nicht korrekt</string>
+    <string name="return_20">Absender ID ist nicht korrekt</string>
+    <string name="return_30">Nachrichtentext nicht korrekt</string>
+    <string name="return_31">Nachrichtentyp ist nicht korrekt</string>
+    <string name="return_40">Nachrichtenroute ist nicht korrekt</string>
+    <string name="return_50">Zugangsdaten fehlerhaft</string>
+    <string name="return_60">Nicht genügend Credits vorhanden</string>
+    <string name="return_70">Netz wird von Route nicht unterstützt</string>
+    <string name="return_71">Feature auf dieser Route nicht möglich</string>
+    <string name="return_80">Übertragung an SMS-C nicht möglich</string>
+    <string name="return_90">Versand möglich</string>
+    <string name="return_100">SMS wurde erfolgreich für %1$s Credits versendet</string>
+    <string name="unknown_error">Unbekannter Fehlercode: %1$d</string>
 </resources>
 <!--String resources for:
 project: innosend
@@ -845,9 +846,16 @@ fileName: strings.xml
     <string name="return_902">http API für diesen Account deaktiviert</string>
     <string name="return_903">Server IP ist falsch</string>
     <string name="return_unknown_error">Unbekannter Fehler: %1$d</string>
+
+    <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
+    <string name="no_senders_available">Keine Absendernummern gefunden.</string>
+    <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absendernummern vor
+        dem Senden mit Hilfe des Auge-Buttons.
+    </string>
     <string-array name="array_spinner">
         <item>Basic plus</item>
-        <item>Quality</item>
+        <item>Quality (Handynummer)</item>
+        <item>Quality (Freitext)</item>
         <item>Festnetz</item>
         <item>Flash</item>
     </string-array>

@@ -225,6 +225,8 @@
     <string name="nothing_to_shorten">No text to shorten.</string>
     <string name="nothing_to_clear">No inputs to clear.</string>
 
+    <string name="no_text_modules">No text modules defined.</string>
+
     <string name="hintAddReceivers">Hint: Add one or more receivers to show conversations.</string>
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
@@ -233,6 +235,7 @@
     <string name="youtube_alternative">http://www.youtube.com/watch?v=tcr87tEPUao</string>
 
     <string name="button_visibiliy">Buttonvisibility (ActionBar)</string>
-    <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can also be invoked by tap on providericon or username.
+    <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
+        also be invoked by tap on providericon or username.
     </string>
 </resources>
