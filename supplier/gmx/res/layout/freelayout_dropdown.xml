@@ -33,16 +33,10 @@
             />
     <TableLayout android:layout_width="fill_parent"
                  android:layout_height="fill_parent"
-                 android:stretchColumns="1"
-                 android:shrinkColumns="1"
+                 android:stretchColumns="0"
+                 android:shrinkColumns="0"
             >
-        <TableRow
-                >
-            <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="20dp"
-                    />
+        <TableRow>
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
@@ -62,13 +56,11 @@
                         android:gravity="center"
                         android:ellipsize="end"
                         />
-                <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:visibility="gone"
-
+                <ProgressBar android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_gravity="center"
+                             android:gravity="center"
+                             android:visibility="gone"
                         />
             </LinearLayout>
 
@@ -76,7 +68,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
-                    android:visibility="gone"
                     />
         </TableRow>
 

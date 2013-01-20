@@ -20,8 +20,12 @@ package de.christl.smsoip.supplier.gmx;
 
 import android.os.AsyncTask;
 import de.christl.smsoip.constant.SMSActionResult;
+import org.acra.ACRA;
 
-public class RefreshSenderTask  extends AsyncTask<Void, Boolean, SMSActionResult> {
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
+public class RefreshSenderTask extends AsyncTask<Void, Boolean, SMSActionResult> {
     private GMXOptionProvider gmxOptionProvider;
 
     public RefreshSenderTask(GMXOptionProvider gmxOptionProvider) {
@@ -30,6 +34,25 @@ public class RefreshSenderTask  extends AsyncTask<Void, Boolean, SMSActionResult
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
-        return null;
+
+        try {
+            return gmxOptionProvider.getSupplier().resolveNumbers();
+        } catch (SocketTimeoutException e) {
+            return SMSActionResult.TIMEOUT_ERROR();
+        } catch (IOException e) {
+            return SMSActionResult.NETWORK_ERROR();
+        } catch (Exception e) {                                                      //for insurance
+            ACRA.getErrorReporter().handleSilentException(e);
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+    }
+
+    @Override
+    protected void onPostExecute(SMSActionResult smsActionResult) {
+        if (smsActionResult.isSuccess()) {
+            gmxOptionProvider.refreshDropDownAfterSuccesfulUpdate();
+        } else {
+            gmxOptionProvider.setErrorMessageOnUpdate(smsActionResult.getMessage());
+        }
     }
 }

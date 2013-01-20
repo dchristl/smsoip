@@ -35,7 +35,8 @@
     <string name="default_number">Default number</string>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button or unckeck the box to send with your phone number.
+        button.
     </string>
     <string name="not_yet_refreshed">Refresh by eye button.</string>
+    <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
 </resources>
