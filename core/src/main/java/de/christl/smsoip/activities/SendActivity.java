@@ -241,7 +241,6 @@ public class SendActivity extends AllActivity {
             updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO), false);
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
         } else {     // fresh create call on activity so do the default behaviour
-            Uri data = getIntent().getData();
             IntentHandler handler = new IntentHandler(getIntent(), this);
             getAndSetSupplier(handler);
             setPreselectedContact(handler);

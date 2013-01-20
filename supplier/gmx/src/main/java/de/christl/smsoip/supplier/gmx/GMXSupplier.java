@@ -32,10 +32,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -112,7 +112,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         Map<String, String> parameterMap = new LinkedHashMap<String, String>();
         parameterMap.put("id8_hf_0", "");
         parameterMap.put("from", "0");
-        parameterMap.put("custom-sender-string", "0");
+//        parameterMap.put("custom-sender-string", "0");
         StringBuilder receiverListBuilder = new StringBuilder();
         for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
             String receiver = receivers.get(i).getReceiverNumber();
@@ -159,39 +159,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         factory.writeMultipartBody(parameterMap, ENCODING);
         HttpURLConnection connnection = factory.getConnnection();
         return FireSMSResultList.getAllInOneResult(processReturn(connnection.getInputStream()), receivers);
-//        HttpURLConnection con;
-//
-//        PrintWriter writer;
-//        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-//        con.setDoOutput(true);
-//        con.setReadTimeout(TIMEOUT);
-//        con.setConnectTimeout(TIMEOUT);
-//        con.setRequestProperty("User-Agent", TARGET_AGENT);
-//        con.setRequestMethod("POST");
-//        String boundary = "--" + Long.toHexString(System.currentTimeMillis());
-//        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-//        con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
-//        OutputStream output = con.getOutputStream();
-//        OutputStreamWriter wr = new OutputStreamWriter(output, ENCODING);
-//        writer = new PrintWriter(wr, true);
-//        try {
-//            for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
-//                writer.append("--").append(boundary).append(CRLF);
-//                writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
-//                writer.append(CRLF);
-//                writer.append(stringStringEntry.getValue()).append(CRLF).flush();
-//
-//            }
-//            writer.append("--").append(boundary).append("--").append(CRLF).flush();
-//        } finally {
-//            if (writer != null) {
-//                writer.close();
-//            }
-//            if (wr != null) {
-//                wr.close();
-//            }
-//        }
-
 
     }
 
@@ -199,29 +166,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         Map<String, String> otherParameterMap = new HashMap<String, String>(parameterMap);
         otherParameterMap.put("send-date-panel:send-date-form:save", "1");
-        PrintWriter writer = null;
         try {
             String tmpUrl = String.format(SAVE_URL, sessionId);
-            String boundary = "--" + Long.toHexString(System.currentTimeMillis());
-            HttpURLConnection con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-            con.setDoOutput(true);
-            con.setReadTimeout(TIMEOUT);
-            con.setConnectTimeout(TIMEOUT);
-            con.setRequestProperty("User-Agent", TARGET_AGENT);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
-            OutputStream output = con.getOutputStream();
-            writer = new PrintWriter(new OutputStreamWriter(output, ENCODING), true);
-            for (Map.Entry<String, String> stringStringEntry : otherParameterMap.entrySet()) {
-                writer.append("--").append(boundary).append(CRLF);
-                writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
-                writer.append(CRLF);
-                writer.append(stringStringEntry.getValue()).append(CRLF).flush();
-
-            }
-            writer.append("--").append(boundary).append("--").append(CRLF).flush();
-            con.getInputStream(); //just fire request
+            UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+            factory.writeMultipartBody(otherParameterMap, ENCODING);
+            //just fire request
+            factory.getConnnection().getInputStream();
             return SMSActionResult.NO_ERROR();
 
         } catch (SocketTimeoutException stoe) {
@@ -230,18 +180,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         } catch (IOException e) {
             Log.e(this.getClass().getCanonicalName(), "IOException", e);
             return SMSActionResult.NETWORK_ERROR();
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
     }
 
     /**
      * its an ajax response and easier to handle than with JSoup
      *
-     * @param is
-     * @return
      * @throws IOException
      */
     SMSActionResult processReturn(InputStream is) throws IOException {

@@ -227,11 +227,11 @@ public class UrlConnectionFactory {
         if (con == null) {
             create();
         }
-        con.setDoOutput(true);
         String boundary = "--" + Long.toHexString(System.currentTimeMillis());
+        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        con.setDoOutput(true);
         OutputStream output = con.getOutputStream();
         PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, encoding), true);
-        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
             writer.append("--").append(boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
