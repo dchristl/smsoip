@@ -16,7 +16,7 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.activities;
+package de.christl.smsoip.supplier.activities;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import de.christl.smsoip.activities.R;
 
 
 public abstract class InfoDialogActivity extends Activity {

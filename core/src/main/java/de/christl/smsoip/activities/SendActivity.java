@@ -37,7 +37,6 @@ import android.provider.ContactsContract;
 import android.text.*;
 import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,6 +129,8 @@ public class SendActivity extends AllActivity {
     private Integer currentAccountIndex;
     private MobclixMMABannerXLAdView adView;
     private ColorStateList defaultColor;
+
+    private int instanciationCounter = 0;
 
 
     @Override
@@ -983,16 +984,12 @@ public class SendActivity extends AllActivity {
                     out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
                 }
             } catch (UnsupportedEncodingException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
             } catch (NumberFormatException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
             } catch (SocketTimeoutException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
             } catch (IOException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
             } catch (Exception e) {                                                      //for insurance
                 ACRA.getErrorReporter().handleSilentException(e);
@@ -1137,10 +1134,13 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin != null) {
 
             try {
+                instanciationCounter++;
                 smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
             } catch (Exception e) {
-                smSoIPPlugin.putPluginInformation();
-                ACRA.getErrorReporter().handleSilentException(e);
+                if (instanciationCounter < 2) {  //send only on first error
+                    smSoIPPlugin.putPluginInformation();
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
                 freeLayout.setVisibility(View.GONE);
             }
         }

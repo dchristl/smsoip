@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.smsrevolution;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class SMSRevoInfoDialogActivity extends InfoDialogActivity {
     @Override

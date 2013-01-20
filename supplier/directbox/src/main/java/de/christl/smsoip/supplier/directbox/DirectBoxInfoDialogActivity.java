@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.directbox;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class DirectBoxInfoDialogActivity extends InfoDialogActivity {
     @Override

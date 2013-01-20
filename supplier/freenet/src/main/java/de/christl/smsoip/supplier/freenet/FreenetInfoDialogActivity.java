@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.freenet;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class FreenetInfoDialogActivity extends InfoDialogActivity {
     @Override

@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.sms77;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class SMS77InfoDialogActivity extends InfoDialogActivity {
     @Override

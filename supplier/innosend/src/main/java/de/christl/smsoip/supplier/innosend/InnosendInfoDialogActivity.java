@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.innosend;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class InnosendInfoDialogActivity extends InfoDialogActivity {
     @Override

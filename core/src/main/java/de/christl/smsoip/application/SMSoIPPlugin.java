@@ -34,6 +34,7 @@ import org.acra.ErrorReporter;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -197,8 +198,11 @@ public class SMSoIPPlugin {
         try {
             String customData = errorReporter.getCustomData(XMLID_TO_LOAD);
             int xmlid = Integer.parseInt(customData);
-            int length = resolveRawResource(xmlid).available();
+            InputStream inputStream = resolveRawResource(xmlid);
+            int length = inputStream.available();
             errorReporter.putCustomData("xml_stream_length", String.valueOf(length));
+            String inputStreamString = new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
+            System.out.println(inputStreamString.length());
         } catch (Exception e) {
             errorReporter.handleSilentException(e);
         }
