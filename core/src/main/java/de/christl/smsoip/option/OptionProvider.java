@@ -175,8 +175,12 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId);
     }
 
+    @Deprecated
+    /**
+     * @deprecated use getXMLResourceByResourceId instead
+     */
     public final XmlResourceParser getLayoutResourceByResourceId(int layoutId) {
-        return SMSoIPApplication.getApp().getLayoutResourceByResourceId(this, layoutId);
+        return getXMLResourceByResourceId(layoutId);
     }
 
     public final XmlResourceParser getXMLResourceByResourceId(int xmlId) {

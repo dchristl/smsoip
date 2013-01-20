@@ -26,7 +26,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
@@ -49,8 +48,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-@ReportsCrashes(formKey = "dHFQMDVSRnliXzcyWkZkZDZHTlc0TGc6MQ", mode = ReportingInteractionMode.NOTIFICATION,
-        resToastText = R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+@ReportsCrashes(formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ", mode = ReportingInteractionMode.NOTIFICATION,
+        resToastText = R.string.crash_toast_text,
         resNotifTickerText = R.string.crash_notif_ticker_text,
         resNotifTitle = R.string.crash_notif_title,
         resNotifText = R.string.crash_notif_text,
@@ -62,6 +61,7 @@ public class SMSoIPApplication extends Application {
 
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
+    public static final String SMSOIP_PACKAGE = "de.christl.smsoip";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     private HashMap<String, SMSoIPPlugin> loadedProviders = new HashMap<String, SMSoIPPlugin>();
     private HashMap<String, SMSoIPPlugin> pluginsToOld = new HashMap<String, SMSoIPPlugin>();
@@ -128,35 +128,36 @@ public class SMSoIPApplication extends Application {
     /**
      * read out all packages to find installed plugins
      */
-    public void initProviders() {
-        try {
-            List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
+    public synchronized void initProviders() {
+        List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
 //refresh only if not yet done and if a new application is installed
-            if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
-                plugins = new ArrayList<SMSoIPPlugin>();
-                for (ApplicationInfo installedApplication : installedApplications) {
+        if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
+            plugins = new ArrayList<SMSoIPPlugin>();
+            for (ApplicationInfo installedApplication : installedApplications) {
+                try {
                     if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
-                        Resources resourcesForApplication = getPackageManager().getResourcesForApplication(installedApplication);
                         PackageInfo packageInfo = getPackageManager().getPackageInfo(installedApplication.packageName, 0);
-                        plugins.add(new SMSoIPPlugin(installedApplication, packageInfo, resourcesForApplication));
+                        plugins.add(new SMSoIPPlugin(installedApplication, packageInfo, new PathClassLoader(installedApplication.sourceDir, getClassLoader())));
                     } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
                         PackageManager manager = getPackageManager();
                         if (manager.checkSignatures(getPackageName(), PLUGIN_ADFREE_PREFIX) == PackageManager.SIGNATURE_MATCH) {
                             adsEnabled = false;
                         }
                     }
+                } catch (PackageManager.NameNotFoundException e) {
+                    ACRA.getErrorReporter().handleException(e);
                 }
-                readOutPlugins();
-                installedPackages = installedApplications.size();
             }
-
-        } catch (IllegalAccessException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-        } catch (IOException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
+            try {
+                readOutPlugins();
+            } catch (IOException e) {
+                ACRA.getErrorReporter().handleException(e);
+            } catch (IllegalAccessException e) {
+                ACRA.getErrorReporter().handleException(e);
+            }
+            installedPackages = installedApplications.size();
         }
+
     }
 
     private void readOutPlugins() throws IOException, IllegalAccessException {
@@ -167,16 +168,15 @@ public class SMSoIPApplication extends Application {
         for (SMSoIPPlugin plugin : plugins) {
             String sourceDir = plugin.getSourceDir();
             DexFile apkDir = new DexFile(sourceDir);
-            PathClassLoader pathClassLoader = new PathClassLoader(sourceDir, getClassLoader());
             Enumeration<String> classFileEntries = apkDir.entries();
             while (classFileEntries.hasMoreElements()) {
                 String s = classFileEntries.nextElement();
-                if (!s.startsWith(PLUGIN_CLASS_PREFIX)) {
+                if (!s.startsWith(SMSOIP_PACKAGE)) {
                     continue;
                 }
                 plugin.addAvailableClass(s);
                 try {
-                    Class<?> aClass = Class.forName(s, false, pathClassLoader);
+                    Class<?> aClass = Class.forName(s, false, plugin.getPathClassLoader());
                     Class<?>[] aClassInterfaces = aClass.getInterfaces();
                     if (aClassInterfaces != null && ExtendedSMSSupplier.class.isAssignableFrom(aClass)) {
 
@@ -317,14 +317,6 @@ public class SMSoIPApplication extends Application {
         return null;
     }
 
-
-    public XmlResourceParser getLayoutResourceByResourceId(OptionProvider optionProvider, int layoutId) {
-        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
-        if (plugin != null) {
-            return plugin.resolveLayout(layoutId);
-        }
-        return null;
-    }
 
     public XmlResourceParser getXMLResourceByResourceId(OptionProvider optionProvider, int xmlId) {
         SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());

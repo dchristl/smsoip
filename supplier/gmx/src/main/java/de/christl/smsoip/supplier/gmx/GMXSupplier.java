@@ -112,6 +112,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         Map<String, String> parameterMap = new LinkedHashMap<String, String>();
         parameterMap.put("id8_hf_0", "");
         parameterMap.put("from", "0");
+        parameterMap.put("custom-sender-string", "0");
         StringBuilder receiverListBuilder = new StringBuilder();
         for (int i = 0, receiversSize = receivers.size(); i < receiversSize; i++) {
             String receiver = receivers.get(i).getReceiverNumber();
@@ -153,40 +154,44 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         parameterMap.put("send-date-panel:send-date-form:send-date-hour", hour);
         parameterMap.put("send-date-panel:send-date-form:send-date-minute", minute);
         parameterMap.put("sendMessage", "1");
-        HttpURLConnection con;
-
-        PrintWriter writer;
         String tmpUrl = String.format(TARGET_URL, sessionId);
-        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
-        con.setDoOutput(true);
-        con.setReadTimeout(TIMEOUT);
-        con.setConnectTimeout(TIMEOUT);
-        con.setRequestProperty("User-Agent", TARGET_AGENT);
-        con.setRequestMethod("POST");
-        String boundary = "--" + Long.toHexString(System.currentTimeMillis());
-        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-        con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
-        OutputStream output = con.getOutputStream();
-        OutputStreamWriter wr = new OutputStreamWriter(output, ENCODING);
-        writer = new PrintWriter(wr, true);
-        try {
-            for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
-                writer.append("--").append(boundary).append(CRLF);
-                writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
-                writer.append(CRLF);
-                writer.append(stringStringEntry.getValue()).append(CRLF).flush();
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+        factory.writeMultipartBody(parameterMap, ENCODING);
+        HttpURLConnection connnection = factory.getConnnection();
+        return FireSMSResultList.getAllInOneResult(processReturn(connnection.getInputStream()), receivers);
+//        HttpURLConnection con;
+//
+//        PrintWriter writer;
+//        con = (HttpURLConnection) new URL(tmpUrl).openConnection();
+//        con.setDoOutput(true);
+//        con.setReadTimeout(TIMEOUT);
+//        con.setConnectTimeout(TIMEOUT);
+//        con.setRequestProperty("User-Agent", TARGET_AGENT);
+//        con.setRequestMethod("POST");
+//        String boundary = "--" + Long.toHexString(System.currentTimeMillis());
+//        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+//        con.setRequestProperty("Cookie", "dev=dsk");      //have to be called earlier
+//        OutputStream output = con.getOutputStream();
+//        OutputStreamWriter wr = new OutputStreamWriter(output, ENCODING);
+//        writer = new PrintWriter(wr, true);
+//        try {
+//            for (Map.Entry<String, String> stringStringEntry : parameterMap.entrySet()) {
+//                writer.append("--").append(boundary).append(CRLF);
+//                writer.append("Content-Disposition: form-data; name=\"").append(stringStringEntry.getKey()).append("\"").append(CRLF);
+//                writer.append(CRLF);
+//                writer.append(stringStringEntry.getValue()).append(CRLF).flush();
+//
+//            }
+//            writer.append("--").append(boundary).append("--").append(CRLF).flush();
+//        } finally {
+//            if (writer != null) {
+//                writer.close();
+//            }
+//            if (wr != null) {
+//                wr.close();
+//            }
+//        }
 
-            }
-            writer.append("--").append(boundary).append("--").append(CRLF).flush();
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
-            if (wr != null) {
-               wr.close();
-            }
-        }
-        return FireSMSResultList.getAllInOneResult(processReturn(con.getInputStream()), receivers);
 
     }
 

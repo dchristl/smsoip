@@ -85,7 +85,7 @@ public class DirectboxOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+        XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(R.layout.freelayout);
         View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
         resolveChildren(freeLayout);
         buildContent(freeLayoutView);
