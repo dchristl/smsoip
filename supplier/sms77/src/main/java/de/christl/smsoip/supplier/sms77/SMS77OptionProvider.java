@@ -70,7 +70,7 @@ public class SMS77OptionProvider extends OptionProvider {
     public void getFreeLayout(LinearLayout freeLayout) {
         if (senderVisible) {
             int resourceId = showFreeText ? R.layout.freelayout_text : R.layout.freelayout_dropdown;
-            XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(resourceId);
+            XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(resourceId);
             ViewGroup freeLayoutView = (ViewGroup) LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
             resolveChildren(freeLayout);
             if (showFreeText) {
