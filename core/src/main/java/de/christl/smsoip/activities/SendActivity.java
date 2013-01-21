@@ -240,6 +240,7 @@ public class SendActivity extends AllActivity {
             switchAccount(accountIndex);
             updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO), false);
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
+            setSuppliersLayout();
         } else {     // fresh create call on activity so do the default behaviour
             IntentHandler handler = new IntentHandler(getIntent(), this);
             getAndSetSupplier(handler);
@@ -841,6 +842,7 @@ public class SendActivity extends AllActivity {
         textField.setText("");
         resetDateTimePicker();
         updateViewOnChangedReceivers();
+        setSuppliersLayout();
     }
 
     private void resetDateTimePicker() {
@@ -1123,7 +1125,6 @@ public class SendActivity extends AllActivity {
         setVisibilityByCurrentReceivers();
         setInfoButtonVisibility();
         setDateTimePickerDialog();
-        setSuppliersLayout();
     }
 
     private void setSuppliersLayout() {
@@ -1384,8 +1385,10 @@ public class SendActivity extends AllActivity {
             receiverField.setReceiverList(newReceiverList);
             updateViewOnChangedReceivers();
             showTooMuchReceiversToast();
+        } else {
+            updateViewOnChangedReceivers();
         }
-        updateViewOnChangedReceivers();
+        setSuppliersLayout();
     }
 
     private void showTooMuchReceiversToast() {
