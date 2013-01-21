@@ -220,7 +220,7 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+        XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(R.layout.freelayout);
         LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
         resolveChildren(freeLayout);
         buildLayoutsContent();

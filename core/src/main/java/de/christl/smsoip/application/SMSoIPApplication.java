@@ -41,6 +41,7 @@ import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
+import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
@@ -61,6 +62,7 @@ public class SMSoIPApplication extends Application {
 
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
+    //removeIt
     public static final String SMSOIP_PACKAGE = "de.christl.smsoip";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     private HashMap<String, SMSoIPPlugin> loadedProviders = new HashMap<String, SMSoIPPlugin>();
@@ -169,12 +171,19 @@ public class SMSoIPApplication extends Application {
             String sourceDir = plugin.getSourceDir();
             DexFile apkDir = new DexFile(sourceDir);
             Enumeration<String> classFileEntries = apkDir.entries();
+
+            //find all classes and save it in plugin
             while (classFileEntries.hasMoreElements()) {
                 String s = classFileEntries.nextElement();
                 if (!s.startsWith(SMSOIP_PACKAGE)) {
                     continue;
                 }
                 plugin.addAvailableClass(s);
+
+            }
+
+            //iterate over all classes to find if its valid
+            for (String s : plugin.getAvailableClasses()) {
                 try {
                     Class<?> aClass = Class.forName(s, false, plugin.getPathClassLoader());
                     Class<?>[] aClassInterfaces = aClass.getInterfaces();
@@ -193,6 +202,7 @@ public class SMSoIPApplication extends Application {
                     pluginsToOld.put(s, plugin);
                 }
             }
+
         }
         buildAdditionalAcraInformations();
     }
@@ -310,18 +320,47 @@ public class SMSoIPApplication extends Application {
     }
 
     public InputStream getRawResourceByResourceId(OptionProvider optionProvider, int resourceId) {
-        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        String canonicalName = optionProvider.getClass().getCanonicalName();
+        SMSoIPPlugin plugin = getPluginForClass(canonicalName);
         if (plugin != null) {
             return plugin.resolveRawResource(resourceId);
+        } else {
+            handleNotFoundResource(canonicalName);
         }
         return null;
     }
 
 
+    //removeIt
+    private void handleNotFoundResource(String canonicalName) {
+        ErrorReporter errorReporter = ACRA.getErrorReporter();
+        errorReporter.putCustomData("class_should_be_available", canonicalName);
+        errorReporter.putCustomData("available_classes", buildStringOfAllAvailableClasses());
+    }
+
+    //removeIt
+    private String buildStringOfAllAvailableClasses() {
+        StringBuilder builder = new StringBuilder();
+        for (SMSoIPPlugin plugin : plugins) {
+            builder.append(plugin.getProviderName());
+            Set<String> availableClasses = plugin.getAvailableClasses();
+            for (String availableClass : availableClasses) {
+                builder.append(availableClass);
+            }
+
+        }
+
+        return builder.toString();
+    }
+
+
     public XmlResourceParser getXMLResourceByResourceId(OptionProvider optionProvider, int xmlId) {
-        SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
+        String canonicalName = optionProvider.getClass().getCanonicalName();
+        SMSoIPPlugin plugin = getPluginForClass(canonicalName);
         if (plugin != null) {
             return plugin.resolveXML(xmlId);
+        } else {
+            handleNotFoundResource(canonicalName);
         }
         return null;
     }

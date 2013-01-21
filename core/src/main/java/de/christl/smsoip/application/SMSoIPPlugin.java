@@ -79,6 +79,7 @@ public class SMSoIPPlugin {
         return getResources().getString(resourceId);
     }
 
+    //removeIt  or better refactor it
     private synchronized Resources getResources() {
         if (resources == null) {
             try {
@@ -172,6 +173,11 @@ public class SMSoIPPlugin {
         return pathClassLoader;
     }
 
+    public Set<String> getAvailableClasses() {
+        return availableClasses;
+    }
+
+    //removeIt
     public void putPluginInformation() {
         ErrorReporter errorReporter = ACRA.getErrorReporter();
         int classIt = 0;

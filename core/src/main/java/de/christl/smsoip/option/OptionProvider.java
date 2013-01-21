@@ -178,6 +178,7 @@ public abstract class OptionProvider {
     @Deprecated
     /**
      * @deprecated use getXMLResourceByResourceId instead
+     * //removeIt
      */
     public final XmlResourceParser getLayoutResourceByResourceId(int layoutId) {
         return getXMLResourceByResourceId(layoutId);

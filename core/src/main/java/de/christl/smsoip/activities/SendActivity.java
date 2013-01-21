@@ -1136,6 +1136,7 @@ public class SendActivity extends AllActivity {
                 instanciationCounter++;
                 smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
             } catch (Exception e) {
+                //removeIt
                 if (instanciationCounter < 2) {  //send only on first error
                     smSoIPPlugin.putPluginInformation();
                     ACRA.getErrorReporter().handleSilentException(e);
