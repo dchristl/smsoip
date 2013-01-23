@@ -71,8 +71,6 @@
     <string name="donate_plugin_page_description">Remove the ads and support future development by buying Donate
         Plugin.
     </string>
-    <string name="reshow_welcome">Show welcome dialog</string>
-    <string name="reshow_welcome_description">Look at the welcome dialog again for a short introduction.</string>
     <string name="area_code">Default international area code</string>
     <string name="area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
         will be automatically prepended to receiver number if needed.
@@ -238,4 +236,7 @@
     <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
         also be invoked by tap on providericon or username.
     </string>
+
+    <string name="no_user_name">Benutzername darf nicht leer sein!</string>
+    <string name="account_already_defined">Benutzername bereits vorhanden!</string>
 </resources>

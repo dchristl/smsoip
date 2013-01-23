@@ -27,6 +27,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
@@ -183,16 +184,41 @@ public class MultipleAccountsPreference extends ListPreference {
                     //add only if inputs done
                     if (accountModel == null) {
                         AccountModel newModel = new AccountModel(userName, pass);
-                        listAdapter.insert(newModel, listAdapter.getObjects().size() - 1); //add before last (the fake add account one)
+                        if (userNameAlreadyMaintained(userName)) {
+                            showToast(R.string.account_already_defined);
+                            return;
+                        } else {
+                            listAdapter.insert(newModel, listAdapter.getObjects().size() - 1); //add before last (the fake add account one)
+                        }
                     } else {
                         accountModel.setUserName(userName);
                         accountModel.setPassWord(pass);
                     }
                     listAdapter.notifyDataSetChanged();
+                    dialog.dismiss();
+                } else {
+                    showToast(R.string.no_user_name);
                 }
-                dialog.dismiss();
             }
         });
         dialog.show();
+    }
+
+    private void showToast(int toastTextId) {
+        Toast.makeText(getContext(), toastTextId, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean userNameAlreadyMaintained(String userName) {
+        for (AccountModel accountModel : listAdapter.getObjects()) {
+            String tmpUsername = accountModel.getUserName();
+            if (tmpUsername.equals(getContext().getString(R.string.account_add_account))) {
+//                ignore the default account
+                continue;
+            }
+            if (tmpUsername.equalsIgnoreCase(userName.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

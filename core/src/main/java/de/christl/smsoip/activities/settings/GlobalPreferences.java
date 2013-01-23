@@ -36,7 +36,6 @@ import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
-import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
@@ -151,18 +150,6 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             adfreeIntent.setSummary(R.string.donate_plugin_page_description);
             root.addPreference(adfreeIntent);
         }
-        PreferenceScreen welcomePref = getPreferenceManager().createPreferenceScreen(this);
-        welcomePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                ChangeLog cl = new ChangeLog(GlobalPreferences.this);
-                cl.getWelcomeDialog().show();
-                return true;
-            }
-        });
-        welcomePref.setTitle(R.string.reshow_welcome);
-        welcomePref.setSummary(R.string.reshow_welcome_description);
-        root.addPreference(welcomePref);
         PreferenceScreen contactIntent = getPreferenceManager().createPreferenceScreen(this);
         contactIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override

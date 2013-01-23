@@ -109,10 +109,6 @@ fileName: strings.xml
     <string name="donate_plugin_page_description">Entferne die Werbung und unterstütze die Weiterentwicklung durch
         Kauf des Donate Plugins.
     </string>
-    <string name="reshow_welcome">Willkommensdialog anschauen</string>
-    <string name="reshow_welcome_description">Schaue dir den Willkommensdialog noch einmal für eine kurze
-        Einführung an.
-    </string>
     <string name="area_code">Standardländercode</string>
     <string name="area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -285,6 +281,8 @@ fileName: strings.xml
     <string name="button_visibiliy_description">Buttons für Anbieter- oder Benutzerwechsel anzeigen/ausblenden. Das
         Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
     </string>
+    <string name="no_user_name">Username must not be empty!</string>
+    <string name="account_already_defined">Username already present!</string>
 </resources>
 
 <!--String resources for:
