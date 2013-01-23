@@ -244,6 +244,6 @@
     <string name="button_visibiliy_description">Buttons für Anbieter- oder Benutzerwechsel anzeigen/ausblenden. Das
         Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
     </string>
-    <string name="no_user_name">Username must not be empty!</string>
-    <string name="account_already_defined">Username already present!</string>
+    <string name="no_user_name">Benutzername darf nicht leer sein!</string>
+    <string name="account_already_defined">Benutzername bereits vorhanden!</string>
 </resources>

@@ -236,7 +236,7 @@
     <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
         also be invoked by tap on providericon or username.
     </string>
+    <string name="no_user_name">Username must not be empty!</string>
+    <string name="account_already_defined">Username already present!</string>
 
-    <string name="no_user_name">Benutzername darf nicht leer sein!</string>
-    <string name="account_already_defined">Benutzername bereits vorhanden!</string>
 </resources>

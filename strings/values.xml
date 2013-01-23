@@ -28,6 +28,7 @@ fileName: storedependent.xml
     <string name="adfree_alternative">https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</string>
     <string name="market_rate_url">market://details?id=de.christl.smsoip</string>
     <string name="market_alternative_rate_url">https://play.google.com/store/apps/details?id=de.christl.smsoip</string>
+    <string name="store_name">Google Play</string>
 </resources>
 
 <!--String resources for:
@@ -273,9 +274,9 @@ fileName: strings.xml
     <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
         also be invoked by tap on providericon or username.
     </string>
+    <string name="no_user_name">Username must not be empty!</string>
+    <string name="account_already_defined">Username already present!</string>
 
-    <string name="no_user_name">Benutzername darf nicht leer sein!</string>
-    <string name="account_already_defined">Benutzername bereits vorhanden!</string>
 </resources>
 
 <!--String resources for:
