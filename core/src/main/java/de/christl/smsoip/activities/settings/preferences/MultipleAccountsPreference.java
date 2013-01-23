@@ -184,7 +184,7 @@ public class MultipleAccountsPreference extends ListPreference {
                     //add only if inputs done
                     if (accountModel == null) {
                         AccountModel newModel = new AccountModel(userName, pass);
-                        if (userNameAlreadyMaintained(userName)) {
+                        if (userNameAlreadyMaintained(newModel)) {
                             showToast(R.string.account_already_defined);
                             return;
                         } else {
@@ -193,6 +193,10 @@ public class MultipleAccountsPreference extends ListPreference {
                     } else {
                         accountModel.setUserName(userName);
                         accountModel.setPassWord(pass);
+                        if (userNameAlreadyMaintained(accountModel)) {
+                            showToast(R.string.account_already_defined);
+                            return;
+                        }
                     }
                     listAdapter.notifyDataSetChanged();
                     dialog.dismiss();
@@ -208,14 +212,16 @@ public class MultipleAccountsPreference extends ListPreference {
         Toast.makeText(getContext(), toastTextId, Toast.LENGTH_SHORT).show();
     }
 
-    private boolean userNameAlreadyMaintained(String userName) {
+    private boolean userNameAlreadyMaintained(AccountModel model) {
         for (AccountModel accountModel : listAdapter.getObjects()) {
             String tmpUsername = accountModel.getUserName();
-            if (tmpUsername.equals(getContext().getString(R.string.account_add_account))) {
-//                ignore the default account
+            String userName = model.getUserName();
+
+            if (tmpUsername.equals(getContext().getString(R.string.account_add_account)) || accountModel.equals(model)) {
+//                ignore the default account and the current selected
                 continue;
             }
-            if (tmpUsername.equalsIgnoreCase(userName.trim())) {
+            if (tmpUsername.equalsIgnoreCase(userName)) {
                 return true;
             }
         }

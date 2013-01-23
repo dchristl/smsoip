@@ -27,4 +27,5 @@
     </string>
     <string name="market_rate_url">http://www.androidpit.com/de/android/market/apps/app/de.christl.smsoip/SMSoIP</string>
     <string name="market_alternative_rate_url">market://details?id=de.christl.smsoip</string>
+    <string name="store_name">AndroidPit</string>
 </resources>

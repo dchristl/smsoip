@@ -214,6 +214,8 @@ public class SMSoIPApplication extends Application {
             builder.append(" ").append(smSoIPPlugin.getVersion()).append("\n");
         }
         ACRA.getErrorReporter().putCustomData("PLUGINS", builder.toString());
+        ACRA.getErrorReporter().putCustomData("STORE", getString(R.string.store_name));
+
     }
 
 
