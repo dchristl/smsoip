@@ -28,9 +28,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import de.christl.smsoip.activities.R;
 
-import static android.os.Process.killProcess;
-import static android.os.Process.myPid;
-
 
 public abstract class InfoDialogActivity extends Activity {
 
@@ -49,7 +46,6 @@ public abstract class InfoDialogActivity extends Activity {
         try {
             startActivity(sendIntent);
             this.finish();
-            killProcess(myPid());
         } catch (ActivityNotFoundException e) {
             setTitle(R.string.core_not_installed_head);
             TextView editText = new TextView(this);

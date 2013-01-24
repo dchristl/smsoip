@@ -29,7 +29,7 @@
     </parent>
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
-    <artifactId>gmx-deploy-core-first</artifactId>
+    <artifactId>gmx</artifactId>
     <version>1.4.0</version>
     <packaging>apk</packaging>
 
