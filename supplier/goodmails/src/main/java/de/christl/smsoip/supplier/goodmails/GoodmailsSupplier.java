@@ -164,7 +164,10 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
 
         HttpURLConnection httpURLConnection = factory.create();
-        httpURLConnection.getHeaderFields(); //fire
+        InputStream inputStream = httpURLConnection.getInputStream();//fire
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
 
         URL url = httpURLConnection.getURL();
         if (url != null && url.getQuery() != null && url.getQuery().contains("sid")) {
