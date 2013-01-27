@@ -313,7 +313,7 @@ fileName: strings.xml
     <string name="default_type_long">Choose your preselected send type</string>
 </resources>
 <!--String resources for:
-project: gmx-deploy-core-first
+project: gmx
 values folder: values
 fileName: strings.xml
 -->
@@ -825,15 +825,14 @@ fileName: strings.xml
     <string name="return_unknown_error">Unknown Error: %1$d</string>
 
     <string name="not_yet_refreshed">Not yet refreshed.</string>
-    <string name="no_senders_available">No senders found.</string>
+    <string name="no_sender_number">No sendernumber or -text entered!</string>
     <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye
         button.
     </string>
 
     <string-array name="array_spinner">
         <item>Basic plus</item>
-        <item>Quality (phone number)</item>
-        <item>Quality (free SI)</item>
+        <item>Quality</item>
         <item>Landline</item>
         <item>Flash</item>
     </string-array>

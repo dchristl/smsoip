@@ -39,7 +39,7 @@ import java.util.List;
 
 public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
-    private OptionProvider provider;
+    private SMS77OptionProvider provider;
 
     private static final String ENCODING = "ISO-8859-1";
     private static final String API_URL = "https://gateway.sms77.de/";
@@ -173,8 +173,10 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         StringBuilder urlBuilder = new StringBuilder();
         try {
             urlBuilder.append(API_URL).append("?").append(getURLStringWithUserNameAndPassword(provider.getUserName(), provider.getPassword()));
-            urlBuilder.append("&debug=1");
+            urlBuilder.append("&status=1");
+//            urlBuilder.append("&debug=1");
         } catch (NoSuchAlgorithmException e) {
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         }
         int sendMethod = findSendMethod(spinnerText);
@@ -185,8 +187,14 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 urlBuilder.append("basicplus");
                 break;
             case SEND_QUALITY_NUMBER:
-                //checkNumber
+                //checkNumber and add from
+                String sender = provider.getSender();
+                if (sender == null) {
+                    provider.saveState();
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_sender_number)), receivers);
+                }
                 urlBuilder.append("quality");
+                urlBuilder.append("&from=").append(sender);
                 break;
             case SEND_LANDLINE:
                 urlBuilder.append("festnetz");
@@ -218,10 +226,17 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
 
         }
+        if (out.getResult() == FireSMSResultList.SendResult.SUCCESS) {
+            provider.writeFreeInputSender();
+        } else {
+            provider.saveState();
+        }
+
         return out;
     }
 
     private SMSActionResult translateCodeToActionResult(int code) throws IOException {
+
         switch (code) {
             case 100:
                 return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.return_100));

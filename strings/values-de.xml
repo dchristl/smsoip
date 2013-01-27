@@ -320,7 +320,7 @@ fileName: strings.xml
 
 </resources>
 <!--String resources for:
-project: gmx-deploy-core-first
+project: gmx
 values folder: values-de
 fileName: strings.xml
 -->
@@ -847,14 +847,13 @@ fileName: strings.xml
     <string name="return_unknown_error">Unbekannter Fehler: %1$d</string>
 
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
-    <string name="no_senders_available">Keine Absendernummern gefunden.</string>
+    <string name="no_sender_number">Keine Absendernummer oder -text angegeben!</string>
     <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absendernummern vor
         dem Senden mit Hilfe des Auge-Buttons.
     </string>
     <string-array name="array_spinner">
         <item>Basic plus</item>
-        <item>Quality (Handynummer)</item>
-        <item>Quality (Freitext)</item>
+        <item>Quality</item>
         <item>Festnetz</item>
         <item>Flash</item>
     </string-array>
