@@ -42,7 +42,6 @@
                     android:layout_height="fill_parent"
                     android:singleLine="true"
                     android:gravity="center"
-                    android:inputType="textNoSuggestions"
                     />
 
         </TableRow>

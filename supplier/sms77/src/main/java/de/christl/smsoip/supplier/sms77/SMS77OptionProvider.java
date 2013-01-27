@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -235,6 +236,7 @@ public class SMS77OptionProvider extends OptionProvider {
             }
         };
         senderFreeText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
+        senderFreeText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     }
 
 

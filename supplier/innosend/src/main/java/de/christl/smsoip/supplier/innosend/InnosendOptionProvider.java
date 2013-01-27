@@ -27,6 +27,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -289,6 +290,7 @@ public class InnosendOptionProvider extends OptionProvider {
             }
         };
         senderText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
+        senderText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         senderText.setText(getSenderFromOptions());
     }
 
