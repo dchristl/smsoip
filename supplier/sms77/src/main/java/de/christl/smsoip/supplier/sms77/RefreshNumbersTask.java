@@ -21,7 +21,7 @@ package de.christl.smsoip.supplier.sms77;
 import android.os.AsyncTask;
 import de.christl.smsoip.constant.SMSActionResult;
 
-public class RefreshNumbersTask  extends AsyncTask<Void, String, SMSActionResult> {
+public class RefreshNumbersTask extends AsyncTask<Void, String, SMSActionResult> {
     private SMS77OptionProvider sms77OptionProvider;
 
     public RefreshNumbersTask(SMS77OptionProvider sms77OptionProvider) {
@@ -31,6 +31,26 @@ public class RefreshNumbersTask  extends AsyncTask<Void, String, SMSActionResult
 
     @Override
     protected SMSActionResult doInBackground(Void... params) {
-        return null;
+        return SMSActionResult.NO_ERROR();
+//        try {
+//            return sms77OptionProvider.getSms77Supplier().resolveNumbers();
+//        } catch (SocketTimeoutException e) {
+//            return SMSActionResult.TIMEOUT_ERROR();
+//        } catch (IOException e) {
+//            return SMSActionResult.NETWORK_ERROR();
+//        } catch (Exception e) {
+//            ACRA.getErrorReporter().handleException(e);//for insurance
+//            return SMSActionResult.UNKNOWN_ERROR();
+//        }
     }
+
+
+//    @Override
+//    protected void onPostExecute(SMSActionResult smsActionResult) {
+//        if (smsActionResult.isSuccess()) {
+//            sms77OptionProvider.refreshDropDownAfterSuccesfulUpdate();
+//        } else {
+//            sms77OptionProvider.setErrorMessageOnUpdate(smsActionResult.getMessage());
+//        }
+//    }
 }

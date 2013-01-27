@@ -52,8 +52,7 @@
     </string>
     <string-array name="array_spinner">
         <item>Basic plus</item>
-        <item>Quality (Handynummer)</item>
-        <item>Quality (Freitext)</item>
+        <item>Quality</item>
         <item>Festnetz</item>
         <item>Flash</item>
     </string-array>

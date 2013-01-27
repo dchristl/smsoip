@@ -43,7 +43,7 @@ public class SMS77OptionProvider extends OptionProvider {
     private int messageCount = 10;
     private EditText senderFreeText;
     private boolean senderVisible = false;
-    private boolean showFreeText = false;
+    private boolean showFreeText = true;
     private ViewGroup parentTableRow;
     private ImageButton refreshButton;
     private ProgressBar progressBar;
@@ -180,8 +180,27 @@ public class SMS77OptionProvider extends OptionProvider {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 for (int i = start; i < end; i++) {
-                    if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
+                    char currentSource = source.charAt(i);
+                    if (!Character.isLetterOrDigit(currentSource)) {//only numbers or charcters allowed
                         return "";
+                    }
+                    String currentString = dest.toString();
+                    if (currentString.length() >= 11) {
+                        //break if any charcters will be chosen
+
+                        if (!Character.isDigit(currentSource)) {
+                            return "";
+                        }
+                        if (Character.isDigit(currentSource)) {
+                            for (int z = 0; z < currentString.length(); z++) {
+                                if (!Character.isDigit(currentString.charAt(z))) {
+                                    return "";
+                                }
+
+                            }
+
+                        }
+
                     }
                 }
                 return null;
@@ -213,22 +232,22 @@ public class SMS77OptionProvider extends OptionProvider {
                         messageCount = 10;
                         showFreeText = false;
                         break;
-                    case 1: //QUALITY (DropDown)
-                        senderVisible = true;
-                        showFreeText = false;
-                        messageCount = 10;
-                        break;
-                    case 2: //QUALITY (Freetext)
+                    case 1: //QUALITY (FreeText)
                         senderVisible = true;
                         showFreeText = true;
                         messageCount = 10;
                         break;
-                    case 3:  //LANDLINE
+//                    case 2: //QUALITY (Freetext)
+//                        senderVisible = true;
+//                        showFreeText = true;
+//                        messageCount = 10;
+//                        break;
+                    case 2:  //LANDLINE
                         senderVisible = false;
                         showFreeText = false;
                         messageCount = 1;
                         break;
-                    case 4:   //FLASH
+                    case 3:   //FLASH
                         senderVisible = false;
                         showFreeText = false;
                         messageCount = 1;

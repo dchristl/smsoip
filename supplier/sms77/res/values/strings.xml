@@ -54,8 +54,7 @@
 
     <string-array name="array_spinner">
         <item>Basic plus</item>
-        <item>Quality (phone number)</item>
-        <item>Quality (free SI)</item>
+        <item>Quality</item>
         <item>Landline</item>
         <item>Flash</item>
     </string-array>
