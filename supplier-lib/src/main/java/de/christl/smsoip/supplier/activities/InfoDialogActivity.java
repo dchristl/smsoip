@@ -23,6 +23,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -49,7 +51,8 @@ public abstract class InfoDialogActivity extends Activity {
         } catch (ActivityNotFoundException e) {
             setTitle(R.string.core_not_installed_head);
             TextView editText = new TextView(this);
-            editText.setText(R.string.core_not_installed);
+            editText.setText(Html.fromHtml(getString(R.string.core_not_installed)));
+            editText.setMovementMethod(LinkMovementMethod.getInstance());
             addContentView(editText, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             editText.setGravity(Gravity.CENTER);
         }
