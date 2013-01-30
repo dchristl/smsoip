@@ -45,6 +45,7 @@
         <module>sloono</module>
         <module>smsrevolution</module>
         <module>sms77</module>
+        <module>meinbmw</module>
     </modules>
 
     <dependencies>
