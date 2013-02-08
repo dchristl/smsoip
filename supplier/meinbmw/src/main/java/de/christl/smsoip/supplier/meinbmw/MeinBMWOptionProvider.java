@@ -36,7 +36,7 @@ public class MeinBMWOptionProvider extends OptionProvider {
 
     @Override
     public int getMaxReceiverCount() {
-        return 1;
+        return 5;
     }
 
     public int getMaxMessageCount() {

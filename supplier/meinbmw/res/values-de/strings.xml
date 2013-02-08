@@ -20,4 +20,5 @@
 <resources>
     <string name="balance_good">Frei-SMS verfügbar</string>
     <string name="balance_bad">Keine Frei-SMS verfügbar</string>
+    <string name="not_sent">SMS konnte nicht versendet werden.</string>
 </resources>

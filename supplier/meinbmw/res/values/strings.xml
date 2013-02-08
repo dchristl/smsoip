@@ -21,6 +21,6 @@
 
     <string name="balance_good">Free SMS available</string>
     <string name="balance_bad">No free SMS available</string>
-
+    <string name="not_sent">Message sending failed.</string>
 
 </resources>

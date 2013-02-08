@@ -311,8 +311,13 @@ fileName: strings.xml
 
 <resources>
     <string name="core_not_installed_head">SMSoIP ist nicht installiert!</string>
-    <string name="core_not_installed">Dies ist nur ein Plugin und SMSoIP wird benötigt, damit das Plugin
-        funktioniert.\nBitte vom Store nachinstallieren.
+    <string name="core_not_installed"><![CDATA[Dies ist nur ein Plugin und SMSoIP wird benötigt, damit das Plugin
+        funktioniert.\nBitte von deinem bevorzugten Store nachinstallieren: <br/><br/>
+        <big>
+            <a href="https://play.google.com/store/apps/details?id=de.christl.smsoip">Google Play</a> <br/> <br/>
+            <a href="http://www.amazon.com/gp/product/B009L1YGY0">Amazon</a>      <br/> <br/>
+            <a href="http://www.androidpit.de/de/android/market/apps/app/de.christl.smsoip/SMSoIP">AndroidPit</a>  <br/>
+        </big>]]>
     </string>
 
     <string name="default_type">Standard Absendetyp</string>
@@ -857,4 +862,33 @@ fileName: strings.xml
         <item>Festnetz</item>
         <item>Flash</item>
     </string-array>
+</resources>
+<!--String resources for:
+project: meinbmw
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="balance_good">Frei-SMS verfügbar</string>
+    <string name="balance_bad">Keine Frei-SMS verfügbar</string>
+    <string name="not_sent">SMS konnte nicht versendet werden.</string>
 </resources>
