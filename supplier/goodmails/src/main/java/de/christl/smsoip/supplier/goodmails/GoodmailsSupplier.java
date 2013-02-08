@@ -137,7 +137,9 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     }
 
     private SMSActionResult processResult(InputStream s) throws IOException {
-
+        if (s == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
         Document parse = Jsoup.parse(s, ENCODING, "");
         if (parse.text().equals(NOT_ALLOWED_YET)) {
             return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.alternate_not_allowed_yet));

@@ -30,6 +30,6 @@
 
     <groupId>de.christl.SMSoIP.supplier</groupId>
     <artifactId>sms77</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>apk</packaging>
 </project>

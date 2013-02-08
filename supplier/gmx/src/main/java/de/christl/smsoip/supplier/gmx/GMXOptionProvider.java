@@ -292,7 +292,7 @@ public class GMXOptionProvider extends OptionProvider {
         if (!showFreeText) {
             spinnerItem = savedInstanceState.getInt(STATE_SPINNER, Spinner.INVALID_POSITION);
         } else {
-            freeTextContent = savedInstanceState.getString(STATE_FREE_TEXT, null);
+            freeTextContent = savedInstanceState.getString(STATE_FREE_TEXT);
         }
     }
 

@@ -195,9 +195,9 @@ public class SMS77OptionProvider extends OptionProvider {
 
     @Override
     public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
-        String textBeforeActivityKilled = savedInstanceState.getString(STATE_SENDER_INPUT, "");
+        String textBeforeActivityKilled = savedInstanceState.getString(STATE_SENDER_INPUT);
         if (senderFreeText != null) {
-            senderFreeText.setText(textBeforeActivityKilled);
+            senderFreeText.setText(textBeforeActivityKilled == null ? "" : textBeforeActivityKilled);
         }
     }
 
