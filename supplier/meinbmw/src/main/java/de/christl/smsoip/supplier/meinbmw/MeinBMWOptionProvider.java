@@ -34,10 +34,6 @@ public class MeinBMWOptionProvider extends OptionProvider {
         return getDrawble(R.drawable.icon);
     }
 
-    @Override
-    public int getMaxReceiverCount() {
-        return 5;
-    }
 
     public int getMaxMessageCount() {
         return 1;
