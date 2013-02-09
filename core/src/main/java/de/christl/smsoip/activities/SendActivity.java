@@ -1494,6 +1494,7 @@ public class SendActivity extends AllActivity {
      */
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        clearAllInputs();
         IntentHandler handler = new IntentHandler(intent, this);
         setPreselectedContact(handler);
     }
