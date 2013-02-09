@@ -161,7 +161,9 @@ public class SendActivity extends AllActivity {
             providerOptionsCalled = false;
         }
         try {
-            insertAds();
+            if (SMSoIPApplication.getApp().getProviderEntries().size() > 0) {
+                insertAds();
+            }
         } catch (Exception e) {
             ACRA.getErrorReporter().handleSilentException(e);
         }
