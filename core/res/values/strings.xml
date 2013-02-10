@@ -120,8 +120,7 @@
     <string name="partial_success">Partial success</string>
     <string name="changelog_title">What\'s New</string>
     <string name="welcome_title">Welcome to SMSoIP</string>
-    <string name="lastMessage">Last message</string>
-    <string name="lastConversation">Last conversation</string>
+    <string name="lastConversation">Conversations</string>
     <string name="clickToAdd">(Click to add as receiver)</string>
     <string name="crash_toast_text">Ooooops! This shoud not happen, please send crash report to developer!
     </string>
@@ -183,7 +182,6 @@
     <string name="background_image_dialog_reset">Reset</string>
     <string name="background_will_be_set">Image will be processed and set.</string>
     <string name="background_set_error">Error on setting background image.</string>
-    <string name="no_last_message">No incoming messages</string>
     <string name="no_conversation">No conversation</string>
     <string name="module_preference">Text modules</string>
     <string name="module_preference_description">Maintain text modules for faster text input.
@@ -217,7 +215,7 @@
         support!
     </string>
     <string name="rate_app_title">Enjoying SMSoIP?</string>
-    <string name="rate_no_thanks">No, Thanks</string>
+    <string name="rate_no_thanks">No, Thanks/\nAlready done</string>
     <string name="rate_yes">Rate</string>
     <string name="rate_remind_me_later">Remind me later</string>
     <string name="nothing_to_shorten">No text to shorten.</string>
@@ -225,7 +223,7 @@
 
     <string name="no_text_modules">No text modules defined.</string>
 
-    <string name="hintAddReceivers">Hint: Add one or more receivers to show conversations.</string>
+    <string name="hintAddReceivers">Hint: Add receivers to show more conversations.</string>
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>

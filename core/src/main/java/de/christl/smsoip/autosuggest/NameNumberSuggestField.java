@@ -105,7 +105,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
                 }
             } else if (NumberUtils.isCorrectNameNumber(currentPart)) {
                 String name = currentPart.replaceAll(" \\(.*", "");
-                String number = currentPart.replaceAll(".* \\(", "");
+                String number = currentPart.replaceAll(".* \\(", "").replaceAll("\\)$","");
                 Receiver receiver = new Receiver(name);
                 receiver.setRawNumber(number, getContext().getString(R.string.no_phone_type_label)); //number will be fixed automatically
                 if (tmpList.size() < maxReceiverCount) {
