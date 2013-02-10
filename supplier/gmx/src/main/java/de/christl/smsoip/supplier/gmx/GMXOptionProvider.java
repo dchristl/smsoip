@@ -299,9 +299,11 @@ public class GMXOptionProvider extends OptionProvider {
     @Override
     public void onActivityPaused(Bundle outState) {
         if (!showFreeText) {
-            outState.putInt(STATE_SPINNER, senderSpinner.getSelectedItemPosition());
+            spinnerItem =    senderSpinner.getSelectedItemPosition();
+            outState.putInt(STATE_SPINNER, spinnerItem);
         } else {
-            outState.putString(STATE_FREE_TEXT, senderFreeText.getText().toString());
+            freeTextContent = senderFreeText.getText().toString();
+            outState.putString(STATE_FREE_TEXT, freeTextContent);
         }
     }
 
@@ -382,10 +384,9 @@ public class GMXOptionProvider extends OptionProvider {
         return senderFreeText.getText().toString();
     }
 
-    public void saveLastSender(int sendMethod) {
+    public void saveLastSender() {
         SharedPreferences.Editor edit = getSettings().edit();
-
-        if (sendMethod == GMXSupplier.WITH_PHONE_NUMBER) {
+        if (!showFreeText) {
             Object selectedItem = senderSpinner.getSelectedItemId();
             if (selectedItem != null) {
                 edit.putInt(SENDER_LAST_DD_PREFIX + getUserName(), senderSpinner.getSelectedItemPosition());

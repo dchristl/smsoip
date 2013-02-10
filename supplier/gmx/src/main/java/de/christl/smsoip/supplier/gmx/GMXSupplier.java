@@ -194,7 +194,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         HttpURLConnection connnection = factory.getConnnection();
         SMSActionResult result = processReturn(connnection.getInputStream());
         if (result.isSuccess()) {
-            provider.saveLastSender(sendMethod);
+            provider.saveLastSender();
         } else {
             provider.saveTemporaryState();
         }
