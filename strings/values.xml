@@ -354,7 +354,6 @@ fileName: strings.xml
         \'@gmx.net\'.
     </string>
     <string name="sender">Sender</string>
-    <string name="default_number">Default number</string>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
         button.

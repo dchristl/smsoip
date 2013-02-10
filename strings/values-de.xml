@@ -363,7 +363,6 @@ fileName: strings.xml
         \'@gmx.net\' angegeben werden.
     </string>
     <string name="sender">Absender</string>
-    <string name="default_number">Standardnummer</string>
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem

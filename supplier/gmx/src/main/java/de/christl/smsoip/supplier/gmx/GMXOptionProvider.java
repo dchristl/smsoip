@@ -199,11 +199,10 @@ public class GMXOptionProvider extends OptionProvider {
 
     private void buildContent(View view) {
         refreshAdapterItems();
-        infoTextField.setText(getTextByResourceId(R.string.default_number));
 
         progressBar.setVisibility(View.GONE);
         refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener refreshListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (refreshSenderTask != null) {
@@ -215,12 +214,14 @@ public class GMXOptionProvider extends OptionProvider {
                 refreshSenderTask = new RefreshSenderTask(GMXOptionProvider.this);
                 refreshSenderTask.execute(null, null);
             }
-        });
+        };
+        refreshButton.setOnClickListener(refreshListener);
         //alway create a new spinner, otherwise data gets not updated
         refreshSpinner(view.getContext());
         if (adapterItems.size() == 0) {
             infoTextField.setVisibility(View.VISIBLE);
             infoTextField.setText(getTextByResourceId(R.string.not_yet_refreshed));
+            infoTextField.setOnClickListener(refreshListener);
             senderSpinner.setVisibility(View.GONE);
         } else {
             infoTextField.setVisibility(View.GONE);
@@ -402,7 +403,9 @@ public class GMXOptionProvider extends OptionProvider {
             edit.putString(SENDER_LAST_FT_PREFIX + getUserName(), lastFreeText);
         }
         edit.commit();
-
+        //reset all temporary variables
+        freeTextContent = null;
+        spinnerItem = null;
     }
 
     @Override
