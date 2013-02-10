@@ -406,7 +406,10 @@ public class SendActivity extends AllActivity {
                     if (isChecked) {
                         if (dateTime == null) {
                             TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
-                            dateTime = new DateTimeObject(Calendar.getInstance(), timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
+                            Calendar instance = Calendar.getInstance();
+                            //add 2 minutes to be in future instead of now
+                            instance.add(Calendar.MINUTE, 2);
+                            dateTime = new DateTimeObject(instance, timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
                         }
                         pickDay.setText(dateTime.dayString());
                         pickHour.setText(dateTime.timeString());
