@@ -278,18 +278,6 @@ public abstract class OptionProvider {
         //do nothing by default
     }
 
-    public InputStream getChangelogInputStream() {
-        Integer i = getChangelogResourceId();
-        if (i != null) {
-            return getRawResourceByResourceId(i);
-        } else {
-            return null;
-        }
-    }
-
-    protected Integer getChangelogResourceId() {
-        return null;
-    }
 
     /**
      * method will be called when accounts are updated, added or deleted

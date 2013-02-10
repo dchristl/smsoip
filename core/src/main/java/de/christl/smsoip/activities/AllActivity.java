@@ -33,6 +33,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.KeyEvent;
@@ -49,6 +50,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.application.changelog.ChangeLog;
 import de.christl.smsoip.util.BitmapProcessor;
+import org.acra.ACRA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -252,7 +254,12 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.market_alternative)));
                     AllActivity.this.startActivity(intent);
                 }
-                killAll();
+                try {
+                    Process.killProcess(Process.myPid());
+                } catch (Exception e) {
+                    ACRA.getErrorReporter().handleSilentException(e);
+                    killAll();
+                }
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
