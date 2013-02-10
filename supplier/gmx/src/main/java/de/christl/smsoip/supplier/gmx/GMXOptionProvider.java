@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.option.OptionProvider;
 
 import java.util.*;
@@ -299,7 +300,7 @@ public class GMXOptionProvider extends OptionProvider {
     @Override
     public void onActivityPaused(Bundle outState) {
         if (!showFreeText) {
-            spinnerItem =    senderSpinner.getSelectedItemPosition();
+            spinnerItem = senderSpinner.getSelectedItemPosition();
             outState.putInt(STATE_SPINNER, spinnerItem);
         } else {
             freeTextContent = senderFreeText.getText().toString();
@@ -397,6 +398,51 @@ public class GMXOptionProvider extends OptionProvider {
         }
         edit.commit();
 
+    }
+
+    @Override
+    public void onAccountsChanged() {
+        super.onAccountsChanged();
+
+        SharedPreferences.Editor edit = getSettings().edit();
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+
+            //remove all claimed senders
+            if (stringEntry.getKey().startsWith(SENDER_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$", "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+
+            //remove last sender (dropdown)
+            if (stringEntry.getKey().startsWith(SENDER_LAST_DD_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_LAST_DD_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+            //remove last sender (freetext)
+            if (stringEntry.getKey().startsWith(SENDER_LAST_FT_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_LAST_FT_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+        }
+        edit.commit();
     }
 
     private int getLastSenderDD() {
