@@ -253,7 +253,7 @@ fileName: strings.xml
         support!
     </string>
     <string name="rate_app_title">Enjoying SMSoIP?</string>
-    <string name="rate_no_thanks">No, Thanks/\nAlready done</string>
+    <string name="rate_no_thanks">No, Thanks</string>
     <string name="rate_yes">Rate</string>
     <string name="rate_remind_me_later">Remind me later</string>
     <string name="nothing_to_shorten">No text to shorten.</string>
