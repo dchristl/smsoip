@@ -27,6 +27,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -177,6 +178,7 @@ public class GMXOptionProvider extends OptionProvider {
 
     private void resolveFreeTextChildren() {
         senderFreeText = (EditText) parentTableRow.getChildAt(0);
+        senderFreeText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         if (freeTextContent != null) {
             senderFreeText.setText(freeTextContent);
         } else {
@@ -277,6 +279,9 @@ public class GMXOptionProvider extends OptionProvider {
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 for (int i = start; i < end; i++) {
                     char c = source.charAt(i);
+                    if (c <= 32 || c > 127) {
+                        return "";
+                    }
                     if (!Character.isWhitespace(c) && !Character.isLetterOrDigit(c)) {//only numbers or charcters allowed
                         return "";
                     }
