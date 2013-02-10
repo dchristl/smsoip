@@ -1497,7 +1497,9 @@ public class SendActivity extends AllActivity {
      */
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        clearAllInputs();
+        if (smSoIPPlugin != null) {   // causes NPE, if no provider is currently selected and app is open (dialog shown)
+            clearAllInputs();
+        }
         IntentHandler handler = new IntentHandler(intent, this);
         setPreselectedContact(handler);
     }
