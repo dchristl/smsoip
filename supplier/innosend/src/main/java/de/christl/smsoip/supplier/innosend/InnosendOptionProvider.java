@@ -232,6 +232,7 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void onAccountsChanged() {
+        super.onAccountsChanged();
         SharedPreferences.Editor edit = getSettings().edit();
         Map<Integer, AccountModel> accounts = getAccounts();
         Map<String, ?> allSettings = getSettings().getAll();

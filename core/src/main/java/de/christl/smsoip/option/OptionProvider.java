@@ -282,8 +282,9 @@ public abstract class OptionProvider {
     /**
      * method will be called when accounts are updated, added or deleted
      * override this method to clean up old options
+     * <b>Never forget to call super of this method, this causes reload of the options</b>
      */
     public void onAccountsChanged() {
-        //do nothing
+        initOptions();
     }
 }
