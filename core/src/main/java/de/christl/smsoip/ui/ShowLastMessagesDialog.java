@@ -25,6 +25,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -37,7 +38,6 @@ import de.christl.smsoip.models.Message;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * Class for a popup show the last message and all last conversations with picked contact
@@ -58,92 +58,89 @@ public class ShowLastMessagesDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showlastmessagesdialog);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.conversationLayout);
 
-        Map<Receiver, String> lastMessage = DatabaseHandler.findLastMessage(appContext);
-        String defaultUnknownText = appContext.getString(R.string.unknown);
-        TextView lastIncomingMessage = (TextView) findViewById(R.id.message);
-        if (lastMessage.size() > 0) {
-            for (Map.Entry<Receiver, String> receiverStringEntry : lastMessage.entrySet()) {
-                final Receiver receiver = receiverStringEntry.getKey();
-                View.OnClickListener onClickListener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        receiverNumber = receiver.getRawNumber();
-                        ShowLastMessagesDialog.this.dismiss();
-                    }
-                };
-                String message = receiverStringEntry.getValue();
-                TextView contact = (TextView) findViewById(R.id.contact);
-                contact.setTypeface(null, Typeface.ITALIC);
-
-                String name = receiver.getName();
-                SpannableString content = new SpannableString(name.equals(defaultUnknownText) ? receiver.getRawNumber() : name);
-                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-                contact.setText(content);
-                contact.setOnClickListener(onClickListener);
-
-                lastIncomingMessage.setText(message);
-                lastIncomingMessage.setOnClickListener(onClickListener);
-                findViewById(R.id.clickToAdd).setOnClickListener(onClickListener);
+        if (receiverList.isEmpty()) { //no receiver is currently chosen
+            findViewById(R.id.hintAddReceivers).setVisibility(View.VISIBLE);
+            Receiver lastMessageReceiver = DatabaseHandler.findLastMessageReceiver(appContext);
+            if (lastMessageReceiver != null) {
+                LinkedList<Message> conversation = DatabaseHandler.findConversation(lastMessageReceiver, appContext);
+                addConversationToLayout(layout, lastMessageReceiver, conversation, true);
             }
         } else {
-            findViewById(R.id.clickToAdd).setVisibility(View.GONE);
-            lastIncomingMessage.setText(R.string.no_last_message);
-        }
-        if (receiverList.isEmpty()) {
-            findViewById(R.id.lastConversation).setVisibility(View.GONE);
-            findViewById(R.id.hintAddReceivers).setVisibility(View.VISIBLE);
-            return;
-        }
-        LinearLayout layout = (LinearLayout) findViewById(R.id.conversationLayout);
+            findViewById(R.id.hintAddReceivers).setVisibility(View.GONE); //user should check how it works
         /* Create a new row to be added. */
-        for (final Receiver receiver : receiverList) {
-            LinkedList<Message> conversation = DatabaseHandler.findConversation(receiver, appContext);
-            TextView receiverView = new TextView(appContext);
-            receiverView.setTextColor(Color.parseColor("#C0F0C0"));
-            receiverView.setPadding(5, 5, 5, 0);
-            receiverView.setGravity(Gravity.CENTER);
-            receiverView.setTypeface(null, Typeface.ITALIC);
-            String name = receiver.getName();
-            SpannableString content = new SpannableString(name.equals(defaultUnknownText) ? receiver.getRawNumber() : name);
-            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-            receiverView.setText(content);
-            layout.addView(receiverView);
-            if (conversation.isEmpty()) {
-                TextView messageView = new TextView(appContext);
-                messageView.setText(R.string.no_conversation);
-                messageView.setGravity(Gravity.CENTER);
-                messageView.setTextColor(Color.parseColor("#6400F0"));
-                messageView.setBackgroundColor(Color.parseColor("#AAE9C400"));
-                messageView.setPadding(5, 5, 5, 5);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                layoutParams.setMargins(0, 5, 0, 5);
-                messageView.setLayoutParams(layoutParams);
-                layout.addView(messageView);
+            for (final Receiver receiver : receiverList) {
+                LinkedList<Message> conversation = DatabaseHandler.findConversation(receiver, appContext);
+                addConversationToLayout(layout, receiver, conversation, false);
             }
-            for (Message message : conversation) {
-                TextView messageView = new TextView(appContext);
-                messageView.setText(message.getMessage());
-                if (message.isOutgoing()) {
-                    messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-                    messageView.setPadding(50, 5, 20, 20);
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    layoutParams.setMargins(50, 5, 0, 0);
-                    messageView.setLayoutParams(layoutParams);
-                    messageView.setTextColor(Color.parseColor("#0014F0"));
-                    messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_left));
-                } else {
-                    messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-                    messageView.setPadding(20, 5, 50, 20);
-                    messageView.setTextColor(Color.parseColor("#6400F0"));
-                    messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_right));
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    layoutParams.setMargins(0, 5, 50, 0);
-                    messageView.setLayoutParams(layoutParams);
-                }
+        }
+    }
 
-                layout.addView(messageView);
+    private void addConversationToLayout(LinearLayout layout, final Receiver receiver, LinkedList<Message> conversation, boolean addClickHint) {
+        String defaultUnknownText = appContext.getString(R.string.unknown);
+        TextView receiverView = new TextView(appContext);
+        receiverView.setTextColor(Color.parseColor("#C0F0C0"));
+        receiverView.setPadding(5, 5, 5, 0);
+        receiverView.setGravity(Gravity.CENTER);
+        receiverView.setTypeface(null, Typeface.ITALIC);
+        String name = receiver.getName();
+        SpannableString content = new SpannableString(name.equals(defaultUnknownText) ? receiver.getRawNumber() : name);
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        receiverView.setText(content);
+        layout.addView(receiverView);
+        if (addClickHint) {
+            View.OnClickListener onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    receiverNumber = receiver.getRawNumber();
+                    ShowLastMessagesDialog.this.dismiss();
+                }
+            };
+            receiverView.setOnClickListener(onClickListener);
+
+            TextView clickToAddHint = new TextView(this.getContext());
+            clickToAddHint.setText(appContext.getText(R.string.clickToAdd));
+            clickToAddHint.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10);
+            clickToAddHint.setGravity(Gravity.CENTER);
+            clickToAddHint.setOnClickListener(onClickListener);
+            layout.addView(clickToAddHint);
+        }
+
+        if (conversation.isEmpty()) {
+            TextView messageView = new TextView(appContext);
+            messageView.setText(R.string.no_conversation);
+            messageView.setGravity(Gravity.CENTER);
+            messageView.setTextColor(Color.parseColor("#6400F0"));
+            messageView.setBackgroundColor(Color.parseColor("#AAE9C400"));
+            messageView.setPadding(5, 5, 5, 5);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+            layoutParams.setMargins(0, 5, 0, 5);
+            messageView.setLayoutParams(layoutParams);
+            layout.addView(messageView);
+        }
+        for (Message message : conversation) {
+            TextView messageView = new TextView(appContext);
+            messageView.setText(message.getMessage());
+            if (message.isOutgoing()) {
+                messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+                messageView.setPadding(50, 5, 20, 20);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                layoutParams.setMargins(50, 5, 0, 0);
+                messageView.setLayoutParams(layoutParams);
+                messageView.setTextColor(Color.parseColor("#0014F0"));
+                messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_left));
+            } else {
+                messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+                messageView.setPadding(20, 5, 50, 20);
+                messageView.setTextColor(Color.parseColor("#6400F0"));
+                messageView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.message_right));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+                layoutParams.setMargins(0, 5, 50, 0);
+                messageView.setLayoutParams(layoutParams);
             }
+
+            layout.addView(messageView);
         }
     }
 

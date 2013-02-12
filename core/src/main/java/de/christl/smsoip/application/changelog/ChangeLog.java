@@ -169,27 +169,6 @@ public class ChangeLog {
         return builder.create();
     }
 
-    public AlertDialog getChangelogDialogByView(InputStream dialogContent) {
-        LayoutInflater factory = LayoutInflater.from(context);
-        final View dialogView = factory.inflate(R.layout.changelogdialog, null);
-        WebView wv = (WebView) dialogView.findViewById(R.id.webView);
-        wv.setBackgroundColor(0); // transparent
-        // wv.getSettings().setDefaultTextEncodingName("utf-8");
-        wv.loadDataWithBaseURL(null, this.getLog(true, dialogContent), "text/html", "UTF-8", null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
-        builder.setTitle(context.getResources().getString(
-                R.string.changelog_title))
-                .setView(dialogView)
-                .setPositiveButton(
-                        context.getResources().getString(
-                                R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        return builder.create();
-    }
 
     /**
      * @return HTML displaying the changes since the previous

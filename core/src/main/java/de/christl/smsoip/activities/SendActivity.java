@@ -37,7 +37,6 @@ import android.provider.ContactsContract;
 import android.text.*;
 import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,6 +130,8 @@ public class SendActivity extends AllActivity {
     private MobclixMMABannerXLAdView adView;
     private ColorStateList defaultColor;
 
+    private int instanciationCounter = 0;
+
 
     @Override
     protected void onResume() {
@@ -160,7 +161,9 @@ public class SendActivity extends AllActivity {
             providerOptionsCalled = false;
         }
         try {
-            insertAds();
+            if (SMSoIPApplication.getApp().getProviderEntries().size() > 0) {
+                insertAds();
+            }
         } catch (Exception e) {
             ACRA.getErrorReporter().handleSilentException(e);
         }
@@ -239,8 +242,8 @@ public class SendActivity extends AllActivity {
             switchAccount(accountIndex);
             updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO), false);
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
+            setSuppliersLayout();
         } else {     // fresh create call on activity so do the default behaviour
-            Uri data = getIntent().getData();
             IntentHandler handler = new IntentHandler(getIntent(), this);
             getAndSetSupplier(handler);
             setPreselectedContact(handler);
@@ -403,7 +406,10 @@ public class SendActivity extends AllActivity {
                     if (isChecked) {
                         if (dateTime == null) {
                             TimeShiftSupplier timeShiftSupplier = smSoIPPlugin.getTimeShiftSupplier();
-                            dateTime = new DateTimeObject(Calendar.getInstance(), timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
+                            Calendar instance = Calendar.getInstance();
+                            //add 2 minutes to be in future instead of now
+                            instance.add(Calendar.MINUTE, 2);
+                            dateTime = new DateTimeObject(instance, timeShiftSupplier.getMinuteStepSize(), timeShiftSupplier.getDaysInFuture());
                         }
                         pickDay.setText(dateTime.dayString());
                         pickHour.setText(dateTime.timeString());
@@ -841,6 +847,7 @@ public class SendActivity extends AllActivity {
         textField.setText("");
         resetDateTimePicker();
         updateViewOnChangedReceivers();
+        setSuppliersLayout();
     }
 
     private void resetDateTimePicker() {
@@ -983,16 +990,12 @@ public class SendActivity extends AllActivity {
                     out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
                 }
             } catch (UnsupportedEncodingException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
             } catch (NumberFormatException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
             } catch (SocketTimeoutException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
             } catch (IOException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
             } catch (Exception e) {                                                      //for insurance
                 ACRA.getErrorReporter().handleSilentException(e);
@@ -1127,7 +1130,6 @@ public class SendActivity extends AllActivity {
         setVisibilityByCurrentReceivers();
         setInfoButtonVisibility();
         setDateTimePickerDialog();
-        setSuppliersLayout();
     }
 
     private void setSuppliersLayout() {
@@ -1137,10 +1139,14 @@ public class SendActivity extends AllActivity {
         if (smSoIPPlugin != null) {
 
             try {
+                instanciationCounter++;
                 smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
             } catch (Exception e) {
-                smSoIPPlugin.putPluginInformation();
-                ACRA.getErrorReporter().handleSilentException(e);
+                //removeIt
+                if (instanciationCounter < 2) {  //send only on first error
+                    smSoIPPlugin.putPluginInformation();
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
                 freeLayout.setVisibility(View.GONE);
             }
         }
@@ -1384,8 +1390,10 @@ public class SendActivity extends AllActivity {
             receiverField.setReceiverList(newReceiverList);
             updateViewOnChangedReceivers();
             showTooMuchReceiversToast();
+        } else {
+            updateViewOnChangedReceivers();
         }
-        updateViewOnChangedReceivers();
+        setSuppliersLayout();
     }
 
     private void showTooMuchReceiversToast() {
@@ -1489,6 +1497,9 @@ public class SendActivity extends AllActivity {
      */
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (smSoIPPlugin != null) {   // causes NPE, if no provider is currently selected and app is open (dialog shown)
+            clearAllInputs();
+        }
         IntentHandler handler = new IntentHandler(intent, this);
         setPreselectedContact(handler);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Danny Christl 2012.
+ * Copyright (c) Danny Christl 2013.
  *     This file is part of SMSoIP.
  *
  *     SMSoIP is free software: you can redistribute it and/or modify
@@ -16,15 +16,26 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.application;
+package de.christl.smsoip.supplier.meinbmw;
 
-/**
- * Constants for all stores app is deployed
- */
-public class Stores {
+import android.graphics.drawable.Drawable;
+import de.christl.smsoip.option.OptionProvider;
 
-    public static final int GOOGLE_PLAY = 0;
-    public static final int ANDROIDPIT = 1;
-    public static final int AMAZON = 2;
+public class MeinBMWOptionProvider extends OptionProvider {
+    private static final String PROVIDERNAME = "MeinBMW";
 
+
+    public MeinBMWOptionProvider() {
+        super(PROVIDERNAME);
+    }
+
+    @Override
+    public Drawable getIconDrawable() {
+        return getDrawble(R.drawable.icon);
+    }
+
+
+    public int getMaxMessageCount() {
+        return 1;
+    }
 }

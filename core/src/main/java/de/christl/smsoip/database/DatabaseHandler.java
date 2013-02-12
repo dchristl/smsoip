@@ -117,16 +117,15 @@ public abstract class DatabaseHandler {
         return out;
     }
 
-    public static Map<Receiver, String> findLastMessage(Context context) {
-        Map<Receiver, String> out = new HashMap<Receiver, String>(1);
+    public static Receiver findLastMessageReceiver(Context context) {
+        Receiver out = null;
         Uri inboxQuery = Uri.parse("content://sms/inbox");    //only inbox will be queried
         Cursor cursor = context.getContentResolver().query(inboxQuery,
-                new String[]{"address", "body"}, null, null, "date desc limit 1");
+                new String[]{"address"}, null, null, "date desc limit 1");
         String[] columns = new String[]{"address", "body"};
         if (cursor.getCount() > 0) {
             if (cursor.moveToFirst()) {
                 String number = cursor.getString(cursor.getColumnIndex(columns[0]));
-                String msg = cursor.getString(cursor.getColumnIndex(columns[1]));
                 Receiver receiver = findContactByNumber(number, context);
                 if (receiver == null) {
                     String text = context.getString(R.string.unknown);
@@ -134,8 +133,7 @@ public abstract class DatabaseHandler {
                     receiver.setRawNumber(number, context.getString(R.string.unknown));
 
                 }
-                out.put(receiver, msg);
-
+                out = receiver;
             }
         }
         cursor.close();

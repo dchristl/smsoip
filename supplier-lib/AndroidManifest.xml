@@ -15,7 +15,7 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.6.7" package="de.christl.smsoip.activities">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.6.9" package="de.christl.smsoip.activities">
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 

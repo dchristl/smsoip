@@ -26,6 +26,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.database.DatabaseHandler;
 import de.christl.smsoip.receiver.SMSReceiver;
+import org.acra.ACRA;
 
 
 public class IntentHandler {
@@ -85,6 +86,8 @@ public class IntentHandler {
                     if (!data.isOpaque()) {
                         String provider = extras.getString(EXTRA_PROVIDER);
                         if (provider != null && !provider.equals("")) {
+                            //removeIt
+                            ACRA.getErrorReporter().putCustomData("called_directly_with_provider", provider);
                             supplier = provider;
                         }
                     }

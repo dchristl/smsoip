@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.fishtext;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class FishtextInfoDialogActivity extends InfoDialogActivity {
     @Override

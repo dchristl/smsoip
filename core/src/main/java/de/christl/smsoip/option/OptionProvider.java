@@ -178,6 +178,7 @@ public abstract class OptionProvider {
     @Deprecated
     /**
      * @deprecated use getXMLResourceByResourceId instead
+     * //removeIt
      */
     public final XmlResourceParser getLayoutResourceByResourceId(int layoutId) {
         return getXMLResourceByResourceId(layoutId);
@@ -277,24 +278,13 @@ public abstract class OptionProvider {
         //do nothing by default
     }
 
-    public InputStream getChangelogInputStream() {
-        Integer i = getChangelogResourceId();
-        if (i != null) {
-            return getRawResourceByResourceId(i);
-        } else {
-            return null;
-        }
-    }
-
-    protected Integer getChangelogResourceId() {
-        return null;
-    }
 
     /**
      * method will be called when accounts are updated, added or deleted
      * override this method to clean up old options
+     * <b>Never forget to call super of this method, this causes reload of the options</b>
      */
     public void onAccountsChanged() {
-        //do nothing
+        initOptions();
     }
 }

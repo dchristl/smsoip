@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <messages>
     <message>
-        <id>1</id>
+        <id>2</id>
         <action>1</action>
-        <title>Donate Plugin verfügbar!</title>
-        <text>Entfernt Werbung. Unterstützt Weiterentwicklung.</text>
-        <url>market://details?id=de.christl.smsoip.adfree</url>
-        <alternativeUrl>https://play.google.com/store/apps/details?id=de.christl.smsoip.adfree</alternativeUrl>
-        <donate>false</donate>
+        <title>Entwicklerinformation</title>
+        <text>SMS77-Plugin ab sofort verfügbar</text>
+        <url>market://details?id=de.christl.smsoip.supplier.sms77</url>
+        <alternativeUrl>https://play.google.com/store/apps/details?id=de.christl.smsoip.supplier.sms77</alternativeUrl>
+        <not>de.christl.smsoip.supplier.sms77.SMS77Supplier</not>
     </message>
 </messages>
 

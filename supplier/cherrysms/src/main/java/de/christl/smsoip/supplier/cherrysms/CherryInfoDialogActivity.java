@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.cherrysms;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 
 public class CherryInfoDialogActivity extends InfoDialogActivity {

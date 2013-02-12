@@ -31,47 +31,7 @@
             android:orientation="vertical"
             android:padding="10dp"
             >
-        <TextView android:id="@+id/lastMessageHeader"
-                  android:text="@string/lastMessage"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textStyle="bold"
-                  android:gravity="center"
-                  android:textColor="#C0C0F0"
-                  android:textSize="20dp"
-                />
-        <TextView android:id="@+id/contact"
-                  android:textColor="#C0F0C0"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:paddingTop="5dp"
-                  android:paddingLeft="5dp"
-                  android:paddingRight="5dp"
-                />
-        <TextView android:id="@+id/clickToAdd"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:paddingBottom="5dp"
-                  android:text="@string/clickToAdd"
-                  android:textSize="10dp"
-                />
-        <TextView android:id="@+id/message"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:paddingTop="5dp"
-                  android:textColor="#6400F0"
-                  android:padding="5dp"
-                  android:background="#AAE9C400"
-                />
-        <TextView android:id="@+id/hintAddReceivers"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:paddingBottom="5dp"
-                  android:text="@string/hintAddReceivers"
-                  android:textSize="10dp"
-                  android:gravity="center"
-                  android:visibility="gone"
-                />
+
         <TextView android:text="@string/lastConversation"
                   android:id="@+id/lastConversation"
                   android:textStyle="bold"
@@ -80,6 +40,14 @@
                   android:layout_height="wrap_content"
                   android:padding="5dp"
                   android:textSize="20dp"
+                />
+        <TextView android:id="@+id/hintAddReceivers"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="5dp"
+                  android:text="@string/hintAddReceivers"
+                  android:textSize="10dp"
+                  android:gravity="center"
                 />
         <LinearLayout
                 android:id="@+id/conversationLayout"

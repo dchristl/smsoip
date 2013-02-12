@@ -154,7 +154,7 @@ public class FreenetOptionProvider extends OptionProvider {
     public void getFreeLayout(LinearLayout freeLayout) {
 //        boolean basicOnly = getSettings().getBoolean(PROVIDER_ONLY_BASIC, false);
         if (showSenders) {
-            XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+            XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(R.layout.freelayout);
             View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
             resolveChildren(freeLayout);
             buildContent(freeLayoutView);
@@ -219,6 +219,7 @@ public class FreenetOptionProvider extends OptionProvider {
 
     @Override
     public void onAccountsChanged() {
+        super.onAccountsChanged();
         SharedPreferences.Editor edit = getSettings().edit();
         Map<Integer, AccountModel> accounts = getAccounts();
         Map<String, ?> allSettings = getSettings().getAll();

@@ -72,10 +72,6 @@
     <string name="donate_plugin_page_description">Entferne die Werbung und unterstütze die Weiterentwicklung durch
         Kauf des Donate Plugins.
     </string>
-    <string name="reshow_welcome">Willkommensdialog anschauen</string>
-    <string name="reshow_welcome_description">Schaue dir den Willkommensdialog noch einmal für eine kurze
-        Einführung an.
-    </string>
     <string name="area_code">Standardländercode</string>
     <string name="area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
@@ -125,8 +121,7 @@
     <string name="partial_success">Teilweiser Erfolg</string>
     <string name="changelog_title">Was ist neu</string>
     <string name="welcome_title">Willkommen bei SMSoIP</string>
-    <string name="lastMessage">Letzte Nachricht</string>
-    <string name="lastConversation">Letzte Konversationen</string>
+    <string name="lastConversation">Konversationen</string>
     <string name="clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>
     <string name="crash_toast_text">Uuups! Das sollte nicht passieren, bitte sende einen Fehlerbericht an den
         Entwickler!
@@ -196,7 +191,6 @@
     <string name="background_image_dialog_reset">Standard</string>
     <string name="background_will_be_set">Hintergrundbild wird verarbeitet und gesetzt.</string>
     <string name="background_set_error">Fehler beim Setzen des Hintergrundes aufgetreten.</string>
-    <string name="no_last_message">Keine eingehenden Nachrichten</string>
     <string name="no_conversation">Keine Konversation</string>
     <string name="module_preference">Textbausteine</string>
     <string name="module_preference_description">Verwalte deine Textbausteine für schnellere Texteingabe.
@@ -243,9 +237,11 @@
     <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
     <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
     <string name="no_text_modules">Keine Textmodule gepflegt.</string>
-    <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um letzte Konversationen anzuzeigen!</string>
+    <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um weitere Konversationen anzuzeigen!</string>
     <string name="button_visibiliy">Buttonsichtbarkeit (ActionBar)</string>
     <string name="button_visibiliy_description">Buttons für Anbieter- oder Benutzerwechsel anzeigen/ausblenden. Das
         Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
     </string>
+    <string name="no_user_name">Benutzername darf nicht leer sein!</string>
+    <string name="account_already_defined">Benutzername bereits vorhanden!</string>
 </resources>

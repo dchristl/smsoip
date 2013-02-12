@@ -39,7 +39,7 @@ import java.util.List;
 
 public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
-    private OptionProvider provider;
+    private SMS77OptionProvider provider;
 
     private static final String ENCODING = "ISO-8859-1";
     private static final String API_URL = "https://gateway.sms77.de/";
@@ -48,14 +48,49 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private static final int SEND_BASIC = 0;
     private static final int SEND_QUALITY_NUMBER = 1;
-    private static final int SEND_QUALITY_FREE = 2;
-    private static final int SEND_LANDLINE = 3;
-    private static final int SEND_FLASH = 4;
+    //    private static final int SEND_QUALITY_FREE = 2;
+    private static final int SEND_LANDLINE = 2;
+    private static final int SEND_FLASH = 3;
 
 
     public SMS77Supplier() {
         provider = new SMS77OptionProvider();
     }
+
+
+//    @Override
+//    public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
+//
+//        String tmpUserName = URLEncoder.encode(userName == null ? "" : userName, ENCODING);
+//        String tmpPasswd = URLEncoder.encode(password == null ? "" : password, ENCODING);
+//        String bodyString = String.format(BODY_STRING, tmpUserName, tmpPasswd);
+//        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
+//        factory.setFollowRedirects(false);
+//        factory.setRequestProperties(new HashMap<String, String>() {
+//            {
+//                put("Content-Type", "application/x-www-form-urlencoded");
+//            }
+//        });
+//        factory.writeBody(bodyString);
+//        HttpURLConnection connnection = factory.getConnnection();
+//        InputStream inputStream = connnection.getInputStream();
+//        Map<String, List<String>> headerFields = connnection.getHeaderFields();
+//        if (inputStream == null || headerFields == null || headerFields.size() == 0) {
+//            return SMSActionResult.NETWORK_ERROR();
+//        }
+//        cookies = UrlConnectionFactory.findCookiesByPattern(headerFields, ".*");
+//        if (cookies == null || cookies.size() < 3) {
+//            return SMSActionResult.LOGIN_FAILED_ERROR();
+//        }
+//
+//        for (String cookie : cookies) {
+//            if (cookie != null && cookie.contains("logged_in=true")) {
+//                return SMSActionResult.LOGIN_SUCCESSFUL();
+//            }
+//        }
+//        return SMSActionResult.LOGIN_FAILED_ERROR();
+//
+//    }
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
@@ -138,8 +173,10 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         StringBuilder urlBuilder = new StringBuilder();
         try {
             urlBuilder.append(API_URL).append("?").append(getURLStringWithUserNameAndPassword(provider.getUserName(), provider.getPassword()));
-            urlBuilder.append("&debug=1");
+            urlBuilder.append("&status=1");
+//            urlBuilder.append("&debug=1");
         } catch (NoSuchAlgorithmException e) {
+            provider.saveState();
             return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receivers);
         }
         int sendMethod = findSendMethod(spinnerText);
@@ -149,9 +186,15 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             case SEND_BASIC:
                 urlBuilder.append("basicplus");
                 break;
-            case SEND_QUALITY_FREE:
             case SEND_QUALITY_NUMBER:
+                //checkNumber and add from
+                String sender = provider.getSender();
+                if (sender == null) {
+                    provider.saveState();
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_sender_number)), receivers);
+                }
                 urlBuilder.append("quality");
+                urlBuilder.append("&from=").append(sender);
                 break;
             case SEND_LANDLINE:
                 urlBuilder.append("festnetz");
@@ -183,10 +226,17 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
 
         }
+        if (out.getResult() == FireSMSResultList.SendResult.SUCCESS) {
+            provider.writeFreeInputSender();
+        } else {
+            provider.saveState();
+        }
+
         return out;
     }
 
     private SMSActionResult translateCodeToActionResult(int code) throws IOException {
+
         switch (code) {
             case 100:
                 return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.return_100));
@@ -265,5 +315,13 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
 
         return sendType;
+    }
+
+    @Deprecated
+    /**
+     * will be added later
+     */
+    public SMSActionResult resolveNumbers() {
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 }

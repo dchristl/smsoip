@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.supplier.sloono;
 
-import de.christl.smsoip.activities.InfoDialogActivity;
+import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 
 public class SloonoInfoDialogActivity extends InfoDialogActivity {
     @Override

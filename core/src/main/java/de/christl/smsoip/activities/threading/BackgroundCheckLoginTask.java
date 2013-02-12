@@ -20,7 +20,6 @@ package de.christl.smsoip.activities.threading;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.util.Log;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
@@ -67,13 +66,10 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
             try {
                 smsActionResult = supplier.checkCredentials(userName, pass);
             } catch (UnsupportedEncodingException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 smsActionResult = SMSActionResult.UNKNOWN_ERROR();
             } catch (SocketTimeoutException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 smsActionResult = SMSActionResult.TIMEOUT_ERROR();
             } catch (IOException e) {
-                Log.e(this.getClass().getCanonicalName(), "", e);
                 smsActionResult = SMSActionResult.NETWORK_ERROR();
             }
         }

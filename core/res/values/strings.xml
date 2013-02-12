@@ -71,8 +71,6 @@
     <string name="donate_plugin_page_description">Remove the ads and support future development by buying Donate
         Plugin.
     </string>
-    <string name="reshow_welcome">Show welcome dialog</string>
-    <string name="reshow_welcome_description">Look at the welcome dialog again for a short introduction.</string>
     <string name="area_code">Default international area code</string>
     <string name="area_code_description">Your default country pre-select (like 49 for Germany or 1 for USA)
         will be automatically prepended to receiver number if needed.
@@ -122,8 +120,7 @@
     <string name="partial_success">Partial success</string>
     <string name="changelog_title">What\'s New</string>
     <string name="welcome_title">Welcome to SMSoIP</string>
-    <string name="lastMessage">Last message</string>
-    <string name="lastConversation">Last conversation</string>
+    <string name="lastConversation">Conversations</string>
     <string name="clickToAdd">(Click to add as receiver)</string>
     <string name="crash_toast_text">Ooooops! This shoud not happen, please send crash report to developer!
     </string>
@@ -185,7 +182,6 @@
     <string name="background_image_dialog_reset">Reset</string>
     <string name="background_will_be_set">Image will be processed and set.</string>
     <string name="background_set_error">Error on setting background image.</string>
-    <string name="no_last_message">No incoming messages</string>
     <string name="no_conversation">No conversation</string>
     <string name="module_preference">Text modules</string>
     <string name="module_preference_description">Maintain text modules for faster text input.
@@ -227,7 +223,7 @@
 
     <string name="no_text_modules">No text modules defined.</string>
 
-    <string name="hintAddReceivers">Hint: Add one or more receivers to show conversations.</string>
+    <string name="hintAddReceivers">Hint: Add receivers to show more conversations.</string>
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>
@@ -238,4 +234,7 @@
     <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
         also be invoked by tap on providericon or username.
     </string>
+    <string name="no_user_name">Username must not be empty!</string>
+    <string name="account_already_defined">Username already present!</string>
+
 </resources>

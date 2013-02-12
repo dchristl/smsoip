@@ -48,6 +48,7 @@ import java.util.regex.Pattern;
  */
 public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
+    public static final String DOMAIN_SUFFIX = "@freenet.de";
     Pattern NUMBERS_JSON_PATTERN = Pattern.compile("\"menuRows\":\\[(.+?)\\]");
     Pattern NUMBER_SUBSTRING_PATTERN = Pattern.compile("\\{(.+?)\\}");
     private FreenetOptionProvider provider;
@@ -143,9 +144,6 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException {
         sessionCookies = new ArrayList<String>(2);
         String tmpUrl;
-        if (userName != null && !userName.contains("@")) {
-            userName += "@freenet.de";
-        }
         tmpUrl = LOGIN_URL + "?username=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
 
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
@@ -156,6 +154,10 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         String sidCookie = UrlConnectionFactory.findCookieByName(headerFields, "SID");
         if (sidCookie == null) {
+            if (userName != null && !userName.contains(DOMAIN_SUFFIX)) {
+                userName += DOMAIN_SUFFIX;
+                return checkCredentials(userName, password);
+            }
             SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
             smsActionResult.setRetryMakesSense(false);
             return smsActionResult;
@@ -173,10 +175,18 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         List<String> otherCookies = UrlConnectionFactory.findCookiesByPattern(homeHeaderFields, ".*");
         if (otherCookies == null || otherCookies.size() == 0) {
+            if (userName != null && !userName.contains(DOMAIN_SUFFIX)) {
+                userName += DOMAIN_SUFFIX;
+                return checkCredentials(userName, password);
+            }
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         sessionCookies.addAll(otherCookies);
         if (sessionCookies.size() < 2) {
+            if (userName != null && !userName.contains(DOMAIN_SUFFIX)) {
+                userName += DOMAIN_SUFFIX;
+                return checkCredentials(userName, password);
+            }
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         return SMSActionResult.LOGIN_SUCCESSFUL();

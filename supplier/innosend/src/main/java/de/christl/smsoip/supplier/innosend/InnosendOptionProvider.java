@@ -27,6 +27,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -220,7 +221,7 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(R.layout.freelayout);
+        XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(R.layout.freelayout);
         LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
         resolveChildren(freeLayout);
         buildLayoutsContent();
@@ -231,6 +232,7 @@ public class InnosendOptionProvider extends OptionProvider {
 
     @Override
     public void onAccountsChanged() {
+        super.onAccountsChanged();
         SharedPreferences.Editor edit = getSettings().edit();
         Map<Integer, AccountModel> accounts = getAccounts();
         Map<String, ?> allSettings = getSettings().getAll();
@@ -289,6 +291,7 @@ public class InnosendOptionProvider extends OptionProvider {
             }
         };
         senderText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
+        senderText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         senderText.setText(getSenderFromOptions());
     }
 

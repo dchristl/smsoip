@@ -19,17 +19,21 @@
 package de.christl.smsoip.supplier.sms77;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.option.OptionProvider;
 
 import java.util.*;
@@ -40,10 +44,11 @@ import java.util.*;
 public class SMS77OptionProvider extends OptionProvider {
     private static final String PROVIDER_NAME = "SMS77";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private static final String SENDER_FREE_LAST_INPUT_PREFIX = "sender_free_last_input_";
     private int messageCount = 10;
     private EditText senderFreeText;
     private boolean senderVisible = false;
-    private boolean showFreeText = false;
+    private boolean showFreeText = true;
     private ViewGroup parentTableRow;
     private ImageButton refreshButton;
     private ProgressBar progressBar;
@@ -56,6 +61,9 @@ public class SMS77OptionProvider extends OptionProvider {
 
     private static final String SENDER_PREFIX = "sender_";
     private static final String SENDER_LAST_NUMBER_PREFIX = "sender_last_";
+
+    private static final String STATE_SENDER_INPUT = "sender.input";
+    private String textBeforeActivityKilled;
 
     public SMS77OptionProvider() {
         super(PROVIDER_NAME);
@@ -70,7 +78,7 @@ public class SMS77OptionProvider extends OptionProvider {
     public void getFreeLayout(LinearLayout freeLayout) {
         if (senderVisible) {
             int resourceId = showFreeText ? R.layout.freelayout_text : R.layout.freelayout_dropdown;
-            XmlResourceParser freeLayoutRes = getLayoutResourceByResourceId(resourceId);
+            XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(resourceId);
             ViewGroup freeLayoutView = (ViewGroup) LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
             resolveChildren(freeLayout);
             if (showFreeText) {
@@ -165,11 +173,32 @@ public class SMS77OptionProvider extends OptionProvider {
 
     private void resolveFreeTextChildren() {
         senderFreeText = (EditText) parentTableRow.getChildAt(0);
-//        if (freeTextContent != null) {
-//            senderFreeText.setText(freeTextContent);
-//            freeTextContent = null;
-//        }
         setInputFiltersForEditText();
+
+        senderFreeText.setText(getSenderFromOptions());
+        if (textBeforeActivityKilled != null) {
+            senderFreeText.setText(textBeforeActivityKilled);
+        }
+
+        //reset all states to get fresh values
+        textBeforeActivityKilled = null;
+    }
+
+    @Override
+    public void onActivityPaused(Bundle outState) {
+        if (senderFreeText != null) {
+            saveState();
+            outState.putString(STATE_SENDER_INPUT, textBeforeActivityKilled);
+        }
+
+    }
+
+    @Override
+    public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
+        String textBeforeActivityKilled = savedInstanceState.getString(STATE_SENDER_INPUT);
+        if (senderFreeText != null) {
+            senderFreeText.setText(textBeforeActivityKilled == null ? "" : textBeforeActivityKilled);
+        }
     }
 
 
@@ -180,19 +209,34 @@ public class SMS77OptionProvider extends OptionProvider {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 for (int i = start; i < end; i++) {
-                    if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
+                    char currentSource = source.charAt(i);
+                    if (!Character.isLetterOrDigit(currentSource)) {//only numbers or charcters allowed
                         return "";
+                    }
+                    String currentString = dest.toString();
+                    if (currentString.length() >= 11) {
+                        //break if any charcters will be chosen
+
+                        if (!Character.isDigit(currentSource)) {
+                            return "";
+                        }
+                        if (Character.isDigit(currentSource)) {
+                            for (int z = 0; z < currentString.length(); z++) {
+                                if (!Character.isDigit(currentString.charAt(z))) {
+                                    return "";
+                                }
+
+                            }
+
+                        }
+
                     }
                 }
                 return null;
             }
         };
         senderFreeText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
-        senderFreeText.setText(getSenderFromOptions());
-    }
-
-    private CharSequence getSenderFromOptions() {
-        return "";
+        senderFreeText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     }
 
 
@@ -213,22 +257,22 @@ public class SMS77OptionProvider extends OptionProvider {
                         messageCount = 10;
                         showFreeText = false;
                         break;
-                    case 1: //QUALITY (DropDown)
-                        senderVisible = true;
-                        showFreeText = false;
-                        messageCount = 10;
-                        break;
-                    case 2: //QUALITY (Freetext)
+                    case 1: //QUALITY (FreeText)
                         senderVisible = true;
                         showFreeText = true;
                         messageCount = 10;
                         break;
-                    case 3:  //LANDLINE
+//                    case 2: //QUALITY (Freetext)
+//                        senderVisible = true;
+//                        showFreeText = true;
+//                        messageCount = 10;
+//                        break;
+                    case 2:  //LANDLINE
                         senderVisible = false;
                         showFreeText = false;
                         messageCount = 1;
                         break;
-                    case 4:   //FLASH
+                    case 3:   //FLASH
                         senderVisible = false;
                         showFreeText = false;
                         messageCount = 1;
@@ -280,11 +324,68 @@ public class SMS77OptionProvider extends OptionProvider {
     public int getLengthDependentSMSCount(int textLength) {
         if (textLength < 161) {
             return 1;
+        } else if (textLength < 313) {
+            return 2;
         } else {
-            textLength -= 160;
-            int smsCount = Math.round((textLength / 153));
-            smsCount = textLength % 153 == 0 ? smsCount : smsCount + 1;
-            return smsCount + 1;
+            textLength -= 312;
+            int smsCount = Math.round((textLength / 156));
+            smsCount = textLength % 156 == 0 ? smsCount : smsCount + 1;
+            return smsCount + 2;
         }
+    }
+
+    public String getSender() {
+        if (senderFreeText != null) {
+            String out = senderFreeText.getText().toString().trim();
+            return out.length() > 0 ? out : null;
+        }
+        return null;
+    }
+
+    public void saveState() {
+        if (senderFreeText != null) {
+            textBeforeActivityKilled = senderFreeText.getText().toString();
+        }
+    }
+
+    private String getSenderFromOptions() {
+        String out = getSettings().getString(SENDER_FREE_LAST_INPUT_PREFIX + getUserName(), null);
+        if (out == null) {
+            out = "";
+        }
+        return out;
+    }
+
+    public void writeFreeInputSender() {
+        if (senderFreeText != null) {
+            String toWrite = senderFreeText.getText().toString();
+            String userName = getUserName();
+            if (toWrite != null && !toWrite.equals("") && userName != null && !userName.equals("")) {
+                SharedPreferences.Editor edit = getSettings().edit();
+                edit.putString(SENDER_FREE_LAST_INPUT_PREFIX + userName, toWrite);
+                edit.commit();
+            }
+        }
+    }
+
+    @Override
+    public void onAccountsChanged() {
+        super.onAccountsChanged();
+        SharedPreferences.Editor edit = getSettings().edit();
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+            if (stringEntry.getKey().startsWith(SENDER_FREE_LAST_INPUT_PREFIX)) {
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_FREE_LAST_INPUT_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+        }
+        edit.commit();
     }
 }

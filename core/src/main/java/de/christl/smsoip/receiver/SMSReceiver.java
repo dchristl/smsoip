@@ -125,7 +125,7 @@ public class SMSReceiver extends BroadcastReceiver {
                 int id = onlyOneNotfctn ? ID : ID++;
                 mNotificationManager.notify(id, notification);
             } catch (Exception e) {
-                ACRA.getErrorReporter().handleException(e);//just for insurance to avoid other apps will not work properly anymore
+                ACRA.getErrorReporter().handleSilentException(e);//just for insurance to avoid other apps will not work properly anymore
             }
         }
     }

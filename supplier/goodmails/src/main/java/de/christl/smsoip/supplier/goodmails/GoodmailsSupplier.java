@@ -137,7 +137,9 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
     }
 
     private SMSActionResult processResult(InputStream s) throws IOException {
-
+        if (s == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
         Document parse = Jsoup.parse(s, ENCODING, "");
         if (parse.text().equals(NOT_ALLOWED_YET)) {
             return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.alternate_not_allowed_yet));
@@ -164,7 +166,10 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
 
         HttpURLConnection httpURLConnection = factory.create();
-        httpURLConnection.getHeaderFields(); //fire
+        InputStream inputStream = httpURLConnection.getInputStream();//fire
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
 
         URL url = httpURLConnection.getURL();
         if (url != null && url.getQuery() != null && url.getQuery().contains("sid")) {
