@@ -147,7 +147,7 @@ public class SMSoIPApplication extends Application {
                         }
                     }
                 } catch (PackageManager.NameNotFoundException e) {
-                    ACRA.getErrorReporter().handleException(e);
+                    ACRA.getErrorReporter().handleSilentException(e);
                 }
             }
             try {

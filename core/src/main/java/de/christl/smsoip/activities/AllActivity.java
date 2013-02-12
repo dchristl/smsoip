@@ -90,7 +90,6 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
         registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
-        app.initProviders();
         if (app.getPluginsToOld().size() > 0) {
             showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.deprecated_providers));
         } else if (app.getPluginsToNew().size() > 0) {
