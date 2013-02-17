@@ -84,7 +84,7 @@ public class SampleSupplier implements ExtendedSMSSupplier {
             public void afterDialogCreated() {
                 final View layout = breakingProgressDialogFactory.getLayout();
                 InputStream rawResourceByResourceId = provider.getRawResourceByResourceId(R.drawable.icon);
-                Drawable d = Drawable.createFromStream(rawResourceByResourceId, "bla");
+                Drawable d = Drawable.createFromStream(rawResourceByResourceId, "image");
 
                 ((ImageView) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(0)).setImageDrawable(d);
             }
@@ -94,12 +94,17 @@ public class SampleSupplier implements ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return null;
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+        }
+        return SMSActionResult.UNKNOWN_ERROR("bla");
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return null;
+        return  checkCredentials(provider.getUserName(),provider.getPassword());
     }
 
     @Override

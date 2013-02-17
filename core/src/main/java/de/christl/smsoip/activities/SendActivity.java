@@ -125,7 +125,7 @@ public class SendActivity extends AllActivity {
     private boolean providerOptionsCalled = false;
     private Dialog lastInfoDialog;
     private DateTimeObject dateTime;
-    private AsyncTask<Boolean, Boolean, SMSActionResult> backgroundUpdateTask;
+    private AsyncTask<Boolean, SMSActionResult, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
     private MobclixMMABannerXLAdView adView;
     private ColorStateList defaultColor;
@@ -240,7 +240,7 @@ public class SendActivity extends AllActivity {
             receiverField.setReceiverList(receiverList);
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
-            updateInfoTextAndRefreshButton(savedInstanceState.getString(SAVED_INSTANCE_INFO), false);
+            updateInfoText(savedInstanceState.getString(SAVED_INSTANCE_INFO));
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
             setSuppliersLayout();
         } else {     // fresh create call on activity so do the default behaviour
@@ -481,7 +481,21 @@ public class SendActivity extends AllActivity {
         }
     }
 
-    public void updateInfoTextAndRefreshButton(String info, boolean showLoaderIcon) {
+    public synchronized void showUpdateProgressBar() {
+        TextView infoText = (TextView) findViewById(R.id.infoText);
+        TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
+        infoText.setText("");
+        infoTextUpper.setText("");
+        ProgressBar progressUpper = (ProgressBar) findViewById(R.id.infoTextProgressBarUpper);
+        ProgressBar progress = (ProgressBar) findViewById(R.id.infoTextProgressBar);
+        if (mode.equals(Mode.NORMAL)) {
+            progress.setVisibility(View.VISIBLE);
+        } else {
+            progressUpper.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public synchronized void updateInfoText(String info) {
         TextView infoText = (TextView) findViewById(R.id.infoText);
         TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
         ProgressBar progressUpper = (ProgressBar) findViewById(R.id.infoTextProgressBarUpper);
@@ -491,20 +505,11 @@ public class SendActivity extends AllActivity {
         if (info != null) {
             infoText.setText(info);
             infoTextUpper.setText(info + " " + getString(R.string.tap));
-        } else {
-            if (!showLoaderIcon) {
-                infoText.setText(R.string.notyetrefreshed);
-                infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.tap));
-            } else {
-                infoText.setText("");
-                infoTextUpper.setText("");
-                if (mode.equals(Mode.NORMAL)) {
-                    progress.setVisibility(View.VISIBLE);
-                } else {
-                    progressUpper.setVisibility(View.VISIBLE);
-                }
-            }
         }
+    }
+
+    public void updateInfoTextByCancel() {
+        updateInfoText(getString(R.string.notyetrefreshed));
     }
 
 

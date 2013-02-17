@@ -29,75 +29,52 @@ import org.acra.ACRA;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Update the informations in background
  */
-public class BackgroundUpdateTask extends AsyncTask<Boolean, Boolean, SMSActionResult> {
+public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SMSActionResult> implements BreakableTask<SMSActionResult> {
 
     private SendActivity sendActivity;
-    private Timer timer;
 
-    private int retryCount = 0;
 
     public static final int MAX_RETRIES = 20;
-    private boolean update = true;
 
     public BackgroundUpdateTask(SendActivity sendActivity) {
         this.sendActivity = sendActivity;
     }
 
-    public BackgroundUpdateTask(SendActivity sendActivity, int retryCount) {
-        this.sendActivity = sendActivity;
-        this.retryCount = retryCount;
-    }
 
     @Override
     protected SMSActionResult doInBackground(Boolean... params) {
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_STARTED);
-        TimerTask task = new TimerTask() {
-
-            @Override
-            public void run() {
-                if (!BackgroundUpdateTask.this.isCancelled()) {
-                    publishProgress(true);
-                }
-            }
-
-            @Override
-            public boolean cancel() {
-                publishProgress(null, null);
-                return super.cancel();
-            }
-        };
-
-        timer = new Timer();
-        timer.schedule(task, 0, 500);
-        SMSActionResult smsActionResult;
+        int retryCount = 0;
+        SMSActionResult smsActionResult = null;
         try {
-            String userName = sendActivity.getSmSoIPPlugin().getProvider().getUserName();
-            String pass = sendActivity.getSmSoIPPlugin().getProvider().getPassword();
-            if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
-                timer.cancel();
-                smsActionResult = SMSActionResult.NO_CREDENTIALS();
-            } else {
-                try {
-                    if (params[0]) {
-                        smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
-                    } else {
-                        smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
+            while ((smsActionResult == null || (!smsActionResult.isSuccess() && retryCount < MAX_RETRIES)) && !isCancelled()) {
+                publishProgress(smsActionResult);
+                retryCount++;
+                String userName = sendActivity.getSmSoIPPlugin().getProvider().getUserName();
+                String pass = sendActivity.getSmSoIPPlugin().getProvider().getPassword();
+                if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+                    smsActionResult = SMSActionResult.NO_CREDENTIALS();  //TODO remove this, cause not valid everytime
+                } else {
+                    try {
+                        if (params[0]) {
+                            smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+                        } else {
+                            smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+                    } catch (SocketTimeoutException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+                    } catch (IOException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        smsActionResult = SMSActionResult.NETWORK_ERROR();
                     }
-                } catch (UnsupportedEncodingException e) {
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    smsActionResult = SMSActionResult.UNKNOWN_ERROR();
-                } catch (SocketTimeoutException e) {
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    smsActionResult = SMSActionResult.TIMEOUT_ERROR();
-                } catch (IOException e) {
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    smsActionResult = SMSActionResult.NETWORK_ERROR();
                 }
             }
         } catch (Exception e) {
@@ -109,54 +86,29 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, Boolean, SMSActionR
     }
 
     @Override
-    protected void onProgressUpdate(Boolean... inProgress) {
-        if (update) {
-            if (inProgress != null) {
-                sendActivity.updateInfoTextAndRefreshButton(null, true);
-            } else {
-                sendActivity.updateInfoTextAndRefreshButton(null, false);
-            }
-        }
-
+    protected void onProgressUpdate(SMSActionResult... inProgress) {
+        sendActivity.showUpdateProgressBar();
     }
 
 
     @Override
     protected void onCancelled() {
-        if (timer != null) {
-            timer.cancel();
-        }
-        sendActivity.updateInfoTextAndRefreshButton(null, false);
         super.onCancelled();
+        sendActivity.updateInfoTextByCancel();
     }
 
     @Override
     protected void onPostExecute(SMSActionResult actionResult) {
-        update = false;
-        if (timer != null) {
-            timer.cancel();
-        }
-        if (actionResult != null && actionResult.isSuccess() && !isCancelled()) {
-            final String infoText = actionResult.getMessage();
-            sendActivity.updateInfoTextAndRefreshButton(infoText, false);
-        } else if (actionResult != null) {
-            if (!isCancelled()) {
-                this.cancel(true);
-                if (timer != null) {
-                    timer.cancel();
-                }
-                if (actionResult.isRetryMakesSense() && retryCount <= MAX_RETRIES) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                    }
-                    new BackgroundUpdateTask(sendActivity, retryCount + 1).execute(true);
-                }
-            }
-            sendActivity.updateInfoTextAndRefreshButton(actionResult.getMessage(), false);
+        if (!isCancelled()) {
+            sendActivity.updateInfoText(actionResult.getMessage());
+        } else {
+            sendActivity.updateInfoTextByCancel();
         }
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_ON_POST_EXECUTE);
     }
 
+    @Override
+    public void afterChildHasFinished(SMSActionResult childResult) {
+
+    }
 }
