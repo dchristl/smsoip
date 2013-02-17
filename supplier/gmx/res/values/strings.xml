@@ -33,8 +33,8 @@
     </string>
     <string name="sender">Sender</string>
     <string name="no_numbers_maintened">No senders found.</string>
-    <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button.
+    <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye above
+        the send button.
     </string>
     <string name="not_yet_refreshed">Refresh by eye button.</string>
     <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>

@@ -48,7 +48,7 @@
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
-        Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
+        Senden mit Hilfe des Auges über dem Sende-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
     </string>
     <string name="result">%1$s SMS erfolgreich gesendet zu %2$s zum Preis von €%3$s.</string>
 </resources>

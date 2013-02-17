@@ -46,7 +46,7 @@
     </string-array>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button or unckeck the box to send with your phone number.
+        above the send button or unckeck the box to send with your phone number.
     </string>
     <string name="result">%1$s message(s) sent to %2$s at a cost of €%3$s.</string>
 </resources>

@@ -26,6 +26,6 @@
     <string name="sender">Sender</string>
     <string name="without_si">Without source identifier</string>
     <string name="not_yet_refreshed">Not yet refreshed</string>
-    <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye button.</string>
+    <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye above the send button.</string>
     <string name="no_balance">You do not have enough credit to send this text message.</string>
 </resources>

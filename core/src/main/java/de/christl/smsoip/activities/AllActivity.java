@@ -144,7 +144,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == EXIT) {
-            killAll();
+            killSoft();
             return true;
         }
         return true;
@@ -172,7 +172,16 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         notLoadedDialogAlreadyShown = true;
     }
 
-    public static void killAll() {
+    public static void killHard() {
+        try {
+            Process.killProcess(Process.myPid());
+        } catch (Exception e) {
+            ACRA.getErrorReporter().handleSilentException(e);
+            killSoft();
+        }
+    }
+
+    public static void killSoft() {
         for (Activity registeredActivity : registeredActivities) {
             nwSettingsAlreadyShown = false;
             registeredActivity.finish();
@@ -195,7 +204,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             Toast.makeText(this, R.string.press_back_again, Toast.LENGTH_SHORT).show();
             lastMillis = currentMillis;
         } else {
-            killAll();
+            killSoft();
         }
 
     }
@@ -253,12 +262,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.market_alternative)));
                     AllActivity.this.startActivity(intent);
                 }
-                try {
-                    Process.killProcess(Process.myPid());
-                } catch (Exception e) {
-                    ACRA.getErrorReporter().handleSilentException(e);
-                    killAll();
-                }
+                killHard();
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
