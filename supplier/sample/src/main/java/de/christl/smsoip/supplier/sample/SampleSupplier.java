@@ -18,7 +18,13 @@
 
 package de.christl.smsoip.supplier.sample;
 
+import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
@@ -28,6 +34,7 @@ import de.christl.smsoip.ui.BreakingProgressDialogDismissListener;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class SampleSupplier implements ExtendedSMSSupplier {
@@ -40,17 +47,22 @@ public class SampleSupplier implements ExtendedSMSSupplier {
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
 
-        BreakingProgressDialogFactory breakingProgressDialogFactory = new BreakingProgressDialogFactory();
+        final BreakingProgressDialogFactory breakingProgressDialogFactory = new BreakingProgressDialogFactory();
         breakingProgressDialogFactory.setPositiveButtonText("OK");
+        breakingProgressDialogFactory.setXmlLayout(provider.getXMLResourceByResourceId(R.layout.dialog_layout));
+
+
         breakingProgressDialogFactory.setListener(new BreakingProgressDialogDismissListener() {
             @Override
             public SMSActionResult onPositiveButtonClicked() {
+                final View layout = breakingProgressDialogFactory.getLayout();
+                Editable text = ((EditText) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(1)).getText();
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
                 }
-                return SMSActionResult.UNKNOWN_ERROR("Captcha error");
+                return SMSActionResult.UNKNOWN_ERROR(text.toString());
             }
 
             @Override
@@ -66,6 +78,15 @@ public class SampleSupplier implements ExtendedSMSSupplier {
                     Log.e(this.getClass().getCanonicalName(), "", e);
                 }
                 return SMSActionResult.USER_CANCELED();
+            }
+
+            @Override
+            public void afterDialogCreated() {
+                final View layout = breakingProgressDialogFactory.getLayout();
+                InputStream rawResourceByResourceId = provider.getRawResourceByResourceId(R.drawable.icon);
+                Drawable d = Drawable.createFromStream(rawResourceByResourceId, "bla");
+
+                ((ImageView) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(0)).setImageDrawable(d);
             }
         });
         return SMSActionResult.SHOW_DIALOG_RESULT(breakingProgressDialogFactory);

@@ -21,6 +21,9 @@ package de.christl.smsoip.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.XmlResourceParser;
+import android.view.LayoutInflater;
+import android.view.View;
 import de.christl.smsoip.constant.SMSActionResult;
 
 import java.util.concurrent.*;
@@ -36,6 +39,9 @@ public final class BreakingProgressDialogFactory {
     private CharSequence negativeButtonText;
     private boolean isCancelable = true;
     private Future<SMSActionResult> futureResult;
+    private String title;
+    private XmlResourceParser xmlLayout;
+    View layout;
 
 
     public void setPositiveButtonText(String positiveButtonText) {
@@ -54,8 +60,15 @@ public final class BreakingProgressDialogFactory {
         isCancelable = cancelable;
     }
 
+    public void setXmlLayout(XmlResourceParser xmlLayout) {
+        this.xmlLayout = xmlLayout;
+    }
+
     public AlertDialog create() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        layout = LayoutInflater.from(context).inflate(xmlLayout, null);
+        builder.setView(layout);
         AlertDialog alertDialog = builder.create();
         final ExecutorService executorService = Executors.newFixedThreadPool(1);
         if (positiveButtonText != null) {
@@ -108,7 +121,7 @@ public final class BreakingProgressDialogFactory {
         } else {
             alertDialog.setCancelable(false);
         }
-
+        listener.afterDialogCreated();
         return alertDialog;
     }
 
@@ -124,5 +137,15 @@ public final class BreakingProgressDialogFactory {
         } catch (ExecutionException ignored) {
         }
         return SMSActionResult.UNKNOWN_ERROR();
+    }
+
+    /**
+     * get the view inside the layout
+     * <b>only callable after create is called</b>
+     *
+     * @return
+     */
+    public View getLayout() {
+        return layout;
     }
 }

@@ -25,9 +25,11 @@ import de.christl.smsoip.constant.SMSActionResult;
  */
 public interface BreakingProgressDialogDismissListener {
 
-    public SMSActionResult onPositiveButtonClicked();
+    SMSActionResult onPositiveButtonClicked();
 
-    public SMSActionResult onNegativeButtonClicked();
+    SMSActionResult onNegativeButtonClicked();
 
-    public SMSActionResult onCancel();
+    SMSActionResult onCancel();
+
+    void afterDialogCreated();
 }
