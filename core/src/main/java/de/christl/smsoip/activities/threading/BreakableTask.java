@@ -16,22 +16,9 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.sample;
+package de.christl.smsoip.activities.threading;
 
-import android.graphics.drawable.Drawable;
-import de.christl.smsoip.option.OptionProvider;
+public interface BreakableTask<T> {
 
-public class SampleOptionProvider extends OptionProvider {
-    private static final String PROVIDER_NAME = "Sample";
-
-    @Override
-    public Drawable getIconDrawable() {
-        return getDrawable(R.drawable.icon);
-    }
-
-
-    @Override
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
+    public void afterChildHasFinished(T childResult);
 }

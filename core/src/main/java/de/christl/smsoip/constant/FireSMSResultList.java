@@ -19,7 +19,7 @@
 package de.christl.smsoip.constant;
 
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.ui.BreakingProgressDialog;
+import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
     private List<Receiver> successList = new ArrayList<Receiver>();
     private SendResult result = SendResult.NOT_YET_SET;
     private List<Receiver> errorList = new ArrayList<Receiver>();
-    private BreakingProgressDialog builder;
+    private BreakingProgressDialogFactory builder;
 
     public FireSMSResultList(int capacity) {
         super(capacity);
@@ -63,7 +63,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
         SMSActionResult smsActionResult = fireSMSResult.getResult();
         if (smsActionResult.isDialogResult()) {
             result = SendResult.DIALOG;
-            builder = smsActionResult.getBuilder();
+            builder = smsActionResult.getFactory();
         }
         if (smsActionResult.isSuccess()) {
             switch (result) {
@@ -117,7 +117,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
         this.errorList = errorList;
     }
 
-    public BreakingProgressDialog getBuilder() {
+    public BreakingProgressDialogFactory getBuilder() {
         return builder;
     }
 

@@ -16,22 +16,27 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.sample;
+package de.christl.smsoip.activities.threading;
 
-import android.graphics.drawable.Drawable;
-import de.christl.smsoip.option.OptionProvider;
+import android.os.AsyncTask;
+import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
-public class SampleOptionProvider extends OptionProvider {
-    private static final String PROVIDER_NAME = "Sample";
+public class BreakingProgressAsyncTask extends AsyncTask<BreakingProgressDialogFactory, Void, SMSActionResult> {
+    private BreakableTask<SMSActionResult> parentAsyncTask;
+
+    public BreakingProgressAsyncTask(BreakableTask<SMSActionResult> parentAsyncTask) {
+        this.parentAsyncTask = parentAsyncTask;
+    }
 
     @Override
-    public Drawable getIconDrawable() {
-        return getDrawable(R.drawable.icon);
+    protected SMSActionResult doInBackground(BreakingProgressDialogFactory... params) {
+        return params[0].getFutureResult();
     }
 
 
     @Override
-    public String getProviderName() {
-        return PROVIDER_NAME;
+    protected void onPostExecute(SMSActionResult smsActionResult) {
+        parentAsyncTask.afterChildHasFinished(smsActionResult);
     }
 }

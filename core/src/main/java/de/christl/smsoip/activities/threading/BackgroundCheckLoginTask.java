@@ -18,7 +18,9 @@
 
 package de.christl.smsoip.activities.threading;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
@@ -27,6 +29,7 @@ import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,10 +38,11 @@ import java.net.SocketTimeoutException;
 /**
  * checks the login in background in GlobalPreferences
  */
-public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Void> {
+public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionResult, Void> implements BreakableTask<SMSActionResult> {
 
     private MultipleAccountsPreference multiPreference;
     private ProgressDialog progressDialog;
+    private AlertDialog dialog;
 
     public BackgroundCheckLoginTask(MultipleAccountsPreference multiPreference) {
         this.multiPreference = multiPreference;
@@ -60,6 +64,7 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
         String userName = accountModel.getUserName();
         String pass = accountModel.getPass();
         SMSActionResult smsActionResult;
+        //TODO not valid if no username or pass needed
         if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
             smsActionResult = SMSActionResult.NO_CREDENTIALS();
         } else {
@@ -74,25 +79,58 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, String, Vo
             }
         }
         if (progressDialog != null && progressDialog.isShowing()) {
-            publishProgress(smsActionResult.getMessage());
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ignored) {
-            }
+            publishProgress(smsActionResult);
         }
         return null;
     }
 
     @Override
-    protected void onProgressUpdate(String... values) {
-        progressDialog.setMessage(values[0]);
+    protected void onProgressUpdate(SMSActionResult... values) {
+        SMSActionResult value = values[0];
+        if (value.isBreakingProgress()) {
+            final BreakingProgressDialogFactory factory = value.getFactory();
+            dialog = factory.create(progressDialog.getContext());
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    new BreakingProgressAsyncTask(BackgroundCheckLoginTask.this).execute(factory);
+
+                }
+            });
+            dialog.show();
+        } else {
+            progressDialog.setMessage(value.getMessage());
+        }
     }
 
     @Override
     protected void onPostExecute(Void nothing) {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_ON_FINISH);
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.cancel();
+        if (dialog == null || !dialog.isShowing()) {
+            closeProgressDialog();
         }
+    }
+
+    @Override
+    public void afterChildHasFinished(SMSActionResult childResult) {
+        progressDialog.setMessage(childResult.getMessage());
+        onPostExecute(null);
+    }
+
+    private void closeProgressDialog() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ignored) {
+                } finally {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.cancel();
+                    }
+                }
+            }
+        }).start();
     }
 }

@@ -20,7 +20,7 @@ package de.christl.smsoip.constant;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.ui.BreakingProgressDialog;
+import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 /**
  * Result class for some actions in send activity
@@ -28,7 +28,7 @@ import de.christl.smsoip.ui.BreakingProgressDialog;
 public class SMSActionResult {
     private boolean success;
     private String message;
-    private BreakingProgressDialog builder;
+    private BreakingProgressDialogFactory builder;
     private boolean retryMakesSense = false;
 
     private SMSActionResult(boolean success, boolean retryMakesSense, int messageId) {
@@ -55,11 +55,11 @@ public class SMSActionResult {
         this.message = message;
     }
 
-    public SMSActionResult(BreakingProgressDialog builder) {
+    public SMSActionResult(BreakingProgressDialogFactory builder) {
         this.builder = builder;
     }
 
-    public BreakingProgressDialog getBuilder() {
+    public BreakingProgressDialogFactory getFactory() {
         return builder;
     }
 
@@ -120,16 +120,11 @@ public class SMSActionResult {
         return new SMSActionResult(R.string.noCredentials);
     }
 
-    /**
-     * little helper for cancelling without return message
-     *
-     * @return
-     */
     public static SMSActionResult USER_CANCELED() {
         return new SMSActionResult(R.string.user_cancelled);
     }
 
-    public static SMSActionResult SHOW_DIALOG_RESULT(BreakingProgressDialog dialog) {
+    public static SMSActionResult SHOW_DIALOG_RESULT(BreakingProgressDialogFactory dialog) {
         return new SMSActionResult(dialog);
     }
 
@@ -143,5 +138,9 @@ public class SMSActionResult {
 
     public boolean isRetryMakesSense() {
         return retryMakesSense;
+    }
+
+    public boolean isBreakingProgress() {
+        return builder != null;
     }
 }

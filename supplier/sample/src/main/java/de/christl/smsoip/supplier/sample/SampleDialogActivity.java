@@ -23,6 +23,6 @@ import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 public class SampleDialogActivity extends InfoDialogActivity {
     @Override
     protected String getSupplierName() {
-        return null;
+        return "de.christl.smsoip.supplier.sample.SampleSupplier";
     }
 }

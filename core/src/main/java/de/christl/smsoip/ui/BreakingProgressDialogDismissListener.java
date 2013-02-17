@@ -16,22 +16,18 @@
  *     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.supplier.sample;
+package de.christl.smsoip.ui;
 
-import android.graphics.drawable.Drawable;
-import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.constant.SMSActionResult;
 
-public class SampleOptionProvider extends OptionProvider {
-    private static final String PROVIDER_NAME = "Sample";
+/**
+ * listener for button click inside BreakingProgressDialog
+ */
+public interface BreakingProgressDialogDismissListener {
 
-    @Override
-    public Drawable getIconDrawable() {
-        return getDrawable(R.drawable.icon);
-    }
+    public SMSActionResult onPositiveButtonClicked();
 
+    public SMSActionResult onNegativeButtonClicked();
 
-    @Override
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
+    public SMSActionResult onCancel();
 }

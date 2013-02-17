@@ -18,25 +18,57 @@
 
 package de.christl.smsoip.supplier.sample;
 
+import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.ui.BreakingProgressDialog;
+import de.christl.smsoip.ui.BreakingProgressDialogDismissListener;
+import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class SampleSupplier implements ExtendedSMSSupplier {
+    private SampleOptionProvider provider;
+
+    public SampleSupplier() {
+        provider = new SampleOptionProvider();
+    }
+
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        return SMSActionResult.SHOW_DIALOG_RESULT(new BreakingProgressDialog() {
+
+        BreakingProgressDialogFactory breakingProgressDialogFactory = new BreakingProgressDialogFactory();
+        breakingProgressDialogFactory.setPositiveButtonText("OK");
+        breakingProgressDialogFactory.setListener(new BreakingProgressDialogDismissListener() {
             @Override
-            protected FireSMSResultList onPositiveResult() {
+            public SMSActionResult onPositiveButtonClicked() {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                }
+                return SMSActionResult.UNKNOWN_ERROR("Captcha error");
+            }
+
+            @Override
+            public SMSActionResult onNegativeButtonClicked() {
                 return null;
             }
+
+            @Override
+            public SMSActionResult onCancel() {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                }
+                return SMSActionResult.USER_CANCELED();
+            }
         });
+        return SMSActionResult.SHOW_DIALOG_RESULT(breakingProgressDialogFactory);
     }
 
     @Override
@@ -56,6 +88,6 @@ public class SampleSupplier implements ExtendedSMSSupplier {
 
     @Override
     public OptionProvider getProvider() {
-        return null;
+        return provider;
     }
 }
