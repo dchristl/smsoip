@@ -167,6 +167,12 @@
     <string name="inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
         Korrektheit und sende noch einmal.
     </string>
+    <string name="receiver_vibrate_activated">Vibration</string>
+    <string name="receiver_vibrate_activated_description">Aktiviere oder deaktiviere die Vibration bei
+        Benachrichtigungen.
+    </string>
+    <string name="receiver_led_activated">LED</string>
+    <string name="receiver_led_activated_description">Aktiviere oder deaktiviere das Benachrichtigungslicht.</string>
     <string name="category_base">Grundeinstellungen</string>
     <string name="category_layout">Aussehen</string>
     <string name="category_behaviour">Verhalten</string>

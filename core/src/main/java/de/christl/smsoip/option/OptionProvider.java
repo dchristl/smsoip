@@ -196,7 +196,11 @@ public abstract class OptionProvider {
         return SMSoIPApplication.getApp().getTextByResourceId(this, resourceId, quantity);
     }
 
+    @Deprecated
     protected final Drawable getDrawble(int drawableId) {
+        return SMSoIPApplication.getApp().getDrawable(this, drawableId);
+    }
+    protected final Drawable getDrawable(int drawableId) {
         return SMSoIPApplication.getApp().getDrawable(this, drawableId);
     }
 

@@ -89,7 +89,13 @@ public class SMSReceiver extends BroadcastReceiver {
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.bar_icon);
                 String ringtoneUri = preferences.getString(SettingsConst.RECEIVER_RINGTONE_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION).toString());
-                builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+
+                if (preferences.getBoolean(SettingsConst.RECEIVER_LED_ACTIVATED, true)) {
+                    builder.setDefaults(Notification.DEFAULT_LIGHTS);
+                }
+                if (preferences.getBoolean(SettingsConst.RECEIVER_VIBRATE_ACTIVATED, true)) {
+                    builder.setVibrate(new long[]{0, 500, 100, 500, 100, 500});
+                }
 
                 if (ringtoneUri != null && !ringtoneUri.equals("")) {
                     Uri parse = Uri.parse(ringtoneUri);
@@ -123,7 +129,12 @@ public class SMSReceiver extends BroadcastReceiver {
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
                 boolean onlyOneNotfctn = preferences.getBoolean(SettingsConst.RECEIVER_ONLY_ONE_NOTFICATION, false);
                 int id = onlyOneNotfctn ? ID : ID++;
-                mNotificationManager.notify(id, notification);
+                try {
+                    mNotificationManager.notify(id, notification);
+                } catch (SecurityException e) {
+                    builder.setDefaults(Notification.DEFAULT_LIGHTS);
+                    mNotificationManager.notify(id, builder.getNotification());
+                }
             } catch (Exception e) {
                 ACRA.getErrorReporter().handleSilentException(e);//just for insurance to avoid other apps will not work properly anymore
             }

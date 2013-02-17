@@ -62,12 +62,28 @@ public class SMSReceiverPreference extends BackgroundPreferenceActivity {
         ringtonePreference.setKey(SettingsConst.RECEIVER_RINGTONE_URI);
         ringtonePreference.setEnabled(enabled);
 
+        final CheckBoxPreference vibrateActive = new CheckBoxPreference(this);
+        vibrateActive.setDefaultValue(true);
+        vibrateActive.setKey(SettingsConst.RECEIVER_VIBRATE_ACTIVATED);
+        vibrateActive.setTitle(R.string.receiver_vibrate_activated);
+        vibrateActive.setSummary(R.string.receiver_vibrate_activated_description);
+        vibrateActive.setEnabled(enabled);
+
+
+        final CheckBoxPreference ledActive = new CheckBoxPreference(this);
+        ledActive.setDefaultValue(true);
+        ledActive.setKey(SettingsConst.RECEIVER_LED_ACTIVATED);
+        ledActive.setTitle(R.string.receiver_led_activated);
+        ledActive.setSummary(R.string.receiver_led_activated_description);
+        ledActive.setEnabled(enabled);
 
         receiverActive.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 showOnlyOneNotification.setEnabled((Boolean) newValue);
                 ringtonePreference.setEnabled((Boolean) newValue);
+                vibrateActive.setEnabled((Boolean) newValue);
+                ledActive.setEnabled((Boolean) newValue);
                 return true;
             }
         });
@@ -76,6 +92,8 @@ public class SMSReceiverPreference extends BackgroundPreferenceActivity {
         root.addPreference(adPreference);
         root.addPreference(showOnlyOneNotification);
         root.addPreference(ringtonePreference);
+        root.addPreference(vibrateActive);
+        root.addPreference(ledActive);
         return root;
     }
 

@@ -162,6 +162,11 @@
     <string name="inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>
+    <string name="receiver_vibrate_activated">Vibration</string>
+    <string name="receiver_vibrate_activated_description">Enable or disable vibration for the notification.</string>
+    <string name="receiver_led_activated">LED</string>
+    <string name="receiver_led_activated_description">Enable or disable notification light.</string>
+
     <string name="category_base">Base settings</string>
     <string name="category_layout">Layout settings</string>
     <string name="category_behaviour">Behaviour settings</string>

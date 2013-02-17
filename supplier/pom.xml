@@ -46,6 +46,7 @@
         <module>smsrevolution</module>
         <module>sms77</module>
         <module>meinbmw</module>
+        <module>sample</module>
     </modules>
 
     <dependencies>
