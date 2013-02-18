@@ -65,7 +65,7 @@ public class FishtextSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
+    public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
         HttpURLConnection con = factory.writeBody(String.format(LOGIN_BODY, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING)));
         Map<String, List<String>> headerFields = con.getHeaderFields();

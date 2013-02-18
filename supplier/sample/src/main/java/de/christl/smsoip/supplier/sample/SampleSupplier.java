@@ -94,12 +94,7 @@ public class SampleSupplier implements ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-        }
-        return SMSActionResult.UNKNOWN_ERROR("bla");
+        return checkCredentials(provider.getUserName(),provider.getPassword());
     }
 
     @Override

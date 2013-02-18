@@ -121,7 +121,9 @@ public class SMSActionResult {
     }
 
     public static SMSActionResult USER_CANCELED() {
-        return new SMSActionResult(R.string.user_cancelled);
+        SMSActionResult smsActionResult = new SMSActionResult(R.string.user_cancelled);
+        smsActionResult.setRetryMakesSense(false);
+        return smsActionResult;
     }
 
     public static SMSActionResult SHOW_DIALOG_RESULT(BreakingProgressDialogFactory dialog) {
