@@ -22,12 +22,12 @@ package de.christl.smsoip.supplier.directbox;
 public abstract class SendConstants {
 
     //LOGIN
-    private static final String EVENT_VALIDATION_LOGIN_CONTENT = "%2FwEWBQKd3oeiAgLU5py0AgLy0rfgCQLl9uWMDAL80euBDaUjHiMf7WB9Vxht2lY9PSxDMBYs";
-    private static final String VIEW_STATE_LOGIN_CONTENT = "%2FwEPDwUJMjkxMDgzNjU0D2QWAmYPZBYEAgMPZBYCZg8PFgIeB1Zpc2libGVoZGQCBQ9kFgQCBQ8UKwACFCsAAw8WAh4XRW5hYmxlQWpheFNraW5SZW5kZXJpbmdoZGRkZGQCCQ9kFgICAQ9kFgICAQ8PFgIfAGhkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WCgUXY3RsMDAkUmFkV2luZG93TWFuYWdlcjEFJWN0bDAwJE1lbnViYXJQbGFjZUhvbGRlciRSYWREb2NrWm9uZTQFIWN0bDAwJE1lbnViYXJQbGFjZUhvbGRlciRSYWREb2NrMQUaY3RsMDAkQ29udGVudFBsYWNlSG9sZGVyJEEFJGN0bDAwJENvbnRlbnRQbGFjZUhvbGRlciRMb2dpbldpZGdldAUaY3RsMDAkQ29udGVudFBsYWNlSG9sZGVyJDcFGmN0bDAwJENvbnRlbnRQbGFjZUhvbGRlciRCBRpjdGwwMCRDb250ZW50UGxhY2VIb2xkZXIkMwUaY3RsMDAkQ29udGVudFBsYWNlSG9sZGVyJDYFGmN0bDAwJENvbnRlbnRQbGFjZUhvbGRlciRDSlzhjHBK2GvYQvZjEIvaWEmNVYE%3D";
+    private static final String EVENT_VALIDATION_LOGIN_CONTENT = "%2FwEWBQLu0IOvDQLZzqHBBALz0sbfBQLX%2BJLMDALwxqBLz1IsWYVpPWC%2B3xGtYFVi0pYOamQ%3D";
+    private static final String VIEW_STATE_LOGIN_CONTENT = "%2FwEPDwUKMTQ5OTMzMTM0Nw9kFgJmD2QWBAIDD2QWAmYPDxYCHgdWaXNpYmxlaGRkAgUPZBYGAgUPFCsAAhQrAAMPFgIeF0VuYWJsZUFqYXhTa2luUmVuZGVyaW5naGRkZGRkAgkPZBYCAgEPZBYCAgEPDxYCHwBoZGQCDQ9kFgICAQ9kFgJmD2QWAgIBD2QWAgICD2QWAmYPZBYCAgEPZBYIAgEPDxYCHwBoZGQCBQ8PFgQeC05hdmlnYXRlVXJsBSEvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWNvdmVyLmFzcHgeBFRleHQFE1Bhc3N3b3J0IHZlcmdlc3Nlbj9kZAIHDw8WBB8CBSIvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWdpc3Rlci5hc3B4HwMFE0pldHp0IHJlZ2lzdHJpZXJlbiFkZAIJDw8WBB8DBQpTaWNoZXJoZWl0HwBoZGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFF2N0bDAwJFJhZFdpbmRvd01hbmFnZXIxyq5P3ffIooqm16NJVmO3oPg2fnY%3D";
 
-    public static final String USER_NAME_FIELD_ID = "ctl00%24ContentPlaceHolder%24LoginWidget%24C%24LoginPanel1%24tbIdentity=";
-    public static final String PASSWORD_FIELD_ID = "ctl00%24ContentPlaceHolder%24LoginWidget%24C%24LoginPanel1%24tbPassword=";
-    public static final String LOGIN_BUTTON_PARAM = "ctl00%24ContentPlaceHolder%24LoginWidget%24C%24LoginPanel1%24btnLogin=Anmelden";
+    public static final String USER_NAME_FIELD_ID = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24tbIdentity=";
+    public static final String PASSWORD_FIELD_ID = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24tbPassword=";
+    public static final String LOGIN_BUTTON_PARAM = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24btnLogin=Anmelden";
     public static final String ASYNCPOST_PARAM = "__ASYNCPOST=true";
     public static final String EVENT_VALIDATION_LOGIN__PARAM = "__EVENTVALIDATION=" + EVENT_VALIDATION_LOGIN_CONTENT;
     public static final String VIEWSTATE_LOGIN_PARAM = "__VIEWSTATE=" + VIEW_STATE_LOGIN_CONTENT;
