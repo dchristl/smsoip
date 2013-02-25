@@ -122,8 +122,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        return !wifiInfo.isConnected() && !mobileInfo.isConnected();
+        return wifiInfo == null || mobileInfo == null || !wifiInfo.isConnected() && !mobileInfo.isConnected();
     }
 
     protected void showChangelogIfNeeded() {
@@ -223,7 +222,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                     public void onClick(View view) {
                         nwSettingsAlreadyShown = true;
                         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-                        wm.setWifiEnabled(true);
+                        if (wm != null) {
+                            wm.setWifiEnabled(true);
+                        }
                         dialog.dismiss();
                     }
                 });
