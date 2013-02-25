@@ -49,12 +49,14 @@ public abstract class DatabaseHandler {
         String name = null;
         Contact out;
         Cursor contactCur = context.getContentResolver().query(contactData, null, null, null, null);
-        if (contactCur.moveToFirst()) {
+        if (contactCur != null && contactCur.moveToFirst()) {
             pickedId = contactCur.getString(contactCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
             name = contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
             hasPhone = Integer.parseInt(contactCur.getString(contactCur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0;
         }
-        contactCur.close();
+        if (contactCur != null) {
+            contactCur.close();
+        }
         out = new Contact(name);
         if (pickedId != null && hasPhone) {
             Cursor phones = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -62,12 +64,14 @@ public abstract class DatabaseHandler {
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                     new String[]{pickedId}, null);
             HashMap<String, Integer> phoneNumber = new HashMap<String, Integer>();
-            while (phones.moveToNext()) {
+            while (phones != null && phones.moveToNext()) {
                 phoneNumber.put(phones.getString(
                         phones.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER)), phones.getInt(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)));
             }
-            phones.close();
+            if (phones != null) {
+                phones.close();
+            }
             for (Map.Entry<String, Integer> currEntry : phoneNumber.entrySet()) {
                 String numberType = translateTypeToString(context, currEntry.getValue());
                 out.addNumber(currEntry.getKey(), numberType);
@@ -86,10 +90,12 @@ public abstract class DatabaseHandler {
         ContentResolver cr = context.getContentResolver();
         Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, findPhotoIdByNumber(receiverNumber, context));
         Cursor c = cr.query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
-        if (c.moveToFirst()) {
+        if (c!= null && c.moveToFirst()) {
             return c.getBlob(0);
         }
-        c.close();
+        if (c != null) {
+            c.close();
+        }
         return null;
     }
 
@@ -102,10 +108,12 @@ public abstract class DatabaseHandler {
             try {
                 ContentResolver contentResolver = context.getContentResolver();
                 Cursor query = contentResolver.query(uri, projection, null, null, null);
-                if (query.moveToFirst()) {
+                if (query != null && query.moveToFirst()) {
                     out = query.getInt(query.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
                 }
-                query.close();
+                if (query != null) {
+                    query.close();
+                }
             } catch (IllegalArgumentException e) {
                 ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
@@ -123,7 +131,7 @@ public abstract class DatabaseHandler {
         Cursor cursor = context.getContentResolver().query(inboxQuery,
                 new String[]{"address"}, null, null, "date desc limit 1");
         String[] columns = new String[]{"address", "body"};
-        if (cursor.getCount() > 0) {
+        if (cursor != null && cursor.getCount() > 0) {
             if (cursor.moveToFirst()) {
                 String number = cursor.getString(cursor.getColumnIndex(columns[0]));
                 Receiver receiver = findContactByNumber(number, context);
@@ -136,7 +144,9 @@ public abstract class DatabaseHandler {
                 out = receiver;
             }
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         return out;
     }
 
@@ -165,13 +175,15 @@ public abstract class DatabaseHandler {
         String[] projection = {"cast(replace(replace(replace(replace(replace(address,'+',''),'-',''),')',''),'(',''),' ','') as int) as replacedAddress", "body", "date", "type"};
         Cursor cursor = context.getContentResolver().query(smsQuery,
                 projection, selection, null, "date desc limit 10");
-        while (cursor.moveToNext()) {
+        while (cursor != null && cursor.moveToNext()) {
             String message = cursor.getString(1);
             Date date = new Date(cursor.getLong(2));
             int type = cursor.getInt(3);
             out.add(new Message(message, type == 2, date));
         }
-        cursor.close();
+        if (cursor != null) {
+            cursor.close();
+        }
         return out;
     }
 
@@ -203,7 +215,7 @@ public abstract class DatabaseHandler {
             try {
                 ContentResolver contentResolver = context.getContentResolver();
                 Cursor query = contentResolver.query(uri, projection, null, null, null);
-                if (query.moveToFirst()) {
+                if (query != null && query.moveToFirst()) {
                     name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
                     if (name == null || name.equals("")) {
                         name = context.getString(R.string.unknown);
@@ -211,7 +223,9 @@ public abstract class DatabaseHandler {
                     out = new Receiver(name);
                     out.setRawNumber(rawNumber, context.getString(R.string.unknown));
                 }
-                query.close();
+                if (query != null) {
+                    query.close();
+                }
             } catch (IllegalArgumentException e) {
                 ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
