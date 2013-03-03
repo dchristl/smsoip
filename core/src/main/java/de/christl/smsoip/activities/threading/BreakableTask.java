@@ -18,7 +18,18 @@
 
 package de.christl.smsoip.activities.threading;
 
-public interface BreakableTask<T extends SMSoIPResult> {
+/**
+ * Interface for marking tasks as supporting dialogs (brekable task)
+ *
+ * @param <T> -  the result which will be available after main task has finished
+ */
 
+public interface BreakableTask<T> {
+
+    /**
+     * will be executed after the main task has finished
+     *
+     * @param childResult - result of the child task
+     */
     public void afterChildHasFinished(T childResult);
 }

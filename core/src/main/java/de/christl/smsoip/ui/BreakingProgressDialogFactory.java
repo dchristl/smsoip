@@ -24,14 +24,13 @@ import android.content.DialogInterface;
 import android.content.res.XmlResourceParser;
 import android.view.LayoutInflater;
 import android.view.View;
-import de.christl.smsoip.activities.threading.SMSoIPResult;
 
 import java.util.concurrent.*;
 
 /**
  * Class for constructing dialog for showing during check credentials or fire SMS phase
  */
-public final class BreakingProgressDialogFactory<T extends SMSoIPResult> {
+public final class BreakingProgressDialogFactory<T> {
 
     private BreakingProgressDialogDismissListener<T> listener;
     private Context context;

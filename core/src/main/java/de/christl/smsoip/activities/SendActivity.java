@@ -54,6 +54,7 @@ import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundSendTask;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
+import de.christl.smsoip.activities.threading.ThreadingUtil;
 import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
@@ -136,6 +137,9 @@ public class SendActivity extends AllActivity {
 
 
     @Override
+    /**
+     * entry point on resuming back to main activity
+     */
     protected void onResume() {
         super.onResume();
         ErrorReporterStack.put(LogConst.ON_RESUME);
@@ -171,6 +175,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * insert the advertisements
+     */
     private void insertAds() {
         LinearLayout adLayout = ((LinearLayout) findViewById(R.id.banner_adview));
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
@@ -190,6 +197,9 @@ public class SendActivity extends AllActivity {
     }
 
     @Override
+    /**
+     * main entry point for new activity
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //save the default color of textview
@@ -208,7 +218,7 @@ public class SendActivity extends AllActivity {
         setCustomActionBar();
         setClearButton();
         setRefreshButton();
-        setSigButton();
+        setTextModulesButton();
         setShowChosenContactsDialog();
         setShortTextButton();
         setSmileyButton();
@@ -256,12 +266,18 @@ public class SendActivity extends AllActivity {
         ErrorReporterStack.put(LogConst.ON_CREATE);
     }
 
+    /**
+     * wraperrr for the sherlock actionbar
+     */
     private void setCustomActionBar() {
         ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         supportActionBar.setCustomView(R.layout.actionbar);
     }
 
+    /**
+     * set and enable the suggest field for the phone numbers
+     */
     private void setAutoSuggestField() {
 
         receiverField = (NameNumberSuggestField) findViewById(R.id.receiverField);
@@ -279,32 +295,37 @@ public class SendActivity extends AllActivity {
 
     }
 
+    /**
+     * entry point for mode switching
+     */
     private void addModeSwitcher() {
         View toggleUp = findViewById(R.id.viewToggleUp);
         View toggleDown = findViewById(R.id.viewToggleDown);
         View.OnClickListener l = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toogleView();
+                switch (mode) {
+                    case NORMAL:
+                        mode = Mode.COMPACT;
+                        setViewByMode(mode);
+                        break;
+                    case COMPACT:
+                        mode = Mode.NORMAL;
+                        setViewByMode(mode);
+                        break;
+                }
             }
         };
         toggleDown.setOnClickListener(l);
         toggleUp.setOnClickListener(l);
     }
 
-    private void toogleView() {
-        switch (mode) {
-            case NORMAL:
-                mode = Mode.COMPACT;
-                setViewByMode(mode);
-                break;
-            case COMPACT:
-                mode = Mode.NORMAL;
-                setViewByMode(mode);
-                break;
-        }
-    }
 
+    /**
+     * set the visibility of all stuff in GUI mode depnedent
+     *
+     * @param mode
+     */
     private void setViewByMode(Mode mode) {
         View but1 = findViewById(R.id.tblButton1);
         View but2 = findViewById(R.id.tblButton2);
@@ -314,6 +335,8 @@ public class SendActivity extends AllActivity {
         View stDescr = findViewById(R.id.tblSendingTypeDescr);
         View infoTextUpper = findViewById(R.id.infoTextUpper);
         View freeLayout = findViewById(R.id.tblFreeLayout);
+        View progressUpper = findViewById(R.id.infoTextProgressBarUpper);
+        View progress = findViewById(R.id.infoTextProgressBar);
         switch (mode) {
             case NORMAL:
                 but1.setVisibility(View.VISIBLE);
@@ -324,6 +347,7 @@ public class SendActivity extends AllActivity {
                 stDescr.setVisibility(View.VISIBLE);
                 freeLayout.setVisibility(View.VISIBLE);
                 infoTextUpper.setVisibility(View.GONE);
+                progressUpper.setVisibility(View.GONE);
                 break;
             case COMPACT:
                 infoTextUpper.setVisibility(View.VISIBLE);
@@ -334,10 +358,14 @@ public class SendActivity extends AllActivity {
                 stRow.setVisibility(View.GONE);
                 stDescr.setVisibility(View.GONE);
                 freeLayout.setVisibility(View.GONE);
+                progressUpper.setVisibility(progress.getVisibility());
                 break;
         }
     }
 
+    /**
+     * set the dialog for picking
+     */
     private void setDateTimePickerDialog() {
         ErrorReporterStack.put(LogConst.SET_DATE_TIME_PICKER_DIALOG);
         View timeShiftLayout = findViewById(R.id.timeShiftLayout);
@@ -444,6 +472,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * show the dialog for all providers dependent on the count of it
+     */
     private void showProvidersDialog() {
         ErrorReporterStack.put(LogConst.SHOW_PROVIDERS_DIALOG);
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
@@ -467,6 +498,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * update the info text in background
+     */
     private void updateInfoTextSilent() {
         ErrorReporterStack.put(LogConst.UPDATE_INFO_TEXT_SILENT);
         //only if parameter and supplier set
@@ -483,6 +517,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * enables the progress bars on top of the sms text and next to refresh button, after refresh button is pressed
+     */
     public synchronized void showUpdateProgressBar() {
         TextView infoText = (TextView) findViewById(R.id.infoText);
         TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
@@ -490,13 +527,18 @@ public class SendActivity extends AllActivity {
         infoTextUpper.setText("");
         ProgressBar progressUpper = (ProgressBar) findViewById(R.id.infoTextProgressBarUpper);
         ProgressBar progress = (ProgressBar) findViewById(R.id.infoTextProgressBar);
-        if (mode.equals(Mode.NORMAL)) {
-            progress.setVisibility(View.VISIBLE);
-        } else {
+        if (mode.equals(Mode.COMPACT)) {    //only set the progress bar visible in comnpact mode
             progressUpper.setVisibility(View.VISIBLE);
         }
+        progress.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * updates the info texts by given text
+     * also sets the progress bars back to invisible
+     *
+     * @param info
+     */
     public synchronized void updateInfoText(String info) {
         TextView infoText = (TextView) findViewById(R.id.infoText);
         TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
@@ -510,11 +552,16 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * use it for setting the info text back to default (not yet refreshed )
+     */
     public void resetInfoText() {
         updateInfoText(getString(R.string.notyetrefreshed));
     }
 
-
+    /**
+     * set the info button for reshowing the last send result
+     */
     private void setLastInfoButton() {
         View showInfoButton = findViewById(R.id.showInfoButton);
         showInfoButton.setOnClickListener(new View.OnClickListener() {
@@ -528,6 +575,9 @@ public class SendActivity extends AllActivity {
         });
     }
 
+    /**
+     * build and set the title of the activity
+     */
     private void setFullTitle() {
         final OptionProvider provider = smSoIPPlugin.getProvider();
         String userName = provider.getUserName() == null ? getString(R.string.account_no_account) : provider.getUserName();
@@ -571,6 +621,11 @@ public class SendActivity extends AllActivity {
         });
     }
 
+    /**
+     * set the contact if this is forced "outside", like share functionality or notification
+     *
+     * @param handler
+     */
     private void setPreselectedContact(IntentHandler handler) {
         SMSInputEditText smsInputEditText = (SMSInputEditText) findViewById(R.id.textInput);
         Receiver givenReceiver = handler.getGivenReceiver();
@@ -589,7 +644,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
-
+    /**
+     * build the send button
+     */
     private void setSendButton() {
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -610,6 +667,9 @@ public class SendActivity extends AllActivity {
         );
     }
 
+    /**
+     * build and get all informations needed for the dialog of last messages
+     */
     private void setLastMessagesButton() {
         View showHistoryButton = findViewById(R.id.showHistory);
         showHistoryButton.setVisibility(SMSoIPApplication.getApp().isWriteToDatabaseAvailable() ? View.VISIBLE : View.GONE);
@@ -638,7 +698,11 @@ public class SendActivity extends AllActivity {
 
     }
 
-
+    /**
+     * use it for getting and setting the supplier from "outside" (provider call)
+     *
+     * @param handler
+     */
     private void getAndSetSupplier(IntentHandler handler) {
         String supplier = "";
         //only change if own scheme is used and
@@ -674,7 +738,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
-
+    /**
+     * set the dialog of all receivers if any
+     */
     private void setShowChosenContactsDialog() {
         ImageButton chosenContactsdialogButton = (ImageButton) findViewById(R.id.showChosenContacts);
         chosenContactsdialogButton.setOnClickListener(new View.OnClickListener() {
@@ -685,6 +751,9 @@ public class SendActivity extends AllActivity {
         });
     }
 
+    /**
+     * show the dialog of all receivers if any
+     */
     private void showChosenContactsDialog() {
         ErrorReporterStack.put(LogConst.SHOW_CHOSEN_CONTACTS_DIALOG);
         chosenContactsDialog = new ChosenContactsDialog(this, receiverField.getReceiverList());
@@ -699,6 +768,9 @@ public class SendActivity extends AllActivity {
     }
 
     @Override
+    /**
+     * handle for own if config has changed (like changing form landscape to portrait)
+     */
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         invalidateOptionsMenu();
@@ -708,6 +780,9 @@ public class SendActivity extends AllActivity {
         insertAds();
     }
 
+    /**
+     * set the button for the smileys
+     */
     private void setSmileyButton() {
         ImageButton smileyButton = (ImageButton) findViewById(R.id.insertSmileyButton);
         smileyButton.setOnClickListener(new View.OnClickListener() {
@@ -718,6 +793,9 @@ public class SendActivity extends AllActivity {
         });
     }
 
+    /**
+     * set the button for shortening text
+     */
     private void setShortTextButton() {
         ImageButton shortTextButton = (ImageButton) findViewById(R.id.shortTextButton);
         shortTextButton.setOnClickListener(new View.OnClickListener() {
@@ -750,7 +828,10 @@ public class SendActivity extends AllActivity {
         });
     }
 
-    private void setSigButton() {
+    /**
+     * set the button for the text modules
+     */
+    private void setTextModulesButton() {
         ImageButton sigButton = (ImageButton) findViewById(R.id.insertSigButton);
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -772,7 +853,11 @@ public class SendActivity extends AllActivity {
         });
     }
 
-
+    /**
+     * check if a receiver is chosen and text was set before sending
+     *
+     * @return
+     */
     private boolean preSendCheck() {
         String toastMessage = "";
         String textPostValidation = receiverField.getText().toString();
@@ -815,6 +900,9 @@ public class SendActivity extends AllActivity {
         return true;
     }
 
+    /**
+     * set the button for refreshing informations
+     */
     private void setRefreshButton() {
         View refreshButon = findViewById(R.id.refreshButton);
         View infoTextUpper = findViewById(R.id.infoTextUpper);
@@ -830,6 +918,9 @@ public class SendActivity extends AllActivity {
 
     }
 
+    /**
+     * set the button for clear all inputs
+     */
     private void setClearButton() {
         ImageButton clearButton = (ImageButton) findViewById(R.id.clearButton);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -852,7 +943,9 @@ public class SendActivity extends AllActivity {
         });
     }
 
-
+    /**
+     * clear the text and the receivers
+     */
     private void clearAllInputs() {
         receiverField.clearReceiverList();
         textField.setText("");
@@ -870,22 +963,11 @@ public class SendActivity extends AllActivity {
         }
     }
 
-
-    private void killDialogAfterAWhile(final Dialog dialog) {
-        ErrorReporterStack.put(LogConst.KILL_DIALOG_AFTER_A_WHILE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException ignored) {
-                } finally {
-                    dialog.dismiss();
-                }
-            }
-        }).start();
-    }
-
+    /**
+     * called after sending was successful to write message in devices database
+     *
+     * @param receiverList
+     */
     private void writeSMSInDatabase(List<Receiver> receiverList) {
         boolean writeToDatabaseEnabled = settings.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         if (writeToDatabaseEnabled) {
@@ -902,7 +984,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
-
+    /**
+     * set the sms text area
+     */
     private void setTextArea() {
         textField = (SMSInputEditText) findViewById(R.id.textInput);
         textField.addTextChangedListener(new TextWatcher() {
@@ -927,6 +1011,9 @@ public class SendActivity extends AllActivity {
 
     }
 
+    /**
+     * update the sms counter top of the sms text area
+     */
     public void updateSMScounter() {
         Editable charSequence = textField.getText();
         OptionProvider provider = smSoIPPlugin.getProvider();
@@ -955,6 +1042,9 @@ public class SendActivity extends AllActivity {
         smssigns.setText(String.format(signsconstant.toString(), textLength, smsCount));
     }
 
+    /**
+     * set the button by searching for receivers
+     */
     private void setSearchButton() {
         searchButton = (ImageButton) findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -968,6 +1058,9 @@ public class SendActivity extends AllActivity {
 
     }
 
+    /**
+     * set the spinner if plugin has one
+     */
     private void setSpinner() {
         spinner = (Spinner) findViewById(R.id.typeSpinner);
         smSoIPPlugin.getProvider().createSpinner(this, spinner);
@@ -1020,8 +1113,9 @@ public class SendActivity extends AllActivity {
 
 
     /**
-     * @param refreshButtonPressed
-     * @return
+     * refresh the information text
+     *
+     * @param refreshButtonPressed by refresh button or after send?
      */
 
     public void refreshInformationText(Boolean refreshButtonPressed) {
@@ -1031,9 +1125,14 @@ public class SendActivity extends AllActivity {
         backgroundUpdateTask = new BackgroundUpdateTask(this).execute(refreshButtonPressed);
     }
 
-
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
+    /**
+     * returning point after returning from choose contact from device
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
             Uri contactData = data.getData();
             final Contact pickedContact = DatabaseHandler.getPickedContactData(contactData, this);
@@ -1118,13 +1217,18 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * toast as hint if a receiver is added twice
+     */
     private void showAddedTwiceToast() {
         toast.setText(R.string.receiver_added_twice);
         toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
         toast.show();
     }
 
-
+    /**
+     * update all stuff if a receiver was added (by receivertext, notification or selecting from contact)
+     */
     private void updateViewOnChangedReceivers() {
         //remove all disabled providers
         CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
@@ -1142,6 +1246,9 @@ public class SendActivity extends AllActivity {
         setDateTimePickerDialog();
     }
 
+    /**
+     * set the layout of the current selected supplier
+     */
     private void setSuppliersLayout() {
         LinearLayout freeLayout = (LinearLayout) findViewById(R.id.freeLayout);
         freeLayout.removeAllViews();
@@ -1162,6 +1269,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * set the visibility of chosse contact button by current plugin and receiver count
+     */
     private void setVisibilityByCurrentReceivers() {
         View viewById = findViewById(R.id.showChosenContacts);
         List receiverList = receiverField.getReceiverList();
@@ -1177,6 +1287,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * set the visibility of the info button dependent of the last info dialog
+     */
     private void setInfoButtonVisibility() {
         View showInfoButton = findViewById(R.id.showInfoButton);
         if (lastInfoDialog != null) {
@@ -1187,6 +1300,9 @@ public class SendActivity extends AllActivity {
     }
 
     @Override
+    /**
+     * entry point when menu button is clicked
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item = menu.add(0, PROVIDER_OPTION, Menu.CATEGORY_SECONDARY, R.string.provider_settings);
         item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -1206,6 +1322,9 @@ public class SendActivity extends AllActivity {
     }
 
     @Override
+    /**
+     * entry point when option is clicked
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
@@ -1225,6 +1344,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * show a dialog of the accounts of this provider (count dependent)
+     */
     private void showAccountDialog() { //only available if more than one is available
         OptionProvider provider = smSoIPPlugin.getProvider();
         Map<Integer, AccountModel> accounts = provider.getAccounts();
@@ -1242,6 +1364,9 @@ public class SendActivity extends AllActivity {
         }
     }
 
+    /**
+     * start the activity for program settings
+     */
     private void startGlobalOptionActivity() {
         Intent pref = new Intent(this, GlobalPreferences.class);
         View rootLayout = findViewById(R.id.rootLayout);
@@ -1251,7 +1376,9 @@ public class SendActivity extends AllActivity {
         optionsCalled = true;
     }
 
-
+    /**
+     * start the activity for the suppliers option
+     */
     private void startOptionActivity() {
         Intent intent = new Intent(this, ProviderPreferences.class);
         intent.putExtra(ProviderPreferences.SUPPLIER_CLASS_NAME, smSoIPPlugin.getSupplierClassName());
@@ -1262,6 +1389,9 @@ public class SendActivity extends AllActivity {
 
 
     @Override
+    /**
+     * do some stuff when activity is stopped
+     */
     protected void onStop() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.cancel();
@@ -1272,6 +1402,9 @@ public class SendActivity extends AllActivity {
 
 
     @Override
+    /**
+     * entry point for showing every dialog in this activity
+     */
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
         ErrorReporterStack.put(LogConst.ON_CREATE_DIALOG + id);
@@ -1357,6 +1490,11 @@ public class SendActivity extends AllActivity {
         return dialog;
     }
 
+    /**
+     * do all Gui stuff on switching the account
+     *
+     * @param accountId
+     */
     private void switchAccount(Integer accountId) {
         resetInfoText();
         cancelUpdateTask();
@@ -1366,12 +1504,20 @@ public class SendActivity extends AllActivity {
         updateInfoTextSilent();
     }
 
+    /**
+     * cancel the update task if set
+     */
     private void cancelUpdateTask() {
         if (backgroundUpdateTask != null) {
             backgroundUpdateTask.cancel(true);
         }
     }
 
+    /**
+     * do all Gui stuff on switching the supplier
+     *
+     * @param supplierClassName
+     */
     private void changeSupplier(String supplierClassName) {
         resetInfoText();
         cancelUpdateTask();
@@ -1390,6 +1536,9 @@ public class SendActivity extends AllActivity {
         setViewByMode(mode);
     }
 
+    /**
+     * do all Gui stuff after receiver has changed (inc and dec)
+     */
     public void updateAfterReceiverCountChanged() {
         int maxReceiverCount = smSoIPPlugin.getProvider().getMaxReceiverCount();
         CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
@@ -1408,6 +1557,9 @@ public class SendActivity extends AllActivity {
         setSuppliersLayout();
     }
 
+    /**
+     * show a hint if too much receivers are shown
+     */
     private void showTooMuchReceiversToast() {
         if (smSoIPPlugin != null) { //can be null on startup
             toast.setText(String.format(getText(R.string.too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
@@ -1418,6 +1570,9 @@ public class SendActivity extends AllActivity {
 
 
     @Override
+    /**
+     * entry point when search button is pressed
+     */
     public boolean onSearchRequested() {
         if (searchButton.getVisibility() == View.VISIBLE) {
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -1428,6 +1583,9 @@ public class SendActivity extends AllActivity {
 
 
     @Override
+    /**
+     * entry point when activity going to sleep
+     */
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //close open dialog if any
@@ -1461,7 +1619,7 @@ public class SendActivity extends AllActivity {
 
 
     /**
-     * since API level 14
+     * show the returning message after sending in a dialog
      *
      * @param fireSMSResults
      */
@@ -1492,7 +1650,7 @@ public class SendActivity extends AllActivity {
         lastInfoDialog.setOwnerActivity(this);
         if (!this.isFinishing()) {
             lastInfoDialog.show();
-            killDialogAfterAWhile(lastInfoDialog);
+            ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
         }
         writeSMSInDatabase(fireSMSResults.getSuccessList());
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
@@ -1516,12 +1674,20 @@ public class SendActivity extends AllActivity {
         setPreselectedContact(handler);
     }
 
-
+    /**
+     * get the current selected plugin
+     *
+     * @return
+     */
     public SMSoIPPlugin getSmSoIPPlugin() {
         return smSoIPPlugin;
     }
 
-
+    /**
+     * helper for the default text color
+     *
+     * @return
+     */
     public ColorStateList getDefaultColor() {
         if (defaultColor == null) {
             defaultColor = new TextView(getApplicationContext()).getTextColors();

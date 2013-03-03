@@ -99,7 +99,7 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    new BreakingProgressAsyncTask(BackgroundCheckLoginTask.this).execute(factory);
+                    new BreakingProgressAsyncTask<SMSActionResult>(BackgroundCheckLoginTask.this).execute(factory);
 
                 }
             });
@@ -113,7 +113,7 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
     protected void onPostExecute(Void nothing) {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_ON_FINISH);
         if (dialog == null || !dialog.isShowing()) {
-            closeProgressDialog();
+            ThreadingUtil.killDialogAfterAWhile(dialog, 2000);
         }
     }
 
@@ -123,20 +123,4 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
         onPostExecute(null);
     }
 
-    private void closeProgressDialog() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {
-                } finally {
-                    if (progressDialog != null && progressDialog.isShowing()) {
-                        progressDialog.cancel();
-                    }
-                }
-            }
-        }).start();
-    }
 }

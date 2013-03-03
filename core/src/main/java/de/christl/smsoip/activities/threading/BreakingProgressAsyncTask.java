@@ -21,7 +21,7 @@ package de.christl.smsoip.activities.threading;
 import android.os.AsyncTask;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
-public class BreakingProgressAsyncTask<T extends SMSoIPResult> extends AsyncTask<BreakingProgressDialogFactory<T>, Void, T> {
+public class BreakingProgressAsyncTask<T> extends AsyncTask<BreakingProgressDialogFactory<T>, Void, T> {
     private BreakableTask<T> parentAsyncTask;
 
     public BreakingProgressAsyncTask(BreakableTask<T> parentAsyncTask) {
