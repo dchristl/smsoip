@@ -26,6 +26,7 @@ import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 import org.acra.ACRA;
 
@@ -41,7 +42,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
     private SendActivity sendActivity;
 
 
-    public static final int MAX_RETRIES = 20;
+    public static final int MAX_RETRIES = 10;
     private AlertDialog dialog;
     private boolean canceledByDialog = false;
 
@@ -56,33 +57,35 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
         int retryCount = 0;
         SMSActionResult smsActionResult = null;
         while ((smsActionResult == null || (!smsActionResult.isSuccess() && retryCount < MAX_RETRIES)) && !isCancelled() && !canceledByDialog) {
-
             retryCount++;
-            String userName = sendActivity.getSmSoIPPlugin().getProvider().getUserName();
-            String pass = sendActivity.getSmSoIPPlugin().getProvider().getPassword();
-            if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
-                smsActionResult = SMSActionResult.NO_CREDENTIALS();  //TODO remove this, cause not valid everytime
-            } else {
-                try {
-                    if (params[0]) {
-                        smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
-                    } else {
-                        smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
+            OptionProvider provider = sendActivity.getSmSoIPPlugin().getProvider();
+            if (provider.hasAccounts() && provider.isCheckLoginButtonVisible()) {
+                String userName = provider.getUserName();
+                String pass = provider.isPasswordVisible() ? provider.getPassword() : "pass";//use a fake pass for checking
+                if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+                    smsActionResult = SMSActionResult.NO_CREDENTIALS();
+                } else {
+                    try {
+                        if (params[0]) {
+                            smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+                        } else {
+                            smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
+                        }
+                        publishProgress(smsActionResult);
+                    } catch (UnsupportedEncodingException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+                    } catch (SocketTimeoutException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+                    } catch (IOException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        smsActionResult = SMSActionResult.NETWORK_ERROR();
+                    } catch (Exception e) {  //for insurance
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                        ACRA.getErrorReporter().handleSilentException(e);
+                        smsActionResult = SMSActionResult.UNKNOWN_ERROR();
                     }
-                    publishProgress(smsActionResult);
-                } catch (UnsupportedEncodingException e) {
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    smsActionResult = SMSActionResult.UNKNOWN_ERROR();
-                } catch (SocketTimeoutException e) {
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    smsActionResult = SMSActionResult.TIMEOUT_ERROR();
-                } catch (IOException e) {
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    smsActionResult = SMSActionResult.NETWORK_ERROR();
-                } catch (Exception e) {  //for insurance
-                    Log.e(this.getClass().getCanonicalName(), "", e);
-                    ACRA.getErrorReporter().handleSilentException(e);
-                    smsActionResult = SMSActionResult.UNKNOWN_ERROR();
                 }
             }
         }
@@ -91,7 +94,6 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
 
     @Override
     protected synchronized void onProgressUpdate(SMSActionResult... values) {
-        sendActivity.showUpdateProgressBar();
         SMSActionResult value = values[0];
         if (value != null && value.isBreakingProgress()) {
             canceledByDialog = true;
@@ -108,12 +110,6 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
         }
     }
 
-
-    @Override
-    protected void onCancelled() {
-        super.onCancelled();
-        sendActivity.updateInfoTextByCancel();
-    }
 
     @Override
     protected void onPostExecute(SMSActionResult actionResult) {

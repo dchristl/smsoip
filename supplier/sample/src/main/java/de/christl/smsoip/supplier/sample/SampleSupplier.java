@@ -89,17 +89,22 @@ public class SampleSupplier implements ExtendedSMSSupplier {
                 ((ImageView) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(0)).setImageDrawable(d);
             }
         });
-        return SMSActionResult.SHOW_DIALOG_RESULT(breakingProgressDialogFactory);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+        }
+        return SMSActionResult.NO_ERROR();
     }
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return checkCredentials(provider.getUserName(),provider.getPassword());
+        return checkCredentials(provider.getUserName(), provider.getPassword());
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return  checkCredentials(provider.getUserName(),provider.getPassword());
+        return checkCredentials(provider.getUserName(), provider.getPassword());
     }
 
     @Override

@@ -30,6 +30,7 @@ import java.util.concurrent.*;
 /**
  * little helper for building updating the ui after sending or refreshing informations
  */
+@Deprecated
 public class RunnableFactory {
 
 

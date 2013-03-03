@@ -28,6 +28,7 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.models.ErrorReporterStack;
+import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
@@ -60,26 +61,31 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
     protected Void doInBackground(AccountModel... accountModels) {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_RUNNING);
         ExtendedSMSSupplier supplier = multiPreference.getSupplier();
-        AccountModel accountModel = accountModels[0];
-        String userName = accountModel.getUserName();
-        String pass = accountModel.getPass();
+        OptionProvider provider = supplier.getProvider();
+
         SMSActionResult smsActionResult;
-        //TODO not valid if no username or pass needed
-        if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
-            smsActionResult = SMSActionResult.NO_CREDENTIALS();
-        } else {
-            try {
-                smsActionResult = supplier.checkCredentials(userName, pass);
-            } catch (UnsupportedEncodingException e) {
-                smsActionResult = SMSActionResult.UNKNOWN_ERROR();
-            } catch (SocketTimeoutException e) {
-                smsActionResult = SMSActionResult.TIMEOUT_ERROR();
-            } catch (IOException e) {
-                smsActionResult = SMSActionResult.NETWORK_ERROR();
+
+        if (provider.hasAccounts() && provider.isCheckLoginButtonVisible()) {
+            AccountModel accountModel = accountModels[0];
+            String userName = accountModel.getUserName();
+            String pass = provider.isPasswordVisible() ? accountModel.getPass() : "pass";//use a fake pass for checking
+            if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+                smsActionResult = SMSActionResult.NO_CREDENTIALS();
+            } else {
+                try {
+                    smsActionResult = supplier.checkCredentials(userName, pass);
+                } catch (UnsupportedEncodingException e) {
+                    smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+                } catch (SocketTimeoutException e) {
+                    smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+                } catch (IOException e) {
+                    smsActionResult = SMSActionResult.NETWORK_ERROR();
+                }
             }
-        }
-        if (progressDialog != null && progressDialog.isShowing()) {
-            publishProgress(smsActionResult);
+
+            if (progressDialog != null && progressDialog.isShowing()) {
+                publishProgress(smsActionResult);
+            }
         }
         return null;
     }

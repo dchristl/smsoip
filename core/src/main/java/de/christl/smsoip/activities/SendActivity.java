@@ -1014,8 +1014,6 @@ public class SendActivity extends AllActivity {
 
 
     /**
-     * since API Level 14
-     *
      * @param refreshButtonPressed
      * @return
      */
@@ -1023,6 +1021,7 @@ public class SendActivity extends AllActivity {
     void refreshInformationText(Boolean refreshButtonPressed) {
         ErrorReporterStack.put(LogConst.REFRESH_INFORMATION_TEXT + smSoIPPlugin.getProviderName());
         cancelUpdateTask();
+        showUpdateProgressBar();
         backgroundUpdateTask = new BackgroundUpdateTask(this).execute(refreshButtonPressed);
     }
 
@@ -1362,6 +1361,7 @@ public class SendActivity extends AllActivity {
 
     private void cancelUpdateTask() {
         if (backgroundUpdateTask != null) {
+            updateInfoTextByCancel();
             backgroundUpdateTask.cancel(true);
         }
     }
