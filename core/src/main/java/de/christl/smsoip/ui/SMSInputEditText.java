@@ -22,9 +22,13 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.util.TextModuleUtil;
 import org.acra.ACRA;
@@ -52,12 +56,37 @@ public class SMSInputEditText extends EditText {
         init();
     }
 
+    /**
+     * initializethe edittext
+     */
     private void init() {
         float fontSize = PreferenceManager.getDefaultSharedPreferences(getContext()).getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
         ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
         refreshTextModules();
+//        addGestureDetector();
     }
 
+    /**
+     * add the gesture detector for double tap (currently disabled
+     */
+    private void addGestureDetector() {
+        final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+            public boolean onDoubleTap(MotionEvent e) {
+                ((SendActivity) getContext()).showTextModulesDialog();
+                return true;
+            }
+        });
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
+    }
+
+    /**
+     * replace text by text modules
+     */
     public void processReplacement() {
         try {
             int cursor = getSelectionStart();
@@ -92,7 +121,9 @@ public class SMSInputEditText extends EditText {
         }
     }
 
-
+    /**
+     * reload the list of the text modules
+     */
     public void refreshTextModules() {
         textModules = TextModuleUtil.getTextModules();
     }
@@ -101,6 +132,11 @@ public class SMSInputEditText extends EditText {
         return textModules;
     }
 
+    /**
+     * insert the text from "outside" like share
+     *
+     * @param textToInsert
+     */
     public void insertText(String textToInsert) {
         try {
             int cursor = hasFocus() ? getSelectionStart() : getText().length();

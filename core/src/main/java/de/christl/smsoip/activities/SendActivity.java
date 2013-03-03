@@ -103,7 +103,7 @@ public class SendActivity extends AllActivity {
     private SMSoIPPlugin smSoIPPlugin;
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH_SUPPLIER = 31;
-    private static final int DIALOG_SMILEYS = 32;
+    public static final int DIALOG_SMILEYS = 32;
     private static final int DIALOG_PROVIDER = 33;
     private static final int GLOBAL_OPTION = 34;
     private static final int OPTION_SWITCH_ACCOUNT = 35;
@@ -836,21 +836,28 @@ public class SendActivity extends AllActivity {
         sigButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String, String> textModules = textField.getTextModules();
-                if (textModules.size() > 1) {
-                    removeDialog(DIALOG_TEXT_MODULES);//force a reload
-                    showDialog(DIALOG_TEXT_MODULES);
-                } else if (textModules.size() == 1) {
-                    for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {
-                        textField.insertText(stringStringEntry.getValue()); //its only one in this loop, so do not break
-                    }
-                } else if (textModules.size() == 0) {
-                    toast.setText(R.string.no_text_modules);
-                    toast.show();
-                }
+                showTextModulesDialog();
 
             }
         });
+    }
+
+    /**
+     * show the dialog for text modules (count dependent)
+     */
+    public void showTextModulesDialog() {
+        Map<String, String> textModules = textField.getTextModules();
+        if (textModules.size() > 1) {
+            removeDialog(DIALOG_TEXT_MODULES);//force a reload
+            showDialog(DIALOG_TEXT_MODULES);
+        } else if (textModules.size() == 1) {
+            for (Map.Entry<String, String> stringStringEntry : textModules.entrySet()) {
+                textField.insertText(stringStringEntry.getValue()); //its only one in this loop, so do not break
+            }
+        } else if (textModules.size() == 0) {
+            toast.setText(R.string.no_text_modules);
+            toast.show();
+        }
     }
 
     /**

@@ -42,7 +42,13 @@ import java.util.*;
  */
 public abstract class DatabaseHandler {
 
-
+    /**
+     * return all datas to the picked contact
+     *
+     * @param contactData
+     * @param context
+     * @return
+     */
     public static Contact getPickedContactData(Uri contactData, Context context) {
         String pickedId = null;
         boolean hasPhone = false;
@@ -81,16 +87,29 @@ public abstract class DatabaseHandler {
         return out;
     }
 
+    /**
+     * convenience mthod for showing the type of the number in the gui
+     *
+     * @param context
+     * @param value
+     * @return
+     */
     public static String translateTypeToString(Context context, int value) {
         return (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(context.getResources(), value, context.getText(R.string.no_phone_type_label));
     }
 
-
+    /**
+     * load the corresponding photo of the contact if any
+     *
+     * @param receiverNumber
+     * @param context
+     * @return
+     */
     public static byte[] loadLocalContactPhotoBytes(String receiverNumber, Context context) {
         ContentResolver cr = context.getContentResolver();
         Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, findPhotoIdByNumber(receiverNumber, context));
         Cursor c = cr.query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
-        if (c!= null && c.moveToFirst()) {
+        if (c != null && c.moveToFirst()) {
             return c.getBlob(0);
         }
         if (c != null) {
@@ -99,6 +118,13 @@ public abstract class DatabaseHandler {
         return null;
     }
 
+    /**
+     * find the photoid for the contact
+     *
+     * @param receiverNumber
+     * @param context
+     * @return
+     */
     private static int findPhotoIdByNumber(String receiverNumber, Context context) {
         int out = 0;
         String[] projection = new String[]{ContactsContract.Contacts.PHOTO_ID};
@@ -125,6 +151,12 @@ public abstract class DatabaseHandler {
         return out;
     }
 
+    /**
+     * find the receiver of last incoming message
+     *
+     * @param context
+     * @return
+     */
     public static Receiver findLastMessageReceiver(Context context) {
         Receiver out = null;
         Uri inboxQuery = Uri.parse("content://sms/inbox");    //only inbox will be queried
@@ -187,6 +219,13 @@ public abstract class DatabaseHandler {
         return out;
     }
 
+    /**
+     * write the sent sms in the internal outbox
+     * @param receiverList
+     * @param message
+     * @param time
+     * @param context
+     */
     public static void writeSMSInDatabase(List<Receiver> receiverList, String message, DateTimeObject time, Context context) {
         try {
             for (Receiver receiver : receiverList) {
@@ -203,7 +242,12 @@ public abstract class DatabaseHandler {
         }
     }
 
-
+    /**
+     * resolve the contact back by the number
+     * @param rawNumber
+     * @param context
+     * @return
+     */
     public static Receiver findContactByNumber(String rawNumber, Context context) {
         Receiver out = null;
         String name;
@@ -258,7 +302,12 @@ public abstract class DatabaseHandler {
         return context.getContentResolver().query(uri, projection, selection, null, orderby);
     }
 
-
+    /**
+     * used for sharing to build the string of a contact
+     * @param uri
+     * @param context
+     * @return
+     */
     public static StringBuilder resolveTextFileContent(Uri uri, Context context) {
         StringBuilder builder = new StringBuilder();
         if (uri == null || context == null) {
