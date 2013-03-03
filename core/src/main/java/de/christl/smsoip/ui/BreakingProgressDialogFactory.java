@@ -24,21 +24,21 @@ import android.content.DialogInterface;
 import android.content.res.XmlResourceParser;
 import android.view.LayoutInflater;
 import android.view.View;
-import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.activities.threading.SMSoIPResult;
 
 import java.util.concurrent.*;
 
 /**
  * Class for constructing dialog for showing during check credentials or fire SMS phase
  */
-public final class BreakingProgressDialogFactory {
+public final class BreakingProgressDialogFactory<T extends SMSoIPResult> {
 
-    private BreakingProgressDialogDismissListener listener;
+    private BreakingProgressDialogDismissListener<T> listener;
     private Context context;
     private CharSequence positiveButtonText;
     private CharSequence negativeButtonText;
     private boolean isCancelable = true;
-    private Future<SMSActionResult> futureResult;
+    private Future<T> futureResult;
     private String title;
     private XmlResourceParser xmlLayout;
     View layout;
@@ -52,7 +52,7 @@ public final class BreakingProgressDialogFactory {
         this.negativeButtonText = negativeButtonText;
     }
 
-    public void setListener(BreakingProgressDialogDismissListener listener) {
+    public void setListener(BreakingProgressDialogDismissListener<T> listener) {
         this.listener = listener;
     }
 
@@ -75,9 +75,9 @@ public final class BreakingProgressDialogFactory {
             alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, positiveButtonText, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Callable<SMSActionResult> runnable = new Callable<SMSActionResult>() {
+                    Callable<T> runnable = new Callable<T>() {
                         @Override
-                        public SMSActionResult call() throws Exception {
+                        public T call() throws Exception {
                             return listener.onPositiveButtonClicked();
                         }
                     };
@@ -91,9 +91,9 @@ public final class BreakingProgressDialogFactory {
             alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, negativeButtonText, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Callable<SMSActionResult> runnable = new Callable<SMSActionResult>() {
+                    Callable<T> runnable = new Callable<T>() {
                         @Override
-                        public SMSActionResult call() throws Exception {
+                        public T call() throws Exception {
                             return listener.onNegativeButtonClicked();
                         }
                     };
@@ -108,9 +108,9 @@ public final class BreakingProgressDialogFactory {
             alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
-                    Callable<SMSActionResult> runnable = new Callable<SMSActionResult>() {
+                    Callable<T> runnable = new Callable<T>() {
                         @Override
-                        public SMSActionResult call() throws Exception {
+                        public T call() throws Exception {
                             return listener.onCancel();
                         }
                     };
@@ -130,13 +130,13 @@ public final class BreakingProgressDialogFactory {
         return create();
     }
 
-    public SMSActionResult getFutureResult() {
+    public T getFutureResult() {
         try {
             return futureResult.get();
         } catch (InterruptedException ignored) {
         } catch (ExecutionException ignored) {
         }
-        return SMSActionResult.UNKNOWN_ERROR();
+        return null;
     }
 
     /**

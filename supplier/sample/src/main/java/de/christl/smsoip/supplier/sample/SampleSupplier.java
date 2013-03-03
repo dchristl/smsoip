@@ -47,12 +47,12 @@ public class SampleSupplier implements ExtendedSMSSupplier {
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
 
-        final BreakingProgressDialogFactory breakingProgressDialogFactory = new BreakingProgressDialogFactory();
+        final BreakingProgressDialogFactory<SMSActionResult> breakingProgressDialogFactory = new BreakingProgressDialogFactory<SMSActionResult>();
         breakingProgressDialogFactory.setPositiveButtonText("OK");
         breakingProgressDialogFactory.setXmlLayout(provider.getXMLResourceByResourceId(R.layout.dialog_layout));
 
 
-        breakingProgressDialogFactory.setListener(new BreakingProgressDialogDismissListener() {
+        breakingProgressDialogFactory.setListener(new BreakingProgressDialogDismissListener<SMSActionResult>() {
             @Override
             public SMSActionResult onPositiveButtonClicked() {
                 final View layout = breakingProgressDialogFactory.getLayout();
@@ -108,8 +108,63 @@ public class SampleSupplier implements ExtendedSMSSupplier {
     }
 
     @Override
-    public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+    public FireSMSResultList fireSMS(String smsText, final List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
+        SMSActionResult smsActionResult = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (smsActionResult.isBreakingProgress()) {
+            final BreakingProgressDialogFactory<FireSMSResultList> breakingProgressDialogFactory = new BreakingProgressDialogFactory<FireSMSResultList>();
+            breakingProgressDialogFactory.setPositiveButtonText("OK");
+            breakingProgressDialogFactory.setXmlLayout(provider.getXMLResourceByResourceId(R.layout.dialog_layout));
+
+
+            breakingProgressDialogFactory.setListener(new BreakingProgressDialogDismissListener<FireSMSResultList>() {
+                @Override
+                public FireSMSResultList onPositiveButtonClicked() {
+                    final View layout = breakingProgressDialogFactory.getLayout();
+                    Editable text = ((EditText) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(1)).getText();
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                    }
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(text.toString()), receivers);
+                }
+
+                @Override
+                public FireSMSResultList onNegativeButtonClicked() {
+                    return null;
+                }
+
+                @Override
+                public FireSMSResultList onCancel() {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        Log.e(this.getClass().getCanonicalName(), "", e);
+                    }
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.USER_CANCELED(), receivers);
+                }
+
+                @Override
+                public void afterDialogCreated() {
+                    final View layout = breakingProgressDialogFactory.getLayout();
+                    InputStream rawResourceByResourceId = provider.getRawResourceByResourceId(R.drawable.icon);
+                    Drawable d = Drawable.createFromStream(rawResourceByResourceId, "image");
+
+                    ((ImageView) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(0)).setImageDrawable(d);
+                }
+            });
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.SHOW_DIALOG_RESULT(breakingProgressDialogFactory), receivers);
+        }
+        return sendSMS(receivers);
+    }
+
+    private FireSMSResultList sendSMS(List<Receiver> receivers) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+        }
+        return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_ERROR(), receivers);
     }
 
     @Override

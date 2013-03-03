@@ -18,16 +18,20 @@
 
 package de.christl.smsoip.activities.threading;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
-public class BackgroundSendTask extends AsyncTask<Void, Void, FireSMSResultList> {
+public class BackgroundSendTask extends AsyncTask<Void, BreakingProgressDialogFactory, FireSMSResultList> implements BreakableTask<FireSMSResultList> {
 
 
     private final SendActivity sendActivity;
     private final Dialog progressDialog;
+    private AlertDialog dialog;
 
     public BackgroundSendTask(SendActivity sendActivity, Dialog progressDialog) {
         this.sendActivity = sendActivity;
@@ -36,17 +40,43 @@ public class BackgroundSendTask extends AsyncTask<Void, Void, FireSMSResultList>
 
     @Override
     protected FireSMSResultList doInBackground(Void... params) {
-        return sendActivity.sendTextMessage();
+        FireSMSResultList fireSMSResults = sendActivity.sendTextMessage();
+        if (fireSMSResults.getResult().equals(FireSMSResultList.SendResult.DIALOG)) {
+            publishProgress(fireSMSResults.getBuilder());
+        }
+        return fireSMSResults;
     }
+
+    @Override
+    protected void onProgressUpdate(BreakingProgressDialogFactory... values) {
+        final BreakingProgressDialogFactory factory = values[0];
+        dialog = factory.create(progressDialog.getContext());
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                new BreakingProgressAsyncTask<FireSMSResultList>(BackgroundSendTask.this).execute(factory);
+
+            }
+        });
+        dialog.show();
+    }
+
 
     @Override
     protected void onPostExecute(FireSMSResultList fireSMSResults) {
         super.onPostExecute(fireSMSResults);
         FireSMSResultList.SendResult sendResult = fireSMSResults.getResult();
-        if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
-            sendActivity.refreshInformationText(false);
+        if (dialog == null || !dialog.isShowing()) {
+            if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
+                sendActivity.refreshInformationText(false);
+            }
+            progressDialog.cancel();
+            sendActivity.showReturnMessage(fireSMSResults);
         }
-        progressDialog.cancel();
-        sendActivity.showReturnMessage(fireSMSResults);
+    }
+
+    @Override
+    public void afterChildHasFinished(FireSMSResultList childResult) {
+        onPostExecute(childResult);
     }
 }

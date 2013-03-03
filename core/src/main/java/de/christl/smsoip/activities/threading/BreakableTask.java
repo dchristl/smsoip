@@ -18,7 +18,7 @@
 
 package de.christl.smsoip.activities.threading;
 
-public interface BreakableTask<T> {
+public interface BreakableTask<T extends SMSoIPResult> {
 
     public void afterChildHasFinished(T childResult);
 }

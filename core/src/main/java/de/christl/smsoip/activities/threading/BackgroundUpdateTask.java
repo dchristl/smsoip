@@ -102,7 +102,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                new BreakingProgressAsyncTask(BackgroundUpdateTask.this).execute(factory);
+                new BreakingProgressAsyncTask<SMSActionResult>(BackgroundUpdateTask.this).execute(factory);
 
             }
         });

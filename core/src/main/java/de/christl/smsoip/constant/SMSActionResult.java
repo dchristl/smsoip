@@ -19,13 +19,14 @@
 package de.christl.smsoip.constant;
 
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.threading.SMSoIPResult;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 /**
  * Result class for some actions in send activity
  */
-public class SMSActionResult {
+public class SMSActionResult implements SMSoIPResult {
     private boolean success;
     private String message;
     private BreakingProgressDialogFactory builder;

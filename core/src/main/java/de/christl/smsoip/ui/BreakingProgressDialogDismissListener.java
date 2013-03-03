@@ -18,18 +18,16 @@
 
 package de.christl.smsoip.ui;
 
-import de.christl.smsoip.constant.SMSActionResult;
-
 /**
  * listener for button click inside BreakingProgressDialog
  */
-public interface BreakingProgressDialogDismissListener {
+public interface BreakingProgressDialogDismissListener<T> {
 
-    SMSActionResult onPositiveButtonClicked();
+    T onPositiveButtonClicked();
 
-    SMSActionResult onNegativeButtonClicked();
+    T onNegativeButtonClicked();
 
-    SMSActionResult onCancel();
+    T onCancel();
 
     void afterDialogCreated();
 }

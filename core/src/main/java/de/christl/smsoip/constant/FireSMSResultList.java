@@ -19,6 +19,7 @@
 package de.christl.smsoip.constant;
 
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.activities.threading.SMSoIPResult;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Simple list for convenient access methods
  */
-public class FireSMSResultList extends ArrayList<FireSMSResult> {
+public class FireSMSResultList extends ArrayList<FireSMSResult> implements SMSoIPResult {
 
     private List<Receiver> successList = new ArrayList<Receiver>();
     private SendResult result = SendResult.NOT_YET_SET;
@@ -123,7 +124,7 @@ public class FireSMSResultList extends ArrayList<FireSMSResult> {
 
     /**
      * method for getting a result for all receivers
-     * <b>make sure this is is the only result in list</b>
+     * <b>make sure this is the only result in list</b>
      *
      * @param result
      * @return
