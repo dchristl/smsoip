@@ -58,7 +58,7 @@ public class SampleSupplier implements ExtendedSMSSupplier {
                 final View layout = breakingProgressDialogFactory.getLayout();
                 Editable text = ((EditText) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(1)).getText();
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
                 }
@@ -89,12 +89,12 @@ public class SampleSupplier implements ExtendedSMSSupplier {
                 ((ImageView) ((ViewGroup) (((ViewGroup) layout).getChildAt(0))).getChildAt(0)).setImageDrawable(d);
             }
         });
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-        }
-        return SMSActionResult.NO_ERROR();
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//            Log.e(this.getClass().getCanonicalName(), "", e);
+//        }
+        return SMSActionResult.SHOW_DIALOG_RESULT(breakingProgressDialogFactory);
     }
 
     @Override

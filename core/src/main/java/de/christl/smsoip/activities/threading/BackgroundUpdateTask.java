@@ -63,30 +63,32 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
                 String userName = provider.getUserName();
                 String pass = provider.isPasswordVisible() ? provider.getPassword() : "pass";//use a fake pass for checking
                 if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
-                    smsActionResult = SMSActionResult.NO_CREDENTIALS();
-                } else {
-                    try {
-                        if (params[0]) {
-                            smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
-                        } else {
-                            smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
-                        }
-                        publishProgress(smsActionResult);
-                    } catch (UnsupportedEncodingException e) {
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                        smsActionResult = SMSActionResult.UNKNOWN_ERROR();
-                    } catch (SocketTimeoutException e) {
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                        smsActionResult = SMSActionResult.TIMEOUT_ERROR();
-                    } catch (IOException e) {
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                        smsActionResult = SMSActionResult.NETWORK_ERROR();
-                    } catch (Exception e) {  //for insurance
-                        Log.e(this.getClass().getCanonicalName(), "", e);
-                        ACRA.getErrorReporter().handleSilentException(e);
-                        smsActionResult = SMSActionResult.UNKNOWN_ERROR();
-                    }
+                    return SMSActionResult.NO_CREDENTIALS();
                 }
+            }
+            try {
+                if (params[0]) {
+                    smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextOnRefreshButtonPressed();
+                } else {
+                    smsActionResult = sendActivity.getSmSoIPPlugin().getSupplier().refreshInfoTextAfterMessageSuccessfulSent();
+                }
+                if (smsActionResult != null && smsActionResult.isBreakingProgress()) {
+                    canceledByDialog = true;
+                    publishProgress(smsActionResult);
+                }
+            } catch (UnsupportedEncodingException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.UNKNOWN_ERROR();
+            } catch (SocketTimeoutException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.TIMEOUT_ERROR();
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                smsActionResult = SMSActionResult.NETWORK_ERROR();
+            } catch (Exception e) {  //for insurance
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                ACRA.getErrorReporter().handleSilentException(e);
+                smsActionResult = SMSActionResult.UNKNOWN_ERROR();
             }
         }
         return smsActionResult;
@@ -95,19 +97,16 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
     @Override
     protected synchronized void onProgressUpdate(SMSActionResult... values) {
         SMSActionResult value = values[0];
-        if (value != null && value.isBreakingProgress()) {
-            canceledByDialog = true;
-            final BreakingProgressDialogFactory factory = value.getFactory();
-            dialog = factory.create(sendActivity);
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    new BreakingProgressAsyncTask(BackgroundUpdateTask.this).execute(factory);
+        final BreakingProgressDialogFactory factory = value.getFactory();
+        dialog = factory.create(sendActivity);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                new BreakingProgressAsyncTask(BackgroundUpdateTask.this).execute(factory);
 
-                }
-            });
-            dialog.show();
-        }
+            }
+        });
+        dialog.show();
     }
 
 
@@ -117,7 +116,7 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
             if (!isCancelled() && (dialog == null || !dialog.isShowing())) {
                 sendActivity.updateInfoText(actionResult.getMessage());
             } else {
-                sendActivity.updateInfoTextByCancel();
+                sendActivity.resetInfoText();
             }
         }
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_ON_POST_EXECUTE);

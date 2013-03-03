@@ -47,7 +47,6 @@ public class RunnableFactory {
 
 
     /**
-     * available since API level 14
      *
      * @return
      */
@@ -60,7 +59,7 @@ public class RunnableFactory {
                 Callable<FireSMSResultList> runnable = new Callable<FireSMSResultList>() {
                     @Override
                     public FireSMSResultList call() throws Exception {
-                        return RunnableFactory.this.sendActivity.sendByThread();
+                        return RunnableFactory.this.sendActivity.sendTextMessage();
                     }
                 };
 

@@ -52,6 +52,7 @@ import de.christl.smsoip.activities.settings.GlobalPreferences;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.activities.threading.BackgroundSendTask;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
@@ -131,6 +132,7 @@ public class SendActivity extends AllActivity {
     private ColorStateList defaultColor;
 
     private int instanciationCounter = 0;
+    private BackgroundSendTask backgroundSendTask;
 
 
     @Override
@@ -508,7 +510,7 @@ public class SendActivity extends AllActivity {
         }
     }
 
-    public void updateInfoTextByCancel() {
+    public void resetInfoText() {
         updateInfoText(getString(R.string.notyetrefreshed));
     }
 
@@ -597,7 +599,11 @@ public class SendActivity extends AllActivity {
                     return;
                 }
                 progressDialog.show();
-                new Thread(new RunnableFactory(SendActivity.this, progressDialog).getFireSMSAndUpdateUIRunnable()).start();
+                if (backgroundSendTask != null) {
+                    backgroundSendTask.cancel(true);
+                }
+                backgroundSendTask = new BackgroundSendTask(SendActivity.this, progressDialog);
+                backgroundSendTask.execute();
             }
         }
 
@@ -973,40 +979,40 @@ public class SendActivity extends AllActivity {
 
     /**
      * will be called for sending in a thread to update progress dialog
-     * available since API Level 14
      *
      * @return
      */
-    FireSMSResultList sendByThread() {
+    public FireSMSResultList sendTextMessage() {
         ErrorReporterStack.put(LogConst.SEND_BY_THREAD + smSoIPPlugin.getProviderName());
         CheckForDuplicatesArrayList receiverList = receiverField.getReceiverList();
         String spinnerText = spinner.getVisibility() == View.INVISIBLE || spinner.getVisibility() == View.GONE ? null : spinner.getSelectedItem().toString();
-        String userName = smSoIPPlugin.getProvider().getUserName();
-        String pass = smSoIPPlugin.getProvider().getPassword();
-        FireSMSResultList out;
-        if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
-            out = FireSMSResultList.getAllInOneResult(SMSActionResult.NO_CREDENTIALS(), receiverList);
-        } else {
-            cancelUpdateTask();
-            try {
-                if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
-                    out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
-                } else {
-                    out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
-                }
-            } catch (UnsupportedEncodingException e) {
-                out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
-            } catch (NumberFormatException e) {
-                out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
-            } catch (SocketTimeoutException e) {
-                out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
-            } catch (IOException e) {
-                out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
-            } catch (Exception e) {                                                      //for insurance
-                ACRA.getErrorReporter().handleSilentException(e);
-                out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
+        OptionProvider provider = smSoIPPlugin.getProvider();
+        String userName = provider.getUserName();
+        String pass = provider.getPassword();
+        if (provider.hasAccounts() && provider.isCheckLoginButtonVisible()) {
+            if (userName == null || userName.trim().length() == 0 || pass == null || pass.trim().length() == 0) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_CREDENTIALS(), receiverList);
             }
-
+        }
+        FireSMSResultList out;
+        cancelUpdateTask();
+        try {
+            if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
+                out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
+            } else {
+                out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
+            }
+        } catch (UnsupportedEncodingException e) {
+            out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
+        } catch (NumberFormatException e) {
+            out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
+        } catch (SocketTimeoutException e) {
+            out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
+        } catch (IOException e) {
+            out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
+        } catch (Exception e) {                                                      //for insurance
+            ACRA.getErrorReporter().handleSilentException(e);
+            out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         }
 
         return out;
@@ -1018,7 +1024,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
 
-    void refreshInformationText(Boolean refreshButtonPressed) {
+    public void refreshInformationText(Boolean refreshButtonPressed) {
         ErrorReporterStack.put(LogConst.REFRESH_INFORMATION_TEXT + smSoIPPlugin.getProviderName());
         cancelUpdateTask();
         showUpdateProgressBar();
@@ -1352,6 +1358,7 @@ public class SendActivity extends AllActivity {
     }
 
     private void switchAccount(Integer accountId) {
+        resetInfoText();
         cancelUpdateTask();
         smSoIPPlugin.getProvider().setCurrentAccountId(accountId);
         setFullTitle();
@@ -1361,12 +1368,12 @@ public class SendActivity extends AllActivity {
 
     private void cancelUpdateTask() {
         if (backgroundUpdateTask != null) {
-            updateInfoTextByCancel();
             backgroundUpdateTask.cancel(true);
         }
     }
 
     private void changeSupplier(String supplierClassName) {
+        resetInfoText();
         cancelUpdateTask();
         smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
         ErrorReporterStack.put(LogConst.CHANGE_SUPPLIER + smSoIPPlugin.getProviderName());
