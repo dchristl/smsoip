@@ -200,6 +200,7 @@ public abstract class OptionProvider {
     protected final Drawable getDrawble(int drawableId) {
         return SMSoIPApplication.getApp().getDrawable(this, drawableId);
     }
+
     protected final Drawable getDrawable(int drawableId) {
         return SMSoIPApplication.getApp().getDrawable(this, drawableId);
     }
@@ -290,5 +291,14 @@ public abstract class OptionProvider {
      */
     public void onAccountsChanged() {
         initOptions();
+    }
+
+    /**
+     * ovverride this if a minimum core version is needed for the plugin
+     *
+     * @return
+     */
+    public int getMinimalCoreVersion() {
+        return 1;
     }
 }

@@ -47,6 +47,8 @@ import org.acra.annotation.ReportsCrashes;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @ReportsCrashes(formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ", mode = ReportingInteractionMode.NOTIFICATION,
@@ -66,7 +68,7 @@ public class SMSoIPApplication extends Application {
     public static final String SMSOIP_PACKAGE = "de.christl.smsoip";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     private HashMap<String, SMSoIPPlugin> loadedProviders = new HashMap<String, SMSoIPPlugin>();
-    private HashMap<String, SMSoIPPlugin> pluginsToOld = new HashMap<String, SMSoIPPlugin>();
+    private HashMap<String, SMSoIPPlugin> notLoadedProviders = new HashMap<String, SMSoIPPlugin>();
     private HashMap<String, SMSoIPPlugin> pluginsToNew = new HashMap<String, SMSoIPPlugin>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
@@ -193,7 +195,7 @@ public class SMSoIPApplication extends Application {
         //reset all lists
         loadedProviders.clear();
         pluginsToNew.clear();
-        pluginsToOld.clear();
+        notLoadedProviders.clear();
         for (SMSoIPPlugin plugin : plugins) {
             String sourceDir = plugin.getSourceDir();
             DexFile apkDir = new DexFile(sourceDir);
@@ -208,7 +210,9 @@ public class SMSoIPApplication extends Application {
                 plugin.addAvailableClass(s);
 
             }
-
+            Map.Entry<String, SMSoIPPlugin> currEntry = null;
+            int minimalCoreVersion = -1;
+            int loaded = 0;
             //iterate over all classes to find if its valid
             for (String s : plugin.getAvailableClasses()) {
                 try {
@@ -218,15 +222,42 @@ public class SMSoIPApplication extends Application {
 
                         ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
                         plugin.setSupplier(smsSupplier);
-                        loadedProviders.put(aClass.getCanonicalName(), plugin);
-                        break;
+                        currEntry = new AbstractMap.SimpleEntry<String, SMSoIPPlugin>(aClass.getCanonicalName(), plugin);
+                        loaded++;
+
+                    } else if (OptionProvider.class.isAssignableFrom(aClass)) { //found the optionprovider
+                        Constructor<?> constructor = aClass.getConstructors()[0];  //get the first constructor and try to invoke it
+                        OptionProvider provider;
+                        if (constructor.getParameterTypes().length == 0) {
+                            provider = (OptionProvider) aClass.newInstance();
+                        } else {
+                            provider = (OptionProvider) constructor.newInstance(((ExtendedSMSSupplier) null));
+                        }
+                        minimalCoreVersion = provider.getMinimalCoreVersion();
+                        loaded++;
                     }
                 } catch (ClassNotFoundException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
-                    pluginsToNew.put(s, plugin);
+                    notLoadedProviders.put(s, plugin);
+                    break;
                 } catch (InstantiationException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
-                    pluginsToOld.put(s, plugin);
+                    notLoadedProviders.put(s, plugin);
+                    break;
+                } catch (InvocationTargetException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                    notLoadedProviders.put(s, plugin);
+                    break;
+                }
+            }
+            if (currEntry != null) {
+                int versionCode = getVersionCode();
+                if (loaded != 2) {  //exactly two classes (supplier and provider) should be loaded
+                    notLoadedProviders.put(currEntry.getKey(), currEntry.getValue());
+                } else if (minimalCoreVersion <= versionCode) {
+                    loadedProviders.put(currEntry.getKey(), currEntry.getValue());
+                } else {
+                    pluginsToNew.put(currEntry.getKey(), currEntry.getValue());
                 }
             }
 
@@ -296,8 +327,8 @@ public class SMSoIPApplication extends Application {
      *
      * @return
      */
-    public HashMap<String, SMSoIPPlugin> getPluginsToOld() {
-        return pluginsToOld;
+    public HashMap<String, SMSoIPPlugin> getNotLoadedProviders() {
+        return notLoadedProviders;
     }
 
     /**
@@ -407,7 +438,7 @@ public class SMSoIPApplication extends Application {
             return this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException ignored) {
         }
-        return 0;
+        return 9999;
     }
 
     /**

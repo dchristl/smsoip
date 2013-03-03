@@ -114,7 +114,9 @@ fileName: strings.xml
         will be automatically prepended to receiver number if needed.
     </string>
     <string name="reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
-    <string name="deprecated_providers">Following plugins could not be loaded. Please update:</string>
+    <string name="deprecated_providers">Some plugins could not be loaded. Please check if you have the latest version of
+        the plugin and SMSoIP and try again.
+    </string>
     <string name="too_new_providers">Following plugins are too new and could not be loaded. Please update
         application:
     </string>
@@ -200,6 +202,11 @@ fileName: strings.xml
     <string name="inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>
+    <string name="receiver_vibrate_activated">Vibration</string>
+    <string name="receiver_vibrate_activated_description">Enable or disable vibration for the notification.</string>
+    <string name="receiver_led_activated">LED</string>
+    <string name="receiver_led_activated_description">Enable or disable notification light.</string>
+
     <string name="category_base">Base settings</string>
     <string name="category_layout">Layout settings</string>
     <string name="category_behaviour">Behaviour settings</string>
@@ -355,8 +362,8 @@ fileName: strings.xml
     </string>
     <string name="sender">Sender</string>
     <string name="no_numbers_maintened">No senders found.</string>
-    <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button.
+    <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye above
+        the send button.
     </string>
     <string name="not_yet_refreshed">Refresh by eye button.</string>
     <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
@@ -656,7 +663,7 @@ fileName: strings.xml
     <string name="sender">Sender</string>
     <string name="without_si">Without source identifier</string>
     <string name="not_yet_refreshed">Not yet refreshed</string>
-    <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye button.</string>
+    <string name="refresh_sender_first">No sender number selected. Please refresh your senders first by clicking the eye above the send button.</string>
     <string name="no_balance">You do not have enough credit to send this text message.</string>
 </resources>
 <!--String resources for:
@@ -712,7 +719,7 @@ fileName: strings.xml
     </string-array>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button or unckeck the box to send with your phone number.
+        above the send button or unckeck the box to send with your phone number.
     </string>
     <string name="result">%1$s message(s) sent to %2$s at a cost of €%3$s.</string>
 </resources>
@@ -769,7 +776,7 @@ fileName: strings.xml
     </string-array>
     <string name="no_numbers_maintened">No senders found.</string>
     <string name="refresh_sender_first">No sender selected. Please refresh your senders first by clicking the eye
-        button or unckeck the box to send with your phone number.
+        above the send button or unckeck the box to send with your phone number.
     </string>
     <string name="result">%1$s message(s) sent to %2$s at a cost of CHF %3$s.</string>
 </resources>
@@ -842,6 +849,37 @@ fileName: strings.xml
 </resources>
 <!--String resources for:
 project: meinbmw
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="balance_good">Free SMS available</string>
+    <string name="balance_bad">No free SMS available</string>
+    <string name="not_sent">Message sending failed.</string>
+
+</resources>
+<!--String resources for:
+project: sample
 values folder: values
 fileName: strings.xml
 -->

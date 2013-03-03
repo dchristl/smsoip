@@ -114,9 +114,11 @@ fileName: strings.xml
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
     </string>
     <string name="reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
-    <string name="deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="deprecated_providers">Einige Plugins konnten nicht geladen werden. Bitte überprüfe, ob die jeweils
+        neueste Version des Plugins und von SMSoIP installiert ist. Danach noch einmal probieren.
+    </string>
     <string name="too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
-        Applikation updaten:
+        SMSoIP updaten:
     </string>
     <string name="enable_network_check">Netzwerküberprüfung aktivieren</string>
     <string name="enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
@@ -204,6 +206,12 @@ fileName: strings.xml
     <string name="inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
         Korrektheit und sende noch einmal.
     </string>
+    <string name="receiver_vibrate_activated">Vibration</string>
+    <string name="receiver_vibrate_activated_description">Aktiviere oder deaktiviere die Vibration bei
+        Benachrichtigungen.
+    </string>
+    <string name="receiver_led_activated">LED</string>
+    <string name="receiver_led_activated_description">Aktiviere oder deaktiviere das Benachrichtigungslicht.</string>
     <string name="category_base">Grundeinstellungen</string>
     <string name="category_layout">Aussehen</string>
     <string name="category_behaviour">Verhalten</string>
@@ -366,7 +374,7 @@ fileName: strings.xml
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
-        Senden mit Hilfe des Auge-Buttons.
+        Senden mit Hilfe des Auges über dem Sende-Buttons.
     </string>
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
     <string name="no_free_input">Kein Absender eingetragen oder zu kurz (mind. 2 Zeichen)</string>
@@ -439,7 +447,7 @@ fileName: strings.xml
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
     <string name="no_senders_available">Keine Absendernummern gefunden.</string>
     <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absendernummern vor
-        dem Senden mit Hilfe des Auge-Buttons.
+        dem Senden mit Hilfe des Auges über dem Sende-Buttons.
     </string>
     <string name="only_free_account">Nur Freenet Basic</string>
     <string name="only_free_account_description">Aktiviere dies falls du nur einen Basic-Account besitzt. Zusätzliche
@@ -675,7 +683,7 @@ fileName: strings.xml
     <string name="not_yet_refreshed">Noch nicht bestimmt</string>
     <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absendernummern vor
         dem
-        Senden mit Hilfe des Auge-Buttons.
+        Senden mit Hilfe des Auges über dem Sende-Buttons.
     </string>
     <string name="no_balance">Sie haben nicht genügend Guthaben um diese Nachricht zu versenden.</string>
 </resources>
@@ -734,7 +742,7 @@ fileName: strings.xml
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
-        Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
+        Senden mit Hilfe des Auges über dem Sende-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
     </string>
     <string name="result">%1$s SMS erfolgreich gesendet zu %2$s zum Preis von €%3$s.</string>
 </resources>
@@ -792,7 +800,7 @@ fileName: strings.xml
     <string name="no_numbers_maintened">Keine Absender gefunden.</string>
     <string name="refresh_sender_first">Keine Absender ausgewählt. Bitte aktualisiere deine Absender vor
         dem
-        Senden mit Hilfe des Auge-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
+        Senden mit Hilfe des Auges über dem Sende-Buttons oder deaktiviere die Auswahlbox zum Senden mit deiner Telefonnummer.
     </string>
     <string name="result">%1$s SMS erfolgreich gesendet zu %2$s zum Preis von CHF%3$s.</string>
 </resources>
@@ -851,7 +859,7 @@ fileName: strings.xml
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
     <string name="no_sender_number">Keine Absendernummer oder -text angegeben!</string>
     <string name="refresh_sender_first">Keine Sendernummer ausgewählt. Bitte aktualisiere deine Absendernummern vor
-        dem Senden mit Hilfe des Auge-Buttons.
+        dem Senden mit Hilfe des Auges über dem Sende-Buttons.
     </string>
     <string-array name="array_spinner">
         <item>Basic plus</item>
@@ -862,6 +870,35 @@ fileName: strings.xml
 </resources>
 <!--String resources for:
 project: meinbmw
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="balance_good">Frei-SMS verfügbar</string>
+    <string name="balance_bad">Keine Frei-SMS verfügbar</string>
+    <string name="not_sent">SMS konnte nicht versendet werden.</string>
+</resources>
+<!--String resources for:
+project: sample
 values folder: values-de
 fileName: strings.xml
 -->

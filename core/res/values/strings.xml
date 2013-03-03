@@ -76,7 +76,9 @@
         will be automatically prepended to receiver number if needed.
     </string>
     <string name="reset_area_code">Wrong area code. Will be resetted to "%1$s"</string>
-    <string name="deprecated_providers">Following plugins could not be loaded. Please update:</string>
+    <string name="deprecated_providers">Some plugins could not be loaded. Please check if you have the latest version of
+        the plugin and SMSoIP and try again.
+    </string>
     <string name="too_new_providers">Following plugins are too new and could not be loaded. Please update
         application:
     </string>

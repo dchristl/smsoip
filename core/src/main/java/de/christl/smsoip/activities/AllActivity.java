@@ -57,7 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
+ * Class for sharing some functionality can be used across mor activities
  */
 public abstract class AllActivity extends SherlockFragmentActivity {
     public static final int EXIT = 0;
@@ -69,15 +69,14 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
-    private static AllActivity context;
     private Drawable backgroundImage;
     private Long lastMillis;
 
-    protected AllActivity() {
-        context = this;
-    }
 
     @Override
+    /**
+     * entry point for resuming
+     */
     protected void onResume() {
         super.onResume();
         SMSoIPApplication.setCurrentActivity(this);
@@ -86,17 +85,23 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    /**
+     * entry point for creating
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
-        if (app.getPluginsToOld().size() > 0) {
-            showNotLoadedProvidersDialog(app.getPluginsToOld(), getString(R.string.deprecated_providers));
-        } else if (app.getPluginsToNew().size() > 0) {
+        if (app.getNotLoadedProviders().size() > 0) {
+            showNotLoadedProvidersDialog(app.getNotLoadedProviders(), getString(R.string.deprecated_providers));
+        }
+        if (app.getPluginsToNew().size() > 0) {
             showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.too_new_providers));
-        } else if (app.getProviderEntries().size() == 0) {
+        }
+        if (app.getProviderEntries().size() == 0) {
             showNoProvidersDialog();
-        } else if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
+        }
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
             boolean networkEnabled = isNetworkDisabled();
             if (networkEnabled) {
 
@@ -117,6 +122,11 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         }
     }
 
+    /**
+     * check if network is enabled
+     *
+     * @return
+     */
     private boolean isNetworkDisabled() {
         ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -124,6 +134,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         return wifiInfo == null || mobileInfo == null || !wifiInfo.isConnected() && !mobileInfo.isConnected();
     }
 
+    /**
+     * shows the changelog dialog when needed
+     */
     protected void showChangelogIfNeeded() {
         ChangeLog cl = new ChangeLog(this);
         if (cl.firstRunEver()) {
@@ -134,6 +147,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    /**
+     *added the exit button as first on creating option menu
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item = menu.add(0, EXIT, Menu.CATEGORY_SECONDARY, getString(R.string.exit));
         item.setIcon(R.drawable.ic_menu_close_clear_cancel);
@@ -141,14 +157,23 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    /**
+     *execute the exit behaviour
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == EXIT) {
-            killSoft();
+            killHard();
             return true;
         }
         return true;
     }
 
+    /**
+     * show the dialog if an error occured on loading plugins
+     *
+     * @param suppliers
+     * @param headline
+     */
     private void showNotLoadedProvidersDialog(HashMap<String, SMSoIPPlugin> suppliers, String headline) {
         if (notLoadedDialogAlreadyShown) {
             return;
@@ -171,6 +196,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         notLoadedDialogAlreadyShown = true;
     }
 
+    /**
+     * kill the app hard way
+     */
     public static void killHard() {
         try {
             Process.killProcess(Process.myPid());
@@ -180,6 +208,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         }
     }
 
+    /**
+     * kill the app soft way
+     */
     public static void killSoft() {
         for (Activity registeredActivity : registeredActivities) {
             nwSettingsAlreadyShown = false;
@@ -189,6 +220,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
 
     @Override
+    /**
+     * react on the back key event for quitting app
+     */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             showQuitToast();
@@ -197,17 +231,26 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * show the toast for quitting
+     */
     private void showQuitToast() {
         long currentMillis = System.currentTimeMillis();
         if (lastMillis == null || lastMillis + 2000 < currentMillis) {
             Toast.makeText(this, R.string.press_back_again, Toast.LENGTH_SHORT).show();
             lastMillis = currentMillis;
         } else {
-            killSoft();
+            killHard();
         }
 
     }
 
+    /**
+     * global handler fordialogs
+     *
+     * @param id
+     * @return
+     */
     protected Dialog onCreateDialog(int id) {
         final Dialog dialog;
         switch (id) {
@@ -250,6 +293,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         return dialog;
     }
 
+    /**
+     * exceutes the no provider dialog
+     */
     private void showNoProvidersDialog() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -272,6 +318,9 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    /**
+     * handles the state onsleeping
+     */
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN, notLoadedDialogAlreadyShown);
@@ -279,17 +328,19 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     }
 
 
-    public static Context getActivity() {
-        return context;
-    }
-
     @Override
+    /**
+     * handles the state on destroying
+     */
     protected void onDestroy() {
         super.onDestroy();
         backgroundImage.setCallback(null);
     }
 
     @Override
+    /**
+     * own handler for changed config (landscape or portrait)
+     */
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);

@@ -77,9 +77,11 @@
         Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
     </string>
     <string name="reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
-    <string name="deprecated_providers">Folgende Plugins konnten nicht geladen werden. Bitte updaten:</string>
+    <string name="deprecated_providers">Einige Plugins konnten nicht geladen werden. Bitte überprüfe, ob die jeweils
+        neueste Version des Plugins und von SMSoIP installiert ist. Danach noch einmal probieren.
+    </string>
     <string name="too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
-        Applikation updaten:
+        SMSoIP updaten:
     </string>
     <string name="enable_network_check">Netzwerküberprüfung aktivieren</string>
     <string name="enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar

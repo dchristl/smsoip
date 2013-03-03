@@ -460,4 +460,9 @@ public class GMXOptionProvider extends OptionProvider {
     private String getLastSenderFT() {
         return getSettings().getString(SENDER_LAST_FT_PREFIX + getUserName(), "");
     }
+
+    @Override
+    public int getMinimalCoreVersion() {
+        return 40;
+    }
 }
