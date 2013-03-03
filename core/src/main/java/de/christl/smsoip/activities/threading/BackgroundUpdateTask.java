@@ -52,6 +52,9 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
 
 
     @Override
+    /**
+     * do the background job (update)
+     */
     protected synchronized SMSActionResult doInBackground(Boolean... params) {
         ErrorReporterStack.put(LogConst.BACKGROUND_UPDATE_STARTED);
         int retryCount = 0;
@@ -95,6 +98,9 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
     }
 
     @Override
+    /**
+     *during update phaseinvoke the dialog if needed
+     */
     protected synchronized void onProgressUpdate(SMSActionResult... values) {
         SMSActionResult value = values[0];
         final BreakingProgressDialogFactory factory = value.getFactory();
@@ -107,13 +113,18 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
             }
         });
         dialog.show();
+        //show the update bar when dialog invoked
+        sendActivity.showUpdateProgressBar();
     }
 
 
     @Override
+    /**
+     * after updat refresh the GUI infos
+     */
     protected void onPostExecute(SMSActionResult actionResult) {
         if (dialog == null || !dialog.isShowing()) {   //only do anything if dialog is not up
-            if (!isCancelled() && (dialog == null || !dialog.isShowing())) {
+            if (!isCancelled()) {
                 sendActivity.updateInfoText(actionResult.getMessage());
             } else {
                 sendActivity.resetInfoText();
@@ -123,6 +134,9 @@ public class BackgroundUpdateTask extends AsyncTask<Boolean, SMSActionResult, SM
     }
 
     @Override
+    /**
+     * update GUI after dialog comes back
+     */
     public void afterChildHasFinished(SMSActionResult childResult) {
         onPostExecute(childResult);
     }
