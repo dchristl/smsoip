@@ -56,16 +56,30 @@ public class SMSoIPPlugin {
         this.pathClassLoader = pathClassLoader;
     }
 
+    /**
+     * the source directory for this plugin
+     *
+     * @return
+     */
     public String getSourceDir() {
         return installedApplication.sourceDir;
     }
 
-
+    /**
+     * add a class to available ones in this plugin
+     *
+     * @param s
+     */
     public void addAvailableClass(String s) {
         availableClasses.add(s);
     }
 
-
+    /**
+     * check if a given class is in this package
+     *
+     * @param className
+     * @return
+     */
     public boolean isClassAvailable(String className) {
         for (String availableClass : availableClasses) {
             if (availableClass.equals(className)) {
@@ -75,6 +89,12 @@ public class SMSoIPPlugin {
         return false;
     }
 
+    /**
+     * resolve a String from this package
+     *
+     * @param resourceId
+     * @return
+     */
     public synchronized String resolveStringResource(int resourceId) {
         return getResources().getString(resourceId);
     }
@@ -91,22 +111,51 @@ public class SMSoIPPlugin {
         return resources;
     }
 
+    /**
+     * resolve a quantity string from this plugin
+     *
+     * @param resourceId
+     * @param quantity
+     * @return
+     */
     public synchronized String resolveStringResource(int resourceId, int quantity) {
         return getResources().getQuantityString(resourceId, quantity);
     }
 
+    /**
+     * resolve an array string from this plugin
+     *
+     * @param resourceId
+     * @return
+     */
     public synchronized String[] resolveArrayStringResource(int resourceId) {
         return getResources().getStringArray(resourceId);
     }
 
+    /**
+     * resolve a drawable from this resource
+     *
+     * @param drawableId
+     * @return
+     */
     public synchronized Drawable resolveDrawable(int drawableId) {
         return getResources().getDrawable(drawableId);
     }
 
+    /**
+     * get full qualified supplier name for this plugin
+     *
+     * @return
+     */
     public String getSupplierClassName() {
         return supplier.getClass().getCanonicalName();
     }
 
+    /**
+     * set the supplier and resolve if it is time shift capable
+     *
+     * @param supplier
+     */
     public void setSupplier(ExtendedSMSSupplier supplier) {
         this.supplier = supplier;
         if (TimeShiftSupplier.class.isAssignableFrom(supplier.getClass())) {
@@ -114,8 +163,13 @@ public class SMSoIPPlugin {
         }
     }
 
+    /**
+     * resolve the name of this provider
+     *
+     * @return
+     */
     public String getProviderName() {
-        String supplierName = "";
+        String supplierName = "UNKNOWN";
         if (supplier == null) { //Plugin could not be loaded, so get the name from package
             for (String availableClass : availableClasses) {
                 if (availableClass.contains(SMSoIPApplication.PLUGIN_CLASS_PREFIX)) {
@@ -130,36 +184,77 @@ public class SMSoIPPlugin {
         return supplierName;
     }
 
-
+    /**
+     * get the current package version
+     *
+     * @return
+     */
     public String getVersion() {
         return packageInfo.versionName;
     }
 
+    /**
+     * is time shift available
+     *
+     * @param sendType
+     * @return
+     */
     public boolean isTimeShiftCapable(String sendType) {
         return timeShiftCapable && getTimeShiftSupplier().isSendTypeTimeShiftCapable(sendType);
     }
 
+    /**
+     * get the corresponding provider for this plugin
+     *
+     * @return
+     */
     public OptionProvider getProvider() {
         return supplier.getProvider();
     }
 
+    /**
+     * get the instantiated supplier
+     *
+     * @return
+     */
     public ExtendedSMSSupplier getSupplier() {
         return supplier;
     }
 
+    /**
+     * get the getTimeShiftSupplier
+     *
+     * @return
+     */
     public TimeShiftSupplier getTimeShiftSupplier() {
         return (TimeShiftSupplier) supplier;
     }
 
+    /**
+     * get the version code of this package
+     *
+     * @return
+     */
     public int getVersionCode() {
         return packageInfo.versionCode;
     }
 
+    /**
+     * resolve a raw resurce from this plugin
+     *
+     * @param resourceId
+     * @return
+     */
     public synchronized InputStream resolveRawResource(int resourceId) {
         return getResources().openRawResource(resourceId);
     }
 
-
+    /**
+     * resolve a XML from this plugin
+     *
+     * @param xmlId
+     * @return
+     */
     public synchronized XmlResourceParser resolveXML(int xmlId) {
         ErrorReporter errorReporter = ACRA.getErrorReporter();
         errorReporter.putCustomData("xmlname_to_load", getResources().getResourceEntryName(xmlId));
@@ -169,15 +264,29 @@ public class SMSoIPPlugin {
         return xml;
     }
 
+    /**
+     * get the corresponding classloader
+     *
+     * @return
+     */
     public PathClassLoader getPathClassLoader() {
         return pathClassLoader;
     }
 
+    /**
+     * get all classes from this plugin
+     *
+     * @return
+     */
     public Set<String> getAvailableClasses() {
         return availableClasses;
     }
 
     //removeIt
+
+    /**
+     * currently used for debug infos
+     */
     public void putPluginInformation() {
         ErrorReporter errorReporter = ACRA.getErrorReporter();
         int classIt = 0;
@@ -212,13 +321,6 @@ public class SMSoIPPlugin {
         } catch (Exception e) {
             errorReporter.handleSilentException(e);
         }
-
-
-//
-//        errorReporter.putCustomData("xmlid", String.valueOf(xmlId));
-//        errorReporter.putCustomData("optionProvider", optionProvider.getClass().getCanonicalName());
-//        errorReporter.putCustomData("smsoipplugin", String.valueOf(plugin));
-//        final R.drawable drawableResources = new R.drawable();
 
     }
 }

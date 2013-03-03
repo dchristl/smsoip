@@ -173,16 +173,9 @@ public class SMSoIPApplication extends Application {
                     ACRA.getErrorReporter().handleSilentException(e);
                 }
             }
-            try {
-                readOutPlugins();
-            } catch (IOException e) {
-                ACRA.getErrorReporter().handleException(e);
-            } catch (IllegalAccessException e) {
-                ACRA.getErrorReporter().handleException(e);
-            }
+            readOutPlugins();
             installedPackages = installedApplications.size();
         }
-
     }
 
     /**
@@ -191,14 +184,21 @@ public class SMSoIPApplication extends Application {
      * @throws IOException
      * @throws IllegalAccessException
      */
-    private void readOutPlugins() throws IOException, IllegalAccessException {
+    private void readOutPlugins() {
         //reset all lists
         loadedProviders.clear();
         pluginsToNew.clear();
         notLoadedProviders.clear();
         for (SMSoIPPlugin plugin : plugins) {
             String sourceDir = plugin.getSourceDir();
-            DexFile apkDir = new DexFile(sourceDir);
+            DexFile apkDir;
+            try {
+                apkDir = new DexFile(sourceDir);
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                notLoadedProviders.put(plugin.getProviderName(), plugin);
+                continue;
+            }
             Enumeration<String> classFileEntries = apkDir.entries();
 
             //find all classes and save it in plugin
@@ -245,6 +245,10 @@ public class SMSoIPApplication extends Application {
                     notLoadedProviders.put(s, plugin);
                     break;
                 } catch (InvocationTargetException e) {
+                    Log.e(this.getClass().getCanonicalName(), "", e);
+                    notLoadedProviders.put(s, plugin);
+                    break;
+                } catch (IllegalAccessException e) {
                     Log.e(this.getClass().getCanonicalName(), "", e);
                     notLoadedProviders.put(s, plugin);
                     break;
