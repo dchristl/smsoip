@@ -75,16 +75,29 @@ public class SMSoIPApplication extends Application {
     private static Activity currentActivity;
     private boolean pickActionAvailable = true;
 
+    /**
+     * helper for setting background to current activity
+     *
+     * @return
+     */
     public static Activity getCurrentActivity() {
         return currentActivity;
     }
 
+    /**
+     * helper for setting background to current activity
+     *
+     * @return
+     */
     public static void setCurrentActivity(Activity currentActivity) {
         SMSoIPApplication.currentActivity = currentActivity;
     }
 
 
     @Override
+    /**
+     * global entry point
+     */
     public void onCreate() {
         ACRA.init(this);
         super.onCreate();
@@ -95,11 +108,17 @@ public class SMSoIPApplication extends Application {
         checkForContactAvailability();
     }
 
+    /**
+     * check if the pick contact activity is availabel on device
+     */
     private void checkForContactAvailability() {
         Intent pickIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         pickActionAvailable = getPackageManager().resolveActivity(pickIntent, 0) != null;
     }
 
+    /**
+     * check the hash for donate plugin
+     */
     private void checkHash() {
         if (adsEnabled) {
             SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -108,7 +127,9 @@ public class SMSoIPApplication extends Application {
         }
     }
 
-
+    /**
+     * check if internal db is available
+     */
     private void setWriteToDBAvailable() {
         try {
             Uri sentUri = Uri.parse("content://sms/sent");
@@ -162,6 +183,12 @@ public class SMSoIPApplication extends Application {
 
     }
 
+    /**
+     * check tall plugins for validity
+     *
+     * @throws IOException
+     * @throws IllegalAccessException
+     */
     private void readOutPlugins() throws IOException, IllegalAccessException {
         //reset all lists
         loadedProviders.clear();
@@ -207,6 +234,9 @@ public class SMSoIPApplication extends Application {
         buildAdditionalAcraInformations();
     }
 
+    /**
+     * build additonal infos for ACRA
+     */
     private void buildAdditionalAcraInformations() {
         StringBuilder builder = new StringBuilder();
         for (SMSoIPPlugin smSoIPPlugin : loadedProviders.values()) {
@@ -218,21 +248,40 @@ public class SMSoIPApplication extends Application {
 
     }
 
-
+    /**
+     * global pointer to app
+     *
+     * @return
+     */
     public static SMSoIPApplication getApp() {
         return app;
     }
 
+    /**
+     * get all plugins
+     *
+     * @return
+     */
     public Map<String, SMSoIPPlugin> getProviderEntries() {
         return loadedProviders;
     }
 
-
+    /**
+     * get plugin by name
+     *
+     * @param className
+     * @return
+     */
     public SMSoIPPlugin getSMSoIPPluginBySupplierName(String className) {
         return loadedProviders.get(className);
     }
 
-
+    /**
+     * get plugin by class name
+     *
+     * @param className
+     * @return
+     */
     private SMSoIPPlugin getPluginForClass(String className) {
         for (SMSoIPPlugin plugin : plugins) {
             if (plugin.isClassAvailable(className)) {
@@ -242,22 +291,49 @@ public class SMSoIPApplication extends Application {
         return null;
     }
 
+    /**
+     * get plugin cant be loaded cause too old
+     *
+     * @return
+     */
     public HashMap<String, SMSoIPPlugin> getPluginsToOld() {
         return pluginsToOld;
     }
 
+    /**
+     * get plugin cant be loaded cause too new
+     *
+     * @return
+     */
     public HashMap<String, SMSoIPPlugin> getPluginsToNew() {
         return pluginsToNew;
     }
 
+    /**
+     * is db availabele
+     *
+     * @return
+     */
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
     }
 
+    /**
+     * is picking available
+     *
+     * @return
+     */
     public boolean isPickActionAvailable() {
         return pickActionAvailable;
     }
 
+    /**
+     * load the text by resourceID from provider
+     *
+     * @param optionProvider
+     * @param resourceId
+     * @return
+     */
     public String getTextByResourceId(OptionProvider optionProvider, int resourceId) {
         SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
         if (plugin != null) {
@@ -266,6 +342,13 @@ public class SMSoIPApplication extends Application {
         return getString(resourceId);
     }
 
+    /**
+     * get an array by resource id from provider
+     *
+     * @param optionProvider
+     * @param resourceId
+     * @return
+     */
     public String[] getArrayByResourceId(OptionProvider optionProvider, int resourceId) {
         SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
         if (plugin != null) {
@@ -274,6 +357,14 @@ public class SMSoIPApplication extends Application {
         return new String[]{"Resource not found"};
     }
 
+    /**
+     * get quantity string from provider
+     *
+     * @param optionProvider
+     * @param resourceId
+     * @param quantity
+     * @return
+     */
     public String getTextByResourceId(OptionProvider optionProvider, int resourceId, int quantity) {
         SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
         if (plugin != null) {
@@ -282,11 +373,22 @@ public class SMSoIPApplication extends Application {
         return getString(resourceId);
     }
 
-
+    /**
+     * advertisement should be loaded
+     *
+     * @return
+     */
     public boolean isAdsEnabled() {
         return adsEnabled;
     }
 
+    /**
+     * get drawable from provider
+     *
+     * @param optionProvider
+     * @param drawableId
+     * @return
+     */
     public Drawable getDrawable(OptionProvider optionProvider, int drawableId) {
         SMSoIPPlugin plugin = getPluginForClass(optionProvider.getClass().getCanonicalName());
         if (plugin != null) {
@@ -295,6 +397,11 @@ public class SMSoIPApplication extends Application {
         return null;
     }
 
+    /**
+     * get the current version code
+     *
+     * @return
+     */
     public int getVersionCode() {
         try {
             return this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode;
@@ -316,11 +423,23 @@ public class SMSoIPApplication extends Application {
         return hash.equals(Integer.toHexString(imei.hashCode()));
     }
 
+    /**
+     * get device id (for hash building)
+     *
+     * @return
+     */
     public static String getDeviceId() {
         TelephonyManager telephonyManager = (TelephonyManager) app.getSystemService(Context.TELEPHONY_SERVICE);
         return telephonyManager.getDeviceId();
     }
 
+    /**
+     * get an inputstream from provider
+     *
+     * @param optionProvider
+     * @param resourceId
+     * @return
+     */
     public InputStream getRawResourceByResourceId(OptionProvider optionProvider, int resourceId) {
         String canonicalName = optionProvider.getClass().getCanonicalName();
         SMSoIPPlugin plugin = getPluginForClass(canonicalName);
@@ -355,7 +474,13 @@ public class SMSoIPApplication extends Application {
         return builder.toString();
     }
 
-
+    /**
+     * get a xml resource from provider
+     *
+     * @param optionProvider
+     * @param xmlId
+     * @return
+     */
     public XmlResourceParser getXMLResourceByResourceId(OptionProvider optionProvider, int xmlId) {
         String canonicalName = optionProvider.getClass().getCanonicalName();
         SMSoIPPlugin plugin = getPluginForClass(canonicalName);
