@@ -45,7 +45,9 @@ public abstract class ThreadingUtil {
                     Thread.sleep(timeinMillis);
                 } catch (InterruptedException ignored) {
                 } finally {
-                    dialog.dismiss();
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.cancel();
+                    }
                 }
             }
         }).start();

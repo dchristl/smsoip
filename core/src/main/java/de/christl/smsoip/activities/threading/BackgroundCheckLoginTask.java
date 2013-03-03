@@ -37,7 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 
 /**
- * checks the login in background in GlobalPreferences
+ * checks the login in background in plugin references
  */
 public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionResult, Void> implements BreakableTask<SMSActionResult> {
 
@@ -51,6 +51,9 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
     }
 
     @Override
+    /**
+     *show the dialog and update the message beforechecking credentials
+     */
     protected void onPreExecute() {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_STARTED);
         progressDialog.setMessage(multiPreference.getContext().getString(R.string.checkCredentials));
@@ -58,6 +61,9 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
     }
 
     @Override
+    /**
+     * check the credentials in thread
+     */
     protected Void doInBackground(AccountModel... accountModels) {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_RUNNING);
         ExtendedSMSSupplier supplier = multiPreference.getSupplier();
@@ -91,6 +97,9 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
     }
 
     @Override
+    /**
+     * do some stuff after returning (used for showing the dialog)
+     */
     protected void onProgressUpdate(SMSActionResult... values) {
         SMSActionResult value = values[0];
         if (value.isBreakingProgress()) {
@@ -110,14 +119,20 @@ public class BackgroundCheckLoginTask extends AsyncTask<AccountModel, SMSActionR
     }
 
     @Override
+    /**
+     * after executing close the dialog after a while
+     */
     protected void onPostExecute(Void nothing) {
         ErrorReporterStack.put(LogConst.BACKGROUND_CHECK_LOGIN_TASK_ON_FINISH);
         if (dialog == null || !dialog.isShowing()) {
-            ThreadingUtil.killDialogAfterAWhile(dialog, 2000);
+            ThreadingUtil.killDialogAfterAWhile(progressDialog, 2000);
         }
     }
 
     @Override
+    /**
+     * update after child process from dialog has finished
+     */
     public void afterChildHasFinished(SMSActionResult childResult) {
         progressDialog.setMessage(childResult.getMessage());
         onPostExecute(null);
