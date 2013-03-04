@@ -131,7 +131,14 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobileInfo = mgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return wifiInfo == null || mobileInfo == null || !wifiInfo.isConnected() && !mobileInfo.isConnected();
+        if (wifiInfo == null && mobileInfo == null) {
+            return false; //do nothing if state can not claimed
+        } else if (wifiInfo == null) {
+            return !mobileInfo.isConnected();
+        } else if (mobileInfo == null) {
+            return !wifiInfo.isConnected();
+        }
+        return !wifiInfo.isConnected() && !mobileInfo.isConnected();
     }
 
     /**
