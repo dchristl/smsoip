@@ -1516,6 +1516,9 @@ public class SendActivity extends AllActivity {
      */
     private void cancelUpdateTask() {
         if (backgroundUpdateTask != null) {
+            if (backgroundUpdateTask.getStatus() == AsyncTask.Status.RUNNING) {
+                 resetInfoText();
+             }
             backgroundUpdateTask.cancel(true);
         }
     }
