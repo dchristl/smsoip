@@ -52,31 +52,31 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-jarsigner-plugin</artifactId>-->
-                <!--<version>1.2</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>SIGNING</id>-->
-                        <!--<goals>-->
-                            <!--<goal>sign</goal>-->
-                        <!--</goals>-->
-                        <!--<phase>package</phase>-->
-                        <!--<inherited>true</inherited>-->
-                        <!--<configuration>-->
-                            <!--<archiveDirectory/>-->
-                            <!--<includes>-->
-                                <!--<include>target/*-aligned.apk</include>-->
-                            <!--</includes>-->
-                            <!--<keystore>${certificate.store}</keystore>-->
-                            <!--<storepass>${certificate.pass}</storepass>-->
-                            <!--<keypass>${certificate.pass}</keypass>-->
-                            <!--<alias>main_key</alias>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>SIGNING</id>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <archiveDirectory/>
+                            <includes>
+                                <include>target/*-aligned.apk</include>
+                            </includes>
+                            <keystore>${certificate.store}</keystore>
+                            <storepass>${certificate.pass}</storepass>
+                            <keypass>${certificate.pass}</keypass>
+                            <alias>main_key</alias>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
