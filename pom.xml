@@ -65,6 +65,12 @@
                         <phase>package</phase>
                         <inherited>true</inherited>
                         <configuration>
+                            <arguments>
+                                <argument>-sigalg</argument>
+                                <argument>SHA1withRSA</argument>
+                                <argument>-digestalg</argument>
+                                <argument>SHA1</argument>
+                            </arguments>
                             <archiveDirectory/>
                             <includes>
                                 <include>target/*-aligned.apk</include>
@@ -95,7 +101,6 @@
                             <goal>manifest-update</goal>
                         </goals>
                         <configuration>
-
                             <manifest>
                                 <versionName>${project.version}</versionName>
                             </manifest>
