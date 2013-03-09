@@ -47,6 +47,7 @@
         <module>sms77</module>
         <module>meinbmw</module>
         <module>sample</module>
+        <module>unide</module>
     </modules>
 
     <dependencies>

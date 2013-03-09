@@ -15,9 +15,12 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.6.11" package="de.christl.smsoip.activities">
+  -->
 
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
+<resources>
 
+    <string name="balance_good">Free SMS available</string>
+    <string name="balance_bad">No free SMS available</string>
+    <string name="not_sent">Message sending failed.</string>
 
-</manifest>
+</resources>
