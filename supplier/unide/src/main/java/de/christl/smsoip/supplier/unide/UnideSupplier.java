@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UnideSupplier implements ExtendedSMSSupplier {
+    private String sessionCookie;
     private OptionProvider provider;
     private static final String ENCODING = "UTF-8";
 
@@ -48,7 +49,7 @@ public class UnideSupplier implements ExtendedSMSSupplier {
     private static final String LOGIN_BODY_SUBMIT = "&submitLogin=";
     private static final String LOGIN_COOKIE_PATTERN = "symfony";
     private static final String LOGIN_SEND_URL = "http://uni.de/sms/send";
-    private List<String> sessionCookies;
+    private static final String CHECK_VALID_COOKIE_URL = "http://uni.de/users/edit";
 
     public UnideSupplier() {
         provider = new UnideOptionProvider();
@@ -56,7 +57,7 @@ public class UnideSupplier implements ExtendedSMSSupplier {
 
     @Override
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        sessionCookies = new ArrayList<String>(2);
+        List<String> sessionCookies;
         if (userName == null || password == null) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
@@ -79,7 +80,28 @@ public class UnideSupplier implements ExtendedSMSSupplier {
             return SMSActionResult.NETWORK_ERROR();
         }
         sessionCookies = UrlConnectionFactory.findCookiesByPattern(headerFields, LOGIN_COOKIE_PATTERN + "=.*");
-        if (sessionCookies.size() == 2) {
+        if (sessionCookies != null && sessionCookies.size() == 2) {
+            //take the second cookie, cause it should be newer
+            sessionCookie = sessionCookies.get(1);
+            factory = new UrlConnectionFactory(CHECK_VALID_COOKIE_URL, UrlConnectionFactory.METHOD_GET);
+            factory.setCookies(new ArrayList<String>() {
+                {
+                    add(sessionCookie);
+                }
+            });
+            HttpURLConnection connnection1 = factory.getConnnection();
+            InputStream inputStream = connnection1.getInputStream();
+            if (inputStream != null) {
+                Document parse = Jsoup.parse(inputStream, ENCODING, "");
+                //check if the login panel is available, so its the wrong cookie
+                Elements title = parse.select("div.user_loginPanel");
+                if (title.size() > 0) {
+                    sessionCookie = sessionCookies.get(0);
+                }
+            } else {
+                return SMSActionResult.NETWORK_ERROR();
+            }
+
             return SMSActionResult.LOGIN_SUCCESSFUL();
         }
 
@@ -102,7 +124,7 @@ public class UnideSupplier implements ExtendedSMSSupplier {
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_SEND_URL, UrlConnectionFactory.METHOD_GET);
         factory.setCookies(new ArrayList<String>() {
             {
-                add(sessionCookies.get(1));
+                add(sessionCookie);
             }
         });
 
