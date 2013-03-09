@@ -160,6 +160,9 @@ public class SendActivity extends AllActivity {
             ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
             textField.refreshTextModules();
             optionsCalled = false;
+            if (infoTextUpdateNeeded()) {
+                refreshInformationText(true);
+            }
         }
         if (providerOptionsCalled) {
             updateInfoTextSilent();
@@ -173,6 +176,19 @@ public class SendActivity extends AllActivity {
         } catch (Exception e) {
             ACRA.getErrorReporter().handleSilentException(e);
         }
+    }
+
+    /**
+     * check if auto aupdate is enabled and text is on default
+     *
+     * @return
+     */
+    private boolean infoTextUpdateNeeded() {
+        boolean settingActivated = settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false);
+        String string = getString(R.string.notyetrefreshed);
+        TextView infoText = (TextView) findViewById(R.id.infoText);
+        boolean defaultText = infoText.getText().equals(string);
+        return settingActivated && defaultText;
     }
 
     /**
@@ -1517,8 +1533,8 @@ public class SendActivity extends AllActivity {
     private void cancelUpdateTask() {
         if (backgroundUpdateTask != null) {
             if (backgroundUpdateTask.getStatus() == AsyncTask.Status.RUNNING) {
-                 resetInfoText();
-             }
+                resetInfoText();
+            }
             backgroundUpdateTask.cancel(true);
         }
     }

@@ -135,7 +135,7 @@ public class GMXOptionProvider extends OptionProvider {
 
     @Override
     public Drawable getIconDrawable() {
-        return getDrawble(R.drawable.icon);
+        return getDrawable(R.drawable.icon);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class GMXOptionProvider extends OptionProvider {
         refreshAdapterItems();
 
         progressBar.setVisibility(View.GONE);
-        refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        refreshButton.setImageDrawable(getDrawable(R.drawable.btn_menu_view));
         View.OnClickListener refreshListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {

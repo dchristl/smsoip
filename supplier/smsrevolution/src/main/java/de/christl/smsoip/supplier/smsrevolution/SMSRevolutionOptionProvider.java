@@ -66,7 +66,7 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
 
     @Override
     public Drawable getIconDrawable() {
-        return getDrawble(R.drawable.icon);
+        return getDrawable(R.drawable.icon);
     }
 
 
@@ -158,7 +158,7 @@ public class SMSRevolutionOptionProvider extends OptionProvider {
         });
         progressBar.setVisibility(View.GONE);
         refreshButton.setVisibility(View.GONE);
-        refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        refreshButton.setImageDrawable(getDrawable(R.drawable.btn_menu_view));
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

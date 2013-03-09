@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.ui.BreakingProgressDialogFactory;
+import org.acra.ACRA;
 
 public class BackgroundSendTask extends AsyncTask<Void, BreakingProgressDialogFactory, FireSMSResultList> implements BreakableTask<FireSMSResultList> {
 
@@ -70,7 +71,11 @@ public class BackgroundSendTask extends AsyncTask<Void, BreakingProgressDialogFa
             if (sendResult == FireSMSResultList.SendResult.BOTH || sendResult == FireSMSResultList.SendResult.SUCCESS) { //success or both
                 sendActivity.refreshInformationText(false);
             }
-            progressDialog.cancel();
+            try {
+                progressDialog.cancel();
+            } catch (Exception e) {
+                ACRA.getErrorReporter().handleSilentException(new IllegalArgumentException("Error dismissing dialog<" + dialog + ">", e));
+            }
             sendActivity.showReturnMessage(fireSMSResults);
         }
     }
