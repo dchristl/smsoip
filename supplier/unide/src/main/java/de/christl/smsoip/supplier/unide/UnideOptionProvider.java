@@ -22,9 +22,31 @@ import android.graphics.drawable.Drawable;
 import de.christl.smsoip.option.OptionProvider;
 
 public class UnideOptionProvider extends OptionProvider {
+
+    public static final String PROVIDER_NAME = "Uni.de";
+
     @Override
     public Drawable getIconDrawable() {
         return getDrawable(R.drawable.icon);
     }
 
+    @Override
+    public int getMaxReceiverCount() {
+        return 1;
+    }
+
+    @Override
+    public int getTextMessageLength() {
+        return 123;
+    }
+
+    @Override
+    public int getMaxMessageCount() {
+        return 1;
+    }
+
+    @Override
+    public String getProviderName() {
+        return PROVIDER_NAME;
+    }
 }

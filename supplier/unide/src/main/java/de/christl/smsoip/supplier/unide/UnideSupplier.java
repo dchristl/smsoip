@@ -19,37 +19,125 @@
 package de.christl.smsoip.supplier.unide;
 
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UnideSupplier implements ExtendedSMSSupplier {
+    private OptionProvider provider;
+    private static final String ENCODING = "UTF-8";
+
+
+    private static final String LOGIN_URL = "http://uni.de/login";
+    private static final String LOGIN_BODY_USER = "user%5Blogin%5D=";
+    private static final String LOGIN_BODY_PASS = "&user%5Bpassword%5D=";
+    private static final String LOGIN_BODY_SUBMIT = "&submitLogin=";
+    private static final String LOGIN_COOKIE_PATTERN = "symfony";
+    private static final String LOGIN_SEND_URL = "http://uni.de/sms/send";
+    private List<String> sessionCookies;
+
+    public UnideSupplier() {
+        provider = new UnideOptionProvider();
+    }
+
     @Override
-    public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        return null;
+    public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
+        sessionCookies = new ArrayList<String>(2);
+        if (userName == null || password == null) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
+        factory.setFollowRedirects(false);
+        factory.setRequestProperties(new HashMap<String, String>() {
+            {
+                put("Content-Type", "application/x-www-form-urlencoded");
+            }
+        });
+
+
+        factory.writeBody(LOGIN_BODY_USER + URLEncoder.encode(userName, ENCODING) + LOGIN_BODY_PASS + URLEncoder.encode(password, ENCODING) + LOGIN_BODY_SUBMIT);
+
+
+        HttpURLConnection connnection = factory.getConnnection();
+        Map<String, List<String>> headerFields = connnection.getHeaderFields();
+//        String s = UrlConnectionFactory.inputStream2DebugString(connnection.getInputStream());
+        if (headerFields == null || headerFields.size() == 0) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        sessionCookies = UrlConnectionFactory.findCookiesByPattern(headerFields, LOGIN_COOKIE_PATTERN + "=.*");
+        if (sessionCookies.size() == 2) {
+            return SMSActionResult.LOGIN_SUCCESSFUL();
+        }
+
+        return SMSActionResult.LOGIN_FAILED_ERROR();
     }
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return null;
+        return refreshInfoText(true);
+    }
+
+    private SMSActionResult refreshInfoText(boolean loginBefore) throws IOException {
+        if (loginBefore) {
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
+                return result;
+            }
+        }
+
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_SEND_URL, UrlConnectionFactory.METHOD_GET);
+        factory.setCookies(new ArrayList<String>() {
+            {
+                add(sessionCookies.get(1));
+            }
+        });
+
+        InputStream inputStream = factory.getConnnection().getInputStream();
+        return parseInfoResponse(inputStream);
+
+
+    }
+
+    private SMSActionResult parseInfoResponse(InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+
+        Elements select = parse.select("#formSendSMS p.comm");
+        if (select == null || select.size() == 0) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        return SMSActionResult.NO_ERROR(select.text());
+
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return null;
+        return refreshInfoText(false);
     }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+        return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_ERROR("To implement"), receivers);
     }
 
     @Override
     public OptionProvider getProvider() {
-        return null;
+        return provider;
     }
 }
