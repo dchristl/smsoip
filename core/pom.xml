@@ -27,7 +27,7 @@
     <parent>
         <groupId>de.christl</groupId>
         <artifactId>SMSoIP</artifactId>
-        <version>2.6.10</version>
+        <version>2.6.11</version>
     </parent>
     <profiles>
         <profile>
@@ -38,6 +38,26 @@
             <properties>
                 <classifier.name>google</classifier.name>
             </properties>
+            <!--only delete on google play -->
+            <build>
+                <finalName>${project.artifactId}-${project.version}-${classifier.name}</finalName>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${output.folder}</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>ANDROIDPIT</id>
@@ -77,23 +97,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>${project.artifactId}-${project.version}-${classifier.name}</finalName>
-        <plugins>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${output.folder}</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>
