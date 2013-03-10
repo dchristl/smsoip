@@ -49,6 +49,7 @@ public class UnideSupplier implements ExtendedSMSSupplier {
 
 
     private static final String APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String ACCEPTED_CHARSET = "ISO-8859-1,utf-8;q=0.7,*;q=0.7";
     private static final String LOGIN_BODY_USER = "user%5Blogin%5D=";
     private static final String LOGIN_BODY_PASS = "&user%5Bpassword%5D=";
     private static final String LOGIN_BODY_SUBMIT = "&submitLogin=";
@@ -203,6 +204,7 @@ public class UnideSupplier implements ExtendedSMSSupplier {
             factory.setRequestProperties(new HashMap<String, String>() {
                 {
                     put("Content-Type", APPLICATION_X_WWW_FORM_URLENCODED);
+                    put("Accept-Charset", ACCEPTED_CHARSET);
                 }
             });
             //build and write the body
