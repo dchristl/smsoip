@@ -18,8 +18,8 @@
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="3" android:versionName="1.0.2" package="de.christl.smsoip.supplier.smsrevolution">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP SMS-Revolution Plugin">
-        <activity android:name=".SMSRevoInfoDialogActivity" android:excludeFromRecents="true">
+    <application android:debuggable="false" android:icon="@drawable/icon" android:label="SMSoIP SMS-Revolution Plugin">
+        <activity android:excludeFromRecents="true" android:name=".SMSRevoInfoDialogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.INFO"/>

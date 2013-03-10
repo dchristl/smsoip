@@ -40,7 +40,6 @@
             </properties>
             <!--only delete on google play -->
             <build>
-                <finalName>${project.artifactId}-${project.version}-${classifier.name}</finalName>
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -96,6 +95,8 @@
             <artifactId>acra</artifactId>
         </dependency>
     </dependencies>
-
+    <build>
+        <finalName>${project.artifactId}-${project.version}-${classifier.name}</finalName>
+    </build>
 
 </project>

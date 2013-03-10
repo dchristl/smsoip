@@ -15,21 +15,15 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="de.christl.smsoip.widget" android:versionCode="1" android:versionName="1.0.0"
-          android:installLocation="internalOnly">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="internalOnly" android:versionCode="1" android:versionName="1.0.0" package="de.christl.smsoip.widget">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
 
-    <application android:label="SMSoIP Widget Plugin" android:icon="@drawable/icon">
-        <receiver android:name=".SMSoIPWidget" android:label="SMSoIPWidget">
+    <application android:debuggable="false" android:icon="@drawable/icon" android:label="SMSoIP Widget Plugin">
+        <receiver android:label="SMSoIPWidget" android:name=".SMSoIPWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
-            <meta-data
-                    android:name="android.appwidget.provider"
-                    android:resource="@xml/widgetprovider"/>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widgetprovider"/>
         </receiver>
     </application>
 </manifest>

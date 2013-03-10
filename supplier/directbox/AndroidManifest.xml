@@ -18,7 +18,7 @@
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="6" android:versionName="1.0.5" package="de.christl.smsoip.supplier.directbox">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP DirectBOX Plugin">
+    <application android:debuggable="false" android:icon="@drawable/icon" android:label="SMSoIP DirectBOX Plugin">
         <activity android:excludeFromRecents="true" android:name=".DirectBoxInfoDialogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
