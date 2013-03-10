@@ -133,7 +133,7 @@ public class SMSDeOptionProvider extends OptionProvider {
 
     @Override
     public Drawable getIconDrawable() {
-        return getDrawble(R.drawable.icon);
+        return getDrawable(R.drawable.icon);
     }
 
     @Override

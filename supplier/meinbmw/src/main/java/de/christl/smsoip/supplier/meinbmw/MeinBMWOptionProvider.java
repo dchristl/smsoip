@@ -31,7 +31,7 @@ public class MeinBMWOptionProvider extends OptionProvider {
 
     @Override
     public Drawable getIconDrawable() {
-        return getDrawble(R.drawable.icon);
+        return getDrawable(R.drawable.icon);
     }
 
 
