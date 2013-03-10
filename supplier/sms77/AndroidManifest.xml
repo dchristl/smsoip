@@ -15,7 +15,7 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="2" android:versionName="1.0.1" package="de.christl.smsoip.supplier.sms77">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="3" android:versionName="1.0.2" package="de.christl.smsoip.supplier.sms77">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
 
     <application android:debuggable="false" android:icon="@drawable/icon" android:label="SMSoIP SMS77 Plugin">

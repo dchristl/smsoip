@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.supplier.meinbmw;
 
+import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
@@ -31,6 +32,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,8 +127,16 @@ public class MeinBMWSupplier implements ExtendedSMSSupplier {
             map.put("dnn$ctr493$SfiSms_View$subject", smsText);
             map.put("dnn$ctr493$SfiSms_View$sendData", "Senden");
             factory.writeMultipartBody(map, ENCODING);
-            SMSActionResult smsActionResult = parseResult(factory.getConnnection().getInputStream());
-            out.add(new FireSMSResult(receiver, smsActionResult));
+            try {
+                SMSActionResult smsActionResult = parseResult(factory.getConnnection().getInputStream());
+                out.add(new FireSMSResult(receiver, smsActionResult));
+            } catch (SocketTimeoutException stoe) {
+                Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+            }
         }
 
         return out;
