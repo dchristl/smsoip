@@ -1,10 +1,5 @@
-<!--String resources for:
-project: SMSoIP-core
-values folder: values-de
-fileName: storedependent.xml
--->
 <!--
-  ~ Copyright (c) Danny Christl 2012.
+  ~ Copyright (c) Danny Christl 2013.
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -20,6 +15,13 @@ fileName: storedependent.xml
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
+<!--String resources for:
+project: SMSoIP-core
+values folder: values-de
+fileName: storedependent.xml
+-->
+
 
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
@@ -925,4 +927,36 @@ fileName: strings.xml
     <string name="balance_good">Frei-SMS verfügbar</string>
     <string name="balance_bad">Keine Frei-SMS verfügbar</string>
     <string name="not_sent">SMS konnte nicht versendet werden.</string>
+</resources>
+<!--String resources for:
+project: unide
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="balance_good">Frei-SMS verfügbar</string>
+    <string name="balance_bad">Keine Frei-SMS verfügbar</string>
+    <string name="not_sent">SMS konnte nicht versendet werden.</string>
+    <string name="foreign_numbers_not_allowed">Das Senden ist nur an deutsche Nummern möglich!</string>
+    <string name="invalid_number">Ungültige Nummer!</string>
+    <string name="mobile_not_certified">Handynummer noch nicht verifiziert!</string>
 </resources>

@@ -24,4 +24,5 @@
     <string name="not_sent">Message sending failed.</string>
     <string name="foreign_numbers_not_allowed">Only sending to german numbers allowed!</string>
     <string name="invalid_number">Invalid number!</string>
+    <string name="mobile_not_certified">Mobile number not certified!</string>
 </resources>

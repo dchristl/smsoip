@@ -30,6 +30,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -41,13 +42,13 @@ import java.util.List;
 import java.util.Map;
 
 public class UnideSupplier implements ExtendedSMSSupplier {
-    public static final String APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private String sessionCookie;
     private OptionProvider provider;
     private static final String ENCODING = "UTF-8";
-
-
     private static final String LOGIN_URL = "http://uni.de/login";
+
+
+    private static final String APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String LOGIN_BODY_USER = "user%5Blogin%5D=";
     private static final String LOGIN_BODY_PASS = "&user%5Bpassword%5D=";
     private static final String LOGIN_BODY_SUBMIT = "&submitLogin=";
@@ -136,7 +137,15 @@ public class UnideSupplier implements ExtendedSMSSupplier {
             }
         });
 
-        InputStream inputStream = factory.getConnnection().getInputStream();
+        InputStream inputStream;
+        try {
+            inputStream = factory.getConnnection().getInputStream();
+        } catch (FileNotFoundException e) {
+            Log.e(this.getClass().getCanonicalName(), "", e);
+            SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.mobile_not_certified));
+            smsActionResult.setRetryMakesSense(false);
+            return smsActionResult;
+        }
         return parseInfoResponse(inputStream);
 
 
@@ -205,6 +214,9 @@ public class UnideSupplier implements ExtendedSMSSupplier {
             } catch (SocketTimeoutException stoe) {
                 Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
                 out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+            } catch (FileNotFoundException e) {
+                Log.e(this.getClass().getCanonicalName(), "", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.mobile_not_certified))));
             } catch (IOException e) {
                 Log.e(this.getClass().getCanonicalName(), "IOException", e);
                 out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
