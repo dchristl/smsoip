@@ -22,5 +22,6 @@
     <string name="balance_good">Free SMS available</string>
     <string name="balance_bad">No free SMS available</string>
     <string name="not_sent">Message sending failed.</string>
-
+    <string name="foreign_numbers_not_allowed">Only sending to german numbers allowed!</string>
+    <string name="invalid_number">Invalid number!</string>
 </resources>

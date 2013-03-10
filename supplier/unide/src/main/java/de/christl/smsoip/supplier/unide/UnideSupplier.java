@@ -18,8 +18,10 @@
 
 package de.christl.smsoip.supplier.unide;
 
+import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
@@ -31,6 +33,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UnideSupplier implements ExtendedSMSSupplier {
+    public static final String APPLICATION_X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private String sessionCookie;
     private OptionProvider provider;
     private static final String ENCODING = "UTF-8";
@@ -50,6 +54,10 @@ public class UnideSupplier implements ExtendedSMSSupplier {
     private static final String LOGIN_COOKIE_PATTERN = "symfony";
     private static final String LOGIN_SEND_URL = "http://uni.de/sms/send";
     private static final String CHECK_VALID_COOKIE_URL = "http://uni.de/users/edit";
+    private static final String SEND_BODY_TEXT = "sendsms%5Btext%5D=";
+    private static final String SEND_BODY_NUMBER_PREFIX = "&sendsms%5Bprefix%5D=";
+    private static final String SEND_BODY_NUMBER = "&sendsms%5Bnumber%5D=";
+    private static final String SEND_BODY_SEND = "&sendsms%5Bonoff%5D=0&send_sms=";
 
     public UnideSupplier() {
         provider = new UnideOptionProvider();
@@ -65,7 +73,7 @@ public class UnideSupplier implements ExtendedSMSSupplier {
         factory.setFollowRedirects(false);
         factory.setRequestProperties(new HashMap<String, String>() {
             {
-                put("Content-Type", "application/x-www-form-urlencoded");
+                put("Content-Type", APPLICATION_X_WWW_FORM_URLENCODED);
             }
         });
 
@@ -94,8 +102,8 @@ public class UnideSupplier implements ExtendedSMSSupplier {
             if (inputStream != null) {
                 Document parse = Jsoup.parse(inputStream, ENCODING, "");
                 //check if the login panel is available, so its the wrong cookie
-                Elements title = parse.select("div.user_loginPanel");
-                if (title.size() > 0) {
+                Elements loginPanel = parse.select("div.user_loginPanel");
+                if (loginPanel.size() > 0) {
                     sessionCookie = sessionCookies.get(0);
                 }
             } else {
@@ -155,7 +163,83 @@ public class UnideSupplier implements ExtendedSMSSupplier {
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_ERROR("To implement"), receivers);
+        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
+        }
+
+        FireSMSResultList out = new FireSMSResultList(receivers.size());
+        for (Receiver receiver : receivers) {
+            //check the receiver its not from germany and extract it in two parts
+            String receiverNumber = receiver.getReceiverNumber();
+            if (!receiverNumber.startsWith("0049")) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(getProvider().getTextByResourceId(R.string.foreign_numbers_not_allowed))));
+                continue;
+            }
+            //check for number length
+            if (receiverNumber.length() < 9) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(getProvider().getTextByResourceId(R.string.invalid_number))));
+                continue;
+            }
+            //now extract prefix and number
+            String prefix = receiverNumber.substring(4, 7);
+            String number = receiverNumber.substring(7, receiverNumber.length());
+
+            UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_SEND_URL, UrlConnectionFactory.METHOD_GET);
+            factory.setCookies(new ArrayList<String>() {
+                {
+                    add(sessionCookie);
+                }
+            });
+            factory.setRequestProperties(new HashMap<String, String>() {
+                {
+                    put("Content-Type", APPLICATION_X_WWW_FORM_URLENCODED);
+                }
+            });
+            //build and write the body
+            String body = SEND_BODY_TEXT + URLEncoder.encode(smsText, ENCODING) + SEND_BODY_NUMBER_PREFIX + prefix + SEND_BODY_NUMBER + number + SEND_BODY_SEND;
+            factory.writeBody(body);
+            try {
+                SMSActionResult smsActionResult = parseResult(factory.getConnnection().getInputStream());
+                out.add(new FireSMSResult(receiver, smsActionResult));
+            } catch (SocketTimeoutException stoe) {
+                Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+            } catch (IOException e) {
+                Log.e(this.getClass().getCanonicalName(), "IOException", e);
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+            }
+
+        }
+
+        return out;
+    }
+
+    /**
+     * check the return if sending was succesful
+     *
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
+    private SMSActionResult parseResult(InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+        Elements flashNotice = parse.select("div#flash_notice");
+        if (flashNotice.size() != 0) {
+            String text = flashNotice.text();
+            if (text.contains("erfolgreich")) {
+                return SMSActionResult.NO_ERROR(text);
+            }
+        }
+        Elements flashError = parse.select("div#flash_error");
+        if (flashError.size() == 0 || flashError.text().equals("")) {
+            return SMSActionResult.UNKNOWN_ERROR(getProvider().getTextByResourceId(R.string.not_sent));
+        }
+        return SMSActionResult.UNKNOWN_ERROR(flashError.text());
+
     }
 
     @Override

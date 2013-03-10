@@ -32,7 +32,7 @@ public class UnideOptionProvider extends OptionProvider {
 
     @Override
     public int getMaxReceiverCount() {
-        return 1;
+        return 5;
     }
 
     @Override
