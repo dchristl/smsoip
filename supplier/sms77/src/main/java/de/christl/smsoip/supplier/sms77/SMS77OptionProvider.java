@@ -360,7 +360,7 @@ public class SMS77OptionProvider extends OptionProvider {
         if (senderFreeText != null) {
             String toWrite = senderFreeText.getText().toString();
             String userName = getUserName();
-            if (toWrite != null && !toWrite.equals("") && userName != null && !userName.equals("")) {
+            if (!toWrite.equals("") && userName != null && !userName.equals("")) {
                 SharedPreferences.Editor edit = getSettings().edit();
                 edit.putString(SENDER_FREE_LAST_INPUT_PREFIX + userName, toWrite);
                 edit.commit();
