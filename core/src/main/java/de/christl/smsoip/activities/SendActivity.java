@@ -218,6 +218,7 @@ public class SendActivity extends AllActivity {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SMSoIPApplication.getApp().throwlastExceptionIfAny();
         //save the default color of textview
         new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);

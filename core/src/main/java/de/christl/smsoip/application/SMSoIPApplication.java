@@ -30,6 +30,7 @@ import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
@@ -76,6 +77,7 @@ public class SMSoIPApplication extends Application {
     private Integer installedPackages;
     private static Activity currentActivity;
     private boolean pickActionAvailable = true;
+    private Exception appInitException;
 
     /**
      * helper for setting background to current activity
@@ -102,12 +104,24 @@ public class SMSoIPApplication extends Application {
      */
     public void onCreate() {
         ACRA.init(this);
-        super.onCreate();
-        app = this;
-        setWriteToDBAvailable();
-        initProviders();
-        checkHash();
-        checkForContactAvailability();
+        try {
+            super.onCreate();
+            app = this;
+            setWriteToDBAvailable();
+            initProviders();
+            checkHash();
+            checkForContactAvailability();
+        } catch (Exception e) {
+            //throw this exception later cause ACRA is not available here
+            appInitException = e;
+        }
+    }
+
+    public void throwlastExceptionIfAny() {
+        if (appInitException != null) {
+            ACRA.getErrorReporter().handleSilentException(appInitException);
+            android.os.Process.killProcess(Process.myPid());
+        }
     }
 
     /**
@@ -210,7 +224,7 @@ public class SMSoIPApplication extends Application {
                 plugin.addAvailableClass(s);
 
             }
-            Map.Entry<String, SMSoIPPlugin> currEntry = null;
+            Map<String, SMSoIPPlugin> currEntry = new HashMap<String, SMSoIPPlugin>();
             int minimalCoreVersion = -1;
             int loaded = 0;
             //iterate over all classes to find if its valid
@@ -222,7 +236,7 @@ public class SMSoIPApplication extends Application {
 
                         ExtendedSMSSupplier smsSupplier = (ExtendedSMSSupplier) aClass.newInstance();
                         plugin.setSupplier(smsSupplier);
-                        currEntry = new AbstractMap.SimpleEntry<String, SMSoIPPlugin>(aClass.getCanonicalName(), plugin);
+                        currEntry.put(aClass.getCanonicalName(), plugin);
                         loaded++;
 
                     } else if (OptionProvider.class.isAssignableFrom(aClass)) { //found the optionprovider
@@ -254,14 +268,16 @@ public class SMSoIPApplication extends Application {
                     break;
                 }
             }
-            if (currEntry != null) {
+            if (currEntry.size() == 1) {
                 int versionCode = getVersionCode();
-                if (loaded != 2) {  //exactly two classes (supplier and provider) should be loaded
-                    notLoadedProviders.put(currEntry.getKey(), currEntry.getValue());
-                } else if (minimalCoreVersion <= versionCode) {
-                    loadedProviders.put(currEntry.getKey(), currEntry.getValue());
-                } else {
-                    pluginsToNew.put(currEntry.getKey(), currEntry.getValue());
+                for (Map.Entry<String, SMSoIPPlugin> stringSMSoIPPluginEntry : currEntry.entrySet()) {
+                    if (loaded != 2) {  //exactly two classes (supplier and provider) should be loaded
+                        notLoadedProviders.put(stringSMSoIPPluginEntry.getKey(), stringSMSoIPPluginEntry.getValue());
+                    } else if (minimalCoreVersion <= versionCode) {
+                        loadedProviders.put(stringSMSoIPPluginEntry.getKey(), stringSMSoIPPluginEntry.getValue());
+                    } else {
+                        pluginsToNew.put(stringSMSoIPPluginEntry.getKey(), stringSMSoIPPluginEntry.getValue());
+                    }
                 }
             }
 
