@@ -44,7 +44,7 @@ import java.util.Map;
 public class UnideSupplier implements ExtendedSMSSupplier {
     private String sessionCookie;
     private OptionProvider provider;
-    private static final String ENCODING = "UTF-8";
+    private static final String ENCODING = "ISO-8859-1";
     private static final String LOGIN_URL = "http://uni.de/login";
 
 

@@ -76,7 +76,7 @@ public class FreenetOptionProvider extends OptionProvider {
 
     @Override
     public Drawable getIconDrawable() {
-        return getDrawble(R.drawable.icon);
+        return getDrawable(R.drawable.icon);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class FreenetOptionProvider extends OptionProvider {
     }
 
     private void buildContent(View freeLayoutView) {
-        refreshButton.setImageDrawable(getDrawble(R.drawable.btn_menu_view));
+        refreshButton.setImageDrawable(getDrawable(R.drawable.btn_menu_view));
         View.OnClickListener refreshNumbersListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,7 +226,7 @@ public class FreenetOptionProvider extends OptionProvider {
         Outer:
         for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
             if (stringEntry.getKey().startsWith(SENDER_PREFIX)) {
-                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$","");
+                String currAccountName = stringEntry.getKey().replaceAll(SENDER_PREFIX, "").replaceAll("\\.\\d+$", "");
                 for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
                     if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
                         continue Outer;
