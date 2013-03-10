@@ -28,7 +28,6 @@
         <version>2.6.11</version>
     </parent>
 
-    <groupId>de.christl</groupId>
     <artifactId>widget</artifactId>
     <version>1.0.0</version>
     <packaging>apk</packaging>
