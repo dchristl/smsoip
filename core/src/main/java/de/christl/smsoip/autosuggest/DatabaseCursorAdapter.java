@@ -60,8 +60,6 @@ public class DatabaseCursorAdapter extends CursorAdapter {
         int nameCol = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
         int typeCol = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
         String name = cursor.getString(nameCol) + " (" + DatabaseHandler.translateTypeToString(context, cursor.getInt(typeCol)) + ")";
-        TextView nameView = (TextView) view.findViewById(R.id.nameType);
-        nameView.setText(name);
         TextView nameType = (TextView) view.findViewById(R.id.nameType);
         SpannableString spanString = new SpannableString(name);
         spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);

@@ -161,7 +161,7 @@ public class InnosendSupplier implements ExtendedSMSSupplier, TimeShiftSupplier 
     }
 
     /**
-     * this can be called everytime, cause it checks if refresh is needed itself
+     * this can be called every time, cause it checks if refresh is needed itself
      *
      * @return
      * @throws IOException
