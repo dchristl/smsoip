@@ -18,7 +18,7 @@
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="2" android:versionName="1.0.1" package="de.christl.smsoip.supplier.meinbmw">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP MeinBMW Plugin">
+    <application android:allowBackup="true" android:icon="@drawable/icon" android:label="SMSoIP MeinBMW Plugin">
         <activity android:excludeFromRecents="true" android:name=".MeinBMWInfoDialogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

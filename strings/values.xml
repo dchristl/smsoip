@@ -1,5 +1,10 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: storedependent.xml
+-->
 <!--
-  ~ Copyright (c) Danny Christl 2013.
+  ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -15,13 +20,6 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: storedependent.xml
--->
-
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
     <string name="visit_plugin_page_description">Find more plugins on Google Play</string>
@@ -66,10 +64,8 @@ fileName: strings.xml
     <string name="exit">Quit</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="save">Save</string>
     <string name="receiverField">Name or Number</string>
     <string name="smsText">Message</string>
-    <string name="sendernumber">Sender</string>
     <string name="chooseType">Sending type</string>
     <string name="smssigns">%1$s characters (%2$s SMS)</string>
     <string name="pickNumber">Choose number for %1$s</string>
@@ -90,7 +86,6 @@ fileName: strings.xml
     <string name="noNumberInput">No number entered!</string>
     <string name="noTextInput">No message entered!</string>
     <string name="noNetworkAvailable">Network not activated!</string>
-    <string name="smsSend_Success">Message transmitted</string>
     <string name="timeOutReached">Timeout reached! Please try again later</string>
     <string name="press_back_again">Press back again to quit SMSoIP.</string>
     <string name="checkCredentials">Pass will be checked.</string>
@@ -103,7 +98,7 @@ fileName: strings.xml
     <string name="applicationName">SMSoIP</string>
     <string name="default_provider">Default provider</string>
     <string name="default_provider_description">Choose your default provider on app startup.</string>
-    <string name="no_default_Provider">None (ask everytime)</string>
+    <string name="no_default_Provider">None (ask every time)</string>
     <string name="visit_project_page">Visit Homepage</string>
     <string name="visit_project_page_description">Visit project home for help and further explanations</string>
     <string name="visit_plugin_page">Find plugins</string>
@@ -143,7 +138,6 @@ fileName: strings.xml
     <string name="too_much_receivers">Maximum of receivers is %1$s. Surplus receivers are
         removed!
     </string>
-    <string name="add_contact_by_number_dialog">Add phone number</string>
     <string name="no_phone_type_label">other</string>
     <string name="write_to_database">Write to internal messages outbox</string>
     <string name="write_to_database_description">Write successful messages to your in-device message outbox.
@@ -200,7 +194,6 @@ fileName: strings.xml
     </string>
     <string name="choose_ringtone">Ringtone</string>
     <string name="choose_ringtone_description">Choose your ringtone for notification.</string>
-    <string name="warning">Warning</string>
     <string name="inputs_corrected">Your receivers were incorrect and were automatically corrected! Check for
         correctness and send again.
     </string>
@@ -255,8 +248,6 @@ fileName: strings.xml
         mail.
     </string>
 
-    <string name="provider_changelog">Show changes</string>
-    <string name="provider_changelog_description">See last plugin changes.</string>
     <string name="rate_app_message">You now uses SMSoIP some time.\nIf you like the app, please take a moment to
         rate SMSoIP and/or a plugin on store. Thanks for your
         support!
@@ -937,8 +928,6 @@ fileName: strings.xml
 
 <resources>
 
-    <string name="balance_good">Free SMS available</string>
-    <string name="balance_bad">No free SMS available</string>
     <string name="not_sent">Message sending failed.</string>
     <string name="foreign_numbers_not_allowed">Only sending to german numbers allowed!</string>
     <string name="invalid_number">Invalid number!</string>

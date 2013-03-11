@@ -18,7 +18,7 @@
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="1" android:versionName="1.0.0" package="de.christl.smsoip.supplier.sample">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP Sample Plugin">
+    <application android:allowBackup="true" android:icon="@drawable/icon" android:label="SMSoIP Sample Plugin">
         <activity android:excludeFromRecents="true" android:name=".SampleDialogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

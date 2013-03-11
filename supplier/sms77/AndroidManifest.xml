@@ -18,7 +18,7 @@
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="3" android:versionName="1.0.2" package="de.christl.smsoip.supplier.sms77">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP SMS77 Plugin">
+    <application android:allowBackup="true" android:icon="@drawable/icon" android:label="SMSoIP SMS77 Plugin">
         <activity android:excludeFromRecents="true" android:name=".SMS77InfoDialogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

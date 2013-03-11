@@ -18,7 +18,7 @@
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="6" android:versionName="1.0.5" package="de.christl.smsoip.supplier.cherrysms">
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
-    <application android:icon="@drawable/icon" android:label="SMSoIP Cherry-SMS Plugin">
+    <application android:allowBackup="true" android:icon="@drawable/icon" android:label="SMSoIP Cherry-SMS Plugin">
         <activity android:excludeFromRecents="true" android:name=".CherryInfoDialogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
