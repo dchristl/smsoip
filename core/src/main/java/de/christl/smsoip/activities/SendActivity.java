@@ -671,8 +671,9 @@ public class SendActivity extends AllActivity {
                 if (!preSendCheck() || progressDialog == null) {
                     return;
                 }
+                cancelUpdateTask();
                 progressDialog.show();
-                if (backgroundSendTask != null) {
+                if (backgroundSendTask != null) {//should not happen because unbreakable
                     backgroundSendTask.cancel(true);
                 }
                 backgroundSendTask = new BackgroundSendTask(SendActivity.this, progressDialog);
@@ -1111,7 +1112,6 @@ public class SendActivity extends AllActivity {
             }
         }
         FireSMSResultList out;
-        cancelUpdateTask();
         try {
             if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
                 out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
