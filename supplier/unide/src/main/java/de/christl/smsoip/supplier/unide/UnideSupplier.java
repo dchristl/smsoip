@@ -211,8 +211,13 @@ public class UnideSupplier implements ExtendedSMSSupplier {
             String body = SEND_BODY_TEXT + URLEncoder.encode(smsText, ENCODING) + SEND_BODY_NUMBER_PREFIX + prefix + SEND_BODY_NUMBER + number + SEND_BODY_SEND;
             factory.writeBody(body);
             try {
-                SMSActionResult smsActionResult = parseResult(factory.getConnnection().getInputStream());
-                out.add(new FireSMSResult(receiver, smsActionResult));
+                HttpURLConnection connnection = factory.getConnnection();
+                InputStream inputStream = connnection.getInputStream();
+                //handle connection redirect for own, cause sometimes not working
+                if (connnection.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+                    inputStream = followRedirectAndGetResponse(connnection.getHeaderFields(), inputStream);
+                }
+                out.add(new FireSMSResult(receiver, parseResult(inputStream)));
             } catch (SocketTimeoutException stoe) {
                 Log.e(this.getClass().getCanonicalName(), "SocketTimeoutException", stoe);
                 out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
@@ -227,6 +232,39 @@ public class UnideSupplier implements ExtendedSMSSupplier {
         }
 
         return out;
+    }
+
+    /**
+     * do the redirect for your own if error occured
+     * possible on live system with some special chars (don't know why)
+     *
+     * @param headerFields the headerfields of the "old" connection to find the new location
+     * @param inputStream
+     * @return the followed inputstream
+     * @throws IOException
+     */
+    private InputStream followRedirectAndGetResponse(Map<String, List<String>> headerFields, InputStream inputStream) throws IOException {
+        String redirectURL = null;
+        for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
+            String key = stringListEntry.getKey();
+            List<String> value = stringListEntry.getValue();
+            if (key.equalsIgnoreCase("Location")) {
+                for (String s : value) {
+                    redirectURL = s;
+                }
+                break;
+            }
+        }
+        if (redirectURL != null) {
+            UrlConnectionFactory factory = new UrlConnectionFactory(redirectURL, UrlConnectionFactory.METHOD_GET);
+            factory.setCookies(new ArrayList<String>() {
+                {
+                    add(sessionCookie);
+                }
+            });
+            inputStream = factory.getConnnection().getInputStream();
+        }
+        return inputStream;
     }
 
     /**

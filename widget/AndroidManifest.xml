@@ -16,9 +16,9 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="internalOnly" android:versionCode="1" android:versionName="1.0.0" package="de.christl.smsoip.widget">
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
-    <application android:debuggable="false" android:icon="@drawable/icon" android:label="SMSoIP Widget Plugin">
+    <application android:icon="@drawable/icon" android:label="SMSoIP Widget Plugin">
         <receiver android:label="SMSoIPWidget" android:name=".SMSoIPWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>

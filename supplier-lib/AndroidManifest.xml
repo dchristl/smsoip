@@ -17,7 +17,7 @@
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="2.6.11" package="de.christl.smsoip.activities">
 
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
 
 </manifest>
