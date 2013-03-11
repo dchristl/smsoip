@@ -1,10 +1,5 @@
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: storedependent.xml
--->
 <!--
-  ~ Copyright (c) Danny Christl 2012.
+  ~ Copyright (c) Danny Christl 2013.
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -20,6 +15,13 @@ fileName: storedependent.xml
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
+
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: storedependent.xml
+-->
+
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
     <string name="visit_plugin_page_description">Find more plugins on Google Play</string>
