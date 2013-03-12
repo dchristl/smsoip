@@ -224,7 +224,7 @@
                     android:weightSum="2"
                     android:id="@+id/timeShiftLayout"
                     >
-                <CheckBox android:layout_weight="1"
+                <CheckBox
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:id="@+id/pickTime"
@@ -235,7 +235,6 @@
                 <!--Fake invisible button to avoid dithering on checkbox click-->
                 <Button android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0"
                         android:visibility="invisible"
                         />
                 <TableLayout android:layout_width="fill_parent"
