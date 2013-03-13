@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.WindowManager;
 import de.christl.smsoip.R;
@@ -34,8 +35,6 @@ import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Helper method for processing bitmaps
@@ -45,7 +44,7 @@ public class BitmapProcessor {
     private static final String BACKGROUND_IMAGE_PATH_PORTRAIT = "background_portrait";
     private static final String BACKGROUND_IMAGE_PATH_LANDSCAPE = "background_landscape";
 
-    private static Map<Integer, Drawable> imageMap = new HashMap<Integer, Drawable>();
+    private static SparseArray<Drawable> imageMap = new SparseArray<Drawable>();
 
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
