@@ -107,7 +107,12 @@ public abstract class DatabaseHandler {
      */
     public static byte[] loadLocalContactPhotoBytes(String receiverNumber, Context context) {
         ContentResolver cr = context.getContentResolver();
-        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, findPhotoIdByNumber(receiverNumber, context));
+        int photoIdByNumber = findPhotoIdByNumber(receiverNumber, context);
+        //number can be negative sometimes causing IllegalArgumentExceptionn
+        if (photoIdByNumber <= 0) {
+            return null;
+        }
+        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoIdByNumber);
         Cursor c = cr.query(photoUri, new String[]{ContactsContract.CommonDataKinds.Photo.PHOTO}, null, null, null);
         if (c != null && c.moveToFirst()) {
             return c.getBlob(0);
@@ -221,6 +226,7 @@ public abstract class DatabaseHandler {
 
     /**
      * write the sent sms in the internal outbox
+     *
      * @param receiverList
      * @param message
      * @param time
@@ -244,6 +250,7 @@ public abstract class DatabaseHandler {
 
     /**
      * resolve the contact back by the number
+     *
      * @param rawNumber
      * @param context
      * @return
@@ -304,6 +311,7 @@ public abstract class DatabaseHandler {
 
     /**
      * used for sharing to build the string of a contact
+     *
      * @param uri
      * @param context
      * @return
