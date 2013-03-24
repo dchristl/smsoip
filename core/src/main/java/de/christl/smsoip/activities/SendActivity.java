@@ -354,6 +354,8 @@ public class SendActivity extends AllActivity {
         View freeLayout = findViewById(R.id.tblFreeLayout);
         View progressUpper = findViewById(R.id.infoTextProgressBarUpper);
         View progress = findViewById(R.id.infoTextProgressBar);
+        View toggleUp = findViewById(R.id.viewToggleUp);
+        View toggleDown = findViewById(R.id.viewToggleDown);
         switch (mode) {
             case NORMAL:
                 but1.setVisibility(View.VISIBLE);
@@ -365,6 +367,8 @@ public class SendActivity extends AllActivity {
                 freeLayout.setVisibility(View.VISIBLE);
                 infoTextUpper.setVisibility(View.GONE);
                 progressUpper.setVisibility(View.GONE);
+                toggleDown.setVisibility(View.VISIBLE);
+                toggleUp.setVisibility(View.INVISIBLE);
                 break;
             case COMPACT:
                 infoTextUpper.setVisibility(View.VISIBLE);
@@ -376,6 +380,8 @@ public class SendActivity extends AllActivity {
                 stDescr.setVisibility(View.GONE);
                 freeLayout.setVisibility(View.GONE);
                 progressUpper.setVisibility(progress.getVisibility());
+                toggleDown.setVisibility(View.INVISIBLE);
+                toggleUp.setVisibility(View.VISIBLE);
                 break;
         }
     }
