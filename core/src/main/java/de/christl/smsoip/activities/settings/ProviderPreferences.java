@@ -27,8 +27,11 @@ import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.MultipleAccountsPreference;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
 
 import java.util.List;
 
@@ -48,8 +51,22 @@ public class ProviderPreferences extends BackgroundPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle extras = getIntent().getExtras();
-        String supplierClassName = (String) extras.get(SUPPLIER_CLASS_NAME);
+        ErrorReporterStack.put("oncreate providerpreference");
+        String supplierClassName;
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            supplierClassName = extras.getString(SUPPLIER_CLASS_NAME);
+        } else {
+            supplierClassName = savedInstanceState.getString(SUPPLIER_CLASS_NAME);
+        }
+        if (supplierClassName == null) {
+
+            ErrorReporter errorReporter = ACRA.getErrorReporter();
+            errorReporter.putCustomData("savedInstanceState", savedInstanceState == null ? null : savedInstanceState.toString());
+            errorReporter.putCustomData("getIntent().getExtras()", getIntent().getExtras() == null ? null : getIntent().getExtras().toString());
+            errorReporter.handleSilentException(new IllegalArgumentException("supplierClassName is null"));
+            this.finish();
+        }
         smsSupplier = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(supplierClassName);
         provider = smsSupplier.getProvider();
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.provider_settings) + " (" + provider.getProviderName() + ")");
@@ -80,4 +97,9 @@ public class ProviderPreferences extends BackgroundPreferenceActivity {
         return smsSupplier.getSupplier();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SUPPLIER_CLASS_NAME, smsSupplier.getSupplierClassName());
+    }
 }
