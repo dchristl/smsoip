@@ -15,8 +15,10 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" android:versionCode="43" android:versionName="2.6.12" package="de.christl.smsoip">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" android:versionCode="44" android:versionName="2.6.13" package="de.christl.smsoip">
+
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.WRITE_SMS"/>
@@ -27,8 +29,11 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <uses-feature android:name="android.hardware.telephony" android:required="false"/>
     <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+
     <application android:allowBackup="true" android:description="@string/description" android:hardwareAccelerated="true" android:icon="@drawable/icon" android:label="@string/applicationName" android:name=".application.SMSoIPApplication">
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:launchMode="singleTop" android:name=".activities.SendActivity" android:theme="@style/Theme.Sherlock">
             <intent-filter>
@@ -39,13 +44,16 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+
                 <data android:mimeType="text/x-vcard"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SENDTO"/>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
+
                 <data android:scheme="sms"/>
                 <data android:scheme="smsto"/>
                 <data android:scheme="smsoip"/>
@@ -56,11 +64,14 @@
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name=".activities.settings.SMSReceiverPreference"/>
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name=".activities.settings.TextModulePreferenceActivity"/>
         <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:name="com.google.ads.AdActivity" tools:ignore="MissingRegistered"/>
+
         <meta-data android:name="com.mobclix.APPLICATION_ID" android:value="8C3C9514-6B9F-44FB-BA42-57B331AD0B19"/>
         <meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14f930decd44ce"/>
+
         <activity android:hardwareAccelerated="true" android:name="com.mobclix.android.sdk.MobclixBrowserActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:excludeFromRecents="true" android:finishOnTaskLaunch="true" android:launchMode="singleInstance" android:name="org.acra.CrashReportDialog" android:theme="@android:style/Theme.Dialog"/>
         <activity android:name=".activities.InformationDialogActivity" android:theme="@android:style/Theme.Dialog"/>
+
         <receiver android:exported="true" android:name="de.christl.smsoip.receiver.SMSReceiver">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED">

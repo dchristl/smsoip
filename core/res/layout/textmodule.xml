@@ -53,6 +53,6 @@
               android:singleLine="false"
               android:minEms="15"
               android:gravity="top|left"
-            />
+              android:inputType="text"/>
 
 </LinearLayout>

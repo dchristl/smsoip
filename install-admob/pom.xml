@@ -32,11 +32,11 @@
                 <artifactId>maven-install-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <file>GoogleAdMobAdsSdk-6.3.0.jar</file>
+                    <file>GoogleAdMobAdsSdk-6.3.1.jar</file>
                     <groupId>com.google.ads</groupId>
                     <artifactId>admob</artifactId>
                     <packaging>jar</packaging>
-                    <version>6.3.0</version>
+                    <version>6.3.1</version>
                 </configuration>
             </plugin>
         </plugins>

@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_showchosencontactsdialog"
                     android:layout_span="1"
-                    >
+                    android:contentDescription="show the chosen contacts">
             </ImageButton>
             <ImageButton
                     android:id="@+id/searchButton"
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_addcontactbysearch"
                     android:layout_span="1"
-                    >
+                    android:contentDescription="search for receivers in phonebook">
             </ImageButton>
         </TableRow>
         <TableRow>
@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/btn_shorttext"
-                        >
+                        android:contentDescription="shorten the message text">
                 </ImageButton>
                 <ImageButton
                         android:id="@+id/insertSmileyButton"
