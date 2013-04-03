@@ -108,8 +108,8 @@ public class SMSReceiver extends BroadcastReceiver {
                         Log.e(this.getClass().getCanonicalName(), "", e);
                     }
                 }
-                CharSequence contentTitle = messages.getOriginatingAddress();
-                Receiver contactByNumber = DatabaseHandler.findContactByNumber(messages.getOriginatingAddress(), context);
+                String contentTitle = messages.getOriginatingAddress();
+                Receiver contactByNumber = DatabaseHandler.findContactByNumber(contentTitle, context);
                 if (contactByNumber != null) {
                     contentTitle = contactByNumber.getName();
                 }
