@@ -26,8 +26,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import de.christl.smsoip.R;
 
-import java.util.Calendar;
-
 /**
  * sending message dialog
  */
@@ -44,12 +42,7 @@ public class SendMessageDialog extends Dialog {
         setCancelable(false);
         setTitle(R.string.smscomitted);
         ImageView image = (ImageView) findViewById(R.id.image);
-        Calendar calendar = Calendar.getInstance();
-        if (calendar.get(Calendar.DAY_OF_MONTH) == 31 && calendar.get(Calendar.MONTH) == Calendar.MARCH && calendar.get(Calendar.YEAR) == 2013) {
-            image.setImageResource(R.drawable.ic_menu_easter);
-        } else {
-            image.setImageResource(R.drawable.ic_menu_send);
-        }
+        image.setImageResource(R.drawable.ic_menu_send);
         image.setPadding(20, 10, 20, 10);
     }
 
