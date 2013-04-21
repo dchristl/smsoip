@@ -74,6 +74,7 @@ import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import de.christl.smsoip.ui.*;
 import org.acra.ACRA;
+import org.acra.ErrorReporter;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
@@ -1678,11 +1679,23 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
+        if (lastInfoDialog != null) {     //call dismiss on dialog to avoid leaking
+            lastInfoDialog.dismiss();
+        }
         lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
         lastInfoDialog.setOwnerActivity(this);
         if (!this.isFinishing()) {
-            lastInfoDialog.show();
-            ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
+            try {
+                lastInfoDialog.show();
+                ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
+            } catch (Exception e) { //to show exactly when the exception occur
+
+                ErrorReporter errorReporter = ACRA.getErrorReporter();
+                errorReporter.putCustomData("SendActivity.this", String.valueOf(this));
+                errorReporter.putCustomData("ownerActivity", String.valueOf(lastInfoDialog.getOwnerActivity()));
+                errorReporter.handleSilentException(e);
+                lastInfoDialog = null;
+            }
         }
         writeSMSInDatabase(fireSMSResults.getSuccessList());
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
