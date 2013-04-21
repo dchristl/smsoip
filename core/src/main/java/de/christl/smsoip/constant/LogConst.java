@@ -43,7 +43,6 @@ public abstract class LogConst {
     public static final String SET_DATE_TIME_PICKER_DIALOG = "setDateTimePickerDialog";
     public static final String SHOW_PROVIDERS_DIALOG = "showProvidersDialog";
     public static final String UPDATE_INFO_TEXT_SILENT = "updateInfoTextSilent";
-    public static final String SET_PRESELECTED_CONTACT = "setPreselectedContact";
     public static final String LAST_MESSAGES_BUTTON_CLICKED = "lastMessagesButtonClicked";
     public static final String SHOW_CHOSEN_CONTACTS_DIALOG = "showChosenContactsDialog";
     public static final String REFRESH_UPPER_CLICKED = "Refresh upper clicked";
@@ -53,10 +52,6 @@ public abstract class LogConst {
     public static final String ADD_TO_RECEIVER = "addToReceiver";
     public static final String ON_CREATE_DIALOG = "onCreateDialog ";
     public static final String CHANGE_SUPPLIER = "changeSupplier ";
-
-    //RunnabelFactory
-    public static final String GET_FIRE_SMS_AND_UPDATE_UI_RUNNABLE = "getFireSMSAndUpdateUIRunnable";
-    public static final String GET_UPDATE_UI_RUNNABLE = "getUpdateUIRunnable";
 
 
     //GlobalPreference

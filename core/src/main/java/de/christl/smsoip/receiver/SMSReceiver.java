@@ -83,7 +83,9 @@ public class SMSReceiver extends BroadcastReceiver {
                 Bundle pudsBundle = intent.getExtras();
                 Object[] pdus = (Object[]) pudsBundle.get(PDUS);
                 SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
-
+                if (messages == null) { //no message available on device
+                    return;
+                }
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setAutoCancel(true);
