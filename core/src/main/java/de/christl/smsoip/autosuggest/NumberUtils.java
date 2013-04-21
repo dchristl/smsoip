@@ -26,7 +26,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,7 +101,7 @@ public abstract class NumberUtils {
             boolean matches = matcher.matches();
             if (matches) {
                 String rawNumber = invalidText.toString();
-                Receiver receiver = DatabaseHandler.findContactByNumber(rawNumber, SMSoIPApplication.getApp().getBaseContext());
+                Receiver receiver = AndroidInternalDatabaseHandler.findContactByNumber(rawNumber, SMSoIPApplication.getApp().getBaseContext());
                 String number = NumberUtils.fixNumber(rawNumber);
                 String name;
                 if (receiver != null) {

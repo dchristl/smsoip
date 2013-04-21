@@ -29,7 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import de.christl.smsoip.R;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 
 /**
  * Adapter for numbersuggestfiled to get directly to database
@@ -59,7 +59,7 @@ public class DatabaseCursorAdapter extends CursorAdapter {
         numberView.setText(NumberUtils.fixNumber(number));
         int nameCol = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
         int typeCol = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
-        String name = cursor.getString(nameCol) + " (" + DatabaseHandler.translateTypeToString(context, cursor.getInt(typeCol)) + ")";
+        String name = cursor.getString(nameCol) + " (" + AndroidInternalDatabaseHandler.translateTypeToString(context, cursor.getInt(typeCol)) + ")";
         TextView nameType = (TextView) view.findViewById(R.id.nameType);
         SpannableString spanString = new SpannableString(name);
         spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
@@ -69,6 +69,6 @@ public class DatabaseCursorAdapter extends CursorAdapter {
 
     @Override
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-        return DatabaseHandler.getDBCursor(context, constraint);
+        return AndroidInternalDatabaseHandler.getDBCursor(context, constraint);
     }
 }

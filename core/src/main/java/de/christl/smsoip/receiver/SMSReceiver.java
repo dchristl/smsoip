@@ -36,7 +36,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.constant.LogConst;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
 import org.acra.ACRA;
 
@@ -111,7 +111,7 @@ public class SMSReceiver extends BroadcastReceiver {
                     }
                 }
                 String contentTitle = messages.getOriginatingAddress();
-                Receiver contactByNumber = DatabaseHandler.findContactByNumber(contentTitle, context);
+                Receiver contactByNumber = AndroidInternalDatabaseHandler.findContactByNumber(contentTitle, context);
                 if (contactByNumber != null) {
                     contentTitle = contactByNumber.getName();
                 }

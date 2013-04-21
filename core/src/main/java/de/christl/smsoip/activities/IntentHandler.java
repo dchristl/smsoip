@@ -24,7 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import de.christl.smsoip.R;
 import de.christl.smsoip.autosuggest.NumberUtils;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.receiver.SMSReceiver;
 import org.acra.ACRA;
 
@@ -68,7 +68,7 @@ public class IntentHandler {
 
                 } else if (type != null && type.equals("text/x-vcard")) {
                     Uri uri = (Uri) extras.get(Intent.EXTRA_STREAM);
-                    builder.append(DatabaseHandler.resolveTextFileContent(uri, context));
+                    builder.append(AndroidInternalDatabaseHandler.resolveTextFileContent(uri, context));
                 }
                 smsText = builder.toString();
             }
@@ -99,7 +99,7 @@ public class IntentHandler {
 
     private void findAndSetReceiver(Context context, String number) {
         number = NumberUtils.fixNumber(number);
-        givenReceiver = DatabaseHandler.findContactByNumber(number, context);
+        givenReceiver = AndroidInternalDatabaseHandler.findContactByNumber(number, context);
         if (givenReceiver == null) {
             givenReceiver = new Receiver(context.getString(R.string.unknown));
             givenReceiver.setRawNumber(number, context.getString(R.string.no_phone_type_label));

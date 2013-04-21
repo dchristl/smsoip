@@ -31,7 +31,7 @@ import android.widget.*;
 import android.widget.TableRow.LayoutParams;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 
 import java.util.List;
 
@@ -87,7 +87,7 @@ public class ChosenContactsDialog extends Dialog {
                     LayoutParams.FILL_PARENT));
             ImageView imageView = new ImageView(this.getContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            byte[] bytes = DatabaseHandler.loadLocalContactPhotoBytes(receiver.getReceiverNumber(), this.getOwnerActivity());
+            byte[] bytes = AndroidInternalDatabaseHandler.loadLocalContactPhotoBytes(receiver.getReceiverNumber(), this.getOwnerActivity());
             Bitmap bmp;
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inInputShareable = true;

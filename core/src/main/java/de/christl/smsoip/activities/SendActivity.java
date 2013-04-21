@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,8 +64,9 @@ import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.database.Contact;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.ContactsNumbersDatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
@@ -707,7 +709,7 @@ public class SendActivity extends AllActivity {
                     public void onDismiss(DialogInterface dialog) {
                         String receiverNumber = lastMessageDialog.getReceiverNumber();
                         if (receiverNumber != null) {
-                            Receiver contactByNumber = DatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
+                            Receiver contactByNumber = AndroidInternalDatabaseHandler.findContactByNumber(receiverNumber, SendActivity.this);
                             if (contactByNumber == null) {
                                 contactByNumber = new Receiver(getString(R.string.unknown));
                                 contactByNumber.setRawNumber(receiverNumber, getString(R.string.no_phone_type_label));
@@ -1011,7 +1013,7 @@ public class SendActivity extends AllActivity {
                 message.append("): ");
             }
             message.append(textField.getText());
-            DatabaseHandler.writeSMSInDatabase(receiverList, message.toString(), dateTime, this);
+            AndroidInternalDatabaseHandler.writeSMSInDatabase(receiverList, message.toString(), dateTime, this);
         }
     }
 
@@ -1165,7 +1167,7 @@ public class SendActivity extends AllActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_CONTACT_REQUEST && resultCode == RESULT_OK) {
             Uri contactData = data.getData();
-            final Contact pickedContact = DatabaseHandler.getPickedContactData(contactData, this);
+            final Contact pickedContact = AndroidInternalDatabaseHandler.getPickedContactData(contactData, this);
 
             if (!pickedContact.getNumberTypeList().isEmpty()) { //nothing picked or no number
                 //always one contact, so it will be filled always

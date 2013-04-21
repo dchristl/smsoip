@@ -33,7 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.models.Message;
 
 import java.util.ArrayList;
@@ -62,16 +62,16 @@ public class ShowLastMessagesDialog extends Dialog {
 
         if (receiverList.isEmpty()) { //no receiver is currently chosen
             findViewById(R.id.hintAddReceivers).setVisibility(View.VISIBLE);
-            Receiver lastMessageReceiver = DatabaseHandler.findLastMessageReceiver(appContext);
+            Receiver lastMessageReceiver = AndroidInternalDatabaseHandler.findLastMessageReceiver(appContext);
             if (lastMessageReceiver != null) {
-                LinkedList<Message> conversation = DatabaseHandler.findConversation(lastMessageReceiver, appContext);
+                LinkedList<Message> conversation = AndroidInternalDatabaseHandler.findConversation(lastMessageReceiver, appContext);
                 addConversationToLayout(layout, lastMessageReceiver, conversation, true);
             }
         } else {
             findViewById(R.id.hintAddReceivers).setVisibility(View.GONE); //user should check how it works
         /* Create a new row to be added. */
             for (final Receiver receiver : receiverList) {
-                LinkedList<Message> conversation = DatabaseHandler.findConversation(receiver, appContext);
+                LinkedList<Message> conversation = AndroidInternalDatabaseHandler.findConversation(receiver, appContext);
                 addConversationToLayout(layout, receiver, conversation, false);
             }
         }

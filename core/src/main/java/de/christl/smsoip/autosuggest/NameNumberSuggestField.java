@@ -27,7 +27,7 @@ import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.database.DatabaseHandler;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
     }
 
     private void init() {
-        setAdapter(new DatabaseCursorAdapter(getContext(), DatabaseHandler.getDBCursor(getContext(), null)));
+        setAdapter(new DatabaseCursorAdapter(getContext(), AndroidInternalDatabaseHandler.getDBCursor(getContext(), null)));
         setTokenizer(tokenizer);
         setValidator(NumberUtils.getNumberValidator());
         addTextChangedListener(new TextWatcher() {
@@ -93,7 +93,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
             String currentPart = s.trim();
             if (NumberUtils.isCorrectNumberInInternationalStyle(currentPart)) {
                 currentPart = NumberUtils.fixNumber(currentPart);
-                Receiver receiver = DatabaseHandler.findContactByNumber(currentPart, getContext());
+                Receiver receiver = AndroidInternalDatabaseHandler.findContactByNumber(currentPart, getContext());
                 if (receiver == null) {
                     receiver = new Receiver(getContext().getString(R.string.unknown));
                     receiver.setReceiverNumber(currentPart, getContext().getString(R.string.no_phone_type_label));
