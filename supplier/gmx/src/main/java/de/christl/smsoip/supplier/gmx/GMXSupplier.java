@@ -27,9 +27,9 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import de.christl.smsoip.supplier.gmx.util.Base64;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -39,37 +39,52 @@ import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 /**
  *
  */
 public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
+    private static final String USER_AGENT = "Dalvik/1.4.0 (Linux; U; Android 2.3.3; Galaxy GMX SMS/2.0.7 (Production; ReleaseBuild; de-de)";
     private GMXOptionProvider provider;
+    private static final String LOGIN_URL = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
+    private static final String LOGIN_BODY = "identifierUrn=%s&password=%s&durationType=PERMANENT&loginClientType=freemessage";
+
+    private static final String TOKEN_LOGIN_URL = "https://uas2.uilogin.de/tokenlogin/";
+    private static final String TOKEN_LOGIN_BODY = "serviceID=freemessage.gmxnet.live&logintoken=%s";
+
+    private static final String FIND_NUMBERS_URL_START = "https://hsp.gmx.net/http-service-proxy1/service/number-verification-service-2/NumberVerified/urn:uasaccountid:accountId";
+    private static final Pattern NUMBER_PATTERN = Pattern.compile(".*?\\{\"number\":\"([0-9]+)\",\"numberVerifyState\":\"VERIFIED\",\"defaultNumber\":(.*?)\\}.*?");
+
+    private static final String INFO_URL = "https://sms-submission-service.gmx.de/sms-submission-service/gmx/sms/2.0/SmsCapabilities?";
+    private static final Pattern INFO_PATTERN = Pattern.compile("MAX_MONTH_FREE_SMS=([0-9]+).*?AVAILABLE_FREE_SMS=([0-9]+).*?MONTH_PAY_SMS=([0-9]+).*");
     /**
      * this.getClass().getCanonicalName() for output.
      */
 
 
     private static final String TARGET_URL = "https://ums.gmx.net/ums/home;jsessionid=%s?1-1.IBehaviorListener.0-main~tab-content~panel~container-content~panel-form-sendMessage&wicket-ajax=true&wicket-ajax-baseurl=home";
-    private static final String SAVE_URL = "https://ums.gmx.net/ums/home;jsessionid=%s?1-1.IBehaviorListener.0-main~tab-content~panel~container-content~panel-form-send~date~panel-send~date~form-save&wicket-ajax=true&wicket-ajax-baseurl=home";
 
+    private static final String SAVE_URL = "https://ums.gmx.net/ums/home;jsessionid=%s?1-1.IBehaviorListener.0-main~tab-content~panel~container-content~panel-form-send~date~panel-send~date~form-save&wicket-ajax=true&wicket-ajax-baseurl=home";
     private static final String FIND_NUMBERS_URL = "https://ums.gmx.net/ums/home;jsessionid=%s?1";
 
 
-    private static final String LOGIN_URL = "https://ums.gmx.net/ums/login?0-1.IFormSubmitListener-login&dev=dsk";
-    private String sessionId;
+    private String loginToken;
     private static final String SESSION_ID_URL_STRING = "jsessionid";
-    private Document lastParsedDocument;
     private String sendNowRadioButtonId;
     private String sendLaterRadioButtonId;
     private static final String CRLF = "\r\n";
-    private static final String ENCODING = "UTF-8";
+    private static final String ENCODING = "ISO-8859-15";
 
     public static final int WITH_PHONE_NUMBER = 0;
     public static final int WITH_FREE_TEXT = 1;
 
     private Long leaseTime;
+    private String sid;
+    private String sessionId;
 
     public GMXSupplier() {
         provider = new GMXOptionProvider(this);
@@ -188,7 +203,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         parameterMap.put("send-date-panel:send-date-form:send-date-minute", minute);
         parameterMap.put("sendMessage", "1");
 
-        String tmpUrl = String.format(TARGET_URL, sessionId);
+        String tmpUrl = String.format(TARGET_URL, loginToken);
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
         factory.writeMultipartBody(parameterMap, ENCODING);
         HttpURLConnection connnection = factory.getConnnection();
@@ -207,7 +222,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         Map<String, String> otherParameterMap = new HashMap<String, String>(parameterMap);
         otherParameterMap.put("send-date-panel:send-date-form:save", "1");
         try {
-            String tmpUrl = String.format(SAVE_URL, sessionId);
+            String tmpUrl = String.format(SAVE_URL, loginToken);
             UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
             factory.writeMultipartBody(otherParameterMap, ENCODING);
             //just fire request
@@ -267,10 +282,23 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 return result;
             }
         }
-        if (lastParsedDocument == null) {
-            return SMSActionResult.UNKNOWN_ERROR();
+        String str = provider.getUserName() + ":" + provider.getPassword();
+        final byte[] decodedBytes = Base64.encode(str.getBytes("UTF-8"), Base64.NO_WRAP);
+        UrlConnectionFactory factory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
+        Map<String, String> requestMap = new HashMap<String, String>() {
+            {
+                put("X-UI-CALLER-IP", "127.0.0.1");
+                put("Accept", "application/x-www-form-urlencoded");
+                put("Authorization", "Basic " + new String(decodedBytes));
+            }
+        };
+        factory.setRequestProperties(requestMap);
+        InputStream inputStream = factory.getConnnection().getInputStream();
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
         }
-        String infoText = findInfoText();
+        String response = UrlConnectionFactory.inputStream2DebugString(inputStream);
+        String infoText = findInfoText(response);
         return SMSActionResult.NO_ERROR(infoText);
     }
 
@@ -285,50 +313,24 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     /**
-     * <div id="SMMS_tab_content_info">
-     * <div id="SMMS_tab_content_info_status">8. Juni 2012
-     * </div>
-     * <div id="SMMS_tab_content_info_free">
-     * <div class="SMMS_tab_content_info_text">Frei<span>SMS</span>
-     * </div>
-     * <div class="SMMS_tab_content_info_text_small">noch 3
-     * von 10
-     * </div>
-     * </div>
-     * <div id="SMMS_tab_content_info_pay">
-     * <div class="SMMS_tab_content_info_text">
-     * Pay<span>SMS</span></div>
-     * <div class="SMMS_tab_content_info_text_small">0
-     * versendet
-     * </div>
-     * </div>
-     * </div>
+     * MAX_MONTH_FREE_SMS=10&MONTH_FREE_SMS=1&LIMIT_MONTH_AUTO_SMS=0&AVAILABLE_FREE_SMS=9&USER_TYPE=GMX_FREEMAIL&MAX_WEBCENT=0&MONTH_PAY_SMS=0&MONTH_AUTO_SMS=0
      *
+     * @param response
      * @return found info string or empty if not found
      * @throws IOException
      */
-    private String findInfoText() throws IOException {
-        StringBuilder out = new StringBuilder("");
-        Elements freeElementText = lastParsedDocument.select("#SMMS_tab_content_info_free").select(".SMMS_tab_content_info_text");
-        if (freeElementText.size() > 0) {
-            out.append(freeElementText.text());
-            out.append(" : ");
+    private String findInfoText(String response) throws IOException {
+        Matcher m = INFO_PATTERN.matcher(response);
+        String maxMsgMonth = "0";
+        String sentMsg = "0";
+        String paySent = "0";
+        while (m.find()) {
+            maxMsgMonth = m.group(1);
+            sentMsg = m.group(2);
+            paySent = m.group(3);
         }
-        Elements freeElement = lastParsedDocument.select("#SMMS_tab_content_info_free").select(".SMMS_tab_content_info_text_small");
-        if (freeElement.size() > 0) {
-            out.append(freeElement.text());
-            out.append(CRLF);
-        }
-        Elements payElementText = lastParsedDocument.select("#SMMS_tab_content_info_pay").select(".SMMS_tab_content_info_text");
-        if (payElementText.size() > 0) {
-            out.append(payElementText.text());
-            out.append(" : ");
-        }
-        Elements payElement = lastParsedDocument.select("#SMMS_tab_content_info_pay").select(".SMMS_tab_content_info_text_small");
-        if (payElement.size() > 0) {
-            out.append(payElement.text());
-        }
-        return out.toString();
+        String textByResourceId = provider.getTextByResourceId(R.string.infoText);
+        return String.format(textByResourceId, sentMsg, maxMsgMonth, paySent);
     }
 
 
@@ -339,53 +341,47 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException {
-        String tmpUrl;
         leaseTime = null;
-        tmpUrl = LOGIN_URL + "&login_form_hf_0=&token=false&email=" + URLEncoder.encode(userName == null ? "" : userName, ENCODING) + "&password=" + URLEncoder.encode(password == null ? "" : password, ENCODING);
-        sendNowRadioButtonId = null;
-        sendLaterRadioButtonId = null;
-        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+        loginToken = null;
         sessionId = null;
-        HttpURLConnection con;
-        String inputStream;
-        con = factory.create();
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
+        factory.setTargetAgent(USER_AGENT);
+        Map<String, String> requestMap = new HashMap<String, String>() {
+            {
+                put("X-UI-APP", "GmxFreeMessageAndroid/2.0.7");
+                put("X-UI-CallerIP", "127.0.0.1");
+                put("Accept-Encoding", "gzip");
+                put("Content-Type", "application/x-www-form-urlencoded");
+            }
+        };
+        factory.setRequestProperties(requestMap);
+        HttpURLConnection con = factory.writeBody(String.format(LOGIN_BODY, URLEncoder.encode("urn:identifier:mailto:" + userName, ENCODING), URLEncoder.encode(password, ENCODING)));
 
         //no network
         Map<String, List<String>> headerFields = con.getHeaderFields();
-        if (headerFields == null) {
-            return SMSActionResult.NETWORK_ERROR();
-        }
         InputStream tmpStream = con.getInputStream();
-        if (tmpStream == null) {
+        if (headerFields == null || tmpStream == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
-        inputStream = UrlConnectionFactory.inputStream2DebugString(tmpStream);
-        Document document = Jsoup.parse(inputStream);
-        Elements scripts = document.select("script");
-        for (Element script : scripts) {
-            String data = script.data();
-            if (data.contains(SESSION_ID_URL_STRING)) {
-                sessionId = data.replaceAll("\\s", "");
-                sessionId = sessionId.replaceAll(".*jsessionid=", "");
-                sessionId = sessionId.replaceAll("\\?.*", "");
-                break;
+        GZIPInputStream gzipInputStream = new GZIPInputStream(tmpStream);
+        loginToken = UrlConnectionFactory.inputStream2DebugString(gzipInputStream, ENCODING);
+        if (!(loginToken == null || loginToken.length() == 0)) {
+            leaseTime = System.currentTimeMillis();
+            //try to login by token
+            factory = new UrlConnectionFactory(TOKEN_LOGIN_URL);
+            con = factory.writeBody(String.format(TOKEN_LOGIN_BODY, URLEncoder.encode("urn:token:freemessage:" + loginToken, ENCODING)));
+            Map<String, List<String>> tokenHeader = con.getHeaderFields();
+            sessionId = UrlConnectionFactory.findCookieByPattern(tokenHeader, "JSESSIONID=.*");
+
+            if (!(sessionId == null || sessionId.length() == 0)) {
+                //parseJSessionId
+//                sessionId = sessionId.replaceAll("JSESSIONID=", "").replaceAll(";.*", "");
+                provider.setAccountChanged(false);
+                return SMSActionResult.LOGIN_SUCCESSFUL();
             }
+
         }
 
-        Elements radioButtons = document.select("input[id^=SMMS_tab_content_radio]");
-        for (Element radioButton : radioButtons) {
-            if (radioButton.hasAttr("checked")) {
-                sendNowRadioButtonId = radioButton.attr("value");
-            } else {
-                sendLaterRadioButtonId = radioButton.attr("value");
-            }
-        }
-        if (!(sessionId == null || sessionId.length() == 0)) {
-            lastParsedDocument = document;
-            leaseTime = System.currentTimeMillis();
-            provider.setAccountChanged(false);
-            return SMSActionResult.LOGIN_SUCCESSFUL();
-        }
         SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
         smsActionResult.setRetryMakesSense(false);
         return smsActionResult;
@@ -425,25 +421,44 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
         }
 
-        String tmpUrl = String.format(FIND_NUMBERS_URL, sessionId);
 
-        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+        UrlConnectionFactory factory = new UrlConnectionFactory(FIND_NUMBERS_URL_START, UrlConnectionFactory.METHOD_GET);
+        factory.setCookies(new ArrayList<String>() {
+            {
+                add(sessionId);
+            }
+        });
+
+        factory.setTargetAgent(USER_AGENT);
+        Map<String, String> requestMap = new HashMap<String, String>() {
+            {
+                put("X-UI-APP", "GmxFreeMessageAndroid/2.0.7");
+                put("X-UI-CallerIP", "127.0.0.1");
+                put("Accept-Encoding", "gzip");
+                put("Accept", "application/json");
+            }
+        };
+        factory.setRequestProperties(requestMap);
         InputStream inputStream = factory.getConnnection().getInputStream();
-        Document document = Jsoup.parse(inputStream, ENCODING, "");
-        Elements select = document.select("select#SMMS_tab_number_selector_drop option");
-        if (select.size() < 1) {
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+
+        String content = UrlConnectionFactory.inputStream2DebugString(new GZIPInputStream(inputStream), ENCODING);
+        Matcher m = NUMBER_PATTERN.matcher(content);
+        HashMap<Integer, String> numbers = new HashMap<Integer, String>();
+        int i = 1;
+        while (m.find()) {
+            //check the default number
+            boolean defaultNumber = Boolean.parseBoolean(m.group(2));
+            //put the default number as first (can only one exist
+            numbers.put(defaultNumber ? 1 : ++i, m.group(1));
+        }
+        if (numbers.size() < 1) {
             return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_numbers_maintened));
         }
-        HashMap<Integer, String> numbers = new HashMap<Integer, String>(select.size());
-        try {
-            for (Element element : select) {
-                int id = Integer.parseInt(element.attr("value"));
-                numbers.put(id, element.text());
-            }
-            provider.saveNumbers(numbers);
-        } catch (NumberFormatException e) {
-            return SMSActionResult.UNKNOWN_ERROR();
-        }
+
+        provider.saveNumbers(numbers);
         return SMSActionResult.NO_ERROR();
     }
 

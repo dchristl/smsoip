@@ -41,4 +41,5 @@
     </string>
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
     <string name="no_free_input">Kein Absender eingetragen oder zu kurz (mind. 2 Zeichen)</string>
+    <string name="infoText">FreiSMS: noch %1$s von %2$s\nPaySMS: %3$s versendet</string>
 </resources>

@@ -39,7 +39,6 @@ import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
-import de.christl.smsoip.database.ContactsSQLiteHelper;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
