@@ -18,10 +18,6 @@
   -->
 
 <resources>
-    <string-array name="array_spinner">
-        <item>Mit Handynummer</item>
-        <item>Mit Freitext</item>
-    </string-array>
     <string name="check_no_free_available">Überprüfe auf kostenlose SMS</string>
     <string name="check_no_free_available_long">Verhindere das Senden, wenn keine kostenlosen SMS mehr verfügbar
         sind.
@@ -40,6 +36,7 @@
         Senden mit Hilfe des Auges über dem Sende-Buttons.
     </string>
     <string name="not_yet_refreshed">Noch nicht bestimmt.</string>
-    <string name="no_free_input">Kein Absender eingetragen oder zu kurz (mind. 2 Zeichen)</string>
+    <string name="no_free_input">Kein Absender eingetragen</string>
     <string name="infoText">FreiSMS: noch %1$s von %2$s\nPaySMS: %3$s versendet</string>
+    <string name="sentSuccess">SMS erfolgreich gesendet.</string>
 </resources>

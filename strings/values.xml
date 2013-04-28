@@ -1,5 +1,10 @@
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: storedependent.xml
+-->
 <!--
-  ~ Copyright (c) Danny Christl 2013.
+  ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
   ~
   ~     SMSoIP is free software: you can redistribute it and/or modify
@@ -15,13 +20,6 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<!--String resources for:
-project: SMSoIP-core
-values folder: values
-fileName: storedependent.xml
--->
-
 <resources>
     <string name="market_plugin_url">market://search?q=SMSoIP</string>
     <string name="visit_plugin_page_description">Find more plugins on Google Play</string>
@@ -342,10 +340,6 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string-array name="array_spinner">
-        <item>With phonenumber</item>
-        <item>With free source id</item>
-    </string-array>
     <string name="check_no_free_available">Check for no free messages</string>
     <string name="check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
     <string name="no_free_messages_available">Not enough free messages available.</string>
@@ -361,7 +355,9 @@ fileName: strings.xml
         the send button.
     </string>
     <string name="not_yet_refreshed">Refresh by eye button.</string>
-    <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
+    <string name="no_free_input">No sender defined</string>
+    <string name="infoText">FreeSMS: %1$s of %2$s\nPaySMS: %3$s sent</string>
+    <string name="sentSuccess">SMS sucessfully sent.</string>
 </resources>
 <!--String resources for:
 project: goodmails

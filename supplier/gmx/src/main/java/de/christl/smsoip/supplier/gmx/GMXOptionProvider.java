@@ -24,16 +24,11 @@ import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import de.christl.smsoip.activities.SendActivity;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.option.OptionProvider;
 
@@ -46,13 +41,10 @@ public class GMXOptionProvider extends OptionProvider {
 
     private static final String PROVIDER_NAME = "GMX";
     public static final String PROVIDER_CHECKNOFREESMSAVAILABLE = "provider.checknofreesmsavailable";
-    public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
     private static final String SENDER_LAST_DD_PREFIX = "sender_last_dd_";
-    private static final String SENDER_LAST_FT_PREFIX = "sender_last_ft_";
 
     private HashMap<Integer, String> adapterItems;
     private static final String SENDER_PREFIX = "sender_";
-    private boolean showFreeText;
     private ViewGroup parentTableRow;
     private ImageButton refreshButton;
     private ProgressBar progressBar;
@@ -64,11 +56,8 @@ public class GMXOptionProvider extends OptionProvider {
 
     private Integer spinnerItem;
 
-    private EditText senderFreeText;
 
     private static final String STATE_SPINNER = "gmx.state.checkbox";
-    private static final String STATE_FREE_TEXT = "gmx.state.freetetx";
-    private String freeTextContent;
 
     public GMXOptionProvider(GMXSupplier supplier) {
         super(PROVIDER_NAME);
@@ -78,16 +67,6 @@ public class GMXOptionProvider extends OptionProvider {
     @Override
     public List<Preference> getAdditionalPreferences(Context context) {
         List<Preference> out = new ArrayList<Preference>();
-        ListPreference listPref = new ListPreference(context);
-        String[] typeArray = getArrayByResourceId(R.array.array_spinner);
-        listPref.setEntries(typeArray);
-        listPref.setEntryValues(typeArray);
-        listPref.setDialogTitle(getTextByResourceId(R.string.default_type));
-        listPref.setKey(PROVIDER_DEFAULT_TYPE);
-        listPref.setTitle(getTextByResourceId(R.string.default_type));
-        listPref.setSummary(getTextByResourceId(R.string.default_type_long));
-        listPref.setDefaultValue(typeArray[0]);
-        out.add(listPref);
         CheckBoxPreference checkNoFreeSMSAvailable = new CheckBoxPreference(context);
         checkNoFreeSMSAvailable.setKey(PROVIDER_CHECKNOFREESMSAVAILABLE);
         checkNoFreeSMSAvailable.setTitle(getTextByResourceId(R.string.check_no_free_available));
@@ -101,37 +80,6 @@ public class GMXOptionProvider extends OptionProvider {
         return 5;
     }
 
-
-    @Override
-    public void createSpinner(final SendActivity sendActivity, Spinner spinner) {
-        final String[] arraySpinner = getArrayByResourceId(R.array.array_spinner);
-        spinner.setVisibility(View.VISIBLE);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(sendActivity, android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        showFreeText = false;
-                        break;
-                    case 1:
-                        showFreeText = true;
-                        break;
-                }
-                sendActivity.updateAfterReceiverCountChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        int defaultPosition = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(getSettings().getString(PROVIDER_DEFAULT_TYPE, arraySpinner[0]));
-        defaultPosition = (defaultPosition == -1) ? 0 : defaultPosition;
-        spinner.setSelection(defaultPosition);
-    }
 
     @Override
     public Drawable getIconDrawable() {
@@ -154,16 +102,12 @@ public class GMXOptionProvider extends OptionProvider {
 
     @Override
     public void getFreeLayout(LinearLayout freeLayout) {
-        int resourceId = showFreeText ? R.layout.freelayout_text : R.layout.freelayout_dropdown;
+        int resourceId = R.layout.freelayout_dropdown;
         XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(resourceId);
         View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
         resolveChildren(freeLayout);
-        if (showFreeText) {
-            resolveFreeTextChildren();
-        } else {
-            resolveFreeLayoutsDropDownChildren();
-            buildContent(freeLayoutView);
-        }
+        resolveFreeLayoutsDropDownChildren();
+        buildContent(freeLayoutView);
     }
 
 
@@ -174,18 +118,6 @@ public class GMXOptionProvider extends OptionProvider {
         parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
         //set the heading
         ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
-    }
-
-    private void resolveFreeTextChildren() {
-        senderFreeText = (EditText) parentTableRow.getChildAt(0);
-        senderFreeText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        if (freeTextContent != null) {
-            senderFreeText.setText(freeTextContent);
-        } else {
-            senderFreeText.setText(getLastSenderFT());
-        }
-        freeTextContent = null;
-        setInputFiltersForEditText();
     }
 
     private void resolveFreeLayoutsDropDownChildren() {
@@ -272,46 +204,15 @@ public class GMXOptionProvider extends OptionProvider {
     }
 
 
-    private void setInputFiltersForEditText() {
-        int length = 11;
-        InputFilter maxLengthFilter = new InputFilter.LengthFilter(length);//max 16 chars allowed
-        InputFilter specialCharsFilter = new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                for (int i = start; i < end; i++) {
-                    char c = source.charAt(i);
-                    if (c <= 32 || c > 127) {
-                        return "";
-                    }
-                    if (!Character.isWhitespace(c) && !Character.isLetterOrDigit(c)) {//only numbers or charcters allowed
-                        return "";
-                    }
-                }
-                return null;
-            }
-        };
-        senderFreeText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
-    }
-
-
     @Override
     public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
-        if (!showFreeText) {
-            spinnerItem = savedInstanceState.getInt(STATE_SPINNER, Spinner.INVALID_POSITION);
-        } else {
-            freeTextContent = savedInstanceState.getString(STATE_FREE_TEXT);
-        }
+        spinnerItem = savedInstanceState.getInt(STATE_SPINNER, Spinner.INVALID_POSITION);
     }
 
     @Override
     public void onActivityPaused(Bundle outState) {
-        if (!showFreeText) {
-            spinnerItem = senderSpinner.getSelectedItemPosition();
-            outState.putInt(STATE_SPINNER, spinnerItem);
-        } else {
-            freeTextContent = senderFreeText.getText().toString();
-            outState.putString(STATE_FREE_TEXT, freeTextContent);
-        }
+        spinnerItem = senderSpinner.getSelectedItemPosition();
+        outState.putInt(STATE_SPINNER, spinnerItem);
     }
 
 
@@ -359,52 +260,34 @@ public class GMXOptionProvider extends OptionProvider {
             if (key.startsWith(SENDER_LAST_DD_PREFIX + getUserName())) {
                 edit.remove(key);
             }
-            if (key.startsWith(SENDER_LAST_FT_PREFIX + getUserName())) {
-                edit.remove(key);
-            }
         }
         edit.commit();
     }
 
     public void saveTemporaryState() {
-        freeTextContent = senderFreeText == null ? null : senderFreeText.getText().toString();
         spinnerItem = senderSpinner == null ? null : senderSpinner.getSelectedItemPosition();
 
     }
 
-    public int getSenderId() {
+    public String getSender() {
         Object selectedItem = senderSpinner.getSelectedItem();
-        int out = -1;
+        String out = null;
         if (selectedItem != null) {
-            for (Map.Entry<Integer, String> integerStringEntry : adapterItems.entrySet()) {
-                String value = integerStringEntry.getValue();
-                if (value != null && value.equals(selectedItem)) {
-                    out = integerStringEntry.getKey();
-                    break;
-                }
-            }
+            out = String.valueOf(selectedItem);
         }
         return out;
     }
 
-    public String getSender() {
-        return senderFreeText.getText().toString();
-    }
 
     public void saveLastSender() {
         SharedPreferences.Editor edit = getSettings().edit();
-        if (!showFreeText) {
-            Object selectedItem = senderSpinner.getSelectedItemId();
-            if (selectedItem != null) {
-                edit.putInt(SENDER_LAST_DD_PREFIX + getUserName(), senderSpinner.getSelectedItemPosition());
-            }
-        } else {
-            String lastFreeText = senderFreeText.getText().toString();
-            edit.putString(SENDER_LAST_FT_PREFIX + getUserName(), lastFreeText);
+        Object selectedItem = senderSpinner.getSelectedItemId();
+        if (selectedItem != null) {
+            edit.putInt(SENDER_LAST_DD_PREFIX + getUserName(), senderSpinner.getSelectedItemPosition());
         }
+
         edit.commit();
         //reset all temporary variables
-        freeTextContent = null;
         spinnerItem = null;
     }
 
@@ -439,26 +322,12 @@ public class GMXOptionProvider extends OptionProvider {
                 }
                 edit.remove(stringEntry.getKey());
             }
-            //remove last sender (freetext)
-            if (stringEntry.getKey().startsWith(SENDER_LAST_FT_PREFIX)) {
-                String currAccountName = stringEntry.getKey().replaceAll(SENDER_LAST_FT_PREFIX, "");
-                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
-                    if (currAccountName.equals(integerAccountModelEntry.getValue().getUserName())) {
-                        continue Outer;
-                    }
-                }
-                edit.remove(stringEntry.getKey());
-            }
         }
         edit.commit();
     }
 
     private int getLastSenderDD() {
         return getSettings().getInt(SENDER_LAST_DD_PREFIX + getUserName(), Spinner.INVALID_POSITION);
-    }
-
-    private String getLastSenderFT() {
-        return getSettings().getString(SENDER_LAST_FT_PREFIX + getUserName(), "");
     }
 
     @Override
