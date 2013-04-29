@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.supplier.gmx;
 
+import android.os.Build;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResult;
@@ -44,7 +45,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
-    private static final String USER_AGENT = "Dalvik/1.4.0 (Linux; U; Android 2.3.3; Galaxy GMX SMS/2.0.7 (Production; ReleaseBuild; de-de)";
+    private static final String USER_AGENT = "Dalvik/1.4.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; Galaxy GMX SMS/2.0.7 (Production; ReleaseBuild; de-de)";
 
     private GMXOptionProvider provider;
     private static final String LOGIN_URL = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
@@ -83,31 +84,20 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
         if (provider.getSettings().getBoolean(GMXOptionProvider.PROVIDER_CHECKNOFREESMSAVAILABLE, false)) {
-            SMSActionResult tmpResult = refreshInformations(true);
-            if (tmpResult.isSuccess()) {
-                String userText = tmpResult.getMessage();
-                String[] split = userText.split(" ");
-                boolean noFreeAvailable;
-                if (split.length > 1) {
-                    int freeSMS;
-                    try {
-                        freeSMS = Integer.parseInt(split[1]);
-                    } catch (NumberFormatException e) {
-                        provider.saveTemporaryState();
-                        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.free_messages_could_not_resolved)), receivers);
-                    }
-                    int messageLength = getProvider().getTextMessageLength();
-                    int smsCount = Math.round((smsText.length() / messageLength));
-                    smsCount = smsText.length() % messageLength == 0 ? smsCount : smsCount + 1;
-                    noFreeAvailable = !((receivers.size() * smsCount) <= freeSMS);
-                } else {
-                    provider.saveTemporaryState();
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.free_messages_could_not_resolved)), receivers);
-                }
-                if (noFreeAvailable) {
-                    provider.saveTemporaryState();
-                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_free_messages_available)), receivers);
-                }
+            int availableFreeMessages = findAvailableFreeMessages(getInformations());
+            boolean noFreeAvailable;
+            if (availableFreeMessages != -1) {
+                int messageLength = getProvider().getTextMessageLength();
+                int smsCount = Math.round((smsText.length() / messageLength));
+                smsCount = smsText.length() % messageLength == 0 ? smsCount : smsCount + 1;
+                noFreeAvailable = !((receivers.size() * smsCount) <= availableFreeMessages);
+            } else {
+                provider.saveTemporaryState();
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.free_messages_could_not_resolved)), receivers);
+            }
+            if (noFreeAvailable) {
+                provider.saveTemporaryState();
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_free_messages_available)), receivers);
             }
         }
 
@@ -148,7 +138,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             InputStream inputStream = factory.getConnnection().getInputStream();
             SMSActionResult sendResult = processReturn(inputStream, shortReceiverNumber);
             if (sendResult.isSuccess()) {
-                sendResult.setMessage(calendar.getTime().toString());
+                sendResult.setMessage(calendar == null ? "now" : calendar.getTime().toString());  //TODO remove
                 provider.saveLastSender();
             } else {
                 provider.saveTemporaryState();
@@ -168,6 +158,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         if (is == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
+        //fix if old numbers are saved
+        shortReceiverNumber = shortReceiverNumber.replaceAll("^00", "").replaceAll("^\\+", "");
         String s = UrlConnectionFactory.inputStream2DebugString(is);
         if (s.contains(shortReceiverNumber + "=")) {
             return SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.sentSuccess));
@@ -198,6 +190,11 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 return result;
             }
         }
+        String infoText = findInfoText(getInformations());
+        return SMSActionResult.NO_ERROR(infoText);
+    }
+
+    private String getInformations() throws IOException {
         String str = provider.getUserName() + ":" + provider.getPassword();
         final byte[] decodedBytes = Base64.encode(str.getBytes(ENCODING_UTF_8), Base64.NO_WRAP);
         UrlConnectionFactory factory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
@@ -211,11 +208,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         factory.setRequestProperties(requestMap);
         InputStream inputStream = factory.getConnnection().getInputStream();
         if (inputStream == null) {
-            return SMSActionResult.NETWORK_ERROR();
+            return null;
         }
-        String response = UrlConnectionFactory.inputStream2DebugString(inputStream);
-        String infoText = findInfoText(response);
-        return SMSActionResult.NO_ERROR(infoText);
+        return UrlConnectionFactory.inputStream2DebugString(inputStream);
     }
 
 
@@ -238,6 +233,19 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         String textByResourceId = provider.getTextByResourceId(R.string.infoText);
         return String.format(textByResourceId, sentMsg, maxMsgMonth, paySent);
+    }
+
+    private int findAvailableFreeMessages(String response) {
+        Matcher m = INFO_PATTERN.matcher(response);
+        int sentMsg = -1;
+        try {
+            while (m.find()) {
+                sentMsg = Integer.parseInt(m.group(2));
+            }
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+        return sentMsg;
     }
 
 
@@ -275,11 +283,13 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             return SMSActionResult.NETWORK_ERROR();
         }
         GZIPInputStream gzipInputStream = new GZIPInputStream(tmpStream);
-        loginToken = UrlConnectionFactory.inputStream2DebugString(gzipInputStream, ENCODING_ISO);
+        loginToken = UrlConnectionFactory.inputStream2DebugString(gzipInputStream, ENCODING_UTF_8);
         if (!(loginToken == null || loginToken.length() == 0)) {
             //try to login by token
             factory = new UrlConnectionFactory(TOKEN_LOGIN_URL);
-            con = factory.writeBody(String.format(TOKEN_LOGIN_BODY, URLEncoder.encode("urn:token:freemessage:" + loginToken, ENCODING_ISO)));
+            factory.setTargetAgent(USER_AGENT);
+            factory.setRequestProperties(requestMap);
+            con = factory.writeBody(String.format(TOKEN_LOGIN_BODY, URLEncoder.encode("urn:token:freemessage:" + loginToken, ENCODING_UTF_8)));
             Map<String, List<String>> tokenHeader = con.getHeaderFields();
             sessionId = UrlConnectionFactory.findCookieByPattern(tokenHeader, "JSESSIONID=.*");
 
