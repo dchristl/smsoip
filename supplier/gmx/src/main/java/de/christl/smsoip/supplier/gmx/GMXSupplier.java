@@ -48,7 +48,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String USER_AGENT = "Dalvik/1.4.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; Galaxy GMX SMS/2.0.7 (Production; ReleaseBuild; de-de)";
 
     private GMXOptionProvider provider;
-    private static final String LOGIN_URL = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
+//    private static final String LOGIN_URL1 = "https://sms-submission-service.gmx.de/sms-submission-service/gmx/sms/2.0/Authentication?";
+    private static final String LOGIN_URL2 = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
     private static final String LOGIN_BODY = "identifierUrn=%s&password=%s&durationType=PERMANENT&loginClientType=freemessage";
 
     private static final String TOKEN_LOGIN_URL = "https://uas2.uilogin.de/tokenlogin/";
@@ -138,7 +139,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             InputStream inputStream = factory.getConnnection().getInputStream();
             SMSActionResult sendResult = processReturn(inputStream, shortReceiverNumber);
             if (sendResult.isSuccess()) {
-                sendResult.setMessage(calendar == null ? "now" : calendar.getTime().toString());  //TODO remove
                 provider.saveLastSender();
             } else {
                 provider.saveTemporaryState();
@@ -258,7 +258,27 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         String loginToken;
         sessionId = null;
-        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
+
+        //first step
+//        String str = userName + ":" + password;
+//        final byte[] decodedBytes = Base64.encode(str.getBytes(ENCODING_UTF_8), Base64.NO_WRAP);
+//        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL1);
+//        factory.setTargetAgent(USER_AGENT);
+//        Map<String, String> firstStepMap = new HashMap<String, String>() {
+//            {
+//                put("X-UI-CALLER-IP", "127.0.0.1");
+//                put("Accept", "application/x-www-form-urlencoded");
+//                put("Authorization", "Basic " + new String(decodedBytes));
+//            }
+//        };
+//        factory.setRequestProperties(firstStepMap);
+//        int responseCode = factory.getConnnection().getResponseCode();
+//        if (responseCode != HttpURLConnection.HTTP_OK) {
+//            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
+//        }
+
+        //2nd step
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL2);
         factory.setTargetAgent(USER_AGENT);
         Map<String, String> requestMap = new HashMap<String, String>() {
             {
@@ -284,14 +304,37 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         }
         GZIPInputStream gzipInputStream = new GZIPInputStream(tmpStream);
         loginToken = UrlConnectionFactory.inputStream2DebugString(gzipInputStream, ENCODING_UTF_8);
+        String debug = null;
         if (!(loginToken == null || loginToken.length() == 0)) {
             //try to login by token
             factory = new UrlConnectionFactory(TOKEN_LOGIN_URL);
             factory.setTargetAgent(USER_AGENT);
             factory.setRequestProperties(requestMap);
+            factory.setFollowRedirects(true);
             con = factory.writeBody(String.format(TOKEN_LOGIN_BODY, URLEncoder.encode("urn:token:freemessage:" + loginToken, ENCODING_UTF_8)));
             Map<String, List<String>> tokenHeader = con.getHeaderFields();
-            sessionId = UrlConnectionFactory.findCookieByPattern(tokenHeader, "JSESSIONID=.*");
+
+            if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+                String locationHeader = null;
+                Outer:
+                for (Map.Entry<String, List<String>> stringListEntry : tokenHeader.entrySet()) {
+                    String cookieList = stringListEntry.getKey();
+                    if (cookieList != null && cookieList.equalsIgnoreCase("location")) {
+                        for (String location : stringListEntry.getValue()) {
+                            if (location != null) {
+                                locationHeader = location;
+                                break Outer;
+                            }
+                        }
+                    }
+                }
+                if (locationHeader != null && locationHeader.contains("jsessionid=")) {
+                    sessionId = locationHeader.replaceAll(".*jsessionid=", "JSESSIONID=");
+
+                }
+            } else {
+                sessionId = UrlConnectionFactory.findCookieByPattern(tokenHeader, "JSESSIONID=.*");
+            }
 
             if (!(sessionId == null || sessionId.length() == 0)) {
                 //parseJSessionId
@@ -301,7 +344,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         }
 
-        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
+        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(debug/*provider.getTextByResourceId(R.string.login_error)*/);
         smsActionResult.setRetryMakesSense(false);
         return smsActionResult;
     }
