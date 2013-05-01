@@ -48,7 +48,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String USER_AGENT = "Dalvik/1.4.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; Galaxy GMX SMS/2.0.7 (Production; ReleaseBuild; de-de)";
 
     private GMXOptionProvider provider;
-//    private static final String LOGIN_URL1 = "https://sms-submission-service.gmx.de/sms-submission-service/gmx/sms/2.0/Authentication?";
+    //    private static final String LOGIN_URL1 = "https://sms-submission-service.gmx.de/sms-submission-service/gmx/sms/2.0/Authentication?";
     private static final String LOGIN_URL2 = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
     private static final String LOGIN_BODY = "identifierUrn=%s&password=%s&durationType=PERMANENT&loginClientType=freemessage";
 
@@ -114,10 +114,10 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         for (Receiver receiver : receivers) {
             String shortReceiverNumber = receiver.getReceiverNumber().replaceAll("^00", "");
             String tmpUrl = String.format(TARGET_URL, sender, shortReceiverNumber);
-            Calendar calendar = null;
-            if (dateTimeObject != null) {
+            Calendar calendar;
+            if (dateTimeObject != null) {       /*   check time implement better logic for login failure (message, token)*/
                 //change the  device dependent calendar instance to the german one
-                calendar = Calendar.getInstance(Locale.GERMANY);
+                calendar = Calendar.getInstance(TimeZone.getDefault());
                 calendar.set(Calendar.YEAR, dateTimeObject.getYear());
                 calendar.set(Calendar.MONTH, dateTimeObject.getMonth());
                 calendar.set(Calendar.DAY_OF_MONTH, dateTimeObject.getDay());
@@ -259,25 +259,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         String loginToken;
         sessionId = null;
 
-        //first step
-//        String str = userName + ":" + password;
-//        final byte[] decodedBytes = Base64.encode(str.getBytes(ENCODING_UTF_8), Base64.NO_WRAP);
-//        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL1);
-//        factory.setTargetAgent(USER_AGENT);
-//        Map<String, String> firstStepMap = new HashMap<String, String>() {
-//            {
-//                put("X-UI-CALLER-IP", "127.0.0.1");
-//                put("Accept", "application/x-www-form-urlencoded");
-//                put("Authorization", "Basic " + new String(decodedBytes));
-//            }
-//        };
-//        factory.setRequestProperties(firstStepMap);
-//        int responseCode = factory.getConnnection().getResponseCode();
-//        if (responseCode != HttpURLConnection.HTTP_OK) {
-//            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
-//        }
-
-        //2nd step
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL2);
         factory.setTargetAgent(USER_AGENT);
         Map<String, String> requestMap = new HashMap<String, String>() {
@@ -297,14 +278,20 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         try {
             tmpStream = con.getInputStream();
         } catch (FileNotFoundException e) {
-            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
+            SMSActionResult smsActionResult;
+            if (!userName.contains("@gmx.")) {
+                smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
+            } else {
+                smsActionResult = SMSActionResult.LOGIN_FAILED_ERROR();
+            }
+            smsActionResult.setRetryMakesSense(false);
+            return smsActionResult;
         }
         if (headerFields == null || tmpStream == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
         GZIPInputStream gzipInputStream = new GZIPInputStream(tmpStream);
         loginToken = UrlConnectionFactory.inputStream2DebugString(gzipInputStream, ENCODING_UTF_8);
-        String debug = null;
         if (!(loginToken == null || loginToken.length() == 0)) {
             //try to login by token
             factory = new UrlConnectionFactory(TOKEN_LOGIN_URL);
@@ -344,7 +331,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         }
 
-        SMSActionResult smsActionResult = SMSActionResult.UNKNOWN_ERROR(debug/*provider.getTextByResourceId(R.string.login_error)*/);
+        SMSActionResult smsActionResult;
+        if (!userName.contains("@gmx.")) {
+            smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
+        } else {
+            smsActionResult = SMSActionResult.LOGIN_FAILED_ERROR();
+        }
         smsActionResult.setRetryMakesSense(false);
         return smsActionResult;
     }
