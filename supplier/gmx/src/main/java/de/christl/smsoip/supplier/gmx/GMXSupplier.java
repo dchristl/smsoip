@@ -35,7 +35,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -122,10 +125,8 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         for (Receiver receiver : receivers) {
             String shortReceiverNumber = receiver.getReceiverNumber().replaceAll("^00", "");
             String tmpUrl = String.format(TARGET_URL, sender, shortReceiverNumber);
-            if (dateTimeObject != null) {       /*   check time implement better logic for login failure (message, token)*/
-                //change the  device dependent calendar instance to the german one
-                Calendar calendar = fixDate(dateTimeObject);
-                tmpUrl += "&sendDate=" + calendar.getTimeInMillis();
+            if (dateTimeObject != null) {
+                tmpUrl += "&sendDate=" + dateTimeObject.getCalendar().getTimeInMillis();
             }
             UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
             Map<String, String> requestMap = new HashMap<String, String>() {
@@ -150,23 +151,6 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     }
 
-    /**
-     * change the date object to the german one to fullfill crappy api
-     *
-     * @param dateTimeObject
-     * @return
-     */
-    private Calendar fixDate(DateTimeObject dateTimeObject) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin"));
-        calendar.set(Calendar.YEAR, dateTimeObject.getYear());
-        calendar.set(Calendar.MONTH, dateTimeObject.getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, dateTimeObject.getDay());
-        calendar.set(Calendar.HOUR_OF_DAY, dateTimeObject.getHour());
-        calendar.set(Calendar.MINUTE, dateTimeObject.getMinute());
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar;
-    }
 
     /**
      * check if the receivernumber is available in response
