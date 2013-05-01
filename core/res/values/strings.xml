@@ -192,6 +192,7 @@
     <string name="value">Replacement</string>
     <string name="delete">Delete</string>
     <string name="add_module">Add text module</string>
+    <string name="add_contact">Add contact</string>
     <string name="key_too_short">The shortcut must have at least two characters.</string>
     <string name="key_already_exist">The shortcut already exists.</string>
     <string name="empty_value">No replacement entered.</string>
@@ -236,5 +237,9 @@
     </string>
     <string name="no_user_name">Username must not be empty!</string>
     <string name="account_already_defined">Username already present!</string>
-
+    <string name="phonebook_preference">SMSoIP contacts</string>
+    <string name="phonebook_preference_description">Manage contacts of the internal SMSoIP phonebook.
+    </string>
+    <string name="contact_name">Name</string>
+    <string name="contact_numbers">Numbers</string>
 </resources>

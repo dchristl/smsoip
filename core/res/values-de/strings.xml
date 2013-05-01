@@ -202,6 +202,7 @@
     <string name="value">Ersetzung</string>
     <string name="delete">Entfernen</string>
     <string name="add_module">Textbaustein hinzufügen</string>
+    <string name="add_contact">Kontakt hinzufügen</string>
     <string name="key_too_short">Der Schlüssel muss mindestens aus zwei Zeichen bestehen.</string>
     <string name="key_already_exist">Der Schlüssel existiert bereits.</string>
     <string name="empty_value">Keinen Wert eingegeben.</string>
@@ -243,4 +244,9 @@
     </string>
     <string name="no_user_name">Benutzername darf nicht leer sein!</string>
     <string name="account_already_defined">Benutzername bereits vorhanden!</string>
+    <string name="phonebook_preference">SMSoIP Kontakte</string>
+    <string name="phonebook_preference_description">Verwalte die Kontakte des internen SMSoIP-Telefonbuchs.
+    </string>
+    <string name="contact_name">Name</string>
+    <string name="contact_numbers">Telefonnummern</string>
 </resources>

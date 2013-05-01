@@ -344,6 +344,19 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         textModulePreference.setTitle(R.string.module_preference);
         textModulePreference.setSummary(R.string.module_preference_description);
         root.addPreference(textModulePreference);
+        PreferenceScreen phoneBookPreference = getPreferenceManager().createPreferenceScreen(this);
+        phoneBookPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent pref = new Intent(GlobalPreferences.this, PhoneBookPreferenceActivity.class);
+                startActivity(pref);
+                return true;
+            }
+        });
+
+        phoneBookPreference.setTitle(R.string.phonebook_preference);
+        phoneBookPreference.setSummary(R.string.phonebook_preference_description);
+        root.addPreference(phoneBookPreference);
     }
 
     private Preference.OnPreferenceChangeListener getListener() {
