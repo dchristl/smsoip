@@ -48,8 +48,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private static final String USER_AGENT = "Dalvik/1.4.0 (Linux; U; Android " + Build.VERSION.RELEASE + "; Galaxy GMX SMS/2.0.7 (Production; ReleaseBuild; de-de)";
 
     private GMXOptionProvider provider;
-    //    private static final String LOGIN_URL1 = "https://sms-submission-service.gmx.de/sms-submission-service/gmx/sms/2.0/Authentication?";
-    private static final String LOGIN_URL2 = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
+    private static final String LOGIN_URL = "https://lts.gmx.net/logintokenserver-1.1/Logintoken/";
     private static final String LOGIN_BODY = "identifierUrn=%s&password=%s&durationType=PERMANENT&loginClientType=freemessage";
 
     private static final String TOKEN_LOGIN_URL = "https://uas2.uilogin.de/tokenlogin/";
@@ -77,8 +76,17 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         this.provider = provider;
     }
 
-
+    /**
+     * send the message with the given text
+     *
+     * @param smsText
+     * @param receivers
+     * @param dateTimeObject
+     * @return
+     * @throws IOException
+     */
     public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject) throws IOException {
+
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             provider.saveTemporaryState();
@@ -114,16 +122,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         for (Receiver receiver : receivers) {
             String shortReceiverNumber = receiver.getReceiverNumber().replaceAll("^00", "");
             String tmpUrl = String.format(TARGET_URL, sender, shortReceiverNumber);
-            Calendar calendar;
             if (dateTimeObject != null) {       /*   check time implement better logic for login failure (message, token)*/
                 //change the  device dependent calendar instance to the german one
-                calendar = Calendar.getInstance(TimeZone.getDefault());
-                calendar.set(Calendar.YEAR, dateTimeObject.getYear());
-                calendar.set(Calendar.MONTH, dateTimeObject.getMonth());
-                calendar.set(Calendar.DAY_OF_MONTH, dateTimeObject.getDay());
-                calendar.set(Calendar.HOUR_OF_DAY, dateTimeObject.getHour());
-                calendar.set(Calendar.MINUTE, dateTimeObject.getMinute());
-                calendar.set(Calendar.MILLISECOND, 0);
+                Calendar calendar = fixDate(dateTimeObject);
                 tmpUrl += "&sendDate=" + calendar.getTimeInMillis();
             }
             UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
@@ -150,7 +151,25 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     }
 
     /**
-     * its an ajax response and easier to handle than with JSoup
+     * change the date object to the german one to fullfill crappy api
+     *
+     * @param dateTimeObject
+     * @return
+     */
+    private Calendar fixDate(DateTimeObject dateTimeObject) {
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Berlin"));
+        calendar.set(Calendar.YEAR, dateTimeObject.getYear());
+        calendar.set(Calendar.MONTH, dateTimeObject.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, dateTimeObject.getDay());
+        calendar.set(Calendar.HOUR_OF_DAY, dateTimeObject.getHour());
+        calendar.set(Calendar.MINUTE, dateTimeObject.getMinute());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
+    }
+
+    /**
+     * check if the receivernumber is available in response
      *
      * @throws IOException
      */
@@ -235,6 +254,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return String.format(textByResourceId, sentMsg, maxMsgMonth, paySent);
     }
 
+    /**
+     * find just the free messages in the response
+     *
+     * @param response
+     * @return
+     */
     private int findAvailableFreeMessages(String response) {
         Matcher m = INFO_PATTERN.matcher(response);
         int sentMsg = -1;
@@ -259,7 +284,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         String loginToken;
         sessionId = null;
 
-        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL2);
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
         factory.setTargetAgent(USER_AGENT);
         Map<String, String> requestMap = new HashMap<String, String>() {
             {
@@ -278,14 +303,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         try {
             tmpStream = con.getInputStream();
         } catch (FileNotFoundException e) {
-            SMSActionResult smsActionResult;
-            if (!userName.contains("@gmx.")) {
-                smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
-            } else {
-                smsActionResult = SMSActionResult.LOGIN_FAILED_ERROR();
-            }
-            smsActionResult.setRetryMakesSense(false);
-            return smsActionResult;
+            return getLoginFailedSMSActionResult(userName);
         }
         if (headerFields == null || tmpStream == null) {
             return SMSActionResult.NETWORK_ERROR();
@@ -297,7 +315,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             factory = new UrlConnectionFactory(TOKEN_LOGIN_URL);
             factory.setTargetAgent(USER_AGENT);
             factory.setRequestProperties(requestMap);
-            factory.setFollowRedirects(true);
+            factory.setFollowRedirects(false);
             con = factory.writeBody(String.format(TOKEN_LOGIN_BODY, URLEncoder.encode("urn:token:freemessage:" + loginToken, ENCODING_UTF_8)));
             Map<String, List<String>> tokenHeader = con.getHeaderFields();
 
@@ -331,8 +349,18 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
         }
 
+        return getLoginFailedSMSActionResult(userName);
+    }
+
+    /**
+     * return the login failed message dependent if the username contains domain name
+     *
+     * @param userName
+     * @return
+     */
+    private SMSActionResult getLoginFailedSMSActionResult(String userName) {
         SMSActionResult smsActionResult;
-        if (!userName.contains("@gmx.")) {
+        if (userName == null || !userName.contains("@gmx.")) {
             smsActionResult = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_error));
         } else {
             smsActionResult = SMSActionResult.LOGIN_FAILED_ERROR();
