@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import com.google.analytics.tracking.android.EasyTracker;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.util.BitmapProcessor;
 
@@ -30,6 +31,18 @@ public abstract class BackgroundPreferenceActivity extends PreferenceActivity {
 
     private Drawable backgroundImage;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance().activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance().activityStop(this);
+    }
 
     @Override
     protected void onResume() {

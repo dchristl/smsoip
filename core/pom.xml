@@ -78,6 +78,10 @@
             <artifactId>admob</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google</groupId>
+            <artifactId>analytics</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
         </dependency>

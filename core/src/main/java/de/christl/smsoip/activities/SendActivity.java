@@ -22,7 +22,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,6 +44,8 @@ import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Tracker;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.dialogadapter.ChangeProviderArrayAdapter;
@@ -66,7 +67,6 @@ import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.database.Contact;
-import de.christl.smsoip.database.ContactsNumbersDatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.patcher.InputPatcher;
@@ -1121,19 +1121,26 @@ public class SendActivity extends AllActivity {
             }
         }
         FireSMSResultList out;
+        Tracker tracker = EasyTracker.getTracker();
         try {
             if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
+                tracker.sendEvent("send_sms", "normal", smSoIPPlugin.getProviderName(), null);
                 out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
             } else {
+                tracker.sendEvent("send_sms", "timeshift", smSoIPPlugin.getProviderName(), null);
                 out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
             }
         } catch (UnsupportedEncodingException e) {
+            tracker.sendException("on send", e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         } catch (NumberFormatException e) {
+            tracker.sendException("on send", e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         } catch (SocketTimeoutException e) {
+            tracker.sendException("on send", e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
         } catch (IOException e) {
+            tracker.sendException("on send", e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
         } catch (Exception e) {                                                      //for insurance
             ACRA.getErrorReporter().handleSilentException(e);
