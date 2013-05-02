@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.android.vending.billing.IInAppBillingService;
 import com.google.analytics.tracking.android.EasyTracker;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
@@ -60,7 +61,7 @@ import java.util.List;
 /**
  * Class for sharing some functionality can be used across mor activities
  */
-public abstract class AllActivity extends SherlockFragmentActivity {
+public abstract class AllActivity extends SherlockFragmentActivity  {
     public static final int EXIT = 0;
     private static List<Activity> registeredActivities = new ArrayList<Activity>();
 

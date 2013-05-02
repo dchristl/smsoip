@@ -22,9 +22,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -44,6 +42,7 @@ import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.android.vending.billing.IInAppBillingService;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.Tracker;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
@@ -137,6 +136,7 @@ public class SendActivity extends AllActivity {
 
     private int instanciationCounter = 0;
     private BackgroundSendTask backgroundSendTask;
+    private ServiceConnection serviceConnection;
 
 
     @Override
@@ -226,6 +226,8 @@ public class SendActivity extends AllActivity {
         new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
+        bindService(new Intent("com.android.vending.billing.InAppBillingService.BIND"),
+                serviceConnection, Context.BIND_AUTO_CREATE);
         signsconstant = getText(R.string.smssigns);
         setAutoSuggestField();
         progressDialog = new SendMessageDialog(this);

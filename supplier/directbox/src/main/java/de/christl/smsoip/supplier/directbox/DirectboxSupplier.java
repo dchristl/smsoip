@@ -240,7 +240,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
                 provider.saveState();
                 return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.refresh_sender_first)), receivers);
             } else {
-                fromString = sender;
+                fromString = sender.replaceAll("^\\+", "00");
             }
         }
 

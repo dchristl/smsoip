@@ -267,7 +267,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     public SMSActionResult checkCredentials(String userName, String password) throws IOException {
         String loginToken;
         sessionId = null;
-
+        if (userName == null || password == null) {
+            return SMSActionResult.NO_CREDENTIALS();
+        }
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
         factory.setTargetAgent(USER_AGENT);
         Map<String, String> requestMap = new HashMap<String, String>() {
