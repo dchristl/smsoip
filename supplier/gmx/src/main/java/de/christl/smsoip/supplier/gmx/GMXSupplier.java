@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +72,9 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     private String sessionId;
 
+    public static final int WITH_PHONE_NUMBER = 0;
+    public static final int WITH_FREE_TEXT = 1;
+
     public GMXSupplier() {
         provider = new GMXOptionProvider(this);
     }
@@ -85,10 +89,11 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
      * @param smsText
      * @param receivers
      * @param dateTimeObject
+     * @param spinnerText
      * @return
      * @throws IOException
      */
-    public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject) throws IOException {
+    public FireSMSResultList sendSMS(String smsText, List<Receiver> receivers, DateTimeObject dateTimeObject, String spinnerText) throws IOException {
 
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
@@ -113,15 +118,28 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             }
         }
 
-
-        String sender = provider.getSender();
-        if (sender == null) {
-            provider.saveTemporaryState();
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.refresh_sender_first)), receivers);
+        int sendMethod = findSendMethod(spinnerText);
+        String sender;
+        switch (sendMethod) {
+            case WITH_FREE_TEXT:
+                sender = provider.getFreeTextSender();
+                if (sender == null || sender.length() < 2) {
+                    provider.saveTemporaryState();
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_free_input)), receivers);
+                }
+                sender = URLEncoder.encode(sender, ENCODING_UTF_8);
+                break;
+            default:
+                sender = provider.getSender();
+                if (sender == null) {
+                    provider.saveTemporaryState();
+                    return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.refresh_sender_first)), receivers);
+                }
+                break;
         }
-        FireSMSResultList out = new FireSMSResultList();
         String str = provider.getUserName() + ":" + provider.getPassword();
         final byte[] decodedBytes = Base64.encode(str.getBytes(ENCODING_UTF_8), Base64.NO_WRAP);
+        FireSMSResultList out = new FireSMSResultList();
         for (Receiver receiver : receivers) {
             String shortReceiverNumber = receiver.getReceiverNumber().replaceAll("^00", "");
             String tmpUrl = String.format(TARGET_URL, sender, shortReceiverNumber);
@@ -137,9 +155,25 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
                 }
             };
             factory.setRequestProperties(requestMap);
-            factory.writeBody(smsText);
-            InputStream inputStream = factory.getConnnection().getInputStream();
-            SMSActionResult sendResult = processReturn(inputStream, shortReceiverNumber);
+
+            SMSActionResult sendResult;
+            try {
+                factory.writeBody(smsText);
+                InputStream inputStream = factory.getConnnection().getInputStream();
+                sendResult = processReturn(inputStream, shortReceiverNumber);
+            } catch (NumberFormatException e) {
+                provider.saveTemporaryState();
+                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR()));
+                continue;
+            } catch (SocketTimeoutException e) {
+                provider.saveTemporaryState();
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+                continue;
+            } catch (IOException e) {
+                provider.saveTemporaryState();
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+                continue;
+            }
             if (sendResult.isSuccess()) {
                 provider.saveLastSender();
             } else {
@@ -357,12 +391,12 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException {
-        return sendSMS(smsText, receivers, dateTime);
+        return sendSMS(smsText, receivers, dateTime, spinnerText);
     }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
-        return sendSMS(smsText, receivers, null);
+        return sendSMS(smsText, receivers, null, spinnerText);
     }
 
     @Override
@@ -428,4 +462,14 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return SMSActionResult.NO_ERROR();
     }
 
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                return i;
+            }
+        }
+        return WITH_PHONE_NUMBER;
+    }
 }

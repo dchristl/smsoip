@@ -143,6 +143,7 @@ public class MultipleAccountsPreference extends ListPreference {
 
         listAdapter = new MultipleAccountsPreferenceAdapter(this, accountModels, getDefaultAccount());
         builder.setAdapter(listAdapter, this);
+        builder.setPositiveButton(null, null);
         builder.setSingleChoiceItems(listAdapter, listAdapter.getDefaultAccount(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

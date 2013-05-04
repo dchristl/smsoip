@@ -18,6 +18,10 @@
   -->
 
 <resources>
+    <string-array name="array_spinner">
+        <item>With phonenumber</item>
+        <item>With free source id</item>
+    </string-array>
     <string name="check_no_free_available">Check for no free messages</string>
     <string name="check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
     <string name="no_free_messages_available">Not enough free messages available.</string>
@@ -33,7 +37,7 @@
         the send button.
     </string>
     <string name="not_yet_refreshed">Refresh by eye button.</string>
-    <string name="no_free_input">No sender defined</string>
+    <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
     <string name="infoText">FreeSMS: %1$s of %2$s\nPaySMS: %3$s sent</string>
     <string name="sentSuccess">SMS sucessfully sent.</string>
 </resources>
