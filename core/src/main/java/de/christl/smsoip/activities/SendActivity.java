@@ -42,7 +42,6 @@ import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.android.vending.billing.IInAppBillingService;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.Tracker;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
@@ -56,6 +55,7 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundSendTask;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.activities.threading.ThreadingUtil;
+import de.christl.smsoip.activities.util.GooglePlayServiceConnection;
 import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
@@ -136,7 +136,7 @@ public class SendActivity extends AllActivity {
 
     private int instanciationCounter = 0;
     private BackgroundSendTask backgroundSendTask;
-    private ServiceConnection serviceConnection;
+    private ServiceConnection serviceConnection = new GooglePlayServiceConnection();
 
 
     @Override
@@ -1749,5 +1749,13 @@ public class SendActivity extends AllActivity {
             defaultColor = new TextView(getApplicationContext()).getTextColors();
         }
         return defaultColor;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (serviceConnection != null) {
+            unbindService(serviceConnection);
+        }
     }
 }

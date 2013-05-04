@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~      This file is part of SMSoIP.
+  ~
+  ~      SMSoIP is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      (at your option) any later version.
+  ~
+  ~      SMSoIP is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.christl.SMSoIP</groupId>
+    <artifactId>install-files</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven-install-plugin.file>invalid.jar</maven-install-plugin.file>
+        <maven-install-plugin.groupId>invalid</maven-install-plugin.groupId>
+        <maven-install-plugin.artifactId>invalid</maven-install-plugin.artifactId>
+        <maven-install-plugin.version>invalid</maven-install-plugin.version>
+    </properties>
+    <modules>
+        <module>install-admob</module>
+        <module>install-analytics</module>
+        <module>install-mobclix</module>
+    </modules>
+    <!--Helper POM for installing admob to local repo-->
+    <build>
+        <defaultGoal>validate</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.3.1</version>
+                    <executions>
+                        <execution>
+                            <id>INSTALL FILE</id>
+                            <goals>
+                                <goal>install-file</goal>
+                            </goals>
+                            <!--just bind it to own (package) phase for calling-->
+                            <phase>validate</phase>
+                            <configuration>
+                                <file>${maven-install-plugin.file}</file>
+                                <groupId>${maven-install-plugin.groupId}</groupId>
+                                <artifactId>${maven-install-plugin.artifactId}</artifactId>
+                                <version>${maven-install-plugin.version}</version>
+                                <packaging>jar</packaging>
+                            </configuration>
+                        </execution>
+                    </executions>
+
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <file>${maven-install-plugin.file}</file>
+                        <repositoryId>cloudbees-release</repositoryId>
+                        <url>dav:https://repository-smsoip.forge.cloudbees.com/release/</url>
+                        <groupId>${maven-install-plugin.groupId}</groupId>
+                        <artifactId>${maven-install-plugin.artifactId}</artifactId>
+                        <version>${maven-install-plugin.version}</version>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+    </build>
+
+</project>
