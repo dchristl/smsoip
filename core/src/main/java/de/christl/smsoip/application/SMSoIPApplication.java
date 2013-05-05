@@ -53,6 +53,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @ReportsCrashes(formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ", mode = ReportingInteractionMode.NOTIFICATION,
+/*        formKey = "",
+        formUri = "https://smsoip.cloudant.com/acra-smsoip/_design/acra-storage/_update/report",
+        reportType = org.acra.sender.HttpSender.Type.JSON,
+        httpMethod = org.acra.sender.HttpSender.Method.PUT,
+        formUriBasicAuthLogin = "thereflifeepenturealcang",
+        formUriBasicAuthPassword = "iwj0RjQheBUlWU845dpOprTQ",*/
         resToastText = R.string.crash_toast_text,
         resNotifTickerText = R.string.crash_notif_ticker_text,
         resNotifTitle = R.string.crash_notif_title,
@@ -65,8 +71,6 @@ public class SMSoIPApplication extends Application {
 
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
-    //removeIt
-    public static final String SMSOIP_PACKAGE = "de.christl.smsoip";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
     private HashMap<String, SMSoIPPlugin> loadedProviders = new HashMap<String, SMSoIPPlugin>();
     private HashMap<String, SMSoIPPlugin> notLoadedProviders = new HashMap<String, SMSoIPPlugin>();
@@ -218,7 +222,7 @@ public class SMSoIPApplication extends Application {
             //find all classes and save it in plugin
             while (classFileEntries.hasMoreElements()) {
                 String s = classFileEntries.nextElement();
-                if (!s.startsWith(SMSOIP_PACKAGE)) {
+                if (!s.startsWith(PLUGIN_CLASS_PREFIX)) {
                     continue;
                 }
                 plugin.addAvailableClass(s);

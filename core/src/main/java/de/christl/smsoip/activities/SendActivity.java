@@ -57,7 +57,6 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundSendTask;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.activities.threading.ThreadingUtil;
-import de.christl.smsoip.activities.util.GooglePlayInAppBillingDelegate;
 import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
@@ -138,7 +137,6 @@ public class SendActivity extends AllActivity {
 
     private int instanciationCounter = 0;
     private BackgroundSendTask backgroundSendTask;
-
 
 
     @Override

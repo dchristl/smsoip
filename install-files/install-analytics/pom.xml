@@ -30,6 +30,6 @@
         <maven-install-plugin.file>libGoogleAnalyticsV2.jar</maven-install-plugin.file>
         <maven-install-plugin.groupId>com.google</maven-install-plugin.groupId>
         <maven-install-plugin.artifactId>analytics</maven-install-plugin.artifactId>
-        <maven-install-plugin.version>2.0beta4</maven-install-plugin.version>
+        <maven-install-plugin.version>2.0beta5</maven-install-plugin.version>
     </properties>
 </project>
