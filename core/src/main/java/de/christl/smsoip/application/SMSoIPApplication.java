@@ -35,10 +35,12 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import com.google.analytics.tracking.android.EasyTracker;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.acra.ACRA;
@@ -193,6 +195,8 @@ public class SMSoIPApplication extends Application {
             }
             readOutPlugins();
             installedPackages = installedApplications.size();
+            EasyTracker.getInstance().setContext(this);
+            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_STARTUP, installedPackages.toString(), null);
         }
     }
 

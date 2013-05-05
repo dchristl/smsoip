@@ -61,10 +61,7 @@ import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.autosuggest.NameNumberSuggestField;
-import de.christl.smsoip.constant.FireSMSResult;
-import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.LogConst;
-import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.constant.*;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.database.Contact;
 import de.christl.smsoip.models.ErrorReporterStack;
@@ -625,8 +622,10 @@ public class SendActivity extends AllActivity {
                 OptionProvider provider = smSoIPPlugin.getProvider();
                 Map<Integer, AccountModel> accounts = provider.getAccounts();
                 if (accounts.size() > 0) {
+                    EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(OPTION_SWITCH_ACCOUNT), TrackerConstants.LABEL_ICON, null);
                     showAccountDialog();
                 } else {
+                    EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(PROVIDER_OPTION), TrackerConstants.LABEL_ICON, null);
                     startOptionActivity();
                 }
             }
@@ -641,6 +640,7 @@ public class SendActivity extends AllActivity {
         viewById.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(OPTION_SWITCH_SUPPLIER), TrackerConstants.LABEL_ICON, null);
                 showProvidersDialog();
             }
         });
@@ -1124,26 +1124,25 @@ public class SendActivity extends AllActivity {
         Tracker tracker = EasyTracker.getTracker();
         try {
             if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
-                tracker.sendEvent("send_sms", "normal", smSoIPPlugin.getProviderName(), null);
+                tracker.sendEvent(TrackerConstants.CAT_SEND, TrackerConstants.EVENT_TIMESHIFT, smSoIPPlugin.getProviderName(), null);
                 out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
             } else {
-                tracker.sendEvent("send_sms", "timeshift", smSoIPPlugin.getProviderName(), null);
+                tracker.sendEvent(TrackerConstants.CAT_SEND, TrackerConstants.EVENT_NORMAL, smSoIPPlugin.getProviderName(), null);
                 out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
             }
         } catch (UnsupportedEncodingException e) {
-            tracker.sendException("on send", e, false);
+            tracker.sendException(TrackerConstants.CAT_SEND, e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         } catch (NumberFormatException e) {
-            tracker.sendException("on send", e, false);
+            tracker.sendException(TrackerConstants.CAT_SEND, e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         } catch (SocketTimeoutException e) {
-            tracker.sendException("on send", e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
         } catch (IOException e) {
-            tracker.sendException("on send", e, false);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
         } catch (Exception e) {                                                      //for insurance
             ACRA.getErrorReporter().handleSilentException(e);
+            tracker.sendException(TrackerConstants.CAT_SEND, e, true);
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         }
 
@@ -1365,17 +1364,22 @@ public class SendActivity extends AllActivity {
      * entry point when option is clicked
      */
     public boolean onOptionsItemSelected(MenuItem item) {
+        Tracker tracker = EasyTracker.getTracker();
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
+                tracker.sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(PROVIDER_OPTION), TrackerConstants.LABEL_MENU, null);
                 startOptionActivity();
                 return true;
             case OPTION_SWITCH_SUPPLIER:
+                tracker.sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(OPTION_SWITCH_SUPPLIER), TrackerConstants.LABEL_MENU, null);
                 showProvidersDialog();
                 return true;
             case GLOBAL_OPTION:
+                tracker.sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(GLOBAL_OPTION), TrackerConstants.LABEL_MENU, null);
                 startGlobalOptionActivity();
                 return true;
             case OPTION_SWITCH_ACCOUNT:
+                tracker.sendEvent(TrackerConstants.CAT_OPTIONS, String.valueOf(OPTION_SWITCH_ACCOUNT), TrackerConstants.LABEL_MENU, null);
                 showAccountDialog();
                 return true;
             default:
@@ -1447,6 +1451,8 @@ public class SendActivity extends AllActivity {
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
         ErrorReporterStack.put(LogConst.ON_CREATE_DIALOG + id);
+        Tracker tracker = EasyTracker.getTracker();
+        tracker.sendEvent(TrackerConstants.CAT_BUTTONS, String.valueOf(id), "", null);
         switch (id) {
             case DIALOG_TEXT_MODULES:
                 Map<String, String> modules = textField.getTextModules();
