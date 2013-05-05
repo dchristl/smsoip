@@ -53,9 +53,12 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
 
     private Integer adjustment = 0;
 
+//    private GooglePlayInAppBillingDelegate googlePlayInAppBillingDelegate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        googlePlayInAppBillingDelegate = new GooglePlayInAppBillingDelegate(this);
         setTitle(getText(R.string.applicationName) + " - " + getText(R.string.program_settings));
         setPreferenceScreen(initPreferences());
         if (savedInstanceState != null) {
@@ -133,6 +136,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             adfreeIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+//                    googlePlayInAppBillingDelegate.onUpgradeAppButtonClicked();
                     try {
                         String marketUrl = getString(R.string.adfree_market_url);
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
@@ -386,18 +390,22 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case ACTIVITY_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        String selectedImage = imageReturnedIntent.getData().toString();
+                        String selectedImage = data.getData().toString();
                         writeImageUriAndUpdateBackground(selectedImage);
                     } catch (Exception e) {
                         ACRA.getErrorReporter().handleSilentException(e);//TODO remove when stable
                     }
                 }
+                break;
+//            default:
+//                googlePlayInAppBillingDelegate.onActivityResult(requestCode, resultCode, data);
+//                break;
         }
     }
 
@@ -419,6 +427,12 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         outState.putInt(SettingsConst.EXTRA_ADJUSTMENT, adjustment);
     }
 
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        googlePlayInAppBillingDelegate.onDestroy();
+//    }
 }
 
 

@@ -16,26 +16,21 @@
  *      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.christl.smsoip.activities.util;
-
-import android.content.ComponentName;
-import android.content.ServiceConnection;
-import android.os.IBinder;
-import com.android.vending.billing.IInAppBillingService;
+package com.android.vending.billing.util;
 
 /**
- * Class for handling in app billing
+ * Exception thrown when encountering an invalid Base64 input character.
+ *
+ * @author nelson
  */
-public class GooglePlayServiceConnection implements ServiceConnection {
-    private IInAppBillingService playService;
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        playService = IInAppBillingService.Stub.asInterface(service);
+public class Base64DecoderException extends Exception {
+    public Base64DecoderException() {
+        super();
     }
 
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        playService = null;
+    public Base64DecoderException(String s) {
+        super(s);
     }
+
+    private static final long serialVersionUID = 1L;
 }

@@ -22,7 +22,9 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.*;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -55,7 +57,7 @@ import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.activities.threading.BackgroundSendTask;
 import de.christl.smsoip.activities.threading.BackgroundUpdateTask;
 import de.christl.smsoip.activities.threading.ThreadingUtil;
-import de.christl.smsoip.activities.util.GooglePlayServiceConnection;
+import de.christl.smsoip.activities.util.GooglePlayInAppBillingDelegate;
 import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
@@ -136,7 +138,7 @@ public class SendActivity extends AllActivity {
 
     private int instanciationCounter = 0;
     private BackgroundSendTask backgroundSendTask;
-    private ServiceConnection serviceConnection = new GooglePlayServiceConnection();
+
 
 
     @Override
@@ -226,8 +228,6 @@ public class SendActivity extends AllActivity {
         new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
-        bindService(new Intent("com.android.vending.billing.InAppBillingService.BIND"),
-                serviceConnection, Context.BIND_AUTO_CREATE);
         signsconstant = getText(R.string.smssigns);
         setAutoSuggestField();
         progressDialog = new SendMessageDialog(this);
@@ -1749,13 +1749,5 @@ public class SendActivity extends AllActivity {
             defaultColor = new TextView(getApplicationContext()).getTextColors();
         }
         return defaultColor;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (serviceConnection != null) {
-            unbindService(serviceConnection);
-        }
     }
 }
