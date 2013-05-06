@@ -231,6 +231,30 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return SMSActionResult.NO_ERROR(infoText);
     }
 
+    private SMSActionResult fastCredentialsCheck(String userName, Object password) throws IOException {
+        if (userName == null || password == null) {
+            return SMSActionResult.NO_CREDENTIALS();
+        }
+        String str = userName + ":" + password;
+        final byte[] decodedBytes = Base64.encode(str.getBytes(ENCODING_UTF_8), Base64.NO_WRAP);
+        UrlConnectionFactory factory = new UrlConnectionFactory(INFO_URL, UrlConnectionFactory.METHOD_GET);
+        Map<String, String> requestMap = new HashMap<String, String>() {
+            {
+                put("X-UI-CALLER-IP", "127.0.0.1");
+                put("Accept", "application/x-www-form-urlencoded");
+                put("Authorization", "Basic " + new String(decodedBytes));
+            }
+        };
+        factory.setRequestProperties(requestMap);
+        int responseCode = factory.getConnnection().getResponseCode();
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            return SMSActionResult.LOGIN_SUCCESSFUL();
+        } else {
+            return getLoginFailedSMSActionResult(userName);
+        }
+    }
+
     private String getInformations() throws IOException {
         String str = provider.getUserName() + ":" + provider.getPassword();
         final byte[] decodedBytes = Base64.encode(str.getBytes(ENCODING_UTF_8), Base64.NO_WRAP);
@@ -299,6 +323,10 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException {
+        return fastCredentialsCheck(userName, password);
+    }
+
+    private SMSActionResult longCredentialsCheck(String userName, String password) throws IOException {
         String loginToken;
         sessionId = null;
         if (userName == null || password == null) {
@@ -416,7 +444,7 @@ public class GMXSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
     public SMSActionResult resolveNumbers() throws IOException {
 
-        SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+        SMSActionResult result = longCredentialsCheck(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return result;
         }
