@@ -18,7 +18,9 @@
 
 package de.christl.smsoip.receiver.util;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.receiver.TransparentActivity;
@@ -39,4 +41,6 @@ public abstract class NotificationUtil {
         sendIntent.setData(uriBuilder.build());
         return sendIntent;
     }
+
+
 }

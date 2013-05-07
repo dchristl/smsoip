@@ -99,6 +99,7 @@ public class SMSReceiverPreference extends BackgroundPreferenceActivity {
         root.addPreference(receiverActive);
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
+        root.addPreference(showDialog);
         root.addPreference(showOnlyOneNotification);
         root.addPreference(ringtonePreference);
         root.addPreference(vibrateActive);

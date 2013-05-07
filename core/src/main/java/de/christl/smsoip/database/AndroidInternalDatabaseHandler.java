@@ -349,4 +349,33 @@ public abstract class AndroidInternalDatabaseHandler {
 
         return builder;
     }
+
+    /**
+     * mark the given message as read
+     *
+     * @param context
+     * @param number
+     */
+    public static void findMessageAndMarkAsRead(Context context, String number) {
+        if (number != null && !number.equals("")) {
+            Uri inboxQuery = Uri.parse("content://sms/inbox");    //only inbox will be queried
+            Cursor cursor = context.getContentResolver().query(inboxQuery, new String[]{"address"}, "read = false and address = " + number, null, "_id desc");
+            String[] columns = new String[]{"_id", "address", "body"};
+            long id = -1;
+            while (cursor != null && cursor.moveToNext()) {
+                id = cursor.getLong(cursor.getColumnIndex(columns[0]));
+
+            }
+            if (id != -1) {
+                markMessageAsRead(context, id);
+            }
+        }
+    }
+
+    private static void markMessageAsRead(Context context, long id) {
+        ContentValues values = new ContentValues();
+        values.put("read", true);
+
+        context.getContentResolver().update(Uri.parse("content://sms/inbox"), values, "_id=" + id, null);
+    }
 }

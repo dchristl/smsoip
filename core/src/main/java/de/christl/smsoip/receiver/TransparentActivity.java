@@ -24,6 +24,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import de.christl.smsoip.R;
+import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.receiver.util.NotificationUtil;
 
 /**
@@ -54,11 +56,22 @@ public class TransparentActivity extends Activity {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
                         startActivity(sendIntent);
-                        //mark messages as read
+                        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+                            AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
+                        }
                         dialog.dismiss();
 
                     }
                 });
+        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+            builder.setNegativeButton(R.string.mark_as_read, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
+                    dialog.dismiss();
+                }
+            });
+        }
 
         AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
