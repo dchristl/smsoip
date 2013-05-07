@@ -26,6 +26,7 @@ import de.christl.smsoip.R;
 import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.receiver.SMSReceiver;
+import de.christl.smsoip.receiver.TransparentActivity;
 import org.acra.ACRA;
 
 
@@ -78,7 +79,7 @@ public class IntentHandler {
                 String scheme = data.getScheme();
                 Bundle extras = intent.getExtras();
                 if (scheme != null && scheme.equals(SMSReceiver.SMSOIP_SCHEME) && extras != null) {
-                    String number = extras.getString(SMSReceiver.NUMBER_PARAM);
+                    String number = extras.getString(TransparentActivity.SENDER_NUMBER);
                     if (number != null && !number.equals("")) {
                         findAndSetReceiver(context, number);
                     }

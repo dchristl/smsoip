@@ -71,6 +71,7 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.ui.*;
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
@@ -219,6 +220,8 @@ public class SendActivity extends AllActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SMSoIPApplication.getApp().throwlastExceptionIfAny();
+//        SMSReceiver.faker(this);
+
         //save the default color of textview
         new AppRating(this).showRateDialogIfNeeded();
         settings = PreferenceManager.getDefaultSharedPreferences(this);

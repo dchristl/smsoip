@@ -249,4 +249,10 @@
     </string>
     <string name="contact_name">Name</string>
     <string name="contact_numbers">Telefonnummern</string>
+    <string name="answer">Antworten</string>
+    <string name="mark_as_read">Als gelens markieren</string>
+    <string name="show_message_dialog">Nachrichtendialog anzeigen</string>
+    <string name="show_message_dialog_description">Zeigt einen Dialog mit der Nachricht, wenn die Benachrichtigung
+        geklickt wird.
+    </string>
 </resources>

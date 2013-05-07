@@ -50,29 +50,29 @@ public class SMSReceiver extends BroadcastReceiver {
 
     private static final String PDUS = "pdus";
     public static int ID = 1;
-    public static final String NUMBER_PARAM = "number";
     public static final String SMSOIP_SCHEME = "smsoip";
 
 
-/*    public static void faker(Context context) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.bar_icon);
-        builder.setContentTitle("ontentTitle");
-        Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.scheme(SMSOIP_SCHEME);
-
-        Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-        sendIntent.putExtra(NUMBER_PARAM, "326743564534563546");
-        sendIntent.setData(uriBuilder.build());
-        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
-        builder.setContentIntent(contentIntent);
-        Notification notification = builder.getNotification();
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        mNotificationManager.notify(ID, notification);
-    }*/
+//    public static void faker(Context context) {
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+//        builder.setAutoCancel(true);
+//        builder.setSmallIcon(R.drawable.bar_icon);
+//        builder.setContentTitle("ontentTitle");
+//        Uri.Builder uriBuilder = new Uri.Builder();
+//        uriBuilder.scheme(SMSOIP_SCHEME);
+//
+//        Intent sendIntent = new Intent(context, TransparentActivity.class);
+//        sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, "326743564534563546");
+//        sendIntent.putExtra(TransparentActivity.MESSAGE, "asjhasga gedjasdg jsadgjhsad");
+//        sendIntent.setData(uriBuilder.build());
+//        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
+//        builder.setContentIntent(contentIntent);
+//        Notification notification = builder.getNotification();
+//        String ns = Context.NOTIFICATION_SERVICE;
+//        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
+//        mNotificationManager.notify(ID, notification);
+//    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -118,11 +118,18 @@ public class SMSReceiver extends BroadcastReceiver {
                 builder.setContentTitle(contentTitle);
 
                 builder.setContentText(messages.getMessageBody());
-                Uri.Builder uriBuilder = new Uri.Builder();
-                uriBuilder.scheme(SMSOIP_SCHEME);
-                Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-                sendIntent.putExtra(NUMBER_PARAM, messages.getOriginatingAddress());
-                sendIntent.setData(uriBuilder.build());
+
+                Intent sendIntent;
+                if (preferences.getBoolean(SettingsConst.RECEIVER_SHOW_DIALOG, true)) {
+                    sendIntent = new Intent(context, TransparentActivity.class);
+                    sendIntent.putExtra(TransparentActivity.SENDER_NAME, contentTitle);
+                    sendIntent.putExtra(TransparentActivity.MESSAGE, messages.getMessageBody());
+                } else {
+                    Uri.Builder uriBuilder = new Uri.Builder();
+                    sendIntent = new Intent(Intent.ACTION_MAIN);
+                    sendIntent.setData(uriBuilder.build());
+                }
+                sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, messages.getOriginatingAddress());
                 sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
                 builder.setContentIntent(contentIntent);

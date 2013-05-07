@@ -242,4 +242,8 @@
     </string>
     <string name="contact_name">Name</string>
     <string name="contact_numbers">Numbers</string>
+    <string name="answer">Answer</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="show_message_dialog">Show message dialog</string>
+    <string name="show_message_dialog_description">Shows the message in a dialog on notification click.</string>
 </resources>

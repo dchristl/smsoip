@@ -1,6 +1,20 @@
 <!--String resources for:
 project: SMSoIP-core
 values folder: values
+fileName: analytics.xml
+-->
+<?xml version="1.0" encoding="utf-8" ?>
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="TypographyDashes">
+    <string name="ga_trackingId">UA-40578046-1</string>
+    <bool name="ga_autoActivityTracking">true</bool>
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+</resources>
+  
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
 fileName: storedependent.xml
 -->
 <!--
@@ -230,6 +244,7 @@ fileName: strings.xml
     <string name="value">Replacement</string>
     <string name="delete">Delete</string>
     <string name="add_module">Add text module</string>
+    <string name="add_contact">Add contact</string>
     <string name="key_too_short">The shortcut must have at least two characters.</string>
     <string name="key_already_exist">The shortcut already exists.</string>
     <string name="empty_value">No replacement entered.</string>
@@ -274,9 +289,52 @@ fileName: strings.xml
     </string>
     <string name="no_user_name">Username must not be empty!</string>
     <string name="account_already_defined">Username already present!</string>
-
+    <string name="phonebook_preference">SMSoIP contacts</string>
+    <string name="phonebook_preference_description">Manage contacts of the internal SMSoIP phonebook.
+    </string>
+    <string name="contact_name">Name</string>
+    <string name="contact_numbers">Numbers</string>
+    <string name="answer">Answer</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="show_message_dialog">Show message dialog</string>
+    <string name="show_message_dialog_description">Shows the message in a dialog on notification click.</string>
 </resources>
 
+<!--String resources for:
+project: SMSoIP-core
+values folder: values
+fileName: styles.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~      This file is part of SMSoIP.
+  ~
+  ~      SMSoIP is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      (at your option) any later version.
+  ~
+  ~      SMSoIP is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+</resources>
 <!--String resources for:
 project: supplier-lib
 values folder: values
@@ -340,6 +398,10 @@ fileName: strings.xml
   -->
 
 <resources>
+    <string-array name="array_spinner">
+        <item>With phonenumber</item>
+        <item>With free source id</item>
+    </string-array>
     <string name="check_no_free_available">Check for no free messages</string>
     <string name="check_no_free_available_long">Show a warning, if no free messages are available anymore.</string>
     <string name="no_free_messages_available">Not enough free messages available.</string>
@@ -355,7 +417,7 @@ fileName: strings.xml
         the send button.
     </string>
     <string name="not_yet_refreshed">Refresh by eye button.</string>
-    <string name="no_free_input">No sender defined</string>
+    <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
     <string name="infoText">FreeSMS: %1$s of %2$s\nPaySMS: %3$s sent</string>
     <string name="sentSuccess">SMS sucessfully sent.</string>
 </resources>

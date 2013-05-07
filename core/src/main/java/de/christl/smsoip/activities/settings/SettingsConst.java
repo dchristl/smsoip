@@ -40,6 +40,7 @@ public abstract class SettingsConst {
     public static final String EXTRA_ADJUSTMENT = "extra.adjustment";
     public static final String RECEIVER_ACTIVATED = "receiver.activated";
     public static final String RECEIVER_ONLY_ONE_NOTFICATION = "receiver.only.one.notification";
+    public static final String RECEIVER_SHOW_DIALOG = "receiver.show.dialog";
 
     public static final String RECEIVER_RINGTONE_URI = "receiver.ringtone";
     public static final String RECEIVER_VIBRATE_ACTIVATED = "receiver.vibrate.activated";

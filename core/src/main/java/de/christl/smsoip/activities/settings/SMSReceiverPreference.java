@@ -77,6 +77,14 @@ public class SMSReceiverPreference extends BackgroundPreferenceActivity {
         ledActive.setSummary(R.string.receiver_led_activated_description);
         ledActive.setEnabled(enabled);
 
+
+        final CheckBoxPreference showDialog = new CheckBoxPreference(this);
+        showDialog.setDefaultValue(true);
+        showDialog.setKey(SettingsConst.RECEIVER_SHOW_DIALOG);
+        showDialog.setTitle(R.string.show_message_dialog);
+        showDialog.setSummary(R.string.show_message_dialog_description);
+        showDialog.setEnabled(enabled);
+
         receiverActive.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -84,6 +92,7 @@ public class SMSReceiverPreference extends BackgroundPreferenceActivity {
                 ringtonePreference.setEnabled((Boolean) newValue);
                 vibrateActive.setEnabled((Boolean) newValue);
                 ledActive.setEnabled((Boolean) newValue);
+                showDialog.setEnabled((Boolean) newValue);
                 return true;
             }
         });
