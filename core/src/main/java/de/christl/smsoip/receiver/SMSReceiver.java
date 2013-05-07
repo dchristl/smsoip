@@ -38,6 +38,7 @@ import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
+import de.christl.smsoip.receiver.util.NotificationUtil;
 import org.acra.ACRA;
 
 import java.io.FileNotFoundException;
@@ -124,12 +125,10 @@ public class SMSReceiver extends BroadcastReceiver {
                     sendIntent = new Intent(context, TransparentActivity.class);
                     sendIntent.putExtra(TransparentActivity.SENDER_NAME, contentTitle);
                     sendIntent.putExtra(TransparentActivity.MESSAGE, messages.getMessageBody());
+                    sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, messages.getOriginatingAddress());
                 } else {
-                    Uri.Builder uriBuilder = new Uri.Builder();
-                    sendIntent = new Intent(Intent.ACTION_MAIN);
-                    sendIntent.setData(uriBuilder.build());
+                    sendIntent = NotificationUtil.getSchemeIntent(messages.getOriginatingAddress());
                 }
-                sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, messages.getOriginatingAddress());
                 sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
                 builder.setContentIntent(contentIntent);

@@ -22,9 +22,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import de.christl.smsoip.R;
+import de.christl.smsoip.receiver.util.NotificationUtil;
 
 /**
  * not visible activity showing up a dialog
@@ -52,11 +52,7 @@ public class TransparentActivity extends Activity {
         builder.setMessage(message)
                 .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Uri.Builder uriBuilder = new Uri.Builder();
-                        uriBuilder.scheme(SMSReceiver.SMSOIP_SCHEME);
-                        Intent sendIntent = new Intent(Intent.ACTION_MAIN);
-                        sendIntent.putExtra(SENDER_NUMBER, finalNumber);
-                        sendIntent.setData(uriBuilder.build());
+                        Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
                         startActivity(sendIntent);
                         //mark messages as read
                         dialog.dismiss();
@@ -74,4 +70,6 @@ public class TransparentActivity extends Activity {
         dialog.show();
 
     }
+
+
 }
