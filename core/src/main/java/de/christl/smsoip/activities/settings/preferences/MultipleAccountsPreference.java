@@ -27,6 +27,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
@@ -174,7 +175,16 @@ public class MultipleAccountsPreference extends ListPreference {
         }
         int passVisibility = getSupplier().getProvider().isPasswordVisible() ? View.VISIBLE : View.GONE;
         passInput.setVisibility(passVisibility);
-        dialog.findViewById(R.id.passLabel).setVisibility(passVisibility);
+        //overwrite the username and password labeltext
+        TextView passwordLabel = (TextView) dialog.findViewById(R.id.passLabel);
+        if (provider.getPasswordLabelText() != null) {
+            passwordLabel.setText(provider.getPasswordLabelText());
+        }
+        passwordLabel.setVisibility(passVisibility);
+        TextView userLabel = (TextView) dialog.findViewById(R.id.userLabel);
+        if (provider.getUserLabelText() != null) {
+            userLabel.setText(provider.getUserLabelText());
+        }
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

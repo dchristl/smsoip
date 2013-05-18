@@ -27,7 +27,7 @@
               android:padding="10dp"
               android:background="@drawable/clippedbitmap"
         >
-    <TextView
+    <TextView android:id="@+id/userLabel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"

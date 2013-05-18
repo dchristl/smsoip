@@ -301,4 +301,22 @@ public abstract class OptionProvider {
     public int getMinimalCoreVersion() {
         return 1;
     }
+
+    /**
+     * overwrite the default password text
+     *
+     * @return
+     */
+    public String getPasswordLabelText() {
+        return null;
+    }
+
+    /**
+     * overwrite the default username text
+     *
+     * @return
+     */
+    public String getUserLabelText() {
+        return null;
+    }
 }
