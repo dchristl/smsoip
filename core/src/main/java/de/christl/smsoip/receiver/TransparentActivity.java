@@ -56,22 +56,22 @@ public class TransparentActivity extends Activity {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
                         startActivity(sendIntent);
-                        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-                            AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
-                        }
+//                        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+//                            AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
+//                        }
                         dialog.dismiss();
 
                     }
                 });
-        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-            builder.setNegativeButton(R.string.mark_as_read, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
-                    dialog.dismiss();
-                }
-            });
-        }
+//        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
+//            builder.setNegativeButton(R.string.mark_as_read, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
+//                    dialog.dismiss();
+//                }
+//            });
+//        }
 
         AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {

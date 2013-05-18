@@ -54,13 +54,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-@ReportsCrashes(formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ", mode = ReportingInteractionMode.NOTIFICATION,
-/*        formKey = "",
+@ReportsCrashes(/*formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ",*/ mode = ReportingInteractionMode.NOTIFICATION,
+        formKey = "",
         formUri = "https://smsoip.cloudant.com/acra-smsoip/_design/acra-storage/_update/report",
         reportType = org.acra.sender.HttpSender.Type.JSON,
         httpMethod = org.acra.sender.HttpSender.Method.PUT,
         formUriBasicAuthLogin = "thereflifeepenturealcang",
-        formUriBasicAuthPassword = "iwj0RjQheBUlWU845dpOprTQ",*/
+        formUriBasicAuthPassword = "iwj0RjQheBUlWU845dpOprTQ",
         resToastText = R.string.crash_toast_text,
         resNotifTickerText = R.string.crash_notif_ticker_text,
         resNotifTitle = R.string.crash_notif_title,

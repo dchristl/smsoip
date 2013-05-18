@@ -71,7 +71,7 @@
         <meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14f930decd44ce"/>
 
         <activity android:hardwareAccelerated="true" android:name="com.mobclix.android.sdk.MobclixBrowserActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:excludeFromRecents="true" android:finishOnTaskLaunch="true" android:launchMode="singleInstance" android:name="org.acra.CrashReportDialog" android:theme="@android:style/Theme.Dialog"/>
+        <activity android:excludeFromRecents="true" android:finishOnTaskLaunch="true" android:launchMode="singleInstance" android:name="org.acra.CrashReportDialog"/>
         <activity android:name=".activities.InformationDialogActivity" android:theme="@android:style/Theme.Dialog"/>
         <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:excludeFromRecents="true" android:name=".receiver.TransparentActivity" android:theme="@style/Theme.Transparent"/>
 
