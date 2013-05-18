@@ -19,5 +19,5 @@
 
 <resources>
     <string name="appkey">AppKey</string>
-    <string name="appkey_description">Beschreibung</string>
+    <string name="appkey_description">Label</string>
 </resources>

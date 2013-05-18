@@ -19,5 +19,5 @@
 
 <resources>
     <string name="appkey_description">Label</string>
-    <string name="not_sent">SMS konnte nicht versendet werden.</string>
+    <string name="appkey_description">Beschreibung</string>
 </resources>

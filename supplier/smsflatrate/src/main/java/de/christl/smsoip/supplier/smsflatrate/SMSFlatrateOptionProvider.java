@@ -25,6 +25,10 @@ public class SMSFlatrateOptionProvider extends OptionProvider {
 
     public static final String PROVIDER_NAME = "SMSFlatrate";
 
+    public SMSFlatrateOptionProvider() {
+        super(PROVIDER_NAME);
+    }
+
     @Override
     public Drawable getIconDrawable() {
         return getDrawable(R.drawable.icon);
@@ -46,7 +50,7 @@ public class SMSFlatrateOptionProvider extends OptionProvider {
         return getTextByResourceId(R.string.appkey_description);
     }
 
-//    @Override
+    //    @Override
     public String getPasswordLabelText() {
         return getTextByResourceId(R.string.appkey);
     }

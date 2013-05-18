@@ -18,28 +18,14 @@
 
 package de.christl.smsoip.supplier.smsflatrate;
 
-import android.util.Log;
 import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.connection.UrlConnectionFactory;
-import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SMSFlatrateSupplier implements ExtendedSMSSupplier {
     private OptionProvider provider;
@@ -71,6 +57,6 @@ public class SMSFlatrateSupplier implements ExtendedSMSSupplier {
 
     @Override
     public OptionProvider getProvider() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return provider;
     }
 }
