@@ -195,7 +195,7 @@ public class MultipleAccountsPreference extends ListPreference {
                     if (accountModel == null) {
                         AccountModel newModel = new AccountModel(userName, pass);
                         if (userNameAlreadyMaintained(newModel)) {
-                            showToast(R.string.account_already_defined);
+                            showAlreadyDefinedToast();
                             return;
                         } else {
                             listAdapter.insert(newModel, listAdapter.getObjects().size() - 1); //add before last (the fake add account one)
@@ -204,22 +204,38 @@ public class MultipleAccountsPreference extends ListPreference {
                         accountModel.setUserName(userName);
                         accountModel.setPassWord(pass);
                         if (userNameAlreadyMaintained(accountModel)) {
-                            showToast(R.string.account_already_defined);
+                            showAlreadyDefinedToast();
                             return;
                         }
                     }
                     listAdapter.notifyDataSetChanged();
                     dialog.dismiss();
                 } else {
-                    showToast(R.string.no_user_name);
+                    showNoUserNameToast();
                 }
             }
         });
         dialog.show();
     }
 
-    private void showToast(int toastTextId) {
-        Toast.makeText(getContext(), toastTextId, Toast.LENGTH_SHORT).show();
+    private void showNoUserNameToast() {
+        String string = getContext().getString(R.string.no_user_name);
+        String userLabelText = provider.getUserLabelText();
+        if (userLabelText == null) {
+            userLabelText = getContext().getString(R.string.username);
+        }
+        string = String.format(string, userLabelText);
+        Toast.makeText(getContext(), string, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showAlreadyDefinedToast() {
+        String string = getContext().getString(R.string.account_already_defined);
+        String userLabelText = provider.getUserLabelText();
+        if (userLabelText == null) {
+            userLabelText = getContext().getString(R.string.username);
+        }
+        string = String.format(string, userLabelText);
+        Toast.makeText(getContext(), string, Toast.LENGTH_SHORT).show();
     }
 
     private boolean userNameAlreadyMaintained(AccountModel model) {
