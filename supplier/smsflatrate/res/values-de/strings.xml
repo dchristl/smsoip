@@ -18,6 +18,17 @@
   -->
 
 <resources>
-    <string name="appkey_description">Label</string>
-    <string name="appkey_description">Beschreibung</string>
+    <string name="appkey_description">Beschreibung/Benutzername</string>
+    <array name="array_spinner">
+        <item>SmartSMS (ohne AK)</item>
+        <item>Normal (ohne AK)</item>
+        <item>Normal (mit AK)</item>
+        <item>High Quality (mit AK)</item>
+    </array>
+    <string name="help">AppKey Hilfe</string>
+    <string name="help_description">Zeigt eine Hilfe, wie du dir einen eigenen AppKey für SMSoIP generierst.</string>
+    <string name="helpText">Auf smsflatrate.net anmelden. Im Kunden-Login auf den Menüpunkt "Appkey für Apps" klicken.
+        Trage dort folgende Lizenznummer ein: 217075022. Daraufhin wird dir ein persönlicher Appkey generiert. Diesen in
+        der Account-Verwaltung eintragen. Die Beschreibung/der Benutzername ist frei wählbar:
+    </string>
 </resources>
