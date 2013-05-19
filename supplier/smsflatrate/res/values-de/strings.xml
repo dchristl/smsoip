@@ -19,6 +19,7 @@
 
 <resources>
     <string name="appkey_description">Beschreibung/Benutzername</string>
+    <string name="sender">Absender</string>
     <array name="array_spinner">
         <item>SmartSMS (ohne AK)</item>
         <item>Normal (ohne AK)</item>

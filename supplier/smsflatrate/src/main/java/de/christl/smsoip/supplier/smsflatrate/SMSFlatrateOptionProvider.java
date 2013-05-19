@@ -20,25 +20,36 @@ package de.christl.smsoip.supplier.smsflatrate;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.view.ViewGroup;
+import android.widget.*;
 import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
 import de.christl.smsoip.option.OptionProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SMSFlatrateOptionProvider extends OptionProvider {
 
     public static final String PROVIDER_NAME = "SMSFlatrate";
     public static final String PROVIDER_DEFAULT_TYPE = "provider.defaulttype";
+    private static final String SENDER_LAST_INPUT_PREFIX = "sender_last_input_";
+    private static final String STATE_SENDER_INPUT = "state_sender_input";
+    private EditText senderText;
     private boolean senderVisible = true;
     private int maxMessageCount = 7;
 
@@ -142,6 +153,24 @@ public class SMSFlatrateOptionProvider extends OptionProvider {
         spinner.setSelection(defaultPosition);
     }
 
+
+    @Override
+    public void getFreeLayout(LinearLayout freeLayout) {
+        if (senderVisible) {
+            XmlResourceParser freeLayoutRes = getXMLResourceByResourceId(R.layout.freelayout);
+            View freeLayoutView = LayoutInflater.from(freeLayout.getContext()).inflate(freeLayoutRes, freeLayout);
+            resolveChildren((ViewGroup) freeLayoutView);
+        }
+    }
+
+    private void resolveChildren(ViewGroup freeLayout) {
+        ViewGroup parentTableRow = (ViewGroup) ((ViewGroup) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(1)).getChildAt(0);
+        //set the heading
+        ((TextView) ((ViewGroup) freeLayout.getChildAt(0)).getChildAt(0)).setText(getTextByResourceId(R.string.sender));
+        senderText = (EditText) parentTableRow.getChildAt(0);
+        setInputFiltersForEditText();
+    }
+
     @Override
     public List<Preference> getAdditionalPreferences(final Context context) {
         List<Preference> out = new ArrayList<Preference>();
@@ -182,6 +211,98 @@ public class SMSFlatrateOptionProvider extends OptionProvider {
 //        showSenderCB.setTitle(getTextByResourceId(R.string.show_sender));
 //        showSenderCB.setSummary(getTextByResourceId(R.string.show_sender_description));
 //        out.add(showSenderCB);
+        return out;
+    }
+
+
+    private void setInputFiltersForEditText() {
+        int length = 16;
+        InputFilter maxLengthFilter = new InputFilter.LengthFilter(length);//max 16 chars allowed
+        InputFilter specialCharsFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {//only numbers or charcters allowed
+                        return "";
+                    }
+                    if (dest.length() > 10) {
+                        String spanContent = dest.toString();
+                        boolean onlyDigits = true;
+                        for (int z = 0; z < spanContent.length(); z++) {
+                            char c = spanContent.charAt(i);
+                            if (!Character.isDigit(c)) {
+                                onlyDigits = false;
+                                break;
+                            }
+                        }
+                        if (!onlyDigits || !Character.isDigit(source.charAt(i))) {
+                            return "";
+                        }
+
+                    }
+                }
+                return null;
+            }
+        };
+        senderText.setFilters(new InputFilter[]{maxLengthFilter, specialCharsFilter});
+        senderText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        senderText.setText(getSenderFromOptions());
+    }
+
+    @Override
+    public void onAccountsChanged() {
+        super.onAccountsChanged();
+        SharedPreferences.Editor edit = getSettings().edit();
+        Map<Integer, AccountModel> accounts = getAccounts();
+        Map<String, ?> allSettings = getSettings().getAll();
+        Outer:
+        for (Map.Entry<String, ?> stringEntry : allSettings.entrySet()) {
+            if (stringEntry.getKey().startsWith(SENDER_LAST_INPUT_PREFIX)) {
+                String label = stringEntry.getKey().replaceAll(SENDER_LAST_INPUT_PREFIX, "");
+                for (Map.Entry<Integer, AccountModel> integerAccountModelEntry : accounts.entrySet()) {
+                    if (label.equals(integerAccountModelEntry.getValue().getUserName())) {
+                        continue Outer;
+                    }
+                }
+                edit.remove(stringEntry.getKey());
+            }
+        }
+        edit.commit();
+    }
+
+    @Override
+    public void onActivityPaused(Bundle outState) {
+        if (senderText != null && senderText.getVisibility() == View.VISIBLE) {
+            String textBeforeActivityKilled = senderText.getText().toString();
+            outState.putString(STATE_SENDER_INPUT, textBeforeActivityKilled);
+        }
+    }
+
+    @Override
+    public void afterActivityKilledAndOnCreateCalled(Bundle savedInstanceState) {
+        if (senderText != null && senderText.getVisibility() == View.VISIBLE) {
+            String textBeforeActivityKilled = savedInstanceState.getString(STATE_SENDER_INPUT);
+            senderText.setText(textBeforeActivityKilled);
+        }
+    }
+
+    public void saveLastSender() {
+        if (senderText != null && senderText.getVisibility() == View.VISIBLE) {
+            String toWrite = senderText.getText().toString();
+            String userName = getUserName();
+            if (!toWrite.equals("") && userName != null && !userName.equals("")) {
+                SharedPreferences.Editor edit = getSettings().edit();
+                edit.putString(SENDER_LAST_INPUT_PREFIX + userName, toWrite);
+                edit.commit();
+            }
+        }
+    }
+
+    private String getSenderFromOptions() {
+        String out = getSettings().getString(SENDER_LAST_INPUT_PREFIX + getUserName(), null);
+        if (out == null) {
+            out = "";
+        }
         return out;
     }
 }
