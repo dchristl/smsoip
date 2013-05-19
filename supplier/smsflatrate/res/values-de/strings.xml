@@ -27,10 +27,39 @@
         <item>High Quality (mit AK)</item>
     </array>
     <string name="help">AppKey Hilfe</string>
-    <string name="help_description">Zeigt eine Hilfe, wie du dir einen eigenen AppKey für SMSoIP generierst.</string>
+    <string name="help_description">Zeigt eine Hilfe, wie du dir einen eigenen AppKey für SMSoIP generierst</string>
     <string name="helpText">Auf smsflatrate.net anmelden. Im Kunden-Login auf den Menüpunkt "Appkey für Apps" klicken.
         Trage dort folgende Lizenznummer ein: 217075022. Daraufhin wird dir ein persönlicher Appkey generiert. Diesen in
         der Account-Verwaltung eintragen. Die Beschreibung/der Benutzername ist frei wählbar:
     </string>
     <string name="balance">Guthaben: %.2f €</string>
+    <string name="return_100">SMS erfolgreich an das Gateway übertragen</string>
+    <!--<string name="return_101">SMS wurde zugestellt</string>-->
+    <!--<string name="return_102">SMS wurde noch nicht zugestellt</string>-->
+    <!--<string name="return_103">SMS konnte eventuell nicht zugestellt werden</string>-->
+    <!--<string name="return_104">SMS konnte nach Ablauf von 48 Stunden noch immer nicht zugestellt werden.</string>-->
+    <string name="return_120">Guthaben reicht nicht aus</string>
+    <string name="return_130">Falsche Datenübergabe</string>
+    <string name="return_131">Empfänger nicht korrekt</string>
+    <string name="return_132">Absender nicht korrekt</string>
+    <string name="return_133">Nachrichtentext nicht korrekt</string>
+    <string name="return_140">Falscher AppKey oder Account gesperrt</string>
+    <string name="return_150">Sie haben versucht an eine internationale Handynummer eines Gateways, das ausschließlich
+        für
+        den Versand nach Deutschland bestimmt ist, zu senden.
+    </string>
+    <string name="return_170">Parameter time= ist nicht korrekt. Bitte im Format: TT.MM.JJJJ-SS:MM oder Parameter
+        entfernen
+        für sofortigen Versand
+    </string>
+    <string name="return_171">Zeit ist zu weit in der Zukunft terminiert (max. 360 Tage)</string>
+    <string name="return_231">Keine smsflatrate.net Gruppe vorhanden oder nicht korrekt</string>
+    <string name="return_404">Unbekannter Fehler. Bitte dringend Support (service@smsflatrate.net) kontaktieren</string>
+    <string name="smartForeign">SMS mit mehr als 160 Zeichen können nicht außerhalb Deutschlands als SmartSMS veschickt
+        werden
+    </string>
+    <string name="invalidSender">Ungültige Absenderkennung</string>
+    <string name="smartForeignDelay">Zeitversetzte SMS können nicht außerhalb Deutschlands als SmartSMS veschickt
+        werden</string>
+    <string name="textTooLong">Text zu lang</string>
 </resources>

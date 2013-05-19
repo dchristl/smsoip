@@ -305,4 +305,12 @@ public class SMSFlatrateOptionProvider extends OptionProvider {
         }
         return out;
     }
+
+    public String getSender() {
+        String out = "";
+        if (senderText != null && senderText.getVisibility() == View.VISIBLE) {
+            out = senderText.getText().toString();
+        }
+        return out;
+    }
 }
