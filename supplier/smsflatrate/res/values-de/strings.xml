@@ -18,7 +18,7 @@
   -->
 
 <resources>
-    <string name="appkey_description">Beschreibung/Benutzername</string>
+    <string name="appkey_description">Beschreibung/Benutzername (beliebig)</string>
     <string name="sender">Absender</string>
     <array name="array_spinner">
         <item>SmartSMS (ohne AK)</item>
@@ -32,4 +32,5 @@
         Trage dort folgende Lizenznummer ein: 217075022. Daraufhin wird dir ein persönlicher Appkey generiert. Diesen in
         der Account-Verwaltung eintragen. Die Beschreibung/der Benutzername ist frei wählbar:
     </string>
+    <string name="balance">Guthaben: %.2f €</string>
 </resources>

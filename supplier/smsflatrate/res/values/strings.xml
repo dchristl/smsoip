@@ -19,7 +19,7 @@
 
 <resources>
     <string name="appkey">AppKey</string>
-    <string name="appkey_description">Label/Username</string>
+    <string name="appkey_description">Label/Username (arbitrary)</string>
     <string name="sender">Sender</string>
     <array name="array_spinner">
         <item>SmartSMS (without SI)</item>
@@ -34,4 +34,5 @@
         Appkey in the account settings. The Label/Username is arbitrary.
     </string>
     <string name="ok">OK</string>
+    <string name="balance">Balance: %.2f €</string>
 </resources>
