@@ -83,9 +83,17 @@ public class SMSReceiver extends BroadcastReceiver {
                 ErrorReporterStack.put(LogConst.MESSAGE_RECEIVED_BY_RECEIVER);
                 Bundle pudsBundle = intent.getExtras();
                 Object[] pdus = (Object[]) pudsBundle.get(PDUS);
+
+                //take the first message for getting address
                 SmsMessage messages = SmsMessage.createFromPdu((byte[]) pdus[0]);
                 if (messages == null) { //no message available on device
                     return;
+                }
+                //loop over all to get the whole message
+                StringBuilder content = new StringBuilder();
+                for (Object pdu : pdus) {
+                    SmsMessage fromPdu = SmsMessage.createFromPdu((byte[]) pdu);
+                    content.append(fromPdu.getMessageBody());
                 }
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
@@ -118,13 +126,13 @@ public class SMSReceiver extends BroadcastReceiver {
                 }
                 builder.setContentTitle(contentTitle);
 
-                builder.setContentText(messages.getMessageBody());
+                builder.setContentText(content);
 
                 Intent sendIntent;
                 if (preferences.getBoolean(SettingsConst.RECEIVER_SHOW_DIALOG, true)) {
                     sendIntent = new Intent(context, TransparentActivity.class);
                     sendIntent.putExtra(TransparentActivity.SENDER_NAME, contentTitle);
-                    sendIntent.putExtra(TransparentActivity.MESSAGE, messages.getMessageBody());
+                    sendIntent.putExtra(TransparentActivity.MESSAGE, content.toString());
                     sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, messages.getOriginatingAddress());
                 } else {
                     sendIntent = NotificationUtil.getSchemeIntent(messages.getOriginatingAddress());
