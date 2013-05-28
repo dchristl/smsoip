@@ -218,6 +218,9 @@ public class SMS77Supplier implements ExtendedSMSSupplier, TimeShiftSupplier {
             InputStream httpURLConnection = factory.create().getInputStream();
             String returnVal = UrlConnectionFactory.inputStream2DebugString(httpURLConnection);
             try {
+                if (returnVal.length() > 2) {
+                    returnVal = returnVal.substring(0, 3);
+                }
                 int returnCode = Integer.parseInt(returnVal);
                 SMSActionResult smsActionResult = translateCodeToActionResult(returnCode);
                 out.add(new FireSMSResult(receiver, smsActionResult));
