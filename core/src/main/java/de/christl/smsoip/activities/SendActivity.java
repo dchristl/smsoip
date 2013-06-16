@@ -34,19 +34,52 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.text.*;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.Tracker;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
+
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.dialogadapter.ChangeProviderArrayAdapter;
 import de.christl.smsoip.activities.send.Mode;
@@ -61,7 +94,11 @@ import de.christl.smsoip.application.AppRating;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.autosuggest.NameNumberSuggestField;
-import de.christl.smsoip.constant.*;
+import de.christl.smsoip.constant.FireSMSResult;
+import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.LogConst;
+import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.database.Contact;
 import de.christl.smsoip.models.ErrorReporterStack;
@@ -71,18 +108,13 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
-import de.christl.smsoip.receiver.SMSReceiver;
-import de.christl.smsoip.ui.*;
-import org.acra.ACRA;
-import org.acra.ErrorReporter;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.SocketTimeoutException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
+import de.christl.smsoip.ui.ChosenContactsDialog;
+import de.christl.smsoip.ui.EmoImageDialog;
+import de.christl.smsoip.ui.SMSInputEditText;
+import de.christl.smsoip.ui.SendMessageDialog;
+import de.christl.smsoip.ui.ShowLastMessagesDialog;
+import de.christl.smsoip.ui.SmileyDialog;
 
 
 public class SendActivity extends AllActivity {
@@ -1700,10 +1732,10 @@ public class SendActivity extends AllActivity {
         if (lastInfoDialog != null) {     //call dismiss on dialog to avoid leaking
             lastInfoDialog.dismiss();
         }
-        lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
-        lastInfoDialog.setOwnerActivity(this);
+
         if (!this.isFinishing()) {
             try {
+                lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
                 lastInfoDialog.show();
                 ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
             } catch (Exception e) { //to show exactly when the exception occur
