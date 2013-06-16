@@ -26,10 +26,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import org.acra.ACRA;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
@@ -39,10 +51,6 @@ import de.christl.smsoip.application.SMSoIPPlugin;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
-import org.acra.ACRA;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class GlobalPreferences extends BackgroundPreferenceActivity {
 
@@ -206,10 +214,11 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             edit.remove(SettingsConst.GLOBAL_BUTTON_VISIBILITY);
             edit.commit();
         }
-
+        boolean imagePickerAvailable = SMSoIPApplication.getApp().isImagePickerAvailable();
         PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
         backgroundImageIntent.setTitle(R.string.background_image);
-        backgroundImageIntent.setSummary(R.string.background_image_description);
+        backgroundImageIntent.setEnabled(imagePickerAvailable);
+        backgroundImageIntent.setSummary(imagePickerAvailable ? R.string.background_image_description : R.string.not_supported_on_device);
         backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

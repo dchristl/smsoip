@@ -33,16 +33,12 @@ import android.net.Uri;
 import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
 import com.google.analytics.tracking.android.EasyTracker;
-import dalvik.system.DexFile;
-import dalvik.system.PathClassLoader;
-import de.christl.smsoip.R;
-import de.christl.smsoip.activities.settings.SettingsConst;
-import de.christl.smsoip.constant.TrackerConstants;
-import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
@@ -52,7 +48,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import dalvik.system.DexFile;
+import dalvik.system.PathClassLoader;
+import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.constant.TrackerConstants;
+import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 @ReportsCrashes(/*formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ",*/ mode = ReportingInteractionMode.NOTIFICATION,
         formKey = "",
@@ -84,6 +93,8 @@ public class SMSoIPApplication extends Application {
     private static Activity currentActivity;
     private boolean pickActionAvailable = true;
     private Exception appInitException;
+
+    private Boolean isImagePickerAvailable;
 
     /**
      * helper for setting background to current activity
@@ -375,6 +386,19 @@ public class SMSoIPApplication extends Application {
      */
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
+    }
+
+    /**
+     * checks if the imagePicker is available on device
+     *
+     * @return
+     */
+    public boolean isImagePickerAvailable() {
+        if (isImagePickerAvailable == null) {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            isImagePickerAvailable = getPackageManager().resolveActivity(photoPickerIntent, 0) != null;
+        }
+        return isImagePickerAvailable;
     }
 
     /**
