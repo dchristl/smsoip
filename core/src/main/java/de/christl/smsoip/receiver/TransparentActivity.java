@@ -23,9 +23,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.google.analytics.tracking.android.EasyTracker;
+
 import de.christl.smsoip.R;
-import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
+import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.receiver.util.NotificationUtil;
 
 /**
@@ -48,12 +50,14 @@ public class TransparentActivity extends Activity {
             contentTitle = extras.getString(SENDER_NAME);
             message = extras.getString(MESSAGE);
         }
+        EasyTracker.getInstance().setContext(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(contentTitle);
         final String finalNumber = number;
         builder.setMessage(message)
                 .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_POS, null);
                         Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
                         startActivity(sendIntent);
 //                        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
@@ -77,6 +81,7 @@ public class TransparentActivity extends Activity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
+                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_CANCEL, null);
                 TransparentActivity.this.finish();
             }
         });
