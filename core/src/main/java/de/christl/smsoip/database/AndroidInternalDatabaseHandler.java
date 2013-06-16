@@ -25,17 +25,24 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import de.christl.smsoip.R;
-import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.models.Message;
-import de.christl.smsoip.picker.DateTimeObject;
+
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import de.christl.smsoip.R;
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.models.Message;
+import de.christl.smsoip.picker.DateTimeObject;
 
 /**
  * Handling class for all stuff for internal database
@@ -267,8 +274,9 @@ public abstract class AndroidInternalDatabaseHandler {
         String encodedNumber = Uri.encode(rawNumber);
         if (!encodedNumber.equals("")) {
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, encodedNumber);
+            ContentResolver contentResolver = null;
             try {
-                ContentResolver contentResolver = context.getContentResolver();
+                contentResolver = context.getContentResolver();
                 Cursor query = contentResolver.query(uri, projection, null, null, null);
                 if (query != null && query.moveToFirst()) {
                     name = query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
@@ -285,6 +293,12 @@ public abstract class AndroidInternalDatabaseHandler {
                 ErrorReporter instance = ACRA.getErrorReporter();
                 instance.putCustomData("uri", uri.toString());
                 instance.putCustomData("projection", Arrays.toString(projection));
+                instance.handleSilentException(e);
+            } catch (NullPointerException e) {
+                ErrorReporter instance = ACRA.getErrorReporter();
+                instance.putCustomData("uri", uri.toString());
+                instance.putCustomData("projection", Arrays.toString(projection));
+                instance.putCustomData("contentResolver", String.valueOf(contentResolver));
                 instance.handleSilentException(e);
             }
         }
