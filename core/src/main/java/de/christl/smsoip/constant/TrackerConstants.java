@@ -41,13 +41,17 @@ public abstract class TrackerConstants {
     public static final String EVENT_TOO_NEW = "too_new";
     public static final String EVENT_NO_PLUGINS = "no_plugins";
     public static final String EVENT_SMS_RECEIVED = "sms_received";
+    public static final String EVENT_MODE_TOGGLE = "mode_toggle";
+    public static final String EVENT_CLEAR = "clear";
+    public static final String EVENT_SHORTEN = "shorten";
+    public static final String EVENT_CONVERSATION = "conversation";
+    public static final String EVENT_LAST_INFO = "last_info";
 
     public static final String LABEL_MENU = "menu";
     public static final String LABEL_ICON = "icon";
     public static final String LABEL_POS = "positive";
     public static final String LABEL_NEG = "negative";
     public static final String LABEL_CANCEL = "cancel";
-
 
 
 }
