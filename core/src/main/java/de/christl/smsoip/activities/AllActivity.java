@@ -40,28 +40,31 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.android.vending.billing.IInAppBillingService;
 import com.google.analytics.tracking.android.EasyTracker;
-import de.christl.smsoip.R;
-import de.christl.smsoip.activities.settings.SettingsConst;
-import de.christl.smsoip.activities.threading.UpdateDeveloperInfoTask;
-import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.application.SMSoIPPlugin;
-import de.christl.smsoip.application.changelog.ChangeLog;
-import de.christl.smsoip.util.BitmapProcessor;
+
 import org.acra.ACRA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.activities.threading.UpdateDeveloperInfoTask;
+import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.application.changelog.ChangeLog;
+import de.christl.smsoip.constant.TrackerConstants;
+import de.christl.smsoip.util.BitmapProcessor;
+
 /**
  * Class for sharing some functionality can be used across mor activities
  */
-public abstract class AllActivity extends SherlockFragmentActivity  {
+public abstract class AllActivity extends SherlockFragmentActivity {
     public static final int EXIT = 0;
     private static List<Activity> registeredActivities = new ArrayList<Activity>();
 
@@ -94,13 +97,17 @@ public abstract class AllActivity extends SherlockFragmentActivity  {
         super.onCreate(savedInstanceState);
         registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
+        EasyTracker.getInstance().setContext(this);
         if (app.getNotLoadedProviders().size() > 0) {
+            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_DEPRECATED, String.valueOf(app.getNotLoadedProviders().size()), null);
             showNotLoadedProvidersDialog(app.getNotLoadedProviders(), getString(R.string.deprecated_providers));
         }
         if (app.getPluginsToNew().size() > 0) {
+            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_TOO_NEW, String.valueOf(app.getPluginsToNew().size()), null);
             showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.too_new_providers));
         }
         if (app.getProviderEntries().size() == 0) {
+            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_NO_PLUGINS, "", null);
             showNoProvidersDialog();
         }
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {

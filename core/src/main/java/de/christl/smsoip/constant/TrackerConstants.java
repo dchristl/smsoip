@@ -30,11 +30,15 @@ public abstract class TrackerConstants {
     public static final String CAT_OPTIONS = "options";
     public static final String CAT_BUTTONS = "button";
     public static final String CAT_MISC = "miscellaneous";
+    public static final String CAT_STARTUP = "startup";
 
 
     public static final String EVENT_NORMAL = "normal";
     public static final String EVENT_TIMESHIFT = "timeshift";
     public static final String EVENT_RATING = "rating";
+    public static final String EVENT_DEPRECATED = "deprecated";
+    public static final String EVENT_TOO_NEW = "too_new";
+    public static final String EVENT_NO_PLUGINS = "no_plugins";
 
     public static final String LABEL_MENU = "menu";
     public static final String LABEL_ICON = "icon";
