@@ -15,7 +15,7 @@
   ~
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
-  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" android:versionCode="47" android:versionName="2.7.0" package="de.christl.smsoip">
+  --><manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" android:versionCode="47" android:versionName="2.7.1" package="de.christl.smsoip">
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
 
@@ -30,7 +30,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <uses-feature android:name="android.hardware.telephony" android:required="false"/>
     <uses-feature android:name="android.hardware.wifi" android:required="false"/>
@@ -73,7 +73,7 @@
         <activity android:hardwareAccelerated="true" android:name="com.mobclix.android.sdk.MobclixBrowserActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity android:excludeFromRecents="true" android:finishOnTaskLaunch="true" android:launchMode="singleInstance" android:name="org.acra.CrashReportDialog"/>
         <activity android:name=".activities.InformationDialogActivity" android:theme="@android:style/Theme.Dialog"/>
-        <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:excludeFromRecents="true" android:name=".receiver.TransparentActivity" android:theme="@style/Theme.Transparent"/>
+        <activity android:configChanges="orientation|keyboard|keyboardHidden|screenSize" android:excludeFromRecents="true" android:hardwareAccelerated="true" android:name=".receiver.TransparentActivity" android:theme="@style/Theme.Transparent"/>
 
         <receiver android:exported="true" android:name="de.christl.smsoip.receiver.SMSReceiver">
             <intent-filter android:priority="999">

@@ -324,7 +324,6 @@ fileName: strings.xml
         funktioniert.\nBitte von deinem bevorzugten Store nachinstallieren: <br/><br/>
         <big>
             <a href="https://play.google.com/store/apps/details?id=de.christl.smsoip">Google Play</a> <br/> <br/>
-            <a href="http://www.amazon.com/gp/product/B009L1YGY0">Amazon</a>      <br/> <br/>
             <a href="http://www.androidpit.de/de/android/market/apps/app/de.christl.smsoip/SMSoIP">AndroidPit</a>  <br/>
         </big>]]>
     </string>
@@ -998,7 +997,7 @@ fileName: strings.xml
     <string name="help_description">Zeigt eine Hilfe, wie du dir einen eigenen AppKey für SMSoIP generierst</string>
     <string name="helpText">Auf smsflatrate.net anmelden. Im Kunden-Login auf den Menüpunkt "Appkey für Apps" klicken.
         Trage dort folgende Lizenznummer ein: 217075022. Daraufhin wird dir ein persönlicher Appkey generiert. Diesen in
-        der Account-Verwaltung eintragen. Die Beschreibung/der Benutzername ist frei wählbar:
+        der Account-Verwaltung eintragen. Die Beschreibung/der Benutzername ist frei wählbar.
     </string>
     <string name="balance">Guthaben: %.2f €</string>
     <string name="return_100">SMS erfolgreich an das Gateway übertragen</string>
