@@ -206,8 +206,6 @@ public class SMSoIPApplication extends Application {
             }
             readOutPlugins();
             installedPackages = installedApplications.size();
-            EasyTracker.getInstance().setContext(this);
-            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_STARTUP, installedPackages.toString(), null);
         }
     }
 

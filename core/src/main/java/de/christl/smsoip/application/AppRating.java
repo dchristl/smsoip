@@ -19,9 +19,17 @@
 package de.christl.smsoip.application;
 
 import android.app.AlertDialog;
-import android.content.*;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+
+import com.google.analytics.tracking.android.EasyTracker;
+
 import de.christl.smsoip.R;
+import de.christl.smsoip.constant.TrackerConstants;
 
 public class AppRating {
 
@@ -61,10 +69,11 @@ public class AppRating {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.rate_app_title);
         builder.setMessage(R.string.rate_app_message);
-
+        EasyTracker.getInstance().setContext(context);
         builder.setPositiveButton(R.string.rate_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_POS, null);
                 try {
                     String uri = context.getString(R.string.market_rate_url);
                     context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
@@ -83,6 +92,7 @@ public class AppRating {
         builder.setNegativeButton(R.string.rate_no_thanks, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_NEG, null);
                 if (editor != null) {
                     editor.putBoolean(RATING_DISABLED, true);
                     editor.commit();
@@ -94,6 +104,7 @@ public class AppRating {
         builder.setNeutralButton(R.string.rate_remind_me_later, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_CANCEL, null);
                 if (editor != null) {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();
@@ -104,6 +115,7 @@ public class AppRating {
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
+                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_CANCEL, null);
                 if (editor != null) {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();

@@ -34,10 +34,14 @@ public abstract class TrackerConstants {
 
     public static final String EVENT_NORMAL = "normal";
     public static final String EVENT_TIMESHIFT = "timeshift";
-    public static final String EVENT_STARTUP = "startup";
+    public static final String EVENT_RATING = "rating";
 
     public static final String LABEL_MENU = "menu";
     public static final String LABEL_ICON = "icon";
+    public static final String LABEL_POS = "positive";
+    public static final String LABEL_NEG = "negative";
+    public static final String LABEL_CANCEL = "cancel";
+
 
 
 }
