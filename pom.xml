@@ -32,12 +32,6 @@
                 <overlay.directory>${project.basedir}/androidpit</overlay.directory>
             </properties>
         </profile>
-        <profile>
-            <id>AMAZON</id>
-            <properties>
-                <overlay.directory>${project.basedir}/amazon</overlay.directory>
-            </properties>
-        </profile>
     </profiles>
     <build>
         <pluginManagement>

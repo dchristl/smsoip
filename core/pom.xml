@@ -64,12 +64,6 @@
                 <classifier.name>androidpit</classifier.name>
             </properties>
         </profile>
-        <profile>
-            <id>AMAZON</id>
-            <properties>
-                <classifier.name>amazon</classifier.name>
-            </properties>
-        </profile>
     </profiles>
 
     <dependencies>
