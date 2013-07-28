@@ -83,7 +83,7 @@
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.5.3</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <id>ALIGN APK</id>
@@ -113,7 +113,6 @@
                         <skip>false</skip>
                     </zipalign>
                     <sdk>
-                        <path>${jayway.sdk.path}</path>
                         <platform>15</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
@@ -157,37 +156,39 @@
                         <id>CONCATENATE STRINGS</id>
                         <configuration>
                             <source><![CDATA[
-                                if (project.packaging == 'apk' || project.packaging == 'apklib') {
-                                    def outputFolder = new File(project.properties.getProperty('output.folder') + '/strings')
-                                    if (project.name == 'SMSoIP-core') {
-                                        outputFolder.deleteDir();   // create folder if does not exist
-                                    }
-                                    outputFolder.mkdir();   // create folder if does not exist
-                                    File resourceDir = new File(project.basedir.canonicalPath + '/res')
-                                    println resourceDir.canonicalPath
-                                    //find all value folders
-                                    List<File> valuesFolders = resourceDir.listFiles().findAll { it.canonicalPath.contains('values') }
-                                    valuesFolders.each {
-                                        def newFileName = it.getName()
-                                        //here you have values[-langCode]
-                                        def concatenatedStringsFile = new File(outputFolder.canonicalPath + '/' + newFileName + '.xml')
-                                        it.listFiles().each {
-                                            println 'Copying ' + it + ' to global resource folders'
-                                            concatenatedStringsFile.append('<!--String resources for:')
-                                            concatenatedStringsFile.append('\n')
-                                            concatenatedStringsFile.append('project: ' + project.name)
-                                            concatenatedStringsFile.append('\n')
-                                            concatenatedStringsFile.append('values folder: ' + newFileName)
-                                            concatenatedStringsFile.append('\n')
-                                            concatenatedStringsFile.append('fileName: ' + it.getName())
-                                            concatenatedStringsFile.append('\n')
-                                            concatenatedStringsFile.append('-->')
-                                            concatenatedStringsFile.append('\n')
-                                            concatenatedStringsFile.append(it.getText('UTF-8'))
-                                            concatenatedStringsFile.append('\n')
+                                    if (project.packaging == 'apk' || project.packaging == 'apklib') {
+                                        def outputFolder = new File(project.properties.getProperty('output.folder') + '/strings')
+                                        if (project.name == 'SMSoIP-core') {
+                                            outputFolder.deleteDir();   // create folder if does not exist
+                                        }
+                                        outputFolder.mkdir();   // create folder if does not exist
+                                        File resourceDir = new File(project.basedir.canonicalPath + '/res')
+                                        println resourceDir.canonicalPath
+                                        //find all value folders
+                                        List<File> valuesFolders = resourceDir.listFiles().findAll {
+                                            it.canonicalPath.contains('values')
+                                        }
+                                        valuesFolders.each {
+                                            def newFileName = it.getName()
+                                            //here you have values[-langCode]
+                                            def concatenatedStringsFile = new File(outputFolder.canonicalPath + '/' + newFileName + '.xml')
+                                            it.listFiles().each {
+                                                println 'Copying ' + it + ' to global resource folders'
+                                                concatenatedStringsFile.append('<!--String resources for:')
+                                                concatenatedStringsFile.append('\n')
+                                                concatenatedStringsFile.append('project: ' + project.name)
+                                                concatenatedStringsFile.append('\n')
+                                                concatenatedStringsFile.append('values folder: ' + newFileName)
+                                                concatenatedStringsFile.append('\n')
+                                                concatenatedStringsFile.append('fileName: ' + it.getName())
+                                                concatenatedStringsFile.append('\n')
+                                                concatenatedStringsFile.append('-->')
+                                                concatenatedStringsFile.append('\n')
+                                                concatenatedStringsFile.append(it.getText('UTF-8'))
+                                                concatenatedStringsFile.append('\n')
+                                            }
                                         }
                                     }
-                                }
                                 ]]>
                             </source>
                         </configuration>
