@@ -45,7 +45,7 @@ public abstract class LogConst {
     public static final String UPDATE_INFO_TEXT_SILENT = "updateInfoTextSilent";
     public static final String LAST_MESSAGES_BUTTON_CLICKED = "lastMessagesButtonClicked";
     public static final String SHOW_CHOSEN_CONTACTS_DIALOG = "showChosenContactsDialog";
-    public static final String REFRESH_UPPER_CLICKED = "Refresh upper clicked";
+    public static final String REFRESH_CLICKED = "Refresh clicked";
     public static final String KILL_DIALOG_AFTER_A_WHILE = "killDialogAfterAWhile";
     public static final String SEND_BY_THREAD = "sendByThread";
     public static final String REFRESH_INFORMATION_TEXT = "refreshInformationText ";

@@ -23,7 +23,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
-import com.actionbarsherlock.R;
+import de.christl.smsoip.R;
 
 /**
  * Class for showing a dialog if dialog information is clicked

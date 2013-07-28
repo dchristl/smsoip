@@ -21,22 +21,25 @@ package de.christl.smsoip.models;
 import org.acra.ACRA;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 
 /**
  * abstract class for errorreporting aka action log
  */
 public abstract class ErrorReporterStack {
+
     private static ArrayList<String> stack = new ArrayList<String>();
 
     public synchronized static void put(String action) {
         stack.add(action);
         try {
-            if (stack.size() > 30) {
+            if (stack.size() >= 10) {
                 ArrayList<String> tmpList = new ArrayList<String>(stack);
+                Collections.reverse(tmpList);
                 int i = 0;
                 for (String next : tmpList) {
-                    if (i > 10) {
+                    if (i >= 10) {
                         stack.remove(next);
                     }
                     i++;

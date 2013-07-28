@@ -992,7 +992,7 @@ public class SendActivity extends AllActivity {
         View infoTextUpper = findViewById(R.id.infoTextUpper);
         View.OnClickListener l = new View.OnClickListener() {
             public void onClick(View view) {
-                ErrorReporterStack.put(LogConst.REFRESH_UPPER_CLICKED);
+                ErrorReporterStack.put(LogConst.REFRESH_CLICKED);
                 refreshInformationText(true);
             }
         };
