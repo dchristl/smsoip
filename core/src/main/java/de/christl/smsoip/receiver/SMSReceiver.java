@@ -32,6 +32,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import org.acra.ACRA;
+
+import java.io.FileNotFoundException;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SettingsConst;
@@ -39,9 +44,6 @@ import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.receiver.util.NotificationUtil;
-import org.acra.ACRA;
-
-import java.io.FileNotFoundException;
 
 /**
  * Simple receiver to listen on incoming sms and shows notfication, with the possibility to start SMSoiP
@@ -93,7 +95,9 @@ public class SMSReceiver extends BroadcastReceiver {
                 StringBuilder content = new StringBuilder();
                 for (Object pdu : pdus) {
                     SmsMessage fromPdu = SmsMessage.createFromPdu((byte[]) pdu);
-                    content.append(fromPdu.getMessageBody());
+                    if (fromPdu != null) {
+                        content.append(fromPdu.getMessageBody());
+                    }
                 }
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);

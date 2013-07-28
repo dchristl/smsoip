@@ -22,11 +22,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>de.christl</groupId>
-        <artifactId>SMSoIP</artifactId>
-        <version>2.6.11</version>
-    </parent>
+    <!--<parent>-->
+        <!--<groupId>de.christl</groupId>-->
+        <!--<artifactId>SMSoIP</artifactId>-->
+        <!--<version>2.6.11</version>-->
+    <!--</parent>-->
 
     <artifactId>widget</artifactId>
     <version>1.0.0</version>
