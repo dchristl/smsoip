@@ -1061,7 +1061,7 @@ public class SendActivity extends AllActivity {
                 OptionProvider provider = smSoIPPlugin.getProvider();
                 message.append(getString(R.string.applicationName)).append(" (");
                 if (provider.getAccounts().size() > 1) {
-                    message.append(provider.getUserName()).append("@");
+                    message.append(provider.getUserName()).append("->");
                 }
                 message.append(provider.getProviderName());
                 message.append("): ");
@@ -1516,7 +1516,11 @@ public class SendActivity extends AllActivity {
                 textModulesBuilder.setItems(textModules, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         textField.insertText(textModules[item].toString());
-                        dialog.dismiss();
+                        try {
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            ACRA.getErrorReporter().handleSilentException(e);
+                        }
 
                     }
                 });
@@ -1542,7 +1546,11 @@ public class SendActivity extends AllActivity {
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         String supplierClassName = adapter.getItem(item).getSupplierClassName();
-                        dialog.dismiss();
+                        try {
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            ACRA.getErrorReporter().handleSilentException(e);
+                        }
                         changeSupplier(supplierClassName);
                     }
                 };
@@ -1694,7 +1702,11 @@ public class SendActivity extends AllActivity {
         if (lastDialog != null && smSoIPPlugin != null) {
             //close only if the last dialog was not choose supllier dialog on startup otherwise on returning the gui is
             // open and  no supplier means FC
-            lastDialog.dismiss();
+            try {
+                lastDialog.dismiss();
+            } catch (IllegalArgumentException e) {
+                ACRA.getErrorReporter().handleSilentException(e);
+            }
         }
         //cancel the update if running
         cancelUpdateTask();
@@ -1749,7 +1761,11 @@ public class SendActivity extends AllActivity {
             }
         }
         if (lastInfoDialog != null) {     //call dismiss on dialog to avoid leaking
-            lastInfoDialog.dismiss();
+            try {
+                lastInfoDialog.dismiss();
+            } catch (IllegalArgumentException e) {
+                ACRA.getErrorReporter().handleSilentException(e);
+            }
         }
 
         if (!this.isFinishing()) {

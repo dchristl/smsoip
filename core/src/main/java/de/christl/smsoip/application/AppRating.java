@@ -28,6 +28,8 @@ import android.net.Uri;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
+import org.acra.ACRA;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.constant.TrackerConstants;
 
@@ -85,7 +87,11 @@ public class AppRating {
                     editor.putBoolean(RATING_DISABLED, true);
                     editor.commit();
                 }
-                dialog.dismiss();
+                try {
+                    dialog.dismiss();
+                } catch (IllegalArgumentException e) {
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
             }
         });
 
@@ -97,7 +103,11 @@ public class AppRating {
                     editor.putBoolean(RATING_DISABLED, true);
                     editor.commit();
                 }
-                dialog.dismiss();
+                try {
+                    dialog.dismiss();
+                } catch (IllegalArgumentException e) {
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
             }
         });
 
@@ -109,7 +119,11 @@ public class AppRating {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();
                 }
-                dialog.dismiss();
+                try {
+                    dialog.dismiss();
+                } catch (IllegalArgumentException e) {
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -120,7 +134,11 @@ public class AppRating {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();
                 }
-                dialog.dismiss();
+                try {
+                    dialog.dismiss();
+                } catch (IllegalArgumentException e) {
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
             }
         });
         builder.show();

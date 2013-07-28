@@ -25,10 +25,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import de.christl.smsoip.R;
+
+import org.acra.ACRA;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import de.christl.smsoip.R;
 
 /**
  * all smileys
@@ -82,7 +85,11 @@ public class SmileyDialog extends Dialog {
             child.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dismiss();
+                    try {
+                        dismiss();
+                    } catch (IllegalArgumentException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
+                    }
                     result = true;
                     item = smileyMap.get(key);
                 }

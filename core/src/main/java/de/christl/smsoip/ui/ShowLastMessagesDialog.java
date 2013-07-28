@@ -31,13 +31,16 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.acra.ACRA;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.models.Message;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Class for a popup show the last message and all last conversations with picked contact
@@ -94,7 +97,11 @@ public class ShowLastMessagesDialog extends Dialog {
                 @Override
                 public void onClick(View v) {
                     receiverNumber = receiver.getRawNumber();
-                    ShowLastMessagesDialog.this.dismiss();
+                    try {
+                        ShowLastMessagesDialog.this.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
+                    }
                 }
             };
             receiverView.setOnClickListener(onClickListener);

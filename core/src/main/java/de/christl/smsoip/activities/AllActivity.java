@@ -292,7 +292,11 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                     public void onClick(View view) {
                         nwSettingsAlreadyShown = true;
                         startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-                        dialog.dismiss();
+                        try {
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            ACRA.getErrorReporter().handleSilentException(e);
+                        }
                     }
                 });
                 Button wlan = (Button) dialog.findViewById(R.id.activateWLAN);
@@ -304,7 +308,11 @@ public abstract class AllActivity extends SherlockFragmentActivity {
                         if (wm != null) {
                             wm.setWifiEnabled(true);
                         }
-                        dialog.dismiss();
+                        try {
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            ACRA.getErrorReporter().handleSilentException(e);
+                        }
                     }
                 });
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {

@@ -25,7 +25,13 @@ import android.content.res.XmlResourceParser;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import java.util.concurrent.*;
+import org.acra.ACRA;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Class for constructing dialog for showing during check credentials or fire SMS phase
@@ -81,7 +87,11 @@ public final class BreakingProgressDialogFactory<T> {
                         }
                     };
                     futureResult = executorService.submit(runnable);
-                    dialog.dismiss();
+                    try {
+                        dialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
+                    }
                 }
             });
         }
@@ -97,7 +107,11 @@ public final class BreakingProgressDialogFactory<T> {
                         }
                     };
                     futureResult = executorService.submit(runnable);
-                    dialog.dismiss();
+                    try {
+                        dialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
+                    }
 
                 }
             });
@@ -114,7 +128,11 @@ public final class BreakingProgressDialogFactory<T> {
                         }
                     };
                     futureResult = executorService.submit(runnable);
-                    dialog.dismiss();
+                    try {
+                        dialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
+                    }
                 }
             });
         } else {

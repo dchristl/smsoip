@@ -34,12 +34,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.acra.ACRA;
+
+import java.util.Map;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.settings.TextModulePreferenceActivity;
 import de.christl.smsoip.activities.util.TextModuleUtil;
-
-import java.util.Map;
 
 /**
  * DialogPreference for one text module
@@ -145,7 +148,11 @@ public class TextModulePreference extends DialogPreference {
                     setSummary(newValue);
                     setTitle(newKey);
                 }
-                getDialog().dismiss();
+                try {
+                    getDialog().dismiss();
+                } catch (IllegalArgumentException e) {
+                    ACRA.getErrorReporter().handleSilentException(e);
+                }
             }
         });
     }

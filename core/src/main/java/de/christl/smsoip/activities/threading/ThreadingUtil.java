@@ -19,9 +19,9 @@
 package de.christl.smsoip.activities.threading;
 
 import android.app.Dialog;
+
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
-import org.acra.ACRA;
 
 /**
  * Helper for threading stuff
@@ -47,11 +47,7 @@ public abstract class ThreadingUtil {
                 } catch (InterruptedException ignored) {
                 } finally {
                     if (dialog != null && dialog.isShowing()) {
-                        try {
-                            dialog.cancel();
-                        } catch (Exception e) {
-                            ACRA.getErrorReporter().handleSilentException(new IllegalArgumentException("Error dismissing dialog<" + dialog + ">", e));
-                        }
+                        dialog.cancel();
                     }
                 }
             }

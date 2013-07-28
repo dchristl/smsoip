@@ -26,6 +26,8 @@ import android.os.Bundle;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
+import org.acra.ACRA;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.receiver.util.NotificationUtil;
@@ -60,23 +62,15 @@ public class TransparentActivity extends Activity {
                         EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_POS, null);
                         Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
                         startActivity(sendIntent);
-//                        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-//                            AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
-//                        }
-                        dialog.dismiss();
+
+                        try {
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            ACRA.getErrorReporter().handleSilentException(e);
+                        }
 
                     }
                 });
-//        if (SMSoIPApplication.getApp().isWriteToDatabaseAvailable()) {
-//            builder.setNegativeButton(R.string.mark_as_read, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    AndroidInternalDatabaseHandler.findMessageAndMarkAsRead(TransparentActivity.this, finalNumber);
-//                    dialog.dismiss();
-//                }
-//            });
-//        }
-
         AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

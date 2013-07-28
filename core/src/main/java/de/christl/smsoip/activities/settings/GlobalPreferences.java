@@ -230,14 +230,22 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             startImagePicker();
-                            dialog.dismiss();
+                            try {
+                                dialog.dismiss();
+                            } catch (IllegalArgumentException e) {
+                                ACRA.getErrorReporter().handleSilentException(e);
+                            }
                         }
                     });
                     builder.setNegativeButton(R.string.background_image_dialog_reset, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             writeImageUriAndUpdateBackground(null);
-                            dialog.dismiss();
+                            try {
+                                dialog.dismiss();
+                            } catch (IllegalArgumentException e) {
+                                ACRA.getErrorReporter().handleSilentException(e);
+                            }
                         }
                     });
                     builder.show();

@@ -29,6 +29,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.acra.ACRA;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.ProviderPreferences;
 import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
@@ -209,7 +212,11 @@ public class MultipleAccountsPreference extends ListPreference {
                         }
                     }
                     listAdapter.notifyDataSetChanged();
-                    dialog.dismiss();
+                    try {
+                        dialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
+                    }
                 } else {
                     showNoUserNameToast();
                 }
