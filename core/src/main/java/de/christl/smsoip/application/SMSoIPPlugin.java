@@ -284,43 +284,4 @@ public class SMSoIPPlugin {
 
     //removeIt
 
-    /**
-     * currently used for debug infos
-     */
-    public void putPluginInformation() {
-        ErrorReporter errorReporter = ACRA.getErrorReporter();
-        int classIt = 0;
-        for (String availableClass : availableClasses) {
-            errorReporter.putCustomData("availableClass" + classIt++, availableClass);
-            final Field[] fields;
-            if (availableClass.contains(".R$")) {
-                try {
-                    fields = Class.forName(availableClass, false, pathClassLoader).getDeclaredFields();
-                    StringBuilder content = new StringBuilder();
-                    for (Field field : fields) {
-                        try {
-                            Object o = field.get(new Object());
-                            content.append(String.valueOf(field)).append("-->").append(String.valueOf(o));
-                        } catch (Exception ignored) {
-                        }
-                    }
-                    errorReporter.putCustomData(availableClass, content.toString());
-                } catch (ClassNotFoundException ignored) {
-                }
-            }
-        }
-//        errorReporter.handleSilentException(new IllegalArgumentException("wanted behaviour"));
-        try {
-            String customData = errorReporter.getCustomData(XMLID_TO_LOAD);
-            int xmlid = Integer.parseInt(customData);
-            InputStream inputStream = resolveRawResource(xmlid);
-            int length = inputStream.available();
-            errorReporter.putCustomData("xml_stream_length", String.valueOf(length));
-            String inputStreamString = new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
-            System.out.println(inputStreamString.length());
-        } catch (Exception e) {
-            errorReporter.handleSilentException(e);
-        }
-
-    }
 }

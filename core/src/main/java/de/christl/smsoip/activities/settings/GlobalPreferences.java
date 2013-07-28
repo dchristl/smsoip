@@ -412,17 +412,10 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         switch (requestCode) {
             case ACTIVITY_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
-                    try {
-                        String selectedImage = data.getData().toString();
-                        writeImageUriAndUpdateBackground(selectedImage);
-                    } catch (Exception e) {
-                        ACRA.getErrorReporter().handleSilentException(e);//TODO remove when stable
-                    }
+                    String selectedImage = data.getData().toString();
+                    writeImageUriAndUpdateBackground(selectedImage);
                 }
                 break;
-//            default:
-//                googlePlayInAppBillingDelegate.onActivityResult(requestCode, resultCode, data);
-//                break;
         }
     }
 

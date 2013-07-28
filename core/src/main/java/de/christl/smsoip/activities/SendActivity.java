@@ -64,7 +64,6 @@ import com.google.analytics.tracking.android.Tracker;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 
 import org.acra.ACRA;
-import org.acra.ErrorReporter;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
@@ -177,7 +176,6 @@ public class SendActivity extends AllActivity {
     private MobclixMMABannerXLAdView adView;
     private ColorStateList defaultColor;
 
-    private int instanciationCounter = 0;
     private BackgroundSendTask backgroundSendTask;
 
 
@@ -214,12 +212,8 @@ public class SendActivity extends AllActivity {
             invalidateOptionsMenu();
             providerOptionsCalled = false;
         }
-        try {
-            if (SMSoIPApplication.getApp().getProviderEntries().size() > 0) {
-                insertAds();
-            }
-        } catch (Exception e) {
-            ACRA.getErrorReporter().handleSilentException(e);
+        if (SMSoIPApplication.getApp().getProviderEntries().size() > 0) {
+            insertAds();
         }
     }
 
@@ -1346,18 +1340,7 @@ public class SendActivity extends AllActivity {
         freeLayout.removeAllViews();
         freeLayout.setOrientation(LinearLayout.HORIZONTAL);
         if (smSoIPPlugin != null) {
-
-            try {
-                instanciationCounter++;
-                smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
-            } catch (Exception e) {
-                //removeIt
-                if (instanciationCounter < 2) {  //send only on first error
-                    smSoIPPlugin.putPluginInformation();
-                    ACRA.getErrorReporter().handleSilentException(e);
-                }
-                freeLayout.setVisibility(View.GONE);
-            }
+            smSoIPPlugin.getProvider().getFreeLayout(freeLayout);
         }
     }
 
@@ -1769,18 +1752,9 @@ public class SendActivity extends AllActivity {
         }
 
         if (!this.isFinishing()) {
-            try {
-                lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
-                lastInfoDialog.show();
-                ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
-            } catch (Exception e) { //to show exactly when the exception occur
-
-                ErrorReporter errorReporter = ACRA.getErrorReporter();
-                errorReporter.putCustomData("SendActivity.this", String.valueOf(this));
-                errorReporter.putCustomData("ownerActivity", String.valueOf(lastInfoDialog.getOwnerActivity()));
-                errorReporter.handleSilentException(e);
-                lastInfoDialog = null;
-            }
+            lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
+            lastInfoDialog.show();
+            ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
         }
         writeSMSInDatabase(fireSMSResults.getSuccessList());
         if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
