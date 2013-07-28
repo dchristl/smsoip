@@ -1060,7 +1060,9 @@ public class SendActivity extends AllActivity {
             if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
                 OptionProvider provider = smSoIPPlugin.getProvider();
                 message.append(getString(R.string.applicationName)).append(" (");
-                message.append(provider.getUserName()).append("@");
+                if (provider.getAccounts().size() > 1) {
+                    message.append(provider.getUserName()).append("@");
+                }
                 message.append(provider.getProviderName());
                 message.append("): ");
             }
