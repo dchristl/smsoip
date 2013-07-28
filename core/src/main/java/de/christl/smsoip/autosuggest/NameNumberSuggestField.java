@@ -25,13 +25,17 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.MultiAutoCompleteTextView;
+
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Filed for finding numbers and names by userinputs
@@ -105,7 +109,7 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
                 }
             } else if (NumberUtils.isCorrectNameNumber(currentPart)) {
                 String name = currentPart.replaceAll(" \\(.*", "");
-                String number = currentPart.replaceAll(".* \\(", "").replaceAll("\\)$","");
+                String number = currentPart.replaceAll(".* \\(", "").replaceAll("\\)$", "");
                 Receiver receiver = new Receiver(name);
                 receiver.setRawNumber(number, getContext().getString(R.string.no_phone_type_label)); //number will be fixed automatically
                 if (tmpList.size() < maxReceiverCount) {
@@ -142,8 +146,18 @@ public class NameNumberSuggestField extends MultiAutoCompleteTextView {
         if (v == null || tokenizer == null) {
             return;
         }
-        setText(NumberUtils.getValidatedString(getText().toString(), tokenizer, v));
-        setSelection(getText().length());
+        String textToString = getText().toString();
+        setText(NumberUtils.getValidatedString(textToString, tokenizer, v));
+        Editable text = null;
+        try {
+            text = getText();
+            setSelection(text.length());
+        } catch (IndexOutOfBoundsException e) {
+            ErrorReporter errorReporter = ACRA.getErrorReporter();
+            errorReporter.putCustomData("textToString", textToString);
+            errorReporter.putCustomData("text", text == null ? "null" : text.toString());
+            errorReporter.handleSilentException(e);
+        }
     }
 
     @Override

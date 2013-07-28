@@ -21,19 +21,14 @@ package de.christl.smsoip.ui;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import de.christl.smsoip.R;
-import de.christl.smsoip.activities.SendActivity;
-import de.christl.smsoip.activities.settings.SettingsConst;
-import de.christl.smsoip.activities.util.TextModuleUtil;
-import org.acra.ACRA;
 
 import java.util.Map;
+
+import de.christl.smsoip.R;
+import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.activities.util.TextModuleUtil;
 
 /**
  * Edittext handling the sms text
@@ -63,61 +58,37 @@ public class SMSInputEditText extends EditText {
         float fontSize = PreferenceManager.getDefaultSharedPreferences(getContext()).getFloat(SettingsConst.GLOBAL_FONT_SIZE_FACTOR, 1.0f) * 15;
         ((TextView) findViewById(R.id.textInput)).setTextSize(fontSize);
         refreshTextModules();
-//        addGestureDetector();
-    }
-
-    /**
-     * add the gesture detector for double tap (currently disabled
-     */
-    private void addGestureDetector() {
-        final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-            public boolean onDoubleTap(MotionEvent e) {
-                ((SendActivity) getContext()).showTextModulesDialog();
-                return true;
-            }
-        });
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        });
     }
 
     /**
      * replace text by text modules
      */
     public void processReplacement() {
-        try {
-            int cursor = getSelectionStart();
-            String input = getText().toString();
-            String lastKey = input.substring(cursor - 1 < 0 ? 0 : cursor - 1, cursor);
-            if (lastKey.equals(" ") || lastKey.equals("\n")) {
-                String stringBefore = input.substring(0, cursor - 1);
-                int lastSpace = stringBefore.lastIndexOf(" ");
-                int lastNL = stringBefore.lastIndexOf("\n");
-                int lastDivider = Math.max(lastNL, lastSpace);
-                if (lastDivider == -1) {  //if the first word should replaced (normally does not start with space)
-                    lastDivider = 0;
-                } else {
-                    lastDivider += 1;
-                }
-                String wordToCheck = input.substring(lastDivider, cursor - 1);
-
-                if (textModules.containsKey(wordToCheck)) {
-                    wordToCheck = textModules.get(wordToCheck);
-                    String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
-                    if (lastKey.equals(" ")) {
-                        newText += " ";
-                    }
-                    setText(newText);
-                    int newSelection = lastDivider + wordToCheck.length();
-                    setSelection(getText().length() < newSelection ? getText().length() : newSelection);
-                }
+        int cursor = getSelectionStart();
+        String input = getText().toString();
+        String lastKey = input.substring(cursor - 1 < 0 ? 0 : cursor - 1, cursor);
+        if (lastKey.equals(" ") || lastKey.equals("\n")) {
+            String stringBefore = input.substring(0, cursor - 1);
+            int lastSpace = stringBefore.lastIndexOf(" ");
+            int lastNL = stringBefore.lastIndexOf("\n");
+            int lastDivider = Math.max(lastNL, lastSpace);
+            if (lastDivider == -1) {  //if the first word should replaced (normally does not start with space)
+                lastDivider = 0;
+            } else {
+                lastDivider += 1;
             }
-        } catch (Exception e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            ACRA.getErrorReporter().handleSilentException(e);
+            String wordToCheck = input.substring(lastDivider, cursor - 1);
+
+            if (textModules.containsKey(wordToCheck)) {
+                wordToCheck = textModules.get(wordToCheck);
+                String newText = input.substring(0, lastDivider) + wordToCheck + input.substring(cursor);
+                if (lastKey.equals(" ")) {
+                    newText += " ";
+                }
+                setText(newText);
+                int newSelection = lastDivider + wordToCheck.length();
+                setSelection(getText().length() < newSelection ? getText().length() : newSelection);
+            }
         }
     }
 
@@ -138,18 +109,14 @@ public class SMSInputEditText extends EditText {
      * @param textToInsert
      */
     public void insertText(String textToInsert) {
-        try {
-            int cursor = hasFocus() ? getSelectionStart() : getText().length();
-            String input = getText().toString();
-            String stringBefore = cursor == 0 ? "" : input.substring(0, cursor);
-            String newText = stringBefore + textToInsert + input.substring(cursor);
-            setText(newText);
-            requestFocus();
-            int newSelection = (stringBefore + textToInsert).length();
-            setSelection(getText().length() < newSelection ? getText().length() : newSelection);
-        } catch (Exception e) {
-            Log.e(this.getClass().getCanonicalName(), "", e);
-            ACRA.getErrorReporter().handleSilentException(e);
-        }
+        int cursor = hasFocus() ? getSelectionStart() : getText().length();
+        String input = getText().toString();
+        String stringBefore = cursor == 0 ? "" : input.substring(0, cursor);
+        String newText = stringBefore + textToInsert + input.substring(cursor);
+        setText(newText);
+        requestFocus();
+        int newSelection = (stringBefore + textToInsert).length();
+        setSelection(getText().length() < newSelection ? getText().length() : newSelection);
+
     }
 }
