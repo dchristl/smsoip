@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -71,7 +72,8 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         conversationOrderDownwards.setSummary(R.string.conversation_order_down_description);
         root.addPreference(conversationOrderDownwards);
         boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
-        boolean writeEnabled = writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false);
+        SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
+        boolean writeEnabled = writeToDatabaseAvailable && sharedPreferences.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && sharedPreferences.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false);
 
         if (writeToDatabaseAvailable) {
             EditTextPreference saveTemplateMulti = new EditTextPreference(this);
