@@ -83,7 +83,7 @@ public class ShowLastMessagesDialog extends Dialog {
             }
         }
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
-        if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true) && receiverList.size() != 1) {
+        if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true) && receiverList.size() <= 1) {
             final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollbarlastMessagesTable);
             scrollView.post(new Runnable() {
                 @Override
