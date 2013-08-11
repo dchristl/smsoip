@@ -51,5 +51,7 @@ public abstract class SettingsConst {
 
     public static final String CONVERSATION_COUNT = "extra.conversation.count";
     public static final String CONVERSATION_ORDER = "extra.conversation.order";
+    public static final String OUTPUT_TEMPLATE_MULTI = "output.template.multi";
+    public static final String OUTPUT_TEMPLATE_SINGLE = "output.template.single";
 
 }

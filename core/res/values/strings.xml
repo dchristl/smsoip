@@ -256,4 +256,14 @@
     <string name="conversation_order_down_description">Oldest messages in conversations are sorted at first and newest
         at last position. The dialog will auto scroll to the end.
     </string>
+    <string name="output_template_multi">Template for provider output (multi accounts)</string>
+    <string name="output_template_single">Template for provider output (single account)</string>
+    <string name="output_template_multi_description" formatted="false">The provideroutput to the internal database when
+        more than one
+        account is available. Use %a for app name, %u for current user and %p for current provider.
+    </string>
+    <string name="output_template_single_description" formatted="false">The provideroutput to the internal database when
+        only one
+        account is available. Use %a for app name, %u for current user and %p for current provider
+    </string>
 </resources>

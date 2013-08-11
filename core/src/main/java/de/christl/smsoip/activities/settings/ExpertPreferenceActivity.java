@@ -70,6 +70,22 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         conversationOrderDownwards.setSummary(R.string.conversation_order_down_description);
         root.addPreference(conversationOrderDownwards);
 
+
+        EditTextPreference saveTemplateMulti = new EditTextPreference(this);
+        saveTemplateMulti.setDialogTitle(R.string.output_template_multi);
+        saveTemplateMulti.setKey(SettingsConst.OUTPUT_TEMPLATE_MULTI);
+        saveTemplateMulti.setTitle(R.string.output_template_multi);
+        saveTemplateMulti.setDefaultValue("%a (%u->%p):");
+        saveTemplateMulti.setSummary(R.string.output_template_multi_description);
+        root.addPreference(saveTemplateMulti);
+
+        EditTextPreference saveTemplateSingle = new EditTextPreference(this);
+        saveTemplateSingle.setDialogTitle(R.string.output_template_single);
+        saveTemplateSingle.setKey(SettingsConst.OUTPUT_TEMPLATE_SINGLE);
+        saveTemplateSingle.setTitle(R.string.output_template_single);
+        saveTemplateSingle.setDefaultValue("%a (%p):");
+        saveTemplateSingle.setSummary(R.string.output_template_single_description);
+        root.addPreference(saveTemplateSingle);
         return root;
     }
 

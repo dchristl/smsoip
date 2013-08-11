@@ -265,4 +265,16 @@
     <string name="conversation_order_down_description">Ältere Nachrichten stehen am Anfang und Neuere am Ende. Es wird
         automatisch bis zum Ende gescrollt.
     </string>
+    <string name="output_template_multi">Vorlage für Anbieterausgabe (Multi-Accounts)</string>
+    <string name="output_template_single">Vorlage für Anbieterausgabe (Single Account)</string>
+    <string name="output_template_multi_description" formatted="false">Die Anbieterausgabe beim Speichern der SMS in der
+        internen
+        Datenbank wenn mehr als ein Account verfügbar ist.
+        Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
+    </string>
+    <string name="output_template_single_description" formatted="false">Die Anbieterausgabe beim Speichern der SMS in
+        der internen
+        Datenbank wenn nur ein Account verfügbar ist.
+        Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
+    </string>
 </resources>

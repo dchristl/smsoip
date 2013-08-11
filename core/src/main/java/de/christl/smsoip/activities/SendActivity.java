@@ -1050,18 +1050,19 @@ public class SendActivity extends AllActivity {
     private void writeSMSInDatabase(List<Receiver> receiverList) {
         boolean writeToDatabaseEnabled = settings.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         if (writeToDatabaseEnabled) {
-            StringBuilder message = new StringBuilder();
+            String message = "";
             if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false)) {
                 OptionProvider provider = smSoIPPlugin.getProvider();
-                message.append(getString(R.string.applicationName)).append(" (");
+
                 if (provider.getAccounts().size() > 1) {
-                    message.append(provider.getUserName()).append("->");
+                    message = settings.getString(SettingsConst.OUTPUT_TEMPLATE_SINGLE, "%a (%p):") + " ";
+                } else {
+                    message = settings.getString(SettingsConst.OUTPUT_TEMPLATE_MULTI, "%a (%u->%p):" + " ");
                 }
-                message.append(provider.getProviderName());
-                message.append("): ");
+                message = message.replaceAll("%a", getString(R.string.applicationName)).replaceAll("%u", provider.getUserName()).replaceAll("%p", provider.getProviderName());
             }
-            message.append(textField.getText());
-            AndroidInternalDatabaseHandler.writeSMSInDatabase(receiverList, message.toString(), dateTime, this);
+            message += textField.getText();
+            AndroidInternalDatabaseHandler.writeSMSInDatabase(receiverList, message, dateTime, this);
         }
     }
 
