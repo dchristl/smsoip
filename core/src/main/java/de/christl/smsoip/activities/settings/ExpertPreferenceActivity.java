@@ -28,6 +28,7 @@ import android.widget.EditText;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
+import de.christl.smsoip.application.SMSoIPApplication;
 
 /**
  *
@@ -69,23 +70,28 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         conversationOrderDownwards.setTitle(R.string.conversation_order_down);
         conversationOrderDownwards.setSummary(R.string.conversation_order_down_description);
         root.addPreference(conversationOrderDownwards);
+        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        boolean writeEnabled = writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false);
 
+        if (writeToDatabaseAvailable) {
+            EditTextPreference saveTemplateMulti = new EditTextPreference(this);
+            saveTemplateMulti.setDialogTitle(R.string.output_template_multi);
+            saveTemplateMulti.setKey(SettingsConst.OUTPUT_TEMPLATE_MULTI);
+            saveTemplateMulti.setTitle(R.string.output_template_multi);
+            saveTemplateMulti.setDefaultValue("%a (%u->%p):");
+            saveTemplateMulti.setSummary(R.string.output_template_multi_description);
+            saveTemplateMulti.setEnabled(writeEnabled);
+            root.addPreference(saveTemplateMulti);
 
-        EditTextPreference saveTemplateMulti = new EditTextPreference(this);
-        saveTemplateMulti.setDialogTitle(R.string.output_template_multi);
-        saveTemplateMulti.setKey(SettingsConst.OUTPUT_TEMPLATE_MULTI);
-        saveTemplateMulti.setTitle(R.string.output_template_multi);
-        saveTemplateMulti.setDefaultValue("%a (%u->%p):");
-        saveTemplateMulti.setSummary(R.string.output_template_multi_description);
-        root.addPreference(saveTemplateMulti);
-
-        EditTextPreference saveTemplateSingle = new EditTextPreference(this);
-        saveTemplateSingle.setDialogTitle(R.string.output_template_single);
-        saveTemplateSingle.setKey(SettingsConst.OUTPUT_TEMPLATE_SINGLE);
-        saveTemplateSingle.setTitle(R.string.output_template_single);
-        saveTemplateSingle.setDefaultValue("%a (%p):");
-        saveTemplateSingle.setSummary(R.string.output_template_single_description);
-        root.addPreference(saveTemplateSingle);
+            EditTextPreference saveTemplateSingle = new EditTextPreference(this);
+            saveTemplateSingle.setDialogTitle(R.string.output_template_single);
+            saveTemplateSingle.setKey(SettingsConst.OUTPUT_TEMPLATE_SINGLE);
+            saveTemplateSingle.setTitle(R.string.output_template_single);
+            saveTemplateSingle.setDefaultValue("%a (%p):");
+            saveTemplateSingle.setSummary(R.string.output_template_single_description);
+            saveTemplateSingle.setEnabled(writeEnabled);
+            root.addPreference(saveTemplateSingle);
+        }
         return root;
     }
 
