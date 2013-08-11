@@ -18,7 +18,7 @@
   -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto"
           android:versionCode="1" android:versionName="1.0.0" package="de.christl.smsoip.supplier.unide">
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="18"/>
 
     <application android:allowBackup="true" android:icon="@drawable/icon" android:label="SMSoIP Uni.de Plugin">
         <activity android:excludeFromRecents="true" android:name=".UnideInfoDialogActivity">

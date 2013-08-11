@@ -16,7 +16,7 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
   --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="4" android:versionName="1.0.3" package="de.christl.smsoip.supplier.sloono">
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17"/>
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="18"/>
 
     <application android:allowBackup="true" android:icon="@drawable/icon" android:label="SMSoIP Sloono Plugin">
         <activity android:excludeFromRecents="true" android:name=".SloonoInfoDialogActivity">
