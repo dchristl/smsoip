@@ -219,13 +219,20 @@ public abstract class AndroidInternalDatabaseHandler {
     public static LinkedList<Message> findConversation(Receiver receiver, Context context) {
         String receiverNumber = receiver.getReceiverNumber();
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int convCount = defaultSharedPreferences.getInt(SettingsConst.CONVERSATION_COUNT, 10);
+        String convCountS = defaultSharedPreferences.getString(SettingsConst.CONVERSATION_COUNT, "10");
+        int convCount = 10;
+        try {
+            convCount = Integer.parseInt(convCountS);
+        } catch (NumberFormatException ignored) {
+
+        }
         LinkedList<Message> out = new LinkedList<Message>();
         //query the outbox by rawnumber
         Uri smsQuery = Uri.parse("content://sms/");
         //replace all non numeric chars and get a number
         String selection = receiverNumber + "  like ('%' || replacedAddress) and type in (1,2)";
         String[] projection = {"cast(replace(replace(replace(replace(replace(address,'+',''),'-',''),')',''),'(',''),' ','') as int) as replacedAddress", "body", "date", "type"};
+
 
         String limit = convCount > 0 ? " limit " + convCount : "";
 

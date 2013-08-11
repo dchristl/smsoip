@@ -246,4 +246,14 @@
     <string name="mark_as_read">Mark as read</string>
     <string name="show_message_dialog">Show message dialog</string>
     <string name="show_message_dialog_description">Shows the message in a dialog on notification click.</string>
+    <string name="expert_preferences">Expert settings</string>
+    <string name="expert_preferences_description">Advanced settings for expert users.</string>
+    <string name="conversation_count">Count of conversation messages</string>
+    <string name="conversation_count_description">Number of messages will be loaded and shown in conversation dialog.
+        Zero means all.
+    </string>
+    <string name="conversation_order_down">Order conversations downwards</string>
+    <string name="conversation_order_down_description">Oldest messages in conversations are sorted at first and newest
+        at last position. The dialog will auto scroll to the end.
+    </string>
 </resources>

@@ -82,6 +82,16 @@ public class ShowLastMessagesDialog extends Dialog {
                 addConversationToLayout(layout, receiver, conversation, false);
             }
         }
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+        if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true) && receiverList.size() != 1) {
+            final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollbarlastMessagesTable);
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
+        }
     }
 
     private void addConversationToLayout(LinearLayout layout, final Receiver receiver, LinkedList<Message> conversation, boolean addClickHint) {
@@ -152,16 +162,6 @@ public class ShowLastMessagesDialog extends Dialog {
             }
 
             layout.addView(messageView);
-        }
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
-        if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true)) {
-            final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollbarlastMessagesTable);
-            scrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                }
-            });
         }
     }
 

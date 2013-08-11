@@ -255,4 +255,14 @@
     <string name="show_message_dialog_description">Zeigt einen Dialog mit der Nachricht, wenn die Benachrichtigung
         geklickt wird.
     </string>
+    <string name="expert_preferences">Experteneinstellungen</string>
+    <string name="expert_preferences_description">Einstellungen für fortgeschrittene Nutzer.</string>
+    <string name="conversation_count">Anzahl der SMS in der Konversation</string>
+    <string name="conversation_count_description">Anzahl der SMS, die in einer Konversation angezeigt werden. Bei Null
+        werden alle Nachrichten geladen.
+    </string>
+    <string name="conversation_order_down">Sortiere Konversationen abwärts</string>
+    <string name="conversation_order_down_description">Ältere Nachrichten stehen am Anfang und Neuere am Ende. Es wird
+        automatisch bis zum Ende gescrollt.
+    </string>
 </resources>

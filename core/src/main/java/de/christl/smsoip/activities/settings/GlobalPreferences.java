@@ -34,6 +34,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -177,6 +178,19 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         contactIntent.setTitle(R.string.contact_developer);
         contactIntent.setSummary(getString(R.string.contact_developer_description));
         root.addPreference(contactIntent);
+        PreferenceScreen expertPreferences = getPreferenceManager().createPreferenceScreen(this);
+        expertPreferences.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent pref = new Intent(GlobalPreferences.this, ExpertPreferenceActivity.class);
+                startActivity(pref);
+                return true;
+            }
+        });
+
+        expertPreferences.setTitle(R.string.expert_preferences);
+        expertPreferences.setSummary(R.string.expert_preferences_description);
+        root.addPreference(expertPreferences);
     }
 
     private void addLayoutSettings(PreferenceScreen root) {
@@ -345,6 +359,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         AdPreference adPreference = new AdPreference(this);
         root.addPreference(adPreference);
         EditTextPreference defaultAreaCode = new EditTextPreference(this);
+        defaultAreaCode.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
         defaultAreaCode.setDialogTitle(R.string.area_code);
         defaultAreaCode.setKey(SettingsConst.GLOBAL_AREA_CODE);
         defaultAreaCode.setTitle(R.string.area_code);
