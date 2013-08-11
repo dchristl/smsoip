@@ -1055,9 +1055,9 @@ public class SendActivity extends AllActivity {
                 OptionProvider provider = smSoIPPlugin.getProvider();
 
                 if (provider.getAccounts().size() > 1) {
-                    message = settings.getString(SettingsConst.OUTPUT_TEMPLATE_SINGLE, "%a (%p):") + " ";
-                } else {
                     message = settings.getString(SettingsConst.OUTPUT_TEMPLATE_MULTI, "%a (%u->%p):" + " ");
+                } else {
+                    message = settings.getString(SettingsConst.OUTPUT_TEMPLATE_SINGLE, "%a (%p):") + " ";
                 }
                 message = message.replaceAll("%a", getString(R.string.applicationName)).replaceAll("%u", provider.getUserName()).replaceAll("%p", provider.getProviderName());
             }
