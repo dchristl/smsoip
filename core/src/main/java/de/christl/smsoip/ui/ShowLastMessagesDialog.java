@@ -20,9 +20,11 @@ package de.christl.smsoip.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
@@ -30,6 +32,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.acra.ACRA;
@@ -39,6 +42,7 @@ import java.util.LinkedList;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.models.Message;
 
@@ -148,6 +152,16 @@ public class ShowLastMessagesDialog extends Dialog {
             }
 
             layout.addView(messageView);
+        }
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+        if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true)) {
+            final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollbarlastMessagesTable);
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
         }
     }
 

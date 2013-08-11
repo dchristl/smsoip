@@ -22,8 +22,10 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 
 import org.acra.ACRA;
@@ -33,6 +35,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,6 +44,7 @@ import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.models.Message;
 import de.christl.smsoip.picker.DateTimeObject;
 
@@ -214,15 +218,18 @@ public abstract class AndroidInternalDatabaseHandler {
      */
     public static LinkedList<Message> findConversation(Receiver receiver, Context context) {
         String receiverNumber = receiver.getReceiverNumber();
-
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int convCount = defaultSharedPreferences.getInt(SettingsConst.CONVERSATION_COUNT, 10);
         LinkedList<Message> out = new LinkedList<Message>();
         //query the outbox by rawnumber
         Uri smsQuery = Uri.parse("content://sms/");
         //replace all non numeric chars and get a number
         String selection = receiverNumber + "  like ('%' || replacedAddress) and type in (1,2)";
         String[] projection = {"cast(replace(replace(replace(replace(replace(address,'+',''),'-',''),')',''),'(',''),' ','') as int) as replacedAddress", "body", "date", "type"};
-        Cursor cursor = context.getContentResolver().query(smsQuery,
-                projection, selection, null, "date desc limit 10");
+
+        String limit = convCount > 0 ? " limit " + convCount : "";
+
+        Cursor cursor = context.getContentResolver().query(smsQuery, projection, selection, null, "date desc" + limit);
         while (cursor != null && cursor.moveToNext()) {
             String message = cursor.getString(1);
             Date date = new Date(cursor.getLong(2));
@@ -231,6 +238,9 @@ public abstract class AndroidInternalDatabaseHandler {
         }
         if (cursor != null) {
             cursor.close();
+        }
+        if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true)) {
+            Collections.reverse(out);
         }
         return out;
     }

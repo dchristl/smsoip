@@ -49,4 +49,7 @@ public abstract class SettingsConst {
 
     public static final String TEXT_MODULES_PREFIX = "text.module.";
 
+    public static final String CONVERSATION_COUNT = "extra.conversation.count";
+    public static final String CONVERSATION_ORDER = "extra.conversation.order";
+
 }
