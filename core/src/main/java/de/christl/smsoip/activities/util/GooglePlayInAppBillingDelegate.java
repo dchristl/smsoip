@@ -33,7 +33,8 @@ public class GooglePlayInAppBillingDelegate {
 
 
     private static final String TAG = "GooglePlayInAppBillingDelegate";
-    static final String ADFREE = "adfree";
+//    static final String ADFREE = "adfree";
+    static final String ADFREE = "android.test.purchased";
     private IabHelper mHelper;
     private Activity context;
 

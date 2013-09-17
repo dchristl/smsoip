@@ -60,6 +60,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.google.analytics.tracking.android.Tracker;
 import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 
@@ -362,7 +363,8 @@ public class SendActivity extends AllActivity {
         View.OnClickListener l = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyTracker.getTracker().sendEvent(CAT_BUTTONS, EVENT_MODE_TOGGLE, mode.name(), null);
+                Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_MODE_TOGGLE, mode.name(), null).build();
+                EasyTracker.getInstance(SendActivity.this).send(build);
                 switch (mode) {
                     case NORMAL:
                         mode = Mode.COMPACT;
@@ -631,7 +633,8 @@ public class SendActivity extends AllActivity {
         showInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyTracker.getTracker().sendEvent(CAT_BUTTONS, EVENT_LAST_INFO, "", null);
+                Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_LAST_INFO, "", null).build();
+                EasyTracker.getInstance(SendActivity.this).send(build);
                 if (lastInfoDialog != null) {
                     lastInfoDialog.show();
                     lastInfoDialog.setCancelable(true);
@@ -664,13 +667,15 @@ public class SendActivity extends AllActivity {
             public void onClick(View v) {
                 OptionProvider provider = smSoIPPlugin.getProvider();
                 Map<Integer, AccountModel> accounts = provider.getAccounts();
+                Map<String, String> build;
                 if (accounts.size() > 0) {
-                    EasyTracker.getTracker().sendEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_ACCOUNT), LABEL_ICON, null);
+                    build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_ACCOUNT), LABEL_ICON, null).build();
                     showAccountDialog();
                 } else {
-                    EasyTracker.getTracker().sendEvent(CAT_OPTIONS, String.valueOf(PROVIDER_OPTION), LABEL_ICON, null);
+                    build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(PROVIDER_OPTION), LABEL_ICON, null).build();
                     startOptionActivity();
                 }
+                EasyTracker.getInstance(SendActivity.this).send(build);
             }
         });
         Drawable iconDrawable = smSoIPPlugin.getProvider().getIconDrawable();
@@ -683,7 +688,8 @@ public class SendActivity extends AllActivity {
         viewById.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyTracker.getTracker().sendEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_SUPPLIER), LABEL_ICON, null);
+                Map<String, String> build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_SUPPLIER), LABEL_ICON, null).build();
+                EasyTracker.getInstance(SendActivity.this).send(build);
                 showProvidersDialog();
             }
         });
@@ -745,7 +751,8 @@ public class SendActivity extends AllActivity {
         showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EasyTracker.getTracker().sendEvent(CAT_BUTTONS, EVENT_CONVERSATION, "", null);
+                Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_CONVERSATION, "", null).build();
+                EasyTracker.getInstance(SendActivity.this).send(build);
                 ErrorReporterStack.put(LogConst.LAST_MESSAGES_BUTTON_CLICKED);
                 final ShowLastMessagesDialog lastMessageDialog = new ShowLastMessagesDialog(SendActivity.this, receiverField.getReceiverList());
                 lastMessageDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -871,7 +878,8 @@ public class SendActivity extends AllActivity {
         shortTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EasyTracker.getTracker().sendEvent(CAT_BUTTONS, EVENT_SHORTEN, "", null);
+                Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_SHORTEN, "", null).build();
+                EasyTracker.getInstance(SendActivity.this).send(build);
                 String oldText = textField.getText().toString();
                 if (!oldText.equals("")) {
                     Pattern p = Pattern.compile("\\s[a-zA-Z]");
@@ -1011,7 +1019,8 @@ public class SendActivity extends AllActivity {
         final AlertDialog alert = builder.create();
         clearButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                EasyTracker.getTracker().sendEvent(CAT_BUTTONS, EVENT_CLEAR, "", null);
+                Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_CLEAR, "", null).build();
+                EasyTracker.getInstance(SendActivity.this).send(build);
                 if (!textField.getText().toString().equals("") || !receiverField.getText().toString().equals("")) {
                     alert.show();
                 } else {
@@ -1170,20 +1179,22 @@ public class SendActivity extends AllActivity {
             }
         }
         FireSMSResultList out;
-        Tracker tracker = EasyTracker.getTracker();
+        Tracker tracker = EasyTracker.getInstance(this);
         try {
+            Map<String, String> build;
             if (smSoIPPlugin.isTimeShiftCapable(spinnerText) && dateTime != null) {
-                tracker.sendEvent(CAT_SEND, EVENT_TIMESHIFT, smSoIPPlugin.getProviderName(), null);
+                build = MapBuilder.createEvent(CAT_SEND, EVENT_TIMESHIFT, smSoIPPlugin.getProviderName(), null).build();
                 out = smSoIPPlugin.getTimeShiftSupplier().fireTimeShiftSMS(textField.getText().toString(), receiverList, spinnerText, dateTime);
             } else {
-                tracker.sendEvent(CAT_SEND, EVENT_NORMAL, smSoIPPlugin.getProviderName(), null);
+                build = MapBuilder.createEvent(CAT_SEND, EVENT_NORMAL, smSoIPPlugin.getProviderName(), null).build();
                 out = smSoIPPlugin.getSupplier().fireSMS(textField.getText().toString(), receiverList, spinnerText);
             }
+            EasyTracker.getInstance(SendActivity.this).send(build);
         } catch (UnsupportedEncodingException e) {
-            tracker.sendException(CAT_SEND, e, false);
+            tracker.send(MapBuilder.createException(CAT_SEND + "" + e.getMessage(), false).build());
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         } catch (NumberFormatException e) {
-            tracker.sendException(CAT_SEND, e, false);
+            tracker.send(MapBuilder.createException(CAT_SEND + "" + e.getMessage(), false).build());
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         } catch (SocketTimeoutException e) {
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.TIMEOUT_ERROR(), receiverList);
@@ -1191,7 +1202,7 @@ public class SendActivity extends AllActivity {
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receiverList);
         } catch (Exception e) {                                                      //for insurance
             ACRA.getErrorReporter().handleSilentException(e);
-            tracker.sendException(CAT_SEND, e, true);
+            tracker.send(MapBuilder.createException(CAT_SEND + "" + e.getMessage(), true).build());
             out = FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(), receiverList);
         }
 
@@ -1402,22 +1413,27 @@ public class SendActivity extends AllActivity {
      * entry point when option is clicked
      */
     public boolean onOptionsItemSelected(MenuItem item) {
-        Tracker tracker = EasyTracker.getTracker();
+        Tracker tracker = EasyTracker.getInstance(this);
+        Map<String, String> build;
         switch (item.getItemId()) {
             case PROVIDER_OPTION:
-                tracker.sendEvent(CAT_OPTIONS, String.valueOf(PROVIDER_OPTION), LABEL_MENU, null);
+                build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(PROVIDER_OPTION), LABEL_MENU, null).build();
+                tracker.send(build);
                 startOptionActivity();
                 return true;
             case OPTION_SWITCH_SUPPLIER:
-                tracker.sendEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_SUPPLIER), LABEL_MENU, null);
+                build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_SUPPLIER), LABEL_MENU, null).build();
+                tracker.send(build);
                 showProvidersDialog();
                 return true;
             case GLOBAL_OPTION:
-                tracker.sendEvent(CAT_OPTIONS, String.valueOf(GLOBAL_OPTION), LABEL_MENU, null);
+                build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(GLOBAL_OPTION), LABEL_MENU, null).build();
+                tracker.send(build);
                 startGlobalOptionActivity();
                 return true;
             case OPTION_SWITCH_ACCOUNT:
-                tracker.sendEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_ACCOUNT), LABEL_MENU, null);
+                build = MapBuilder.createEvent(CAT_OPTIONS, String.valueOf(OPTION_SWITCH_ACCOUNT), LABEL_MENU, null).build();
+                tracker.send(build);
                 showAccountDialog();
                 return true;
             default:
@@ -1489,8 +1505,8 @@ public class SendActivity extends AllActivity {
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
         ErrorReporterStack.put(LogConst.ON_CREATE_DIALOG + id);
-        Tracker tracker = EasyTracker.getTracker();
-        tracker.sendEvent(CAT_BUTTONS, String.valueOf(id), "", null);
+        Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, String.valueOf(id), "", null).build();
+        EasyTracker.getInstance(this).send(build);
         switch (id) {
             case DIALOG_TEXT_MODULES:
                 Map<String, String> modules = textField.getTextModules();

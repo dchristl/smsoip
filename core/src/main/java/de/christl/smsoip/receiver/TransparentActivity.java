@@ -25,8 +25,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 
 import org.acra.ACRA;
+
+import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.constant.TrackerConstants;
@@ -52,14 +55,14 @@ public class TransparentActivity extends Activity {
             contentTitle = extras.getString(SENDER_NAME);
             message = extras.getString(MESSAGE);
         }
-        EasyTracker.getInstance().setContext(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(contentTitle);
         final String finalNumber = number;
         builder.setMessage(message)
                 .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_POS, null);
+                        Map<String, String> event = MapBuilder.createEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_POS, null).build();
+                        EasyTracker.getInstance(TransparentActivity.this).send(event);
                         Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
                         startActivity(sendIntent);
 
@@ -75,7 +78,8 @@ public class TransparentActivity extends Activity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_CANCEL, null);
+                Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_ENTRY_POINT, TrackerConstants.EVENT_SMS_RECEIVED + getString(R.string.store_name), TrackerConstants.LABEL_CANCEL, null).build();
+                EasyTracker.getInstance(TransparentActivity.this).send(build);
                 TransparentActivity.this.finish();
             }
         });

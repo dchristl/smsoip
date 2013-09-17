@@ -268,7 +268,7 @@
             <dependency>
                 <groupId>com.google</groupId>
                 <artifactId>analytics</artifactId>
-                <version>2.0beta5</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.mobclix</groupId>

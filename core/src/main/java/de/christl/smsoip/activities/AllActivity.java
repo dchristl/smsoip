@@ -45,12 +45,14 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 
 import org.acra.ACRA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
@@ -97,17 +99,19 @@ public abstract class AllActivity extends SherlockFragmentActivity {
         super.onCreate(savedInstanceState);
         registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
-        EasyTracker.getInstance().setContext(this);
         if (app.getNotLoadedProviders().size() > 0) {
-            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_DEPRECATED, String.valueOf(app.getNotLoadedProviders().size()), null);
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_DEPRECATED, String.valueOf(app.getNotLoadedProviders().size()), null).build();
+            EasyTracker.getInstance(this).send(build);
             showNotLoadedProvidersDialog(app.getNotLoadedProviders(), getString(R.string.deprecated_providers));
         }
         if (app.getPluginsToNew().size() > 0) {
-            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_TOO_NEW, String.valueOf(app.getPluginsToNew().size()), null);
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_TOO_NEW, String.valueOf(app.getPluginsToNew().size()), null).build();
+            EasyTracker.getInstance(this).send(build);
             showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.too_new_providers));
         }
         if (app.getProviderEntries().size() == 0) {
-            EasyTracker.getTracker().sendEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_NO_PLUGINS, "", null);
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_NO_PLUGINS, "", null).build();
+            EasyTracker.getInstance(this).send(build);
             showNoProvidersDialog();
         }
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
@@ -134,13 +138,13 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        EasyTracker.getInstance().activityStart(this);
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        EasyTracker.getInstance().activityStop(this);
+        EasyTracker.getInstance(this).activityStop(this);
     }
 
     /**
