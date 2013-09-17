@@ -165,7 +165,7 @@ public class ShowLastMessagesDialog extends Dialog {
             } else {
                 messageView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
                 messageView.setPadding(20, 5, 50, 20);
-                String inColor = defaultSharedPreferences.getString(SettingsConst.OUTGOING_TEXT_COLOR, INCOMING_DEFAULT_TEXT_COLOR);
+                String inColor = defaultSharedPreferences.getString(SettingsConst.INCOMING_TEXT_COLOR, INCOMING_DEFAULT_TEXT_COLOR);
                 messageView.setTextColor(getColor(inColor, INCOMING_DEFAULT_TEXT_COLOR));
                 messageView.setBackgroundDrawable(getIncomingDrawable());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
