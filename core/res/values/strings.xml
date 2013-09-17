@@ -266,4 +266,12 @@
         only one
         account is available. Use %a for app name, %u for current user and %p for current provider
     </string>
+    <string name="incoming_color">Bubble color of incoming messages</string>
+    <string name="incoming_color_description">Hexadecimal balloon color of incoming messages in conversation dialog.</string>
+    <string name="incoming_text_color">Text color of incoming messages</string>
+    <string name="incoming_text_color_description">Hexadecimal text color of incoming messages in conversation dialog.</string>
+    <string name="outgoing_color">Bubble color of outgoing messages</string>
+    <string name="outgoing_color_description">Hexadecimal balloon color of outgoing messages in conversation dialog.</string>
+    <string name="outgoing_text_color">Text color of outgoing messages</string>
+    <string name="outgoing_text_color_description">Hexadecimal text color of outgoing messages in conversation dialog.</string>
 </resources>

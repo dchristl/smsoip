@@ -23,6 +23,7 @@ package de.christl.smsoip.activities.settings;
  * helps to encapsulate from GlobalPreferences
  */
 public abstract class SettingsConst {
+
     private SettingsConst() {
     }
 
@@ -53,5 +54,10 @@ public abstract class SettingsConst {
     public static final String CONVERSATION_ORDER = "extra.conversation.order";
     public static final String OUTPUT_TEMPLATE_MULTI = "output.template.multi";
     public static final String OUTPUT_TEMPLATE_SINGLE = "output.template.single";
+
+    public static final String INCOMING_COLOR = "extra.incoming.color";
+    public static final String INCOMING_TEXT_COLOR = "extra.incoming.text.color";
+    public static final String OUTGOING_COLOR = "extra.outgoing.color";
+    public static final String OUTGOING_TEXT_COLOR = "extra.outgoing.text.color";
 
 }

@@ -292,6 +292,36 @@ fileName: strings.xml
     <string name="show_message_dialog_description">Zeigt einen Dialog mit der Nachricht, wenn die Benachrichtigung
         geklickt wird.
     </string>
+    <string name="expert_preferences">Experteneinstellungen</string>
+    <string name="expert_preferences_description">Einstellungen für fortgeschrittene Nutzer.</string>
+    <string name="conversation_count">Anzahl der SMS in der Konversation</string>
+    <string name="conversation_count_description">Anzahl der SMS, die in einer Konversation angezeigt werden. Bei Null
+        werden alle Nachrichten geladen.
+    </string>
+    <string name="conversation_order_down">Sortiere Konversationen abwärts</string>
+    <string name="conversation_order_down_description">Ältere Nachrichten stehen am Anfang und Neuere am Ende. Es wird
+        automatisch bis zum Ende gescrollt.
+    </string>
+    <string name="output_template_multi">Vorlage für Anbieterausgabe (Multi-Accounts)</string>
+    <string name="output_template_single">Vorlage für Anbieterausgabe (Single Account)</string>
+    <string name="output_template_multi_description" formatted="false">Die Anbieterausgabe beim Speichern der SMS in der
+        internen
+        Datenbank wenn mehr als ein Account verfügbar ist.
+        Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
+    </string>
+    <string name="output_template_single_description" formatted="false">Die Anbieterausgabe beim Speichern der SMS in
+        der internen
+        Datenbank wenn nur ein Account verfügbar ist.
+        Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
+    </string>
+    <string name="incoming_color">Hintergrundfarbe für empfangene Nachrichten</string>
+    <string name="incoming_color_description">Hexadezimale Farbe für die Sprechblase (Eingang) im Konversationendialog.</string>
+    <string name="incoming_text_color">Textfarbe für empfangene Nachrichten</string>
+    <string name="incoming_text_color_description">Hexadezimale Farbe für den Text (Eingang) im Konversationendialog.</string>
+    <string name="outgoing_color">Hintergrundfarbe für gesendete Nachrichten</string>
+    <string name="outgoing_color_description">Hexadezimale Farbe für die Sprechblase (Ausgang) im Konversationendialog.</string>
+    <string name="outgoing_text_color">Textfarbe für gesendete Nachrichten</string>
+    <string name="outgoing_text_color_description">Hexadezimale Farbe für den Text (Ausgang) im Konversationendialog.</string>
 </resources>
 
 <!--String resources for:

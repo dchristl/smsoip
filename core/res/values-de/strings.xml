@@ -277,4 +277,12 @@
         Datenbank wenn nur ein Account verfügbar ist.
         Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
     </string>
+    <string name="incoming_color">Hintergrundfarbe für empfangene Nachrichten</string>
+    <string name="incoming_color_description">Hexadezimale Farbe für die Sprechblase (Eingang) im Konversationendialog.</string>
+    <string name="incoming_text_color">Textfarbe für empfangene Nachrichten</string>
+    <string name="incoming_text_color_description">Hexadezimale Farbe für den Text (Eingang) im Konversationendialog.</string>
+    <string name="outgoing_color">Hintergrundfarbe für gesendete Nachrichten</string>
+    <string name="outgoing_color_description">Hexadezimale Farbe für die Sprechblase (Ausgang) im Konversationendialog.</string>
+    <string name="outgoing_text_color">Textfarbe für gesendete Nachrichten</string>
+    <string name="outgoing_text_color_description">Hexadezimale Farbe für den Text (Ausgang) im Konversationendialog.</string>
 </resources>

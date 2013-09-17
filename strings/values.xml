@@ -298,6 +298,34 @@ fileName: strings.xml
     <string name="mark_as_read">Mark as read</string>
     <string name="show_message_dialog">Show message dialog</string>
     <string name="show_message_dialog_description">Shows the message in a dialog on notification click.</string>
+    <string name="expert_preferences">Expert settings</string>
+    <string name="expert_preferences_description">Advanced settings for expert users.</string>
+    <string name="conversation_count">Count of conversation messages</string>
+    <string name="conversation_count_description">Number of messages will be loaded and shown in conversation dialog.
+        Zero means all.
+    </string>
+    <string name="conversation_order_down">Order conversations downwards</string>
+    <string name="conversation_order_down_description">Oldest messages in conversations are sorted at first and newest
+        at last position. The dialog will auto scroll to the end.
+    </string>
+    <string name="output_template_multi">Template for provider output (multi accounts)</string>
+    <string name="output_template_single">Template for provider output (single account)</string>
+    <string name="output_template_multi_description" formatted="false">The provideroutput to the internal database when
+        more than one
+        account is available. Use %a for app name, %u for current user and %p for current provider.
+    </string>
+    <string name="output_template_single_description" formatted="false">The provideroutput to the internal database when
+        only one
+        account is available. Use %a for app name, %u for current user and %p for current provider
+    </string>
+    <string name="incoming_color">Bubble color of incoming messages</string>
+    <string name="incoming_color_description">Hexadecimal balloon color of incoming messages in conversation dialog.</string>
+    <string name="incoming_text_color">Text color of incoming messages</string>
+    <string name="incoming_text_color_description">Hexadecimal text color of incoming messages in conversation dialog.</string>
+    <string name="outgoing_color">Bubble color of outgoing messages</string>
+    <string name="outgoing_color_description">Hexadecimal balloon color of outgoing messages in conversation dialog.</string>
+    <string name="outgoing_text_color">Text color of outgoing messages</string>
+    <string name="outgoing_text_color_description">Hexadecimal text color of outgoing messages in conversation dialog.</string>
 </resources>
 
 <!--String resources for:
