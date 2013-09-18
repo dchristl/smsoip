@@ -60,8 +60,8 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         conversationCounter.setDefaultValue("10");
         conversationCounter.setSummary(R.string.conversation_count_description);
         root.addPreference(conversationCounter);
-        AdPreference adPreference = new AdPreference(this);
-        root.addPreference(adPreference);
+
+        root.addPreference(new AdPreference(this));
 
         CheckBoxPreference conversationOrderDownwards = new CheckBoxPreference(this);
         conversationOrderDownwards.setDefaultValue(true);

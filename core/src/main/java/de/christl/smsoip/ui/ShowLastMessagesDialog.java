@@ -188,19 +188,21 @@ public class ShowLastMessagesDialog extends Dialog {
     }
 
     private Drawable changeColor(Drawable drawable, String newColor, String defaultColor) {
-        if (defaultColor.equalsIgnoreCase(newColor)) {
+        //do not change white
+        if ("#FFFFFF".equalsIgnoreCase(newColor)) {
             return drawable;
         }
         int color;
         try {
             color = Color.parseColor(newColor);
         } catch (IllegalArgumentException e) {
-            return drawable;
+            color = Color.parseColor(defaultColor);
         }
         Drawable mutate = drawable.mutate();
         float r = Color.red(color) / 255f;
         float g = Color.green(color) / 255f;
         float b = Color.blue(color) / 255f;
+        float a = Color.alpha(color) / 255f;
 
         ColorMatrix cm = new ColorMatrix(new float[]{
                 // Change red channel
@@ -209,8 +211,8 @@ public class ShowLastMessagesDialog extends Dialog {
                 0, g, 0, 0, 0,
                 // Change blue channel
                 0, 0, b, 0, 0,
-                // Keep alpha channel
-                0, 0, 0, 1, 0,
+                // Change alpha channel
+                0, 0, 0, a, 0,
         });
         ColorMatrixColorFilter cf = new ColorMatrixColorFilter(cm);
         mutate.setColorFilter(cf);
