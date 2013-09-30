@@ -41,22 +41,22 @@ public class SmileyDialog extends Dialog {
     private boolean result = false;
     private static final Map<Integer, String> smileyMap = new LinkedHashMap<Integer, String>(12) {
         {
-            put(R.drawable.emo_im_happy, ":) ");
-            put(R.drawable.emo_im_sad, ":(");
-            put(R.drawable.emo_im_surprised, ":0");
-            put(R.drawable.emo_im_tongue_sticking_out, ":P");
-            put(R.drawable.emo_im_winking, ";)");
-            put(R.drawable.emo_im_kissing, ":X");
-            put(R.drawable.emo_im_crying, ":,(");
-            put(R.drawable.emo_im_foot_in_mouth, ":-!");
-            put(R.drawable.emo_im_laughing, ":D");
-            put(R.drawable.emo_im_lips_are_sealed, ":$");
-            put(R.drawable.emo_im_undecided, ":\\");
-            put(R.drawable.emo_im_yelling, ">:-(");
-            put(R.drawable.emo_im_angel, "O:)");
-            put(R.drawable.emo_im_cool, "8)");
-            put(R.drawable.emo_im_embarrassed, ":\")");
-            put(R.drawable.emo_im_wtf, "%)");
+            put(R.drawable.emo_im_happy, ":-) ");
+            put(R.drawable.emo_im_sad, ":-( ");
+            put(R.drawable.emo_im_surprised, "=-O ");
+            put(R.drawable.emo_im_tongue_sticking_out, ":-P ");
+            put(R.drawable.emo_im_winking, ";-) ");
+            put(R.drawable.emo_im_kissing, ":-* ");
+            put(R.drawable.emo_im_crying, ":'( ");
+            put(R.drawable.emo_im_foot_in_mouth, ":-! ");
+            put(R.drawable.emo_im_laughing, ":-D ");
+            put(R.drawable.emo_im_lips_are_sealed, ":-X ");
+            put(R.drawable.emo_im_undecided, ":-\\ ");
+            put(R.drawable.emo_im_yelling, ":O ");
+            put(R.drawable.emo_im_angel, "O:-) ");
+            put(R.drawable.emo_im_cool, "B-) ");
+            put(R.drawable.emo_im_embarrassed, ":-[ ");
+            put(R.drawable.emo_im_wtf, "o_O ");
         }
     };
     private String item;
