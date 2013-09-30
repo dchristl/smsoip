@@ -1,0 +1,797 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: SMSoIP\n"
+"Language: en\n"
+
+#: 
+msgid "send"
+msgstr "Send"
+
+#: 
+msgid "changeProvider"
+msgstr "Provider"
+
+#: 
+msgid "chooseProvider"
+msgstr "Choose Provider"
+
+#: 
+msgid "provider_settings"
+msgstr "Provider settings"
+
+#: 
+msgid "program_settings"
+msgstr "Program settings"
+
+#: 
+msgid "exit"
+msgstr "Quit"
+
+#: 
+msgid "username"
+msgstr "Username"
+
+#: 
+msgid "password"
+msgstr "Password"
+
+#: 
+msgid "receiverField"
+msgstr "Name or Number"
+
+#: 
+msgid "smsText"
+msgstr "Message"
+
+#: 
+msgid "chooseType"
+msgstr "Sending type"
+
+#: 
+msgid "smssigns"
+msgstr "%1$s characters (%2$s SMS)"
+
+#: 
+msgid "pickNumber"
+msgstr "Choose number for %1$s"
+
+#: 
+msgid "noNumber"
+msgstr "No number for %1$s found"
+
+#: 
+msgid "smscomitted"
+msgstr "Message will be sent"
+
+#: 
+msgid "ok"
+msgstr "OK"
+
+#: 
+msgid "wantClear"
+msgstr "All inputs will be deleted!"
+
+#: 
+msgid "error"
+msgstr "Error"
+
+#: 
+msgid "success"
+msgstr "Success"
+
+#: 
+msgid "noNetwork"
+msgstr "Network error"
+
+#: 
+msgid "unknown_error"
+msgstr "Unknown error"
+
+#: 
+msgid "loginFailed"
+msgstr "Pass invalid!"
+
+#: 
+msgid "user_cancelled"
+msgstr "User canceled"
+
+#: 
+msgid "loginSuccessful"
+msgstr "Login successful"
+
+#: 
+msgid "notyetrefreshed"
+msgstr "Not yet refreshed"
+
+#: 
+msgid "tap"
+msgstr "(Tap)"
+
+#: 
+msgid "description"
+msgstr "Sending SMS by several providers"
+
+#: 
+msgid "noNumberInput"
+msgstr "No number entered!"
+
+#: 
+msgid "noTextInput"
+msgstr "No message entered!"
+
+#: 
+msgid "noNetworkAvailable"
+msgstr "Network not activated!"
+
+#: 
+msgid "timeOutReached"
+msgstr "Timeout reached! Please try again later"
+
+#: 
+msgid "press_back_again"
+msgstr "Press back again to quit SMSoIP."
+
+#: 
+msgid "checkCredentials"
+msgstr "Pass will be checked."
+
+#: 
+msgid "noCredentials"
+msgstr "Credentials incomplete"
+
+#: 
+msgid "openNetworkSettings"
+msgstr "Networksettings"
+
+#: 
+msgid "activateWLAN"
+msgstr "Activate Wireless LAN"
+
+#: 
+msgid "no_providers"
+msgstr "No plugin is installed.\n"
+"SMSoIP needs at least one plugin to work.\n"
+"You will be\n"
+"        redirected to plugin page.\n"
+"    "
+
+#: 
+msgid "default_provider"
+msgstr "Default provider"
+
+#: 
+msgid "default_provider_description"
+msgstr "Choose your default provider on app startup."
+
+#: 
+msgid "no_default_Provider"
+msgstr "None (ask every time)"
+
+#: 
+msgid "visit_project_page"
+msgstr "Visit Homepage"
+
+#: 
+msgid "visit_project_page_description"
+msgstr "Visit project home for help and further explanations"
+
+#: 
+msgid "visit_plugin_page"
+msgstr "Find plugins"
+
+#: 
+msgid "donate_plugin_page"
+msgstr "Remove ads"
+
+#: 
+msgid "donate_plugin_page_description"
+msgstr "Remove the ads and support future development by buying Donate\n"
+"        Plugin.\n"
+"    "
+
+#: 
+msgid "area_code"
+msgstr "Default international area code"
+
+#: 
+msgid "area_code_description"
+msgstr "Your default country pre-select (like 49 for Germany or 1 for USA)\n"
+"        will be automatically prepended to receiver number if needed.\n"
+"    "
+
+#: 
+msgid "reset_area_code"
+msgstr "Wrong area code. Will be resetted to %1$s"
+
+#: 
+msgid "deprecated_providers"
+msgstr "Some plugins could not be loaded. Please check if you have the latest version of\n"
+"        the plugin and SMSoIP and try again.\n"
+"    "
+
+#: 
+msgid "too_new_providers"
+msgstr "Following plugins are too new and could not be loaded. Please update\n"
+"        application:\n"
+"    "
+
+#: 
+msgid "enable_network_check"
+msgstr "Enable network check"
+
+#: 
+msgid "enable_network_check_description"
+msgstr "Enable the check on startup if network is available and shows\n"
+"        you additional options, like enabling W-LAN.\n"
+"    "
+
+#: 
+msgid "enable_info_update"
+msgstr "Auto update"
+
+#: 
+msgid "enable_info_update_description"
+msgstr "On app startup the provider informations like free messages will\n"
+"        be updated.\n"
+"    "
+
+#: 
+msgid "enable_provider_output"
+msgstr "Enable output of provider"
+
+#: 
+msgid "enable_provider_output_description"
+msgstr "Messages going to database will be indicated (e.g. 'SMSoIP\n"
+"        (GMX)').\n"
+"    "
+
+#: 
+msgid "name_heading"
+msgstr "name"
+
+#: 
+msgid "number_heading"
+msgstr "number"
+
+#: 
+msgid "unknown"
+msgstr "Unknown"
+
+#: 
+msgid "max_receivers_reached"
+msgstr "Maximum of %1$s receivers reached. Receiver could not be\n"
+"        appended.\n"
+"    "
+
+#: 
+msgid "too_much_receivers"
+msgstr "Maximum of receivers is %1$s. Surplus receivers are\n"
+"        removed!\n"
+"    "
+
+#: 
+msgid "no_phone_type_label"
+msgstr "other"
+
+#: 
+msgid "write_to_database"
+msgstr "Write to internal messages outbox"
+
+#: 
+msgid "write_to_database_description"
+msgstr "Write successful messages to your in-device message outbox.\n"
+"    "
+
+#: 
+msgid "not_supported_on_device"
+msgstr "Not supported on this device"
+
+#: 
+msgid "pick_for_disabling"
+msgstr "Tap for removing"
+
+#: 
+msgid "receiver_added_twice"
+msgstr "Receiver number added twice!"
+
+#: 
+msgid "account_list"
+msgstr "Account management"
+
+#: 
+msgid "account_list_description"
+msgstr "Manage accounts and choose the default one. Current default account is:\n"
+"        <%1$s>.\n"
+"    "
+
+#: 
+msgid "account_add_account"
+msgstr "Add account"
+
+#: 
+msgid "account_no_account"
+msgstr "Not set"
+
+#: 
+msgid "changeAccount"
+msgstr "Account"
+
+#: 
+msgid "chooseAccount"
+msgstr "Choose Account"
+
+#: 
+msgid "partial_success"
+msgstr "Partial success"
+
+#: 
+msgid "changelog_title"
+msgstr "What's New"
+
+#: 
+msgid "welcome_title"
+msgstr "Welcome to SMSoIP"
+
+#: 
+msgid "lastConversation"
+msgstr "Conversations"
+
+#: 
+msgid "clickToAdd"
+msgstr "(Click to add as receiver)"
+
+#: 
+msgid "crash_toast_text"
+msgstr "Ooooops! This shoud not happen, please send crash report to developer!\n"
+"    "
+
+#: 
+msgid "crash_notif_ticker_text"
+msgstr "Unexpected error in SMSoIP, please send a report…"
+
+#: 
+msgid "crash_notif_title"
+msgstr "SMSoIP has crashed…"
+
+#: 
+msgid "crash_notif_text"
+msgstr "Please click here to help fix the issue."
+
+#: 
+msgid "crash_dialog_title"
+msgstr "SMSoIP has crashed"
+
+#: 
+msgid "crash_dialog_text"
+msgstr "An unexpected error occurred forcing the\n"
+"        application to stop. Please make sure you have the latest version of SMSoIP and your used plugins installed.\n"
+"        If this will not work, please help the developer to improve SMSoIP by sending error data,\n"
+"        all you have to do is click 'OK'. No private data will be sent.\n"
+"    "
+
+#: 
+msgid "crash_dialog_comment_prompt"
+msgstr "You might add your comments about the problem and if you want to be\n"
+"        contacted your mail address below:\n"
+"    "
+
+#: 
+msgid "crash_dialog_ok_toast"
+msgstr "Thank you for your support! Error will be fixed as soon as possible."
+
+#: 
+msgid "now"
+msgstr "Now"
+
+#: 
+msgid "sending_time"
+msgstr "Sending time"
+
+#: 
+msgid "time_in_past"
+msgstr "Sending time is in past!"
+
+#: 
+msgid "enable_compact_mode"
+msgstr "Compact mode"
+
+#: 
+msgid "enable_compact_mode_description"
+msgstr "Use the compact mode by default (on startup)"
+
+#: 
+msgid "sms_receiver_settings"
+msgstr "Message notifcation settings"
+
+#: 
+msgid "react_on_incoming_sms"
+msgstr "Message notification"
+
+#: 
+msgid "react_on_incoming_sms_description"
+msgstr "Change settings for the listener of incoming\n"
+"        messages in the notification bar.\n"
+"    "
+
+#: 
+msgid "receiver_activated"
+msgstr "Activate notification"
+
+#: 
+msgid "receiver_activated_description"
+msgstr "Enable the notification on incoming messages. Then you can answer\n"
+"        directly to this message.\n"
+"    "
+
+#: 
+msgid "only_one_notfication"
+msgstr "Only one notification"
+
+#: 
+msgid "only_one_notfication_description"
+msgstr "The notification will only be shown once on more than one\n"
+"        message at the same time. You can answer only to the last received message then.\n"
+"    "
+
+#: 
+msgid "choose_ringtone"
+msgstr "Ringtone"
+
+#: 
+msgid "choose_ringtone_description"
+msgstr "Choose your ringtone for notification."
+
+#: 
+msgid "inputs_corrected"
+msgstr "Your receivers were incorrect and were automatically corrected! Check for\n"
+"        correctness and send again.\n"
+"    "
+
+#: 
+msgid "receiver_vibrate_activated"
+msgstr "Vibration"
+
+#: 
+msgid "receiver_vibrate_activated_description"
+msgstr "Enable or disable vibration for the notification."
+
+#: 
+msgid "receiver_led_activated"
+msgstr "LED"
+
+#: 
+msgid "receiver_led_activated_description"
+msgstr "Enable or disable notification light."
+
+#: 
+msgid "category_base"
+msgstr "Base settings"
+
+#: 
+msgid "category_layout"
+msgstr "Layout settings"
+
+#: 
+msgid "category_behaviour"
+msgstr "Behaviour settings"
+
+#: 
+msgid "category_stuff"
+msgstr "Miscellaneous/Help"
+
+#: 
+msgid "font_size"
+msgstr "Change font size"
+
+#: 
+msgid "font_size_description"
+msgstr "Change the font size of the message input field."
+
+#: 
+msgid "font_size_dialog_description"
+msgstr "Hint: Click on the sample text to reset to the default value.\n"
+"    "
+
+#: 
+msgid "youtube_video"
+msgstr "Watch introduction video"
+
+#: 
+msgid "youtube_video_description"
+msgstr "Watch a short introduction and explanation of SMSoIP at Youtube.\n"
+"    "
+
+#: 
+msgid "background_image"
+msgstr "Set background image"
+
+#: 
+msgid "background_image_description"
+msgstr "Change the background of SMSoIP to an image of your gallery.\n"
+"    "
+
+#: 
+msgid "background_image_dialog"
+msgstr "Select an image from the gallery or set background back to default.\n"
+"    "
+
+#: 
+msgid "background_image_dialog_pick"
+msgstr "Gallery"
+
+#: 
+msgid "background_image_dialog_reset"
+msgstr "Reset"
+
+#: 
+msgid "background_will_be_set"
+msgstr "Image will be processed and set."
+
+#: 
+msgid "background_set_error"
+msgstr "Error on setting background image."
+
+#: 
+msgid "no_conversation"
+msgstr "No conversation"
+
+#: 
+msgid "module_preference"
+msgstr "Text modules"
+
+#: 
+msgid "module_preference_description"
+msgstr "Maintain text modules for faster text input.\n"
+"    "
+
+#: 
+msgid "key"
+msgstr "Shortcut"
+
+#: 
+msgid "value"
+msgstr "Replacement"
+
+#: 
+msgid "delete"
+msgstr "Delete"
+
+#: 
+msgid "add_module"
+msgstr "Add text module"
+
+#: 
+msgid "add_contact"
+msgstr "Add contact"
+
+#: 
+msgid "key_too_short"
+msgstr "The shortcut must have at least two characters."
+
+#: 
+msgid "key_already_exist"
+msgstr "The shortcut already exists."
+
+#: 
+msgid "empty_value"
+msgstr "No replacement entered."
+
+#: 
+msgid "modules_explanation"
+msgstr "What is a text module?"
+
+#: 
+msgid "modules_explanation_description"
+msgstr "Show a little explanation, text modules can used for.\n"
+"    "
+
+#: 
+msgid "modules_explanation_description_full"
+msgstr "Text modules consist of a shortcut and a replacement. They\n"
+"        help you to enter often used text faster. \n"
+"In SMSoIP they are used for faster inputs in the message textfiels\n"
+"        and can be invoked in three different ways:\n"
+" -By input of the shortcut followed by space\n"
+"-By input of the\n"
+"        shortcut followed by enter key or\n"
+"-By pressing the arrow button on the bottom of the message field.\n"
+"The best\n"
+"        result you will get if you choose a short word as shortcut, that is not a normal word. So text modules do not\n"
+"        collide with normal text input.\n"
+"    "
+
+#: 
+msgid "contact_developer"
+msgstr "Contact developer"
+
+#: 
+msgid "contact_developer_description"
+msgstr "Feedback, found a bug or your provider is not available? Send me a\n"
+"        mail.\n"
+"    "
+
+#: 
+msgid "rate_app_message"
+msgstr "You now uses SMSoIP some time.\n"
+"If you like the app, please take a moment to\n"
+"        rate SMSoIP and/or a plugin on store. Thanks for your\n"
+"        support!\n"
+"    "
+
+#: 
+msgid "rate_app_title"
+msgstr "Enjoying SMSoIP?"
+
+#: 
+msgid "rate_no_thanks"
+msgstr "No, Thanks"
+
+#: 
+msgid "rate_yes"
+msgstr "Rate"
+
+#: 
+msgid "rate_remind_me_later"
+msgstr "Remind me later"
+
+#: 
+msgid "nothing_to_shorten"
+msgstr "No text to shorten."
+
+#: 
+msgid "nothing_to_clear"
+msgstr "No inputs to clear."
+
+#: 
+msgid "no_text_modules"
+msgstr "No text modules defined."
+
+#: 
+msgid "hintAddReceivers"
+msgstr "Hint: Add receivers to show more conversations."
+
+#: 
+msgid "homepage"
+msgstr "https://sites.google.com/site/smsoip/home"
+
+#: 
+msgid "notification_url"
+msgstr "http://smsoip.funpic.de/messages/en/info.xml"
+
+#: 
+msgid "button_visibiliy"
+msgstr "Buttonvisibility (ActionBar)"
+
+#: 
+msgid "button_visibiliy_description"
+msgstr "Buttons for provider- or userchange are visible/invisible. Change can\n"
+"        also be invoked by tap on providericon or username.\n"
+"    "
+
+#: 
+msgid "no_user_name"
+msgstr "%s must not be empty!"
+
+#: 
+msgid "account_already_defined"
+msgstr "%s already present!"
+
+#: 
+msgid "phonebook_preference"
+msgstr "SMSoIP contacts"
+
+#: 
+msgid "phonebook_preference_description"
+msgstr "Manage contacts of the internal SMSoIP phonebook.\n"
+"    "
+
+#: 
+msgid "contact_name"
+msgstr "Name"
+
+#: 
+msgid "contact_numbers"
+msgstr "Numbers"
+
+#: 
+msgid "answer"
+msgstr "Answer"
+
+#: 
+msgid "mark_as_read"
+msgstr "Mark as read"
+
+#: 
+msgid "show_message_dialog"
+msgstr "Show message dialog"
+
+#: 
+msgid "show_message_dialog_description"
+msgstr "Shows the message in a dialog on notification click."
+
+#: 
+msgid "expert_preferences"
+msgstr "Expert settings"
+
+#: 
+msgid "expert_preferences_description"
+msgstr "Advanced settings for expert users."
+
+#: 
+msgid "conversation_count"
+msgstr "Count of conversation messages"
+
+#: 
+msgid "conversation_count_description"
+msgstr "Number of messages will be loaded and shown in conversation dialog.\n"
+"        Zero means all.\n"
+"    "
+
+#: 
+msgid "conversation_order_down"
+msgstr "Order conversations downwards"
+
+#: 
+msgid "conversation_order_down_description"
+msgstr "Oldest messages in conversations are sorted at first and newest\n"
+"        at last position. The dialog will auto scroll to the end.\n"
+"    "
+
+#: 
+msgid "output_template_multi"
+msgstr "Template for provider output (multi accounts)"
+
+#: 
+msgid "output_template_single"
+msgstr "Template for provider output (single account)"
+
+#: 
+msgid "output_template_multi_description"
+msgstr "The provideroutput to the internal database when\n"
+"        more than one\n"
+"        account is available. Use %a for app name, %u for current user and %p for current provider.\n"
+"    "
+
+#: 
+msgid "output_template_single_description"
+msgstr "The provideroutput to the internal database when\n"
+"        only one\n"
+"        account is available. Use %a for app name, %u for current user and %p for current provider\n"
+"    "
+
+#: 
+msgid "incoming_color"
+msgstr "Bubble color of incoming messages"
+
+#: 
+msgid "incoming_color_description"
+msgstr "Hexadecimal balloon color of incoming messages in conversation dialog."
+
+#: 
+msgid "incoming_text_color"
+msgstr "Text color of incoming messages"
+
+#: 
+msgid "incoming_text_color_description"
+msgstr "Hexadecimal text color of incoming messages in conversation dialog."
+
+#: 
+msgid "outgoing_color"
+msgstr "Bubble color of outgoing messages"
+
+#: 
+msgid "outgoing_color_description"
+msgstr "Hexadecimal balloon color of outgoing messages in conversation dialog."
+
+#: 
+msgid "outgoing_text_color"
+msgstr "Text color of outgoing messages"
+
+#: 
+msgid "outgoing_text_color_description"
+msgstr "Hexadecimal text color of outgoing messages in conversation dialog."
+
