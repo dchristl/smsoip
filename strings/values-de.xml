@@ -1060,3 +1060,33 @@ fileName: strings.xml
         werden</string>
     <string name="textTooLong">Text zu lang</string>
 </resources>
+<!--String resources for:
+project: okde
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~      This file is part of SMSoIP.
+  ~
+  ~      SMSoIP is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      (at your option) any later version.
+  ~
+  ~      SMSoIP is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="balance">Guthaben: %s</string>
+    <string name="try_again">Bitte später noch einmal probieren</string>
+    <string name="no_foreign">Senden wird nur an deutsche Nummern unterstützt</string>
+    <string name="sentSuccess">SMS erfolgreich gesendet</string>
+</resources>

@@ -99,6 +99,10 @@ public class OkDeSMSSupplier implements ExtendedSMSSupplier {
                 out = SMSActionResult.LOGIN_FAILED_ERROR();
             } else if (errorText.equalsIgnoreCase("session unknown")) {
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.try_again));
+            } else if (errorText.equalsIgnoreCase("wrong country")) {
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_foreign));
+            } else {
+                out = SMSActionResult.UNKNOWN_ERROR(errorText);
             }
         }
         return out;

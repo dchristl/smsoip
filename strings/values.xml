@@ -43,6 +43,10 @@ fileName: storedependent.xml
     <string name="market_rate_url">market://details?id=de.christl.smsoip</string>
     <string name="market_alternative_rate_url">https://play.google.com/store/apps/details?id=de.christl.smsoip</string>
     <string name="store_name">Google Play</string>
+    <!--resources same for every language-->
+    <string name="applicationName">SMSoIP</string>
+    <string name="youtube_intent">vnd.youtube:tcr87tEPUao</string>
+    <string name="youtube_alternative">http://www.youtube.com/watch?v=tcr87tEPUao</string>
 </resources>
 
 <!--String resources for:
@@ -109,7 +113,6 @@ fileName: strings.xml
     <string name="no_providers">No plugin is installed.\nSMSoIP needs at least one plugin to work.\nYou will be
         redirected to plugin page.
     </string>
-    <string name="applicationName">SMSoIP</string>
     <string name="default_provider">Default provider</string>
     <string name="default_provider_description">Choose your default provider on app startup.</string>
     <string name="no_default_Provider">None (ask every time)</string>
@@ -280,8 +283,6 @@ fileName: strings.xml
 
     <string name="homepage">https://sites.google.com/site/smsoip/home</string>
     <string name="notification_url">http://smsoip.funpic.de/messages/en/info.xml</string>
-    <string name="youtube_intent">vnd.youtube:tcr87tEPUao</string>
-    <string name="youtube_alternative">http://www.youtube.com/watch?v=tcr87tEPUao</string>
 
     <string name="button_visibiliy">Buttonvisibility (ActionBar)</string>
     <string name="button_visibiliy_description">Buttons for provider- or userchange are visible/invisible. Change can
@@ -446,7 +447,7 @@ fileName: strings.xml
     <string name="not_yet_refreshed">Refresh by eye button.</string>
     <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
     <string name="infoText">FreeSMS: %1$s of %2$s\nPaySMS: %3$s sent</string>
-    <string name="sentSuccess">SMS sucessfully sent.</string>
+    <string name="sentSuccess">SMS successfully sent.</string>
 </resources>
 <!--String resources for:
 project: goodmails
@@ -636,7 +637,7 @@ fileName: strings.xml
   -->
 
 <resources>
-    <string name="return_100">SMS sucessfully sent.</string>
+    <string name="return_100">SMS successfully sent.</string>
     <string name="return_101">MMS successfully sent.</string>
     <string name="return_111">IP ban active.</string>
     <string name="return_112">Wrong credentials.</string>
@@ -1090,4 +1091,35 @@ fileName: strings.xml
     <string name="smartForeignDelay">Delayed texts can not be send as SmartSMS in countries
         outside Germany</string>
     <string name="textTooLong">Text too long</string>
+</resources>
+<!--String resources for:
+project: okde
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~      This file is part of SMSoIP.
+  ~
+  ~      SMSoIP is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      (at your option) any later version.
+  ~
+  ~      SMSoIP is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+
+    <string name="balance">Balance: %s</string>
+    <string name="try_again">Please try again later</string>
+    <string name="no_foreign">Sending to non german numbers not supported</string>
+    <string name="sentSuccess">SMS successfully sent</string>
 </resources>
