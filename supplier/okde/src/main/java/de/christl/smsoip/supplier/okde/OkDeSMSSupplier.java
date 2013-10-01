@@ -103,6 +103,12 @@ public class OkDeSMSSupplier implements ExtendedSMSSupplier {
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_foreign));
             } else if (errorText.equalsIgnoreCase("limit reached")) {
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.limit_reached));
+            }else if (errorText.equalsIgnoreCase("all free sms used")) {
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_balance));
+            } else if (errorText.equalsIgnoreCase("no valid area code") || errorText.equalsIgnoreCase("no valid number")) {
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.invalid_number));
+            } else if (errorText.equalsIgnoreCase("error")) {
+                out = SMSActionResult.UNKNOWN_ERROR();
             } else {
                 out = SMSActionResult.UNKNOWN_ERROR(errorText);
             }

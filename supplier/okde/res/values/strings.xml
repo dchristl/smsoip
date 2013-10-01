@@ -24,4 +24,6 @@
     <string name="no_foreign">Sending to non german numbers not supported</string>
     <string name="sentSuccess">SMS successfully sent</string>
     <string name="limit_reached">Limit erreicht</string>
+    <string name="invalid_number">Invalid number</string>
+    <string name="no_balance">No free messages left</string>
 </resources>

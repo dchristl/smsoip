@@ -23,4 +23,6 @@
     <string name="no_foreign">Senden wird nur an deutsche Nummern unterstützt</string>
     <string name="sentSuccess">SMS erfolgreich gesendet</string>
     <string name="limit_reached">Limit reached</string>
+    <string name="invalid_number">Ungültige Nummer</string>
+    <string name="no_balance">Keine Frei-SMS übrig</string>
 </resources>
