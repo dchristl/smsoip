@@ -21,6 +21,7 @@ package de.christl.smsoip.supplier.okde;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
@@ -49,6 +51,10 @@ public class OkDeSMSSupplier implements ExtendedSMSSupplier {
 
     public static final String BALANCE_URL = HOST + "/1.0/sms/getInfo/";
     public static final String BALANCE_BODY = "sessionId=%s";
+
+    public static final String SEND_URL = HOST + "/1.0/sms/send";
+    public static final String SEND_BODY = "sessionId=%s&to=%s&txt=%s";
+
     private String sessionCookie;
     private static final HashMap<String, String> requestMap = new HashMap<String, String>() {
         {
@@ -147,8 +153,45 @@ public class OkDeSMSSupplier implements ExtendedSMSSupplier {
             return FireSMSResultList.getAllInOneResult(result, receivers);
         }
 
+        FireSMSResultList out = new FireSMSResultList();
+        for (Receiver receiver : receivers) {
+            String receiverNumber = receiver.getReceiverNumber();
+            if (!receiverNumber.startsWith("0049")) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_foreign))));
+                continue;
+            }
 
-        return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(),receivers);
+            UrlConnectionFactory factory = new UrlConnectionFactory(SEND_URL);
+            factory.setRequestProperties(requestMap);
+
+            String sendBody = String.format(SEND_BODY, sessionCookie, receiverNumber, URLEncoder.encode(smsText, ENCODING));
+            try {
+                HttpURLConnection httpURLConnection = factory.writeBody(sendBody);
+                InputStream responseStream = httpURLConnection.getInputStream();
+                if (responseStream == null) {
+                    out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+                } else {
+                    String returnVal = UrlConnectionFactory.inputStream2DebugString(responseStream);
+                    out.add(new FireSMSResult(receiver, parseSendResponse(returnVal)));
+                }
+            } catch (SocketTimeoutException e) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.TIMEOUT_ERROR()));
+            } catch (IOException e) {
+                out.add(new FireSMSResult(receiver, SMSActionResult.NETWORK_ERROR()));
+            }
+
+        }
+        return out;
+    }
+
+    private SMSActionResult parseSendResponse(String returnVal) {
+        SMSActionResult out;
+        if (returnVal.contains("\"error\":0")) {
+            out = SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.sentSuccess));
+        } else {
+            out = parseErrorResponse(returnVal);
+        }
+        return out;
     }
 
     @Override

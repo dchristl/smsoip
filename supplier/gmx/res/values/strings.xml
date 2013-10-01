@@ -39,5 +39,5 @@
     <string name="not_yet_refreshed">Refresh by eye button.</string>
     <string name="no_free_input">No sender defined or too short (at least 2 characters)</string>
     <string name="infoText">FreeSMS: %1$s of %2$s\nPaySMS: %3$s sent</string>
-    <string name="sentSuccess">SMS sucessfully sent.</string>
+    <string name="sentSuccess">SMS successfully sent.</string>
 </resources>

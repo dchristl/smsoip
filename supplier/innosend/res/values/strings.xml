@@ -18,7 +18,7 @@
   -->
 
 <resources>
-    <string name="return_100">SMS sucessfully sent.</string>
+    <string name="return_100">SMS successfully sent.</string>
     <string name="return_101">MMS successfully sent.</string>
     <string name="return_111">IP ban active.</string>
     <string name="return_112">Wrong credentials.</string>

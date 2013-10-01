@@ -20,4 +20,6 @@
 <resources>
     <string name="balance">Guthaben: %s</string>
     <string name="try_again">Bitte später noch einmal probieren</string>
+    <string name="no_foreign">Senden wird nur an deutsche Nummern unterstützt</string>
+    <string name="sentSuccess">SMS erfolgreich gesendet</string>
 </resources>

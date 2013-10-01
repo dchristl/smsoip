@@ -21,4 +21,6 @@
 
     <string name="balance">Balance: %s</string>
     <string name="try_again">Please try again later</string>
+    <string name="no_foreign">Sending to non german numbers not supported</string>
+    <string name="sentSuccess">SMS successfully sent</string>
 </resources>
