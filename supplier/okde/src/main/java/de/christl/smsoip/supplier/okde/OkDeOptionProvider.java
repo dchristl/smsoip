@@ -45,6 +45,11 @@ public class OkDeOptionProvider extends OptionProvider {
     }
 
     @Override
+    public int getMaxReceiverCount() {
+        return 3;
+    }
+
+    @Override
     public int getMaxMessageCount() {
         return 1;
     }

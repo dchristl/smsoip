@@ -101,6 +101,8 @@ public class OkDeSMSSupplier implements ExtendedSMSSupplier {
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.try_again));
             } else if (errorText.equalsIgnoreCase("wrong country")) {
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.no_foreign));
+            } else if (errorText.equalsIgnoreCase("limit reached")) {
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.limit_reached));
             } else {
                 out = SMSActionResult.UNKNOWN_ERROR(errorText);
             }
