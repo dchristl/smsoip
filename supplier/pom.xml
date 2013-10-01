@@ -49,6 +49,7 @@
         <module>sample</module>
         <module>unide</module>
         <module>smsflatrate</module>
+        <module>okde</module>
     </modules>
 
     <dependencies>
