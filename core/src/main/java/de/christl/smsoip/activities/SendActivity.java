@@ -257,8 +257,10 @@ public class SendActivity extends AllActivity {
      * main entry point for new activity
      */
     public void onCreate(Bundle savedInstanceState) {
+        SMSoIPApplication app = SMSoIPApplication.getApp();
+        app.initProviders();
         super.onCreate(savedInstanceState);
-        SMSoIPApplication.getApp().throwlastExceptionIfAny();
+        app.throwlastExceptionIfAny();
 //        SMSReceiver.faker(this);
 
         //save the default color of textview
@@ -286,9 +288,9 @@ public class SendActivity extends AllActivity {
         setLastInfoButton();
         setLastMessagesButton();
         addModeSwitcher();
-        boolean isResumed = savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null && !savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER).equals("") && SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER)) != null;
+        boolean isResumed = savedInstanceState != null && savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER) != null && !savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER).equals("") && app.getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER)) != null;
         if (isResumed) {  //activity was killed and is resumed
-            smSoIPPlugin = SMSoIPApplication.getApp().getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
+            smSoIPPlugin = app.getSMSoIPPluginBySupplierName(savedInstanceState.getString(SAVED_INSTANCE_SUPPLIER));
             smSoIPPlugin.getProvider().afterActivityKilledAndOnCreateCalled(savedInstanceState);
             setFullTitle();
             setSpinner();

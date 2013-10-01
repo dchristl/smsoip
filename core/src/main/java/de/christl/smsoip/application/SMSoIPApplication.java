@@ -37,8 +37,6 @@ import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.google.analytics.tracking.android.EasyTracker;
-
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
@@ -59,7 +57,6 @@ import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
-import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
@@ -83,7 +80,7 @@ public class SMSoIPApplication extends Application {
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
-    private HashMap<String, SMSoIPPlugin> loadedProviders = new HashMap<String, SMSoIPPlugin>();
+    private HashMap<String, SMSoIPPlugin> loadedProviders;
     private HashMap<String, SMSoIPPlugin> notLoadedProviders = new HashMap<String, SMSoIPPlugin>();
     private HashMap<String, SMSoIPPlugin> pluginsToNew = new HashMap<String, SMSoIPPlugin>();
     private ArrayList<SMSoIPPlugin> plugins;
@@ -125,7 +122,6 @@ public class SMSoIPApplication extends Application {
             super.onCreate();
             app = this;
             setWriteToDBAvailable();
-            initProviders();
             checkHash();
             checkForContactAvailability();
         } catch (Exception e) {
@@ -185,6 +181,10 @@ public class SMSoIPApplication extends Application {
      * read out all packages to find installed plugins
      */
     public synchronized void initProviders() {
+        if (loadedProviders != null) {
+            //init already done
+            return;
+        }
         List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
 //refresh only if not yet done and if a new application is installed
         if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
@@ -217,7 +217,7 @@ public class SMSoIPApplication extends Application {
      */
     private void readOutPlugins() {
         //reset all lists
-        loadedProviders.clear();
+        loadedProviders = new HashMap<String, SMSoIPPlugin>();
         pluginsToNew.clear();
         notLoadedProviders.clear();
         for (SMSoIPPlugin plugin : plugins) {
