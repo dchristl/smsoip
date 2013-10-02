@@ -19,9 +19,13 @@
 package de.christl.smsoip.supplier.smsglobal;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Locale;
 
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
@@ -34,6 +38,9 @@ import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
  */
 public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
+    public static final String LOGIN_BALANCE_URL = "http://www.smsglobal.com/credit-api.php?user=%s&password=%s&country=%s";
+    private static final String ENCODING = "UTF-8";
+
 
     private final SMSGlobalOptionProvider provider;
 
@@ -43,17 +50,67 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        return null;
+        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING), "DE");
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+        InputStream inputStream = factory.create().getInputStream();
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        String response = UrlConnectionFactory.inputStream2DebugString(inputStream);
+        if (!response.contains("CREDITS:")) {
+            return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
+        }
+
+        return SMSActionResult.LOGIN_SUCCESSFUL();
     }
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return null;
+        return refreshInformations(false);
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return null;
+        return refreshInformations(true);
+    }
+
+    private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
+        if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
+                result.setRetryMakesSense(false);
+                return result;
+            }
+        }
+        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(provider.getUserName(), ENCODING), URLEncoder.encode(provider.getPassword(), ENCODING), Locale.getDefault().getCountry());
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+        InputStream inputStream = factory.create().getInputStream();
+        if (inputStream == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        String response = UrlConnectionFactory.inputStream2DebugString(inputStream);
+        return parseBalanceResponse(response);
+    }
+
+    private SMSActionResult parseBalanceResponse(String response) {
+//        CREDITS:29.41;COUNTRY:DE;SMS:10.14;
+        if (!response.contains("CREDITS:")) {
+            return parseErrorResponse(response);
+        }
+
+        //TODO handle invalid country code Error 12: Invalid country code
+        String balanceText = provider.getTextByResourceId(R.string.balance);
+
+        String country = response.replaceAll(".*COUNTRY:","").replaceAll(";.*","");
+        String credits = response.replaceAll(".*CREDITS:","").replaceAll(";.*","");
+        String smsCredits = response.replaceAll(".*SMS:","").replaceAll(";.*","");
+
+        balanceText = String.format(balanceText, credits, country, smsCredits);
+        return SMSActionResult.NO_ERROR(balanceText);
+    }
+
+    private SMSActionResult parseErrorResponse(String response) {
+        return SMSActionResult.UNKNOWN_ERROR("NYI");
     }
 
     @Override

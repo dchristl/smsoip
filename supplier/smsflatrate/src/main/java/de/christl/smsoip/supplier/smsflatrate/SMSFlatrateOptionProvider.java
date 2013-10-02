@@ -34,14 +34,20 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import de.christl.smsoip.activities.SendActivity;
-import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
-import de.christl.smsoip.option.OptionProvider;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.option.OptionProvider;
 
 public class SMSFlatrateOptionProvider extends OptionProvider {
 
@@ -89,15 +95,15 @@ public class SMSFlatrateOptionProvider extends OptionProvider {
 
     @Override
     public int getMinimalCoreVersion() {
-        return 46;
+        return 49;
     }
 
-    //    @Override
+    @Override
     public String getUserLabelText() {
         return getTextByResourceId(R.string.appkey_description);
     }
 
-    //    @Override
+    @Override
     public String getPasswordLabelText() {
         return getTextByResourceId(R.string.appkey);
     }

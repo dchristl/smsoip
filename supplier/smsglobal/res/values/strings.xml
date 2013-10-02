@@ -18,49 +18,8 @@
   -->
 
 <resources>
-    <string name="appkey">AppKey</string>
-    <string name="appkey_description">Label/Username (arbitrary)</string>
-    <string name="sender">Sender</string>
-    <array name="array_spinner">
-        <item>SmartSMS (without SI)</item>
-        <item>Normal (without SI)</item>
-        <item>Normal (with SI)</item>
-        <item>High Quality (with SI)</item>
-    </array>
-    <string name="help">AppKey help</string>
-    <string name="help_description">Shows a help how to generate your own AppKey for SMSoIP.</string>
-    <string name="helpText">You need an account on smsflatrate.net, please register. Go to the user login on the menu
-        item "Appkey for Apps” and use the following license number: 217075022 to generate your own Appkey. Set this
-        Appkey in the account settings. The Label/Username is arbitrary.
-    </string>
-    <string name="ok">OK</string>
-    <string name="balance">Balance: %.2f €</string>
-    <string name="return_100">SMS successfully transferred to the Gateway</string>
-    <!--<string name="return_101">SMS successfully dispatched</string>-->
-    <!--<string name="return_102">SMS not delivered yet</string>-->
-    <!--<string name="return_103">SMS perhaps could not be delivered</string>-->
-    <string name="return_104">SMS could not be delivered within 48 hours</string>
-    <string name="return_120">Not enough credits</string>
-    <string name="return_130">Incorrect data transfer</string>
-    <string name="return_131">Receiver number is not correct</string>
-    <string name="return_132">Sender-ID is not correct</string>
-    <string name="return_133">Text message not correct</string>
-    <string name="return_140">Wrong AppKey or your account is locked</string>
-    <string name="return_150">You have tried to send to an international phone number through a gateway determined to
-        handle
-        german receivers only
-    </string>
-    <string name="return_170">Parameter time is not correct. Please use the format: TT.MM.YYYY-SS:MM or delete parameter
-        for immediately dispatch
-    </string>
-    <string name="return_171">Time is too far in the future (max. 360 days).</string>
-    <string name="return_231">smsflatrate.net group is not available or not correct</string>
-    <string name="return_404">Unknown error. Please urgently contact support (service@smsflatrate.net)</string>
-    <string name="smartForeign">Sending texts with more than 160 characters can not be send as SmartSMS in countries
-        outside Germany
-    </string>
-    <string name="invalidSender">Invalid sender</string>
-    <string name="smartForeignDelay">Delayed texts can not be send as SmartSMS in countries
-        outside Germany</string>
-    <string name="textTooLong">Text too long</string>
+    <string name="login_failed">Pass invalid. Please use the credentials from the HTTP/SMPP API KEY provided in the Tools section!</string>
+    <string name="http_api_user">Username (HTTP/SMPP API Key)</string>
+    <string name="http_api_pass">Password (HTTP/SMPP API Key)</string>
+    <string name="balance">Credits: %1$s\nMessages to %2$s: %3$s</string>
 </resources>

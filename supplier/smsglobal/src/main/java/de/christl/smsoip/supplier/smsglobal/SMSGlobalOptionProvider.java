@@ -42,4 +42,14 @@ public class SMSGlobalOptionProvider extends OptionProvider {
     public int getMinimalCoreVersion() {
         return 49;
     }
+
+    @Override
+    public String getUserLabelText() {
+        return getTextByResourceId(R.string.http_api_user);
+    }
+
+    @Override
+    public String getPasswordLabelText() {
+        return getTextByResourceId(R.string.http_api_pass);
+    }
 }
