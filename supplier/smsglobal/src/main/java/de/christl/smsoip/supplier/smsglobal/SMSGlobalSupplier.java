@@ -71,18 +71,12 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return refreshInformations(true);
+        return refreshInformations(false);
     }
 
-    private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
-        if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
-            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
-            if (!result.isSuccess()) {
-                result.setRetryMakesSense(false);
-                return result;
-            }
-        }
-        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(provider.getUserName(), ENCODING), URLEncoder.encode(provider.getPassword(), ENCODING), Locale.getDefault().getCountry());
+    private SMSActionResult refreshInformations(boolean forceUseValidLocale) throws IOException {
+        String country = forceUseValidLocale ? "DE" : Locale.getDefault().getCountry();
+        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(provider.getUserName(), ENCODING), URLEncoder.encode(provider.getPassword(), ENCODING), country);
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
         InputStream inputStream = factory.create().getInputStream();
         if (inputStream == null) {
@@ -92,18 +86,19 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
         return parseBalanceResponse(response);
     }
 
-    private SMSActionResult parseBalanceResponse(String response) {
+    private SMSActionResult parseBalanceResponse(String response) throws IOException {
 //        CREDITS:29.41;COUNTRY:DE;SMS:10.14;
-        if (!response.contains("CREDITS:")) {
+        if (response.contains("Error 12:")) { //handle invalid country code
+            return refreshInformations(true);
+        } else if (!response.contains("CREDITS:")) {
             return parseErrorResponse(response);
         }
 
-        //TODO handle invalid country code Error 12: Invalid country code
         String balanceText = provider.getTextByResourceId(R.string.balance);
 
-        String country = response.replaceAll(".*COUNTRY:","").replaceAll(";.*","");
-        String credits = response.replaceAll(".*CREDITS:","").replaceAll(";.*","");
-        String smsCredits = response.replaceAll(".*SMS:","").replaceAll(";.*","");
+        String country = response.replaceAll(".*COUNTRY:", "").replaceAll(";.*", "");
+        String credits = response.replaceAll(".*CREDITS:", "").replaceAll(";.*", "");
+        String smsCredits = response.replaceAll(".*SMS:", "").replaceAll(";.*", "");
 
         balanceText = String.format(balanceText, credits, country, smsCredits);
         return SMSActionResult.NO_ERROR(balanceText);
