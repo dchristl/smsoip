@@ -19,14 +19,6 @@
 package de.christl.smsoip.supplier.directbox;
 
 
-import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.connection.UrlConnectionFactory;
-import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.SMSActionResult;
-import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.picker.DateTimeObject;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -43,6 +35,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.picker.DateTimeObject;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+
 public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
 
 
@@ -52,9 +53,9 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     private static final String TARGET_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)";
     private static final String ENCODING = "ISO-8859-1";
 
-    private static final String LOGIN_URL = "https://www.directbox.com/portal/index.aspx";
-    private static final String BALANCE_URL = "https://www.directbox.com/portal/services/WidgetService.asmx/WidgetLoad";
-    private static final String NUMBER_AND_SEND_URL = "https://www.directbox.com/portal/sites/messaging/shortmessage.aspx";
+    private static final String LOGIN_URL = "https://directbox.com/portal/index.aspx";
+    private static final String BALANCE_URL = "https://directbox.com/portal/services/WidgetService.asmx/WidgetLoad";
+    private static final String NUMBER_AND_SEND_URL = "https://directbox.com/portal/sites/messaging/shortmessage.aspx";
     private static final String COOKIE_NAME = "ASP.NET_SessionId";
     private List<String> sessionId;
     private String sms;
@@ -63,6 +64,10 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
 
     public DirectboxSupplier() {
         provider = new DirectboxOptionProvider(this);
+    }
+
+    public DirectboxSupplier(DirectboxOptionProvider provider) {
+        this.provider = provider;
     }
 
     @Override
@@ -94,6 +99,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String response = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
+        System.out.println("response = " + response);
         if (!response.contains("overview.aspx")) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }

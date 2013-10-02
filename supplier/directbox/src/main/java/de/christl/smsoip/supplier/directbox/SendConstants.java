@@ -22,8 +22,8 @@ package de.christl.smsoip.supplier.directbox;
 public abstract class SendConstants {
 
     //LOGIN
-    private static final String EVENT_VALIDATION_LOGIN_CONTENT = "%2FwEWBQLu0IOvDQLZzqHBBALz0sbfBQLX%2BJLMDALwxqBLz1IsWYVpPWC%2B3xGtYFVi0pYOamQ%3D";
-    private static final String VIEW_STATE_LOGIN_CONTENT = "%2FwEPDwUKMTQ5OTMzMTM0Nw9kFgJmD2QWBAIDD2QWAmYPDxYCHgdWaXNpYmxlaGRkAgUPZBYGAgUPFCsAAhQrAAMPFgIeF0VuYWJsZUFqYXhTa2luUmVuZGVyaW5naGRkZGRkAgkPZBYCAgEPZBYCAgEPDxYCHwBoZGQCDQ9kFgICAQ9kFgJmD2QWAgIBD2QWAgICD2QWAmYPZBYCAgEPZBYIAgEPDxYCHwBoZGQCBQ8PFgQeC05hdmlnYXRlVXJsBSEvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWNvdmVyLmFzcHgeBFRleHQFE1Bhc3N3b3J0IHZlcmdlc3Nlbj9kZAIHDw8WBB8CBSIvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWdpc3Rlci5hc3B4HwMFE0pldHp0IHJlZ2lzdHJpZXJlbiFkZAIJDw8WBB8DBQpTaWNoZXJoZWl0HwBoZGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFF2N0bDAwJFJhZFdpbmRvd01hbmFnZXIxyq5P3ffIooqm16NJVmO3oPg2fnY%3D";
+    private static final String EVENT_VALIDATION_LOGIN_CONTENT = "%2FwEWBQK496f2DQLZzqHBBALz0sbfBQLX%2BJLMDALwxqBLE9QkrgP3susCtlSWCkDOttuJCK4%3D";
+    private static final String VIEW_STATE_LOGIN_CONTENT = "%2FwEPDwUKMTQ5OTMzMTM0Nw9kFgJmD2QWAgIDD2QWAgIBD2QWBgICDxQrAAIUKwADDxYCHhdFbmFibGVBamF4U2tpblJlbmRlcmluZ2hkZGRkZAIDDw8WAh4HVmlzaWJsZWhkZAIEDw8WBh4FV2lkdGgbAAAAAAAAnkABAAAAHgZIZWlnaHQbAAAAAACQjEABAAAAHwBoZBYEZg8PFgYfAGgfAhsAAAAAAACeQAEAAAAeDU9yaWdpbmFsV2lkdGgbAAAAAAAAnkABAAAAZBYCAgMPZBYCAgEPZBYCZg8WAh8BaGQCAQ8PFgYfAhsAAAAAAACeQAEAAAAfBBsAAAAAAACeQAEAAAAfAGhkFgICAQ8PFgYfAGgfAxsAAAAAABCJQAEAAAAfAhsAAAAAAACeQAEAAABkFgJmDw8WBh8AaB8DGwAAAAAAEIlAAQAAAB4OT3JpZ2luYWxIZWlnaHQbAAAAAAAQiUABAAAAZBYCAgEPDxYGHwMbAAAAAAAQiUABAAAAHwBoHwIbAAAAAAAAnkABAAAAZBYCZg8PFgYfAhsAAAAAAACeQAEAAAAfBBsAAAAAAACeQAEAAAAfAGhkFgICAQ9kFgICAQ9kFgJmD2QWAgIBD2QWAgICD2QWAmYPZBYCAgEPZBYIAgEPDxYCHwFoZGQCBQ8PFgIeC05hdmlnYXRlVXJsBSEvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWNvdmVyLmFzcHhkZAIHDw8WAh8GBSIvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWdpc3Rlci5hc3B4ZGQCCQ8PFgIfAWhkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WCAUXY3RsMDAkUmFkV2luZG93TWFuYWdlcjEFEmN0bDAwJFJhZFNwbGl0dGVyMQUPY3RsMDAkUmFkUGFuZTEzBRtjdGwwMCRjb250YWluZXJJbm5lckNvbnRlbnQFEmN0bDAwJFJhZFNwbGl0dGVyMgUbY3RsMDAkdHdvQ29sdW1uUmlnaHRDb250ZW50BQ1jdGwwMCRXcmFwcGVyBRJjdGwwMCRXcmFwcGVyUGFuZTLZvXtZuy4UUZdpdm8bJt3znYqsgQ%3D%3D";
 
     public static final String USER_NAME_FIELD_ID = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24tbIdentity=";
     public static final String PASSWORD_FIELD_ID = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24tbPassword=";
@@ -31,12 +31,12 @@ public abstract class SendConstants {
     public static final String ASYNCPOST_PARAM = "__ASYNCPOST=true";
     public static final String EVENT_VALIDATION_LOGIN__PARAM = "__EVENTVALIDATION=" + EVENT_VALIDATION_LOGIN_CONTENT;
     public static final String VIEWSTATE_LOGIN_PARAM = "__VIEWSTATE=" + VIEW_STATE_LOGIN_CONTENT;
-    public static final String X_WWW_FORM_URL_ENCODING_WITH_UTF8 = "application/x-www-form-urlencoded; charset=utf-8";
+    public static final String X_WWW_FORM_URL_ENCODING_WITH_UTF8 = "application/x-www-form-urlencoded";
 
 
     //BALANCE
     public static final String JSON_ENCODING = "application/json; charset=utf-8";
-    public static final String JSON_BALANCE_CONTENT = "{\"request\":{\"__type\":\"Mediabeam.UMS.Dashboard.WidgetServiceRequest\",\"groupId\":0,\"dashboardId\":\"4441463\",\"widgetType\":\"2\",\"command\":\"load\",\"parameter\":{},\"objectInfo\":{\"uID\":\"1\",\"dID\":\"8601\",\"pID\":\"1\",\"objectID\":\"446365276\",\"widgetUID\":\"446365276\",\"objectType\":\"\",\"objHash\":\"Mediabeam.Web.UI.Dashboard.MixedDatabaseDashboardProvider\",\"groupId\":0,\"dashId\":\"4441463\"}}}";
+    public static final String JSON_BALANCE_CONTENT = "{\"request\":{\"__type\":\"Mediabeam.UMS.Dashboard.WidgetServiceRequest\",\"groupId\":0,\"dashboardId\":\"4444513\",\"widgetType\":\"2\",\"command\":\"load\",\"parameter\":{},\"objectInfo\":{\"uID\":\"1\",\"dID\":\"8601\",\"pID\":\"1\",\"objectID\":\"446365276\",\"widgetUID\":\"446365276\",\"objectType\":\"\",\"objHash\":\"Mediabeam.Web.UI.Dashboard.MixedDatabaseDashboardProvider\",\"groupId\":0,\"dashId\":\"4444513\"}}}";
 
     //SENDING
     public static final String EVENT_VALIDATION_SEND__PARAM = "__EVENTVALIDATION=";

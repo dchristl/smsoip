@@ -331,6 +331,7 @@ public class SMSoIPApplication extends Application {
      * @return
      */
     public Map<String, SMSoIPPlugin> getProviderEntries() {
+        initProviders();
         return loadedProviders;
     }
 
@@ -341,6 +342,7 @@ public class SMSoIPApplication extends Application {
      * @return
      */
     public SMSoIPPlugin getSMSoIPPluginBySupplierName(String className) {
+        initProviders();
         return loadedProviders.get(className);
     }
 
