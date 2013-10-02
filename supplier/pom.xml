@@ -50,6 +50,7 @@
         <module>unide</module>
         <module>smsflatrate</module>
         <module>okde</module>
+        <module>smsglobal</module>
     </modules>
 
     <dependencies>
