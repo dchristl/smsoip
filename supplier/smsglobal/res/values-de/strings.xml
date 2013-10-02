@@ -21,6 +21,10 @@
     <string name="login_failed">Zugangsdaten fehlerhaft. Für den Zugang wird Benutzer und Kennwort des HTTP/SMPP API KEYs (unter Tools) benutzt!</string>
     <string name="http_api_user">Benutzername (HTTP/SMPP API Key)</string>
     <string name="http_api_pass">Kennwort (HTTP/SMPP API Key)</string>
-    <string name="balance">Credits: %1$s\nSMS nach %2$s: %3$s</string>
+    <string name="balance">Guthaben: %.2f</string>
     <string name="sender">Absender</string>
+    <string name="not_enough_credits">Ungenügend Guthaben</string>
+    <string name="unable_contact_carrier">SMSGlobal konnte nicht zum Betreiber verbinden</string>
+    <string name="invalid_country_code">Ungültiger Ländercode</string>
+    <string name="invalid_sender">Ungültiger Absender/Empfänger</string>
 </resources>

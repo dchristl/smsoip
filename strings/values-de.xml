@@ -1089,4 +1089,42 @@ fileName: strings.xml
     <string name="try_again">Bitte später noch einmal probieren</string>
     <string name="no_foreign">Senden wird nur an deutsche Nummern unterstützt</string>
     <string name="sentSuccess">SMS erfolgreich gesendet</string>
+    <string name="limit_reached">Limit reached</string>
+    <string name="invalid_number">Ungültige Nummer</string>
+    <string name="no_balance">Keine Frei-SMS übrig</string>
+</resources>
+<!--String resources for:
+project: smsglobal
+values folder: values-de
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~      This file is part of SMSoIP.
+  ~
+  ~      SMSoIP is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      (at your option) any later version.
+  ~
+  ~      SMSoIP is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="login_failed">Zugangsdaten fehlerhaft. Für den Zugang wird Benutzer und Kennwort des HTTP/SMPP API KEYs (unter Tools) benutzt!</string>
+    <string name="http_api_user">Benutzername (HTTP/SMPP API Key)</string>
+    <string name="http_api_pass">Kennwort (HTTP/SMPP API Key)</string>
+    <string name="balance">Guthaben: %.2f</string>
+    <string name="sender">Absender</string>
+    <string name="not_enough_credits">Ungenügend Guthaben</string>
+    <string name="unable_contact_carrier">SMSGlobal konnte nicht zum Betreiber verbinden</string>
+    <string name="invalid_country_code">Ungültiger Ländercode</string>
+    <string name="invalid_sender">Ungültiger Absender/Empfänger</string>
 </resources>

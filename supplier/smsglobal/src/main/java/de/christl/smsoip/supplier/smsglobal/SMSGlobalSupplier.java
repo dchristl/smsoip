@@ -22,7 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.connection.UrlConnectionFactory;
@@ -38,7 +39,7 @@ import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
  */
 public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
-    public static final String LOGIN_BALANCE_URL = "http://www.smsglobal.com/credit-api.php?user=%s&password=%s&country=%s";
+    public static final String LOGIN_BALANCE_URL = "http://www.smsglobal.com/http-api.php?user=%s&password=%s&action=balancesms";
     private static final String ENCODING = "UTF-8";
 
 
@@ -50,14 +51,14 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING), "DE");
+        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING));
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
         InputStream inputStream = factory.create().getInputStream();
         if (inputStream == null) {
             return SMSActionResult.NETWORK_ERROR();
         }
         String response = UrlConnectionFactory.inputStream2DebugString(inputStream);
-        if (!response.contains("CREDITS:")) {
+        if (!response.contains("BALANCE:")) {
             return SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.login_failed));
         }
 
@@ -66,17 +67,16 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return refreshInformations(false);
+        return refreshInformations();
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return refreshInformations(false);
+        return refreshInformations();
     }
 
-    private SMSActionResult refreshInformations(boolean forceUseValidLocale) throws IOException {
-        String country = forceUseValidLocale ? "DE" : Locale.getDefault().getCountry();
-        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(provider.getUserName(), ENCODING), URLEncoder.encode(provider.getPassword(), ENCODING), country);
+    private SMSActionResult refreshInformations() throws IOException {
+        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(provider.getUserName(), ENCODING), URLEncoder.encode(provider.getPassword(), ENCODING));
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
         InputStream inputStream = factory.create().getInputStream();
         if (inputStream == null) {
@@ -87,30 +87,71 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
     }
 
     private SMSActionResult parseBalanceResponse(String response) throws IOException {
-//        CREDITS:29.41;COUNTRY:DE;SMS:10.14;
-        if (response.contains("Error 12:")) { //handle invalid country code
-            return refreshInformations(true);
-        } else if (!response.contains("CREDITS:")) {
+//        BALANCE: 0.65220002021376; USER:
+        if (!response.contains("BALANCE:")) {
             return parseErrorResponse(response);
         }
 
         String balanceText = provider.getTextByResourceId(R.string.balance);
 
-        String country = response.replaceAll(".*COUNTRY:", "").replaceAll(";.*", "");
-        String credits = response.replaceAll(".*CREDITS:", "").replaceAll(";.*", "");
-        String smsCredits = response.replaceAll(".*SMS:", "").replaceAll(";.*", "");
-
-        balanceText = String.format(balanceText, credits, country, smsCredits);
+        String balanceS = response.replaceAll(".*BALANCE:", "").replaceAll(";.*", "");
+        double balance = Double.parseDouble(balanceS);
+        balanceText = String.format(balanceText, balance);
         return SMSActionResult.NO_ERROR(balanceText);
     }
 
     private SMSActionResult parseErrorResponse(String response) {
-        return SMSActionResult.UNKNOWN_ERROR("NYI");
+
+//        Error 10: Missing login details
+        Pattern p = Pattern.compile("Error ([0-9]+):.*");
+        Matcher m = p.matcher(response);
+        int errorCode = -1;
+        if (m.matches()) {
+            String errorCodeText = m.group(1);
+            if (errorCodeText != null) {
+                try {
+                    errorCode = Integer.parseInt(errorCodeText);
+                } catch (NumberFormatException e) {
+                    //do nothing
+                }
+            }
+        }
+
+        SMSActionResult out;
+        switch (errorCode) {
+            case 10:
+            case 11:
+            case 401:
+                out = SMSActionResult.LOGIN_FAILED_ERROR();
+                break;
+            case 102:
+                out = SMSActionResult.TIMEOUT_ERROR();
+                break;
+            case 88:
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.not_enough_credits));
+                break;
+            case 33:
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.unable_contact_carrier));
+                break;
+            case 12:
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.invalid_country_code));
+                break;
+            case 8:
+                out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.invalid_sender));
+                break;
+            case -1:
+            case 402:
+            default:
+                out = SMSActionResult.UNKNOWN_ERROR(response);
+                out.setRetryMakesSense(false);
+        }
+
+        return out;
     }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+        return fireTimeShiftSMS(smsText, receivers, spinnerText, null);
     }
 
     @Override
@@ -120,6 +161,7 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
+//        http://www.smsglobal.com/http-api.php?action=sendsms&user=sdsdsdsdsd&password=adsasdasd&to=<no_leadng_zeros>&from=<no_leading_zeros>&text=Hello_worldö
         return null;
     }
 

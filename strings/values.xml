@@ -1122,4 +1122,42 @@ fileName: strings.xml
     <string name="try_again">Please try again later</string>
     <string name="no_foreign">Sending to non german numbers not supported</string>
     <string name="sentSuccess">SMS successfully sent</string>
+    <string name="limit_reached">Limit erreicht</string>
+    <string name="invalid_number">Invalid number</string>
+    <string name="no_balance">No free messages left</string>
+</resources>
+<!--String resources for:
+project: smsglobal
+values folder: values
+fileName: strings.xml
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2013.
+  ~      This file is part of SMSoIP.
+  ~
+  ~      SMSoIP is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      (at your option) any later version.
+  ~
+  ~      SMSoIP is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="login_failed">Pass invalid. Please use the credentials from the HTTP/SMPP API KEY provided in the Tools section!</string>
+    <string name="http_api_user">Username (HTTP/SMPP API Key)</string>
+    <string name="http_api_pass">Password (HTTP/SMPP API Key)</string>
+    <string name="balance">Balance: %.2f</string>
+    <string name="sender">Sender</string>
+    <string name="not_enough_credits">Not enough credits</string>
+    <string name="unable_contact_carrier">SMSGlobal was unable to contact the carrier</string>
+    <string name="invalid_country_code">Invalid country code</string>
+    <string name="invalid_sender">Invalid sender/receiver</string>
 </resources>

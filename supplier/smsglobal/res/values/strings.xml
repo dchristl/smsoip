@@ -21,6 +21,10 @@
     <string name="login_failed">Pass invalid. Please use the credentials from the HTTP/SMPP API KEY provided in the Tools section!</string>
     <string name="http_api_user">Username (HTTP/SMPP API Key)</string>
     <string name="http_api_pass">Password (HTTP/SMPP API Key)</string>
-    <string name="balance">Credits: %1$s\nMessages to %2$s: %3$s</string>
+    <string name="balance">Balance: %.2f</string>
     <string name="sender">Sender</string>
+    <string name="not_enough_credits">Not enough credits</string>
+    <string name="unable_contact_carrier">SMSGlobal was unable to contact the carrier</string>
+    <string name="invalid_country_code">Invalid country code</string>
+    <string name="invalid_sender">Invalid sender/receiver</string>
 </resources>
