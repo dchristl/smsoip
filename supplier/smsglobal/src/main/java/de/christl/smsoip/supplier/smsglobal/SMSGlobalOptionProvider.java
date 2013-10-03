@@ -131,7 +131,7 @@ public class SMSGlobalOptionProvider extends OptionProvider {
     public String getSender() {
         String out = "";
         if (senderText != null) {
-            out = senderText.getText().toString();
+            out = senderText.getText().toString().trim();
         }
         return out;
     }

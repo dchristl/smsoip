@@ -27,4 +27,6 @@
     <string name="unable_contact_carrier">SMSGlobal konnte nicht zum Betreiber verbinden</string>
     <string name="invalid_country_code">Ungültiger Ländercode</string>
     <string name="invalid_sender">Ungültiger Absender/Empfänger</string>
+    <string name="invalid_sender_check">Ungültiger Absender</string>
+    <string name="sentSuccess">SMS erfolgreich gesendet</string>
 </resources>

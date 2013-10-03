@@ -39,11 +39,14 @@ import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
  */
 public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
 
-    public static final String LOGIN_BALANCE_URL = "http://www.smsglobal.com/http-api.php?user=%s&password=%s&action=balancesms";
+    private static final String LOGIN_BALANCE_URL = "http://www.smsglobal.com/http-api.php?user=%s&password=%s&action=balancesms";
+    private static final String SEND_URL = "http://www.smsglobal.com/http-api.php?action=sendsms&user=%s&password=%s&to=%s&from=%s&text=%s";
     private static final String ENCODING = "UTF-8";
 
 
     private final SMSGlobalOptionProvider provider;
+    private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("Error[:]? ([0-9]+).*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ERROR_PATTERN = Pattern.compile("Error (.*)", Pattern.CASE_INSENSITIVE);
 
     public SMSGlobalSupplier() {
         provider = new SMSGlobalOptionProvider();
@@ -76,7 +79,12 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
     }
 
     private SMSActionResult refreshInformations() throws IOException {
-        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(provider.getUserName(), ENCODING), URLEncoder.encode(provider.getPassword(), ENCODING));
+        String userName = provider.getUserName();
+        String password = provider.getPassword();
+        if (password == null || userName == null) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        String tmpUrl = String.format(LOGIN_BALANCE_URL, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING));
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
         InputStream inputStream = factory.create().getInputStream();
         if (inputStream == null) {
@@ -103,8 +111,7 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
     private SMSActionResult parseErrorResponse(String response) {
 
 //        Error 10: Missing login details
-        Pattern p = Pattern.compile("Error ([0-9]+):.*");
-        Matcher m = p.matcher(response);
+        Matcher m = ERROR_CODE_PATTERN.matcher(response);
         int errorCode = -1;
         if (m.matches()) {
             String errorCodeText = m.group(1);
@@ -116,16 +123,21 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
                 }
             }
         }
-
+        if (errorCode == -1) {
+            m = ERROR_PATTERN.matcher(response);
+            if (m.matches()) {
+                String errorCodeText = m.group(1);
+                if (errorCodeText != null) {
+                    return SMSActionResult.UNKNOWN_ERROR(errorCodeText);
+                }
+            }
+        }
         SMSActionResult out;
         switch (errorCode) {
             case 10:
             case 11:
             case 401:
                 out = SMSActionResult.LOGIN_FAILED_ERROR();
-                break;
-            case 102:
-                out = SMSActionResult.TIMEOUT_ERROR();
                 break;
             case 88:
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.not_enough_credits));
@@ -137,6 +149,7 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.invalid_country_code));
                 break;
             case 8:
+            case 102:
                 out = SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.invalid_sender));
                 break;
             case -1:
@@ -161,8 +174,50 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
 
     @Override
     public FireSMSResultList fireTimeShiftSMS(String smsText, List<Receiver> receivers, String spinnerText, DateTimeObject dateTime) throws IOException, NumberFormatException {
-//        http://www.smsglobal.com/http-api.php?action=sendsms&user=sdsdsdsdsd&password=adsasdasd&to=<no_leadng_zeros>&from=<no_leading_zeros>&text=Hello_worldö
-        return null;
+        String userName = provider.getUserName();
+        String password = provider.getPassword();
+        if (password == null || userName == null) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.LOGIN_FAILED_ERROR(), receivers);
+        }
+
+        String from = provider.getSender();
+        if (from == null || from.trim().length() == 0) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.invalid_sender_check)), receivers);
+        }
+        StringBuilder receiverString = new StringBuilder();
+        int i = 1;
+        for (Receiver receiver : receivers) {
+            String shortReceiverNumber = receiver.getReceiverNumber().replaceAll("^00", "");
+            receiverString.append(shortReceiverNumber);
+            if (i < receivers.size()) {
+                receiverString.append(",");
+            }
+            i++;
+
+        }
+        smsText = URLEncoder.encode(smsText, ENCODING);
+        String tmpUrl = String.format(SEND_URL, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING), receiverString, from, smsText);
+        UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
+        InputStream inputStream = factory.create().getInputStream();
+        if (inputStream == null) {
+            return FireSMSResultList.getAllInOneResult(SMSActionResult.NETWORK_ERROR(), receivers);
+        }
+        String response = UrlConnectionFactory.inputStream2DebugString(inputStream);
+        SMSActionResult smsActionResult = parseSendResponse(response, dateTime == null);
+        if (smsActionResult.isSuccess()) {
+            provider.saveLastSender();
+        }
+        return FireSMSResultList.getAllInOneResult(smsActionResult, receivers);
+    }
+
+    private SMSActionResult parseSendResponse(String response, boolean noTimeshift) {
+        SMSActionResult out;
+        if ((noTimeshift && response.contains("OK: 0")) || (!noTimeshift && response.contains("SMSGLOBAL DELAY"))) {  //OK: 0; Sent queued message ID: 941596             SMSGlobalMsgID:6764842339385521
+            out = SMSActionResult.NO_ERROR(provider.getTextByResourceId(R.string.sentSuccess));
+        } else { //SMSGLOBAL DELAY MSGID:19736759
+            out = parseErrorResponse(response);
+        }
+        return out;
     }
 
     @Override
