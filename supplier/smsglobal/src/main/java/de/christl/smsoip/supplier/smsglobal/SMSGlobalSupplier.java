@@ -21,6 +21,7 @@ package de.christl.smsoip.supplier.smsglobal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -197,6 +198,10 @@ public class SMSGlobalSupplier implements ExtendedSMSSupplier, TimeShiftSupplier
         }
         smsText = URLEncoder.encode(smsText, ENCODING);
         String tmpUrl = String.format(SEND_URL, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING), receiverString, from, smsText);
+        if (dateTime != null) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
+            tmpUrl += "&scheduledatetime=" + URLEncoder.encode(df.format(dateTime.getCalendar().getTime()), ENCODING);
+        }
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl, UrlConnectionFactory.METHOD_GET);
         InputStream inputStream = factory.create().getInputStream();
         if (inputStream == null) {
