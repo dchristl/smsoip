@@ -18,16 +18,20 @@
 
 package de.christl.smsoip.activities.settings;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
 import com.google.analytics.tracking.android.EasyTracker;
+
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.backup.BackupHelper;
 import de.christl.smsoip.util.BitmapProcessor;
 
 
-public abstract class BackgroundPreferenceActivity extends PreferenceActivity {
+public abstract class BackgroundPreferenceActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Drawable backgroundImage;
 
@@ -48,6 +52,7 @@ public abstract class BackgroundPreferenceActivity extends PreferenceActivity {
     protected void onResume() {
         super.onResume();
         SMSoIPApplication.setCurrentActivity(this);
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
 
@@ -71,5 +76,17 @@ public abstract class BackgroundPreferenceActivity extends PreferenceActivity {
         if (backgroundImage != null) {
             backgroundImage.setCallback(null);
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        BackupHelper.dataChanged();
     }
 }

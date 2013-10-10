@@ -27,14 +27,25 @@ import android.net.Uri;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.WindowManager;
-import de.christl.smsoip.R;
-import de.christl.smsoip.application.SMSoIPApplication;
-import de.christl.smsoip.constant.LogConst;
-import de.christl.smsoip.models.ErrorReporterStack;
+
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import de.christl.smsoip.R;
+import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.backup.BackupAgent;
+import de.christl.smsoip.backup.BackupHelper;
+import de.christl.smsoip.constant.LogConst;
+import de.christl.smsoip.models.ErrorReporterStack;
 
 /**
  * Helper method for processing bitmaps
@@ -45,6 +56,8 @@ public class BitmapProcessor {
     private static final String BACKGROUND_IMAGE_PATH_LANDSCAPE = "background_landscape";
 
     private static SparseArray<Drawable> imageMap = new SparseArray<Drawable>();
+
+    public static final Object LOCK = new Object();
 
 
     private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -98,6 +111,7 @@ public class BitmapProcessor {
         if (portrait != null && landscape != null) {
             out = saveImage(portrait, BACKGROUND_IMAGE_PATH_PORTRAIT);
             out &= saveImage(landscape, BACKGROUND_IMAGE_PATH_LANDSCAPE);
+            BackupHelper.dataChanged();
         }
         imageMap.clear();
         return out;
@@ -212,28 +226,31 @@ public class BitmapProcessor {
         ErrorReporterStack.put(LogConst.REMOVE_BACKGROUND_IMAGES);
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_PORTRAIT);
         SMSoIPApplication.getApp().deleteFile(BACKGROUND_IMAGE_PATH_LANDSCAPE);
+        BackupHelper.dataChanged();
         imageMap.clear();
     }
 
 
     public static Drawable getBackgroundImage(int orientation) {
-        ErrorReporterStack.put(LogConst.GET_BACKGROUND_IMAGE);
-        Drawable out = imageMap.get(orientation);
-        if (out == null) {
-            SMSoIPApplication app = SMSoIPApplication.getApp();
-            String imageOrientation = BACKGROUND_IMAGE_PATH_PORTRAIT;
-            try {
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    imageOrientation = BACKGROUND_IMAGE_PATH_LANDSCAPE;
+        synchronized (LOCK) {
+            ErrorReporterStack.put(LogConst.GET_BACKGROUND_IMAGE);
+            Drawable out = imageMap.get(orientation);
+            if (out == null) {
+                SMSoIPApplication app = SMSoIPApplication.getApp();
+                String imageOrientation = BACKGROUND_IMAGE_PATH_PORTRAIT;
+                try {
+                    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        imageOrientation = BACKGROUND_IMAGE_PATH_LANDSCAPE;
+                    }
+                    FileInputStream fileInputStream = app.openFileInput(imageOrientation);
+                    out = Drawable.createFromStream(fileInputStream, "");
+                } catch (FileNotFoundException ignored) {
+                    out = app.getResources().getDrawable(R.drawable.background_holo_dark);
                 }
-                FileInputStream fileInputStream = app.openFileInput(imageOrientation);
-                out = Drawable.createFromStream(fileInputStream, "");
-            } catch (FileNotFoundException ignored) {
-                out = app.getResources().getDrawable(R.drawable.background_holo_dark);
+                imageMap.put(orientation, out);
             }
-            imageMap.put(orientation, out);
+            return out;
         }
-        return out;
     }
 
     public static boolean isBackgroundImageSet() {
@@ -248,28 +265,31 @@ public class BitmapProcessor {
 
 
     private static boolean saveImage(InputStream inputStream, String orientation) {
-        ErrorReporterStack.put(LogConst.SAVE_IMAGE);
-        FileOutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(SMSoIPApplication.getApp().getFilesDir().getPath() + File.separator + orientation);
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, len);
-            }
-        } catch (IOException e) {
-            return false;
-        } finally {
+
+        synchronized (LOCK) {
+            ErrorReporterStack.put(LogConst.SAVE_IMAGE);
+            FileOutputStream outputStream = null;
             try {
-                if (inputStream != null) {
-                    inputStream.close();
+                outputStream = new FileOutputStream(SMSoIPApplication.getApp().getFilesDir().getPath() + File.separator + orientation);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, len);
                 }
-                if (outputStream != null) {
-                    outputStream.close();
+            } catch (IOException e) {
+                return false;
+            } finally {
+                try {
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                    if (outputStream != null) {
+                        outputStream.close();
+                    }
+                } catch (IOException ignored) {
                 }
-            } catch (IOException ignored) {
             }
+            return true;
         }
-        return true;
     }
 }
