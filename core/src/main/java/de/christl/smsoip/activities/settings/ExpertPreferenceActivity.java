@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -30,6 +31,8 @@ import android.widget.EditText;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
+import de.christl.smsoip.activities.threading.imexport.ExportSettingsTask;
+import de.christl.smsoip.activities.threading.imexport.ImportSettingsTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
 
@@ -144,6 +147,31 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         outgoingTextColor.setDefaultValue(ShowLastMessagesDialog.OUTGOING_DEFAULT_TEXT_COLOR);
         outgoingTextColor.setSummary(R.string.outgoing_text_color_description);
         root.addPreference(outgoingTextColor);
+
+        Preference exportSettings = new Preference(this);
+        exportSettings.setTitle(R.string.export_settings);
+        exportSettings.setSummary(R.string.export_settings_description);
+        exportSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ExportSettingsTask task = new ExportSettingsTask(ExpertPreferenceActivity.this);
+                task.execute();
+                return true;
+            }
+        });
+        root.addPreference(exportSettings);
+        Preference importSettings = new Preference(this);
+        importSettings.setTitle(R.string.import_settings);
+        importSettings.setSummary(R.string.import_settings_description);
+        importSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ImportSettingsTask task = new ImportSettingsTask(ExpertPreferenceActivity.this);
+                task.execute();
+                return true;
+            }
+        });
+        root.addPreference(importSettings);
         return root;
     }
 

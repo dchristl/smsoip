@@ -256,7 +256,7 @@
         geklickt wird.
     </string>
     <string name="expert_preferences">Experteneinstellungen</string>
-    <string name="expert_preferences_description">Einstellungen für fortgeschrittene Nutzer.</string>
+    <string name="expert_preferences_description">Experimentelle Einstellungen für fortgeschrittene Nutzer.</string>
     <string name="conversation_count">Anzahl der SMS in der Konversation</string>
     <string name="conversation_count_description">Anzahl der SMS, die in einer Konversation angezeigt werden. Bei Null
         werden alle Nachrichten geladen.
@@ -285,4 +285,14 @@
     <string name="outgoing_color_description">Hexadezimale Farbe für die Sprechblase (Ausgang) im Konversationendialog.</string>
     <string name="outgoing_text_color">Textfarbe für gesendete Nachrichten</string>
     <string name="outgoing_text_color_description">Hexadezimale Farbe für den Text (Ausgang) im Konversationendialog.</string>
+    <string name="export_settings">Einstellungen exportieren</string>
+    <string name="export_settings_description">Exportiert alle Einstellungen auf SD-Karte/externen Speicher für den späteren Import (z.B. nach Neuinstallation)</string>
+    <string name="import_settings">Einstellungen importieren</string>
+    <string name="import_settings_description">Importiert die Einstellungen von der SD-Karte/dem externen Speicher</string>
+    <string name="settings_will_be_exported">Einstellungen werden exportiert nach %s</string>
+    <string name="export_success">Einstellungen erfolgreich exportiert.</string>
+    <string name="export_failure">Fehler beim Exportieren der Eisntellungen.</string>
+    <string name="settings_will_be_imported">Einstellungen werden von %s importiert.</string>
+    <string name="import_success">Einstellungen erfolgreich importiert. SMSoIP wird beendet.</string>
+    <string name="import_failure">Fehler beim Importieren der Einstellungen.</string>
 </resources>
