@@ -136,7 +136,7 @@ public abstract class ImExportHelper {
             zos = new ZipOutputStream(fos);
             for (File file : files) {
                 String fileName = file.getName();
-                if (fileName.endsWith(".xml") && !fileName.contains("MCConfig")) {
+                if ((fileName.endsWith(".xml") && !fileName.contains("MCConfig")) || fileName.contains("background_")) {
                     ZipEntry ze = new ZipEntry(fileName);
                     zos.putNextEntry(ze);
                     FileInputStream in = new FileInputStream(file);

@@ -272,9 +272,9 @@
     <string name="outgoing_text_color">Text color of outgoing messages</string>
     <string name="outgoing_text_color_description">Hexadecimal text color of outgoing messages in conversation dialog.</string>
     <string name="export_settings">Export settings</string>
-    <string name="export_settings_description">Export settings to SD-Card/shared storage for later import (e.g. after reinstall)</string>
+    <string name="export_settings_description">Export settings manual to SD-Card/shared storage for later import</string>
     <string name="import_settings">Import settings</string>
-    <string name="import_settings_description">Import settings from SD-Card/shared storage</string>
+    <string name="import_settings_description">Import settings manual from SD-Card/shared storage</string>
     <string name="settings_will_be_exported">Settings will be exported to %s.</string>
     <string name="export_success">Settings successfully exported.</string>
     <string name="export_failure">Error during export.</string>
