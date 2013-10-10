@@ -34,6 +34,7 @@ import org.acra.ACRA;
 import java.util.Map;
 
 import de.christl.smsoip.R;
+import de.christl.smsoip.backup.BackupHelper;
 import de.christl.smsoip.constant.TrackerConstants;
 
 public class AppRating {
@@ -68,6 +69,7 @@ public class AppRating {
         }
 
         editor.commit();
+        BackupHelper.dataChanged();
     }
 
     private void showRateDialog(final SharedPreferences.Editor editor) {
@@ -89,6 +91,7 @@ public class AppRating {
                 if (editor != null) {
                     editor.putBoolean(RATING_DISABLED, true);
                     editor.commit();
+                    BackupHelper.dataChanged();
                 }
                 try {
                     dialog.dismiss();
@@ -106,6 +109,7 @@ public class AppRating {
                 if (editor != null) {
                     editor.putBoolean(RATING_DISABLED, true);
                     editor.commit();
+                    BackupHelper.dataChanged();
                 }
                 try {
                     dialog.dismiss();
@@ -123,6 +127,7 @@ public class AppRating {
                 if (editor != null) {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();
+                    BackupHelper.dataChanged();
                 }
                 try {
                     dialog.dismiss();
@@ -139,6 +144,7 @@ public class AppRating {
                 if (editor != null) {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();
+                    BackupHelper.dataChanged();
                 }
                 try {
                     dialog.dismiss();

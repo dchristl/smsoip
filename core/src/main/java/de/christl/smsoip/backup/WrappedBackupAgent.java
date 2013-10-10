@@ -19,9 +19,7 @@
 package de.christl.smsoip.backup;
 
 import android.app.backup.BackupManager;
-import android.app.backup.RestoreObserver;
 import android.content.Context;
-import android.os.Build;
 
 /**
  * Helper Class for checking availability of BackupManager
@@ -50,22 +48,22 @@ class WrappedBackupAgent {
         wrappedInstance.dataChanged();
     }
 
-    public void restore() {
-        wrappedInstance.requestRestore(new RestoreObserver() {
-            @Override
-            public void restoreStarting(int numPackages) {
-                super.restoreStarting(numPackages);
-            }
-
-            @Override
-            public void onUpdate(int nowBeingRestored, String currentPackage) {
-                super.onUpdate(nowBeingRestored, currentPackage);
-            }
-
-            @Override
-            public void restoreFinished(int error) {
-                super.restoreFinished(error);
-            }
-        });
-    }
+//    public void restore() {
+//        wrappedInstance.requestRestore(new RestoreObserver() {
+//            @Override
+//            public void restoreStarting(int numPackages) {
+//                super.restoreStarting(numPackages);
+//            }
+//
+//            @Override
+//            public void onUpdate(int nowBeingRestored, String currentPackage) {
+//                super.onUpdate(nowBeingRestored, currentPackage);
+//            }
+//
+//            @Override
+//            public void restoreFinished(int error) {
+//                super.restoreFinished(error);
+//            }
+//        });
+//    }
 }
