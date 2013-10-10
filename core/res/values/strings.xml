@@ -281,4 +281,6 @@
     <string name="settings_will_be_imported">Settings will be imported from %s.</string>
     <string name="import_success">Settings successfully imported. SMSoIP will be closed.</string>
     <string name="import_failure">Error during import.</string>
+    <string name="hint">Hint</string>
+    <string name="hint_export_not_needed">Manual export is not needed, because settings will be stored automatically by Androids Backup Manager, if background data is enabled. This export stores your settings to a public directory and can be read by every other application!</string>
 </resources>

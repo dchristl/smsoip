@@ -32,6 +32,7 @@ import java.util.zip.ZipInputStream;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.AllActivity;
 import de.christl.smsoip.activities.threading.ThreadingUtil;
+import de.christl.smsoip.backup.BackupHelper;
 
 /**
  *
@@ -49,7 +50,8 @@ public class ImportSettingsTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         String message = context.getString(R.string.settings_will_be_imported);
-        progressDialog.setMessage(String.format(message, ImExportHelper.getDataDir(context)));
+        File file = new File(ImExportHelper.getDataDir(context), ImExportHelper.ZIP_FILE_NAME);
+        progressDialog.setMessage(String.format(message, file.getAbsolutePath()));
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
@@ -119,6 +121,7 @@ public class ImportSettingsTask extends AsyncTask<Void, Void, Boolean> {
         String message;
         if (success) {
             message = context.getString(R.string.import_success);
+            BackupHelper.dataChanged();
         } else {
             message = context.getString(R.string.import_failure);
         }
