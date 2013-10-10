@@ -18,10 +18,7 @@
 
 package de.christl.smsoip.activities.settings;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -157,22 +154,8 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         exportSettings.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-                    AlertDialog.Builder hintDialog = new AlertDialog.Builder(ExpertPreferenceActivity.this);
-                    hintDialog.setTitle(R.string.hint);
-                    hintDialog.setMessage(R.string.hint_export_not_needed);
-                    hintDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            doExportSettings();
-                        }
-                    });
-                    hintDialog.show();
-
-                } else {
-                    doExportSettings();
-                }
+                ExportSettingsTask task = new ExportSettingsTask(ExpertPreferenceActivity.this);
+                task.execute();
                 return true;
             }
         });
@@ -192,9 +175,5 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         return root;
     }
 
-    private void doExportSettings() {
-        ExportSettingsTask task = new ExportSettingsTask(this);
-        task.execute();
-    }
 
 }

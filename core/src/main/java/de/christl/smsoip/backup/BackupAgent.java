@@ -18,11 +18,13 @@
 
 package de.christl.smsoip.backup;
 
+import android.annotation.TargetApi;
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.FileBackupHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 
 import java.io.IOException;
@@ -35,6 +37,7 @@ import de.christl.smsoip.util.BitmapProcessor;
 /**
  *
  */
+@TargetApi(Build.VERSION_CODES.FROYO)
 public class BackupAgent extends BackupAgentHelper {
 
 
@@ -45,6 +48,7 @@ public class BackupAgent extends BackupAgentHelper {
     private static final String PORTRAIT = "background_portrait";
     private static final String LANDSCAPE = "background_landscape";
 
+    @TargetApi(Build.VERSION_CODES.FROYO)
     @Override
     public void onCreate() {
         Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();

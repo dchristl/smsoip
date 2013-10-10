@@ -18,8 +18,10 @@
 
 package de.christl.smsoip.backup;
 
+import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
 import android.content.Context;
+import android.os.Build;
 
 /**
  * Helper Class for checking availability of BackupManager
@@ -40,10 +42,12 @@ class WrappedBackupAgent {
     public static void checkAvailable() {
     }
 
+    @TargetApi(Build.VERSION_CODES.FROYO)
     public WrappedBackupAgent(Context context) {
         wrappedInstance = new BackupManager(context);
     }
 
+    @TargetApi(Build.VERSION_CODES.FROYO)
     public void dataChanged() {
         wrappedInstance.dataChanged();
     }

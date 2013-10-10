@@ -238,6 +238,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -271,6 +277,13 @@
                 <version>4.0.1.2</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>com.google.android</groupId>
+                <artifactId>annotations</artifactId>
+                <version>4.1.1.4</version>
+                <scope>provided</scope>
+            </dependency>
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
