@@ -23,6 +23,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.AllActivity;
@@ -61,16 +66,51 @@ public class ImportSettingsTask extends AsyncTask<Void, Void, Boolean> {
             return false;
         }
 
+        return extractZipFile(dataDir, exportDir);
+    }
+
+    private boolean extractZipFile(File dataDir, File exportDir) {
+        byte[] buffer = new byte[1024];
         boolean success = true;
-        File[] files = exportDir.listFiles();
-        if (files == null || files.length == 0) {
-            return false;
-        }
-        for (File file : files) {
-            success &= ImExportHelper.copyFileToDir(dataDir, file);
-        }
+        ZipInputStream zis = null;
+        try {
+            File file = new File(exportDir, ImExportHelper.ZIP_FILE_NAME);
+            if (!file.exists()) {
+                return false;
+            }
+            zis = new ZipInputStream(new FileInputStream(file));
+            ZipEntry ze = zis.getNextEntry();
+            while (ze != null) {
+                String fileName = ze.getName();
+                File newFile;
+                if (fileName.endsWith(".xml")) {
+                    newFile = new File(dataDir, fileName);
+                } else {
+                    newFile = new File(context.getFilesDir(), fileName);
+                }
+                FileOutputStream fos = new FileOutputStream(newFile);
 
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    fos.write(buffer, 0, len);
+                }
 
+                fos.close();
+                ze = zis.getNextEntry();
+            }
+
+            zis.closeEntry();
+
+        } catch (IOException e) {
+            success = false;
+        } finally {
+            if (zis != null) {
+                try {
+                    zis.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
         return success;
     }
 
@@ -84,12 +124,18 @@ public class ImportSettingsTask extends AsyncTask<Void, Void, Boolean> {
         }
         progressDialog.setMessage(message);
         ThreadingUtil.killDialogAfterAWhile(progressDialog, 2000);
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ignored) {
-        } finally {
-            AllActivity.killHard();
-
+        if (success) {
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignored) {
+                    } finally {
+                        AllActivity.killHard();
+                    }
+                }
+            };
+            new Thread(runnable).start();
         }
     }
 }

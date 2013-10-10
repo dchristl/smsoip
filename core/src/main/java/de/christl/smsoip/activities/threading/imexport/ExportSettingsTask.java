@@ -65,21 +65,27 @@ public class ExportSettingsTask extends AsyncTask<Void, Void, Boolean> {
             return false;
         }
 
+        File[] preferenceFiles = dataDir.listFiles();
 
-        boolean success = true;
-        File[] files = dataDir.listFiles();
-        if (files == null) {
-            return false;
-        }
-        for (File file : files) {
-            String fileName = file.getName();
-            if (fileName.endsWith(".xml") && !fileName.contains("MCConfig")) {
-                success &= ImExportHelper.copyFileToDir(exportDir, file);
+        File[] imageFiles = context.getFilesDir().listFiles();
+        int size = preferenceFiles == null ? 0 : preferenceFiles.length;
+        size += imageFiles == null ? 0 : imageFiles.length;
+        File[] files = new File[size];
+        int i = 0;
+        if (preferenceFiles != null) {
+            for (File preferenceFile : preferenceFiles) {
+                files[i] = preferenceFile;
+                i++;
             }
         }
+        if (imageFiles != null) {
+            for (File imageFile : imageFiles) {
+                files[i] = imageFile;
+                i++;
+            }
+        }
+        return ImExportHelper.createZipFile(exportDir, files);
 
-
-        return success;
     }
 
 

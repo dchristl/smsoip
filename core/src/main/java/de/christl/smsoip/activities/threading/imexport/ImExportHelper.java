@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  *
@@ -37,6 +39,7 @@ import java.io.OutputStream;
 public abstract class ImExportHelper {
 
     static final String SAMSUNG_SHARED_PREF_DIR = "/dbdata/databases/%s/shared_prefs/";
+    public static final String ZIP_FILE_NAME = "backup";
 
     private ImExportHelper() {
     }
@@ -121,6 +124,43 @@ public abstract class ImExportHelper {
             }
         }
         return true;
+    }
+
+
+    static boolean createZipFile(File exportDir, File[] files) {
+        boolean success = true;
+        byte[] buffer = new byte[1024];
+        ZipOutputStream zos = null;
+        try {
+            FileOutputStream fos = new FileOutputStream(new File(exportDir, ZIP_FILE_NAME));
+            zos = new ZipOutputStream(fos);
+            for (File file : files) {
+                String fileName = file.getName();
+                if (fileName.endsWith(".xml") && !fileName.contains("MCConfig")) {
+                    ZipEntry ze = new ZipEntry(fileName);
+                    zos.putNextEntry(ze);
+                    FileInputStream in = new FileInputStream(file);
+                    int len;
+                    while ((len = in.read(buffer)) > 0) {
+                        zos.write(buffer, 0, len);
+                    }
+
+                    in.close();
+                    zos.closeEntry();
+                }
+            }
+        } catch (IOException e) {
+            ACRA.getErrorReporter().handleSilentException(e);
+            success = false;
+        } finally {
+            if (zos != null) {
+                try {
+                    zos.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return success;
     }
 
 }
