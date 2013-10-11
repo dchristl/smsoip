@@ -139,13 +139,10 @@ public class SendActivity extends AllActivity {
 
     private static final int PICK_CONTACT_REQUEST = 0;
 
-    private CharSequence signsconstant;
-    private Dialog progressDialog;
-
     private Mode mode = Mode.NORMAL;
-
-    private Toast toast;
     private SMSoIPPlugin smSoIPPlugin;
+
+
     private static final int PROVIDER_OPTION = 30;
     private static final int OPTION_SWITCH_SUPPLIER = 31;
     public static final int DIALOG_SMILEYS = 32;
@@ -155,9 +152,8 @@ public class SendActivity extends AllActivity {
     private static final int DIALOG_SWITCH_ACCOUNT = 36;
     private static final int DIALOG_TEXT_MODULES = 37;
 
-    private SharedPreferences settings;
-    private ImageButton searchButton;
     private ChosenContactsDialog chosenContactsDialog;
+
     private static final String SAVED_INSTANCE_SUPPLIER = "supplier";
     private static final String SAVED_INSTANCE_INPUTFIELD = "inputfield";
     private static final String SAVED_INSTANCE_RECEIVERS = "receivers";
@@ -167,16 +163,18 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_ACCOUNT_ID = "account";
     private static final String SAVED_INSTANCE_DATE_TIME = "datetime";
 
-    private Dialog lastDialog;
     private boolean optionsCalled = false;
     private boolean providerOptionsCalled = false;
-    private Dialog lastInfoDialog;
+
+    private String lastInfoDialogContent;
+    private FireSMSResultList.SendResult result;
+
     private DateTimeObject dateTime;
     private AsyncTask<Boolean, SMSActionResult, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
     private MobclixMMABannerXLAdView adView;
-    private ColorStateList defaultColor;
 
+    private ColorStateList defaultColor;
     private BackgroundSendTask backgroundSendTask;
 
 
@@ -194,7 +192,7 @@ public class SendActivity extends AllActivity {
         // otherwise saved instance states are overwritten
         if (smSoIPPlugin != null && optionsCalled) {
             smSoIPPlugin.getProvider().refresh();
-            settings = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
             if (currentAccountIndex != null) { //set back the current account
                 smSoIPPlugin.getProvider().setCurrentAccountId(currentAccountIndex);
             }
@@ -224,7 +222,7 @@ public class SendActivity extends AllActivity {
      * @return
      */
     private boolean infoTextUpdateNeeded() {
-        boolean settingActivated = settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false);
+        boolean settingActivated = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false);
         String string = getString(R.string.notyetrefreshed);
         TextView infoText = (TextView) findViewById(R.id.infoText);
         boolean defaultText = infoText.getText().equals(string);
@@ -265,15 +263,12 @@ public class SendActivity extends AllActivity {
 
         //save the default color of textview
         new AppRating(this).showRateDialogIfNeeded();
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.sendactivity);
-        signsconstant = getText(R.string.smssigns);
         setAutoSuggestField();
-        progressDialog = new SendMessageDialog(this);
         smssigns = (TextView) findViewById(R.id.smssigns);
-        smssigns.setText(String.format(signsconstant.toString(), 0, 0));
+        smssigns.setText(String.format(getText(R.string.smssigns).toString(), 0, 0));
         mode = settings.getBoolean(SettingsConst.GLOBAL_ENABLE_COMPACT_MODE, false) ? Mode.COMPACT : Mode.NORMAL;
-        toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         //disable inputs on field
         setSearchButton();
         setCustomActionBar();
@@ -574,7 +569,7 @@ public class SendActivity extends AllActivity {
         //only if parameter and supplier set
         final TextView infoText = (TextView) findViewById(R.id.infoText);
         final TextView infoTextUpper = (TextView) findViewById(R.id.infoTextUpper);
-        if (settings.getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_INFO_UPDATE_ON_STARTUP, false) && smSoIPPlugin != null) {
             infoText.setText(R.string.notyetrefreshed);
             infoTextUpper.setText(getString(R.string.notyetrefreshed) + " " + getString(R.string.tap));
             refreshInformationText(true);
@@ -637,7 +632,8 @@ public class SendActivity extends AllActivity {
             public void onClick(View v) {
                 Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_LAST_INFO, "", null).build();
                 EasyTracker.getInstance(SendActivity.this).send(build);
-                if (lastInfoDialog != null) {
+                if (lastInfoDialogContent != null && result != null) {
+                    EmoImageDialog lastInfoDialog = new EmoImageDialog(SendActivity.this, result, lastInfoDialogContent);
                     lastInfoDialog.show();
                     lastInfoDialog.setCancelable(true);
                 }
@@ -728,10 +724,12 @@ public class SendActivity extends AllActivity {
         Button sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if (!preSendCheck() || progressDialog == null) {
+                if (!preSendCheck()) {
                     return;
                 }
                 cancelUpdateTask();
+
+                Dialog progressDialog = new SendMessageDialog(SendActivity.this);
                 progressDialog.show();
                 if (backgroundSendTask != null) {//should not happen because unbreakable
                     backgroundSendTask.cancel(true);
@@ -789,6 +787,7 @@ public class SendActivity extends AllActivity {
         if (givenSupplier != null && receiverField.getReceiverList().size() == 0) {
             supplier = givenSupplier;
         }
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         if (supplier.equals("")) {
             supplier = settings.getString(SettingsConst.GLOBAL_DEFAULT_PROVIDER, "");
         }
@@ -901,7 +900,7 @@ public class SendActivity extends AllActivity {
 
                     textField.setText(sb.toString().replaceAll("\\s", ""));
                 } else {
-                    toast.setText(R.string.nothing_to_shorten);
+                    Toast toast = Toast.makeText(SendActivity.this, R.string.nothing_to_shorten, Toast.LENGTH_LONG);
                     toast.show();
                 }
 
@@ -936,7 +935,7 @@ public class SendActivity extends AllActivity {
                 textField.insertText(stringStringEntry.getValue()); //its only one in this loop, so do not break
             }
         } else if (textModules.size() == 0) {
-            toast.setText(R.string.no_text_modules);
+            Toast toast = Toast.makeText(this, R.string.no_text_modules, Toast.LENGTH_LONG);
             toast.show();
         }
     }
@@ -979,7 +978,7 @@ public class SendActivity extends AllActivity {
             }
         }
         if (toastMessage.length() > 0) {
-            toast.setText(toastMessage);
+            Toast toast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
             return false;
@@ -1026,7 +1025,7 @@ public class SendActivity extends AllActivity {
                 if (!textField.getText().toString().equals("") || !receiverField.getText().toString().equals("")) {
                     alert.show();
                 } else {
-                    toast.setText(R.string.nothing_to_clear);
+                    Toast toast = Toast.makeText(SendActivity.this, R.string.nothing_to_clear, Toast.LENGTH_LONG);
                     toast.show();
                 }
             }
@@ -1059,6 +1058,7 @@ public class SendActivity extends AllActivity {
      * @param receiverList
      */
     private void writeSMSInDatabase(List<Receiver> receiverList) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         boolean writeToDatabaseEnabled = settings.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
         if (writeToDatabaseEnabled) {
             String message = "";
@@ -1132,14 +1132,14 @@ public class SendActivity extends AllActivity {
         } else {
             smssigns.setTextColor(getDefaultColor());
         }
-        smssigns.setText(String.format(signsconstant.toString(), textLength, smsCount));
+        smssigns.setText(String.format(getText(R.string.smssigns).toString(), textLength, smsCount));
     }
 
     /**
      * set the button by searching for receivers
      */
     private void setSearchButton() {
-        searchButton = (ImageButton) findViewById(R.id.searchButton);
+        ImageButton searchButton = (ImageButton) findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
@@ -1311,7 +1311,8 @@ public class SendActivity extends AllActivity {
                 updateViewOnChangedReceivers();
             }
         } else {
-            toast.setText(String.format(getText(R.string.max_receivers_reached).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
+            String text = String.format(getText(R.string.max_receivers_reached).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount());
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
@@ -1321,7 +1322,7 @@ public class SendActivity extends AllActivity {
      * toast as hint if a receiver is added twice
      */
     private void showAddedTwiceToast() {
-        toast.setText(R.string.receiver_added_twice);
+        Toast toast = Toast.makeText(this, R.string.receiver_added_twice, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
         toast.show();
     }
@@ -1369,6 +1370,7 @@ public class SendActivity extends AllActivity {
         } else {
             viewById.setVisibility(View.GONE);
         }
+        View searchButton = findViewById(R.id.searchButton);
         if (smSoIPPlugin != null && receiverList.size() >= smSoIPPlugin.getProvider().getMaxReceiverCount()) {
             searchButton.setVisibility(View.GONE);
         } else if (SMSoIPApplication.getApp().isPickActionAvailable()) {
@@ -1381,7 +1383,7 @@ public class SendActivity extends AllActivity {
      */
     private void setInfoButtonVisibility() {
         View showInfoButton = findViewById(R.id.showInfoButton);
-        if (lastInfoDialog != null) {
+        if (lastInfoDialogContent != null && result != null) {
             showInfoButton.setVisibility(View.VISIBLE);
         } else {
             showInfoButton.setVisibility(View.INVISIBLE);
@@ -1397,7 +1399,7 @@ public class SendActivity extends AllActivity {
         item.setIcon(R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         MenuItem globalOption = menu.add(0, GLOBAL_OPTION, Menu.CATEGORY_SECONDARY, R.string.program_settings);
         globalOption.setIcon(R.drawable.ic_menu_compose);
-        boolean actionBarButtonsVisible = settings.getBoolean(SettingsConst.GLOBAL_BUTTON_VISIBILITY, true);
+        boolean actionBarButtonsVisible = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_BUTTON_VISIBILITY, true);
         boolean providerChangeVisibility = SMSoIPApplication.getApp().getProviderEntries().size() > 1;
         if (providerChangeVisibility && actionBarButtonsVisible) {
             MenuItem switchSupplier = menu.add(0, OPTION_SWITCH_SUPPLIER, Menu.CATEGORY_SYSTEM, R.string.changeProvider);
@@ -1484,19 +1486,6 @@ public class SendActivity extends AllActivity {
         startActivity(intent);
         optionsCalled = true;
         providerOptionsCalled = true;
-    }
-
-
-    @Override
-    /**
-     * do some stuff when activity is stopped
-     */
-    protected void onStop() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.cancel();
-            progressDialog = null;
-        }
-        super.onStop();
     }
 
 
@@ -1595,7 +1584,7 @@ public class SendActivity extends AllActivity {
             default:
                 dialog = super.onCreateDialog(id);
         }
-        lastDialog = dialog;
+//        lastDialog = dialog;
         return dialog;
     }
 
@@ -1674,7 +1663,8 @@ public class SendActivity extends AllActivity {
      */
     private void showTooMuchReceiversToast() {
         if (smSoIPPlugin != null) { //can be null on startup
-            toast.setText(String.format(getText(R.string.too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount()));
+            String text = String.format(getText(R.string.too_much_receivers).toString(), smSoIPPlugin.getProvider().getMaxReceiverCount());
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER | Gravity.CENTER, 0, 0);
             toast.show();
         }
@@ -1686,6 +1676,8 @@ public class SendActivity extends AllActivity {
      * entry point when search button is pressed
      */
     public boolean onSearchRequested() {
+        View searchButton = findViewById(R.id.searchButton);
+
         if (searchButton.getVisibility() == View.VISIBLE) {
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
             startActivityForResult(intent, PICK_CONTACT_REQUEST);
@@ -1701,15 +1693,15 @@ public class SendActivity extends AllActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //close open dialog if any
-        if (lastDialog != null && smSoIPPlugin != null) {
-            //close only if the last dialog was not choose supllier dialog on startup otherwise on returning the gui is
-            // open and  no supplier means FC
-            try {
-                lastDialog.dismiss();
-            } catch (IllegalArgumentException e) {
-                ACRA.getErrorReporter().handleSilentException(e);
-            }
-        }
+//        if (lastDialog != null && smSoIPPlugin != null) {
+//            //close only if the last dialog was not choose supllier dialog on startup otherwise on returning the gui is
+//            // open and  no supplier means FC
+//            try {
+//                lastDialog.dismiss();
+//            } catch (IllegalArgumentException e) {
+//                ACRA.getErrorReporter().handleSilentException(e);
+//            }
+//        }
         //cancel the update if running
         cancelUpdateTask();
         if (smSoIPPlugin != null) { //only save instance if provider is already chosen
@@ -1762,21 +1754,16 @@ public class SendActivity extends AllActivity {
                 }
             }
         }
-        if (lastInfoDialog != null) {     //call dismiss on dialog to avoid leaking
-            try {
-                lastInfoDialog.dismiss();
-            } catch (IllegalArgumentException e) {
-                ACRA.getErrorReporter().handleSilentException(e);
-            }
-        }
 
+        result = fireSMSResults.getResult();
         if (!this.isFinishing()) {
-            lastInfoDialog = new EmoImageDialog(this, fireSMSResults, resultMessage.toString());
+            lastInfoDialogContent = resultMessage.toString();
+            EmoImageDialog lastInfoDialog = new EmoImageDialog(this, result, lastInfoDialogContent);
             lastInfoDialog.show();
             ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
         }
         writeSMSInDatabase(fireSMSResults.getSuccessList());
-        if (fireSMSResults.getResult() == FireSMSResultList.SendResult.SUCCESS) {
+        if (result == FireSMSResultList.SendResult.SUCCESS) {
             clearAllInputs();
         } else {
             receiverField.getReceiverList().removeAll(fireSMSResults.getSuccessList());

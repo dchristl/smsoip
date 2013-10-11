@@ -33,8 +33,6 @@ import de.christl.smsoip.util.BitmapProcessor;
 
 public abstract class BackgroundPreferenceActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private Drawable backgroundImage;
-
 
     @Override
     protected void onStart() {
@@ -59,23 +57,15 @@ public abstract class BackgroundPreferenceActivity extends PreferenceActivity im
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
+        Drawable backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
         getWindow().setBackgroundDrawable(backgroundImage);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
+        Drawable backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
         getWindow().setBackgroundDrawable(backgroundImage);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (backgroundImage != null) {
-            backgroundImage.setCallback(null);
-        }
     }
 
 

@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.constant.FireSMSResultList;
 
@@ -34,9 +35,9 @@ public class EmoImageDialog extends Dialog {
     private final FireSMSResultList.SendResult result;
     private final String resultMessage;
 
-    public EmoImageDialog(Context context, FireSMSResultList fireSMSResults, String resultMessage) {
+    public EmoImageDialog(Context context, FireSMSResultList.SendResult fireSMSResult, String resultMessage) {
         super(context);
-        this.result = fireSMSResults.getResult();
+        this.result = fireSMSResult;
         this.resultMessage = resultMessage;
     }
 

@@ -24,34 +24,36 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
-import dalvik.system.PathClassLoader;
-import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
+
+import dalvik.system.PathClassLoader;
+import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 /**
  * Simple class for managing plugins during read out
  */
 public class SMSoIPPlugin {
     public static final String XMLID_TO_LOAD = "xmlid_to_load";
-    private ApplicationInfo installedApplication;
     private PackageInfo packageInfo;
     private PathClassLoader pathClassLoader;
     private Set<String> availableClasses = new HashSet<String>();
     private ExtendedSMSSupplier supplier;
     private boolean timeShiftCapable = false;
     private Resources resources;
+    private String packageName;
+    private String sourceDir;
 
     public SMSoIPPlugin(ApplicationInfo installedApplication, PackageInfo packageInfo, PathClassLoader pathClassLoader) {
-        this.installedApplication = installedApplication;
+        this.packageName = installedApplication.packageName;
+        sourceDir = installedApplication.sourceDir;
         this.packageInfo = packageInfo;
         this.pathClassLoader = pathClassLoader;
     }
@@ -62,7 +64,7 @@ public class SMSoIPPlugin {
      * @return
      */
     public String getSourceDir() {
-        return installedApplication.sourceDir;
+        return sourceDir;
     }
 
     /**
@@ -103,7 +105,7 @@ public class SMSoIPPlugin {
     private synchronized Resources getResources() {
         if (resources == null) {
             try {
-                resources = SMSoIPApplication.getApp().getPackageManager().getResourcesForApplication(installedApplication);
+                resources = SMSoIPApplication.getApp().getPackageManager().getResourcesForApplication(packageName);
             } catch (PackageManager.NameNotFoundException e) {
                 ACRA.getErrorReporter().handleSilentException(e);
             }
@@ -282,6 +284,8 @@ public class SMSoIPPlugin {
         return availableClasses;
     }
 
-    //removeIt
 
+    public String getPackageName() {
+        return packageName;
+    }
 }

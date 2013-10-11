@@ -19,7 +19,6 @@
 package de.christl.smsoip.activities;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -49,9 +48,7 @@ import com.google.analytics.tracking.android.MapBuilder;
 
 import org.acra.ACRA;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.christl.smsoip.R;
@@ -68,7 +65,6 @@ import de.christl.smsoip.util.BitmapProcessor;
  */
 public abstract class AllActivity extends SherlockFragmentActivity {
     public static final int EXIT = 0;
-    private static List<Activity> registeredActivities = new ArrayList<Activity>();
 
     static final int DIALOG_NO_NETWORK_ID = 0;
     private static boolean nwSettingsAlreadyShown = false;
@@ -76,7 +72,6 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     private static final String SAVED_INSTANCE_NWSETTINGSALREADYSHOWN = "network.settings.already.shown";
     private static final String SAVED_INSTANCE_NOTLOADEDDIALOGALREADYSHOWN = "not.loaded.dialog.already.shown";
-    private Drawable backgroundImage;
     private Long lastMillis;
 
 
@@ -87,7 +82,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
     protected void onResume() {
         super.onResume();
         SMSoIPApplication.setCurrentActivity(this);
-        backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
+        Drawable backgroundImage = BitmapProcessor.getBackgroundImage(getResources().getConfiguration().orientation);
         getWindow().setBackgroundDrawable(backgroundImage);
     }
 
@@ -97,7 +92,6 @@ public abstract class AllActivity extends SherlockFragmentActivity {
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registeredActivities.add(this);
         SMSoIPApplication app = SMSoIPApplication.getApp();
         if (app.getNotLoadedProviders().size() > 0) {
             Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_DEPRECATED, String.valueOf(app.getNotLoadedProviders().size()), null).build();
@@ -244,10 +238,7 @@ public abstract class AllActivity extends SherlockFragmentActivity {
      * kill the app soft way
      */
     public static void killSoft() {
-        for (Activity registeredActivity : registeredActivities) {
-            nwSettingsAlreadyShown = false;
-            registeredActivity.finish();
-        }
+        nwSettingsAlreadyShown = false;
     }
 
 
@@ -370,20 +361,11 @@ public abstract class AllActivity extends SherlockFragmentActivity {
 
     @Override
     /**
-     * handles the state on destroying
-     */
-    protected void onDestroy() {
-        super.onDestroy();
-        backgroundImage.setCallback(null);
-    }
-
-    @Override
-    /**
      * own handler for changed config (landscape or portrait)
      */
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
+        Drawable backgroundImage = BitmapProcessor.getBackgroundImage(newConfig.orientation);
         getWindow().setBackgroundDrawable(backgroundImage);
     }
 }

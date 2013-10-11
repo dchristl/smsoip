@@ -24,6 +24,7 @@ package de.christl.smsoip.activities.settings;
  */
 public abstract class SettingsConst {
 
+
     private SettingsConst() {
     }
 
@@ -59,5 +60,7 @@ public abstract class SettingsConst {
     public static final String INCOMING_TEXT_COLOR = "extra.incoming.text.color";
     public static final String OUTGOING_COLOR = "extra.outgoing.color";
     public static final String OUTGOING_TEXT_COLOR = "extra.outgoing.text.color";
+
+    public static final String REFRESH_CACHE = "receiver.refresh.cache";
 
 }

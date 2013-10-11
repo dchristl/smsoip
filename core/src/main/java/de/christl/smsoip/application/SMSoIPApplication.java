@@ -42,8 +42,14 @@ import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -77,6 +83,7 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
         resDialogOkToast = R.string.crash_dialog_ok_toast)
 public class SMSoIPApplication extends Application {
 
+    private static final String SERIALIZE_NAME = "loadCache.ser";
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
     public static final String PLUGIN_ADFREE_PREFIX = "de.christl.smsoip.adfree";
@@ -86,8 +93,7 @@ public class SMSoIPApplication extends Application {
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
     private boolean adsEnabled = true;
-    private Integer installedPackages;
-    private static Activity currentActivity;
+    private static WeakReference<Activity> currentActivity;
     private boolean pickActionAvailable = true;
     private Exception appInitException;
 
@@ -99,7 +105,7 @@ public class SMSoIPApplication extends Application {
      * @return
      */
     public static Activity getCurrentActivity() {
-        return currentActivity;
+        return currentActivity == null ? null : currentActivity.get();
     }
 
     /**
@@ -108,7 +114,7 @@ public class SMSoIPApplication extends Application {
      * @return
      */
     public static void setCurrentActivity(Activity currentActivity) {
-        SMSoIPApplication.currentActivity = currentActivity;
+        SMSoIPApplication.currentActivity = new WeakReference<Activity>(currentActivity);
     }
 
 
@@ -185,28 +191,74 @@ public class SMSoIPApplication extends Application {
             //init already done
             return;
         }
-        List<ApplicationInfo> installedApplications = getPackageManager().getInstalledApplications(0);
-//refresh only if not yet done and if a new application is installed
-        if (installedPackages == null || !installedPackages.equals(installedApplications.size())) {
-            plugins = new ArrayList<SMSoIPPlugin>();
-            for (ApplicationInfo installedApplication : installedApplications) {
-                try {
-                    if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
-                        PackageInfo packageInfo = getPackageManager().getPackageInfo(installedApplication.packageName, 0);
-                        plugins.add(new SMSoIPPlugin(installedApplication, packageInfo, new PathClassLoader(installedApplication.sourceDir, getClassLoader())));
-                    } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
-                        PackageManager manager = getPackageManager();
-                        if (manager.checkSignatures(getPackageName(), PLUGIN_ADFREE_PREFIX) == PackageManager.SIGNATURE_MATCH) {
-                            adsEnabled = false;
-                        }
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    ACRA.getErrorReporter().handleSilentException(e);
-                }
-            }
+        long start = System.currentTimeMillis();
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean refreshCache = defaultSharedPreferences.getBoolean(SettingsConst.REFRESH_CACHE, false);
+
+        List<ApplicationInfo> cachedPlugins = refreshCache ? null : restoreProvidersFromCache();
+
+        plugins = new ArrayList<SMSoIPPlugin>();
+        if (cachedPlugins != null && cachedPlugins.size() > 0) {
+            Log.e("de.christl.smsoip", "INIT WITH CACHE ");
+            findAllPlugins(cachedPlugins);
             readOutPlugins();
-            installedPackages = installedApplications.size();
+        } else {
+            Log.e("de.christl.smsoip", "INIT WITHOUT CACHE ");
+            List<ApplicationInfo> allApplications = getPackageManager().getInstalledApplications(0);
+            findAllPlugins(allApplications);
+            readOutPlugins();
+            storeProvidersInCache();
         }
+        buildAdditionalAcraInformations();
+        Log.e("de.christl.smsoip", "INIT FINISHED " + (System.currentTimeMillis() - start));
+    }
+
+    private void findAllPlugins(List<ApplicationInfo> installedApplications) {
+        for (ApplicationInfo installedApplication : installedApplications) {
+            try {
+                if (installedApplication.processName.startsWith(PLUGIN_CLASS_PREFIX)) {
+                    PackageInfo packageInfo = getPackageManager().getPackageInfo(installedApplication.packageName, 0);
+                    plugins.add(new SMSoIPPlugin(installedApplication, packageInfo, new PathClassLoader(installedApplication.sourceDir, getClassLoader())));
+                } else if (installedApplication.processName.startsWith(PLUGIN_ADFREE_PREFIX)) {
+                    PackageManager manager = getPackageManager();
+                    if (manager.checkSignatures(getPackageName(), PLUGIN_ADFREE_PREFIX) == PackageManager.SIGNATURE_MATCH) {
+                        adsEnabled = false;
+                    }
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                ACRA.getErrorReporter().handleSilentException(e);
+            }
+        }
+    }
+
+    private List<ApplicationInfo> restoreProvidersFromCache() {
+        File file = new File(getCacheDir(), SERIALIZE_NAME);
+        List<ApplicationInfo> out;
+        try {
+            if (!file.exists()) {
+                return null;
+            }
+            FileInputStream door = new FileInputStream(file);
+            ObjectInputStream reader = new ObjectInputStream(door);
+            List<String> packageNames = (List<String>) reader.readObject();
+            out = new ArrayList<ApplicationInfo>(packageNames.size());
+            for (String packageName : packageNames) {
+                out.add(getPackageManager().getApplicationInfo(packageName, 0));
+            }
+        } catch (IOException e) {
+            file.delete();
+            ACRA.getErrorReporter().handleSilentException(e);
+            return null;
+        } catch (ClassNotFoundException e) {
+            file.delete();
+            ACRA.getErrorReporter().handleSilentException(e);
+            return null;
+        } catch (PackageManager.NameNotFoundException e) {
+            file.delete();
+            ACRA.getErrorReporter().handleSilentException(e);
+            return null;
+        }
+        return out;
     }
 
     /**
@@ -299,7 +351,37 @@ public class SMSoIPApplication extends Application {
             }
 
         }
-        buildAdditionalAcraInformations();
+    }
+
+    private void storeProvidersInCache() {
+        if (pluginsToNew.size() > 0 || notLoadedProviders.size() > 0 || loadedProviders.size() == 0) {
+            return;
+        }
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(new FileOutputStream(new File(getCacheDir(), SERIALIZE_NAME)));
+            List<String> packageNames = new ArrayList<String>(loadedProviders.size());
+            for (SMSoIPPlugin smSoIPPlugin : loadedProviders.values()) {
+                packageNames.add(smSoIPPlugin.getPackageName());
+            }
+            if (!adsEnabled) {
+                packageNames.add(PLUGIN_ADFREE_PREFIX);
+            }
+            out.writeObject(packageNames);
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            defaultSharedPreferences.edit().remove(SettingsConst.REFRESH_CACHE).commit();
+        } catch (IOException e) {
+            ACRA.getErrorReporter().handleSilentException(e);
+        } finally {
+
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException ignored) {
+                }
+            }
+
+        }
     }
 
     /**
