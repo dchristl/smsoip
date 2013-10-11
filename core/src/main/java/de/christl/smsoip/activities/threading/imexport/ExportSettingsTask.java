@@ -44,7 +44,7 @@ public class ExportSettingsTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         String message = context.getString(R.string.settings_will_be_exported);
-        File file = new File(ImExportHelper.getDataDir(context), ImExportHelper.ZIP_FILE_NAME);
+        File file = new File(ImExportHelper.getExportDir(), ImExportHelper.ZIP_FILE_NAME);
         progressDialog.setMessage(String.format(message, file.getAbsolutePath()));
         progressDialog.setCancelable(false);
         progressDialog.show();

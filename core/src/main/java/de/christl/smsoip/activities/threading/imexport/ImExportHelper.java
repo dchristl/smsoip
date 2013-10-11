@@ -95,37 +95,6 @@ public abstract class ImExportHelper {
         return dataDir;
     }
 
-    static boolean copyFileToDir(File exportDir, File file) {
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-            in = new FileInputStream(file);
-            File outFile = new File(exportDir, file.getName());
-            out = new FileOutputStream(outFile);
-            ImExportHelper.copyFile(in, out);
-        } catch (FileNotFoundException ignored) {
-            ACRA.getErrorReporter().handleSilentException(ignored);
-            return false;
-        } catch (IOException ignored) {
-            ACRA.getErrorReporter().handleSilentException(ignored);
-            return false;
-        } finally {
-
-            try {
-                if (in != null) {
-                    in.close();
-                }
-                if (out != null) {
-                    out.flush();
-                    out.close();
-                }
-            } catch (IOException ignored) {
-                ACRA.getErrorReporter().handleSilentException(ignored);
-            }
-        }
-        return true;
-    }
-
 
     static boolean createZipFile(File exportDir, File[] files) {
         boolean success = true;
