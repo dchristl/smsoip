@@ -293,6 +293,6 @@
     <string name="export_success">Einstellungen erfolgreich exportiert.</string>
     <string name="export_failure">Fehler beim Exportieren der Eisntellungen.</string>
     <string name="settings_will_be_imported">Einstellungen werden von %s importiert.</string>
-    <string name="import_success">Einstellungen erfolgreich importiert. SMSoIP wird beendet.</string>
+    <string name="import_success">Einstellungen erfolgreich importiert. SMSoIP wird neu gestartet.</string>
     <string name="import_failure">Fehler beim Importieren der Einstellungen.</string>
 </resources>

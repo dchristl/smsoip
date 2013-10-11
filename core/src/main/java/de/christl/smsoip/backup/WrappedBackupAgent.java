@@ -20,6 +20,7 @@ package de.christl.smsoip.backup;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
+import android.app.backup.RestoreObserver;
 import android.content.Context;
 import android.os.Build;
 
@@ -34,7 +35,7 @@ class WrappedBackupAgent {
     static {
         try {
             Class.forName("android.app.backup.BackupManager");
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -52,22 +53,23 @@ class WrappedBackupAgent {
         wrappedInstance.dataChanged();
     }
 
-//    public void restore() {
-//        wrappedInstance.requestRestore(new RestoreObserver() {
-//            @Override
-//            public void restoreStarting(int numPackages) {
-//                super.restoreStarting(numPackages);
-//            }
-//
-//            @Override
-//            public void onUpdate(int nowBeingRestored, String currentPackage) {
-//                super.onUpdate(nowBeingRestored, currentPackage);
-//            }
-//
-//            @Override
-//            public void restoreFinished(int error) {
-//                super.restoreFinished(error);
-//            }
-//        });
-//    }
+    @TargetApi(Build.VERSION_CODES.FROYO)
+    public void restore() {
+        wrappedInstance.requestRestore(new RestoreObserver() {
+            @Override
+            public void restoreStarting(int numPackages) {
+                super.restoreStarting(numPackages);
+            }
+
+            @Override
+            public void onUpdate(int nowBeingRestored, String currentPackage) {
+                super.onUpdate(nowBeingRestored, currentPackage);
+            }
+
+            @Override
+            public void restoreFinished(int error) {
+                super.restoreFinished(error);
+            }
+        });
+    }
 }

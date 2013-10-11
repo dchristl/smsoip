@@ -20,9 +20,11 @@ package de.christl.smsoip.patcher;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.activities.threading.UpdateDeveloperInfoTask;
 import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.backup.BackupHelper;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.util.BitmapProcessor;
 
@@ -40,6 +42,7 @@ public abstract class InputPatcher {
     public static final String SET_DEV_FLAG = "devenable";
     public static final String REGISTER_PREFIX = "reg";
     public static final String GET_IMEI = "getimei";
+    public static final String RESTORE = "restore";
 
     public static String patchProgram(String input, OptionProvider provider) {
         if (input.startsWith(ADD_SUPPLIER_PREFERENCE)) {
@@ -59,6 +62,9 @@ public abstract class InputPatcher {
             return register(input);
         } else if (input.equals(GET_IMEI)) {
             return "IMEI: " + SMSoIPApplication.getDeviceId();
+        } else if (input.equals(RESTORE)) {
+            BackupHelper.restore();
+            return "Restore from Google Cloud scheduled";
         }
         return null;
     }

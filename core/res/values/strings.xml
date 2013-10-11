@@ -279,6 +279,6 @@
     <string name="export_success">Settings successfully exported.</string>
     <string name="export_failure">Error during export.</string>
     <string name="settings_will_be_imported">Settings will be imported from %s.</string>
-    <string name="import_success">Settings successfully imported. SMSoIP will be closed.</string>
+    <string name="import_success">Settings successfully imported. SMSoIP will be restarted.</string>
     <string name="import_failure">Error during import.</string>
 </resources>

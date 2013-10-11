@@ -50,13 +50,13 @@ public class BackupHelper {
     }
 
 
-//    public static void restore() {
-//        initAvailability();
-//        if (backupManagerAvailable) {
-//            WrappedBackupAgent wrapBackupManager = new WrappedBackupAgent(SMSoIPApplication.getApp());
-//            wrapBackupManager.restore();
-//        }
-//    }
+    public static void restore() {
+        initAvailability();
+        if (backupManagerAvailable) {
+            WrappedBackupAgent wrapBackupManager = new WrappedBackupAgent(SMSoIPApplication.getApp());
+            wrapBackupManager.restore();
+        }
+    }
 
 }
 
