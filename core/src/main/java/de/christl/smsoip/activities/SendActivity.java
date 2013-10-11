@@ -162,6 +162,8 @@ public class SendActivity extends AllActivity {
     private static final String SAVED_INSTANCE_MODE = "mode";
     private static final String SAVED_INSTANCE_ACCOUNT_ID = "account";
     private static final String SAVED_INSTANCE_DATE_TIME = "datetime";
+    private static final String SAVED_INSTANCE_LAST_INFO_DIALOG_CONTENT = "lastInfoDialogContent";
+    private static final String SAVED_INSTANCE_LAST_INFO_DIALOG_RESULT = "result";
 
     private boolean optionsCalled = false;
     private boolean providerOptionsCalled = false;
@@ -309,6 +311,12 @@ public class SendActivity extends AllActivity {
             int accountIndex = savedInstanceState.getInt(SAVED_INSTANCE_ACCOUNT_ID);
             switchAccount(accountIndex);
             updateInfoText(savedInstanceState.getString(SAVED_INSTANCE_INFO));
+            lastInfoDialogContent = savedInstanceState.getString(SAVED_INSTANCE_LAST_INFO_DIALOG_CONTENT);
+            String enumS = savedInstanceState.getString(SAVED_INSTANCE_LAST_INFO_DIALOG_RESULT);
+            if (enumS != null) {
+                result = FireSMSResultList.SendResult.valueOf(enumS);
+            }
+
             updateViewOnChangedReceivers(); //call it if a a receiver is appended
             setSuppliersLayout();
         } else {     // fresh create call on activity so do the default behaviour
@@ -1692,16 +1700,7 @@ public class SendActivity extends AllActivity {
      */
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //close open dialog if any
-//        if (lastDialog != null && smSoIPPlugin != null) {
-//            //close only if the last dialog was not choose supllier dialog on startup otherwise on returning the gui is
-//            // open and  no supplier means FC
-//            try {
-//                lastDialog.dismiss();
-//            } catch (IllegalArgumentException e) {
-//                ACRA.getErrorReporter().handleSilentException(e);
-//            }
-//        }
+
         //cancel the update if running
         cancelUpdateTask();
         if (smSoIPPlugin != null) { //only save instance if provider is already chosen
@@ -1720,6 +1719,12 @@ public class SendActivity extends AllActivity {
             }
             if (spinner.getVisibility() == View.VISIBLE) {
                 outState.putInt(SAVED_INSTANCE_SPINNER, spinner.getSelectedItemPosition());
+            }
+            if (lastInfoDialogContent != null) {
+                outState.putString(SAVED_INSTANCE_LAST_INFO_DIALOG_CONTENT, lastInfoDialogContent);
+            }
+            if (result != null) {
+                outState.putString(SAVED_INSTANCE_LAST_INFO_DIALOG_RESULT, result.name());
             }
             smSoIPPlugin.getProvider().onActivityPaused(outState);
         }
