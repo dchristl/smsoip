@@ -56,7 +56,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
     private static final String LOGIN_URL = HOST + "/login/login.jsp";
     private static final String LOGIN_BODY = "user_name=%s&password=%s&login=Login";
     private static final String BALANCE_SEND_URL = HOST + "/ums/ums_neu_sms.jsp";
-    private static final String SEND_BODY = "empfaengerAn=%s&nachricht=%s&senden=Senden";
+    private static final String SEND_BODY = "empfaengerAn=%s&nachricht=%s&senden=Senden&firstVisitOfPage=foo&ordnername=Posteingang&part=0";
     private String sessionId;
 
 
