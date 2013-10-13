@@ -41,6 +41,7 @@ import android.widget.Toast;
 import org.acra.ACRA;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.christl.smsoip.R;
@@ -338,11 +339,11 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         mainCategory.setTitle(R.string.category_base);
         root.addPreference(mainCategory);
         final ListPreference listPref = new ListPreference(this);
-        Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        List<SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getPlugins();
         if (providerEntries.size() > 1) {
             Map<String, String> providersWithNames = new LinkedHashMap<String, String>();
             providersWithNames.put((String) getText(R.string.no_default_Provider), "");
-            for (SMSoIPPlugin providerEntry : providerEntries.values()) {
+            for (SMSoIPPlugin providerEntry : providerEntries) {
                 providersWithNames.put(providerEntry.getProviderName(), providerEntry.getSupplierClassName());
             }
             listPref.setEntries(providersWithNames.keySet().toArray(new CharSequence[providersWithNames.size()]));

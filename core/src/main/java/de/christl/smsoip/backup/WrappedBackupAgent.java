@@ -23,6 +23,7 @@ import android.app.backup.BackupManager;
 import android.app.backup.RestoreObserver;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 /**
  * Helper Class for checking availability of BackupManager
@@ -58,16 +59,19 @@ class WrappedBackupAgent {
         wrappedInstance.requestRestore(new RestoreObserver() {
             @Override
             public void restoreStarting(int numPackages) {
+                Log.i("de.christl.smsoip", "Restore starting: " + numPackages);
                 super.restoreStarting(numPackages);
             }
 
             @Override
             public void onUpdate(int nowBeingRestored, String currentPackage) {
+                Log.i("de.christl.smsoip", "Restore starting of : " + currentPackage);
                 super.onUpdate(nowBeingRestored, currentPackage);
             }
 
             @Override
             public void restoreFinished(int error) {
+                Log.i("de.christl.smsoip", "Restore finished: " + error);
                 super.restoreFinished(error);
             }
         });

@@ -25,12 +25,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
-
-import java.util.LinkedList;
-import java.util.Map;
 
 /**
  * setting a custom layout for changing provider
@@ -42,12 +43,12 @@ public class ChangeProviderArrayAdapter extends ArrayAdapter<SMSoIPPlugin> {
 
     public ChangeProviderArrayAdapter(Context context, SMSoIPPlugin smSoIPPlugin) {
         super(context, 0);
-        Map<String, SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getProviderEntries();
+        List<SMSoIPPlugin> providerEntries = SMSoIPApplication.getApp().getPlugins();
         filteredProviderEntries = new LinkedList<SMSoIPPlugin>();
         if (smSoIPPlugin == null) {   //add all if current provider not set
-            filteredProviderEntries.addAll(providerEntries.values());
+            filteredProviderEntries.addAll(providerEntries);
         } else {
-            for (SMSoIPPlugin providerEntry : providerEntries.values()) {     //filter out cause current provider should not be shown
+            for (SMSoIPPlugin providerEntry : providerEntries) {     //filter out cause current provider should not be shown
                 if (!providerEntry.getSupplierClassName().equals(smSoIPPlugin.getSupplierClassName())) {
                     filteredProviderEntries.add(providerEntry);
                 }
