@@ -1,0 +1,731 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Arcor UMS Sms</title>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta name="robots" content="noodp" />
+<meta content="Vodafone D2 GmbH" name="author" />
+<link href="https://i.arcor.de/favicon.ico" rel="shortcut icon" />
+<script type="text/javascript" language="JavaScript">
+<!--
+	window.NG_STYP = 76;
+	window.NG_UFIX = 'https://www.arcor.de';
+	window.NG_IMGURL = 'https://i.arcor.de';
+	var pageKat='pia-ums-versand-sms';
+//-->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+	function Counter (maxsmstextlength, maxmultismstextlength, maxcountmultisms, anzavailablesms, poweredbylength)
+	{
+		var myValue = document.smsform.nachricht.value.substring(0);
+
+		if (anzavailablesms < maxcountmultisms)
+		{
+			maxcountmultisms = anzavailablesms;
+		}
+
+		var fromLength = 0;
+
+		if (poweredbylength > 0)
+		{
+			fromLength = poweredbylength + 1;
+		}
+		else
+		{
+			if ((document.smsform.useOwnMobile == null) || (!document.smsform.useOwnMobile.checked))
+			{
+				for (i = 0; i < document.smsform.emailAdressen.length; i++)
+				{
+					if (document.smsform.emailAdressen.options[i].selected)
+					{
+						fromLength = document.smsform.emailAdressen.options[i].value.length + 1;
+						break;
+					}
+				}
+			}
+		}
+
+		var charLen = 0;
+
+		for (i = 0; i < myValue.length; i++)
+		{
+			var mySubstr = myValue.substring(i,i + 1);
+
+			charLen += (((mySubstr == "\f") || (mySubstr == "^") || (mySubstr == "{") || (mySubstr == "}") || (mySubstr == "\\") || (mySubstr == "[") || (mySubstr == "]") || (mySubstr == "~") || (mySubstr == "|") || (mySubstr == "\u20ac") || (mySubstr == "€")) ? (2) : ((mySubstr == "\r") ? (((i < (myValue.length - 1)) && (myValue.substring(i + 1,i + 2) == "\n")) ? (0) : (1)) : ((mySubstr == "\n") ? (1) : (1))));
+		}
+
+		var maxusablelength	= ((charLen <= (maxsmstextlength - fromLength)) ? (maxsmstextlength - fromLength) : ((maxmultismstextlength * maxcountmultisms) - fromLength));
+
+		var charLen1 = 0;
+		var charLen2 = 0;
+		var cutPos = myValue.length;
+
+		for (i = 0; i < myValue.length; i++)
+		{
+			var mySubstr = myValue.substring(i,i + 1);
+
+			charLen2 += (((mySubstr == "\f") || (mySubstr == "^") || (mySubstr == "{") || (mySubstr == "}") || (mySubstr == "\\") || (mySubstr == "[") || (mySubstr == "]") || (mySubstr == "~") || (mySubstr == "|") || (mySubstr == "\u20ac") || (mySubstr == "€")) ? (2) : ((mySubstr == "\r") ? (((i < (myValue.length - 1)) && (myValue.substring(i + 1,i + 2) == "\n")) ? (0) : (1)) : ((mySubstr == "\n") ? (1) : (1))));
+
+			if (charLen2 > maxusablelength)
+			{
+				cutPos = i;
+				//break;
+			}
+
+			charLen1 = charLen2;
+		}
+
+		var anzSms = ((charLen1 <= (maxsmstextlength - fromLength)) ? (1) : ((charLen1 <= ((maxmultismstextlength * maxcountmultisms) - fromLength)) ? (parseInt((charLen1 + fromLength) / maxmultismstextlength) + ((((charLen1 + fromLength) % maxmultismstextlength) == 0) ? (0) : (1))) : (maxcountmultisms)));
+
+		//document.smsform.nachricht.value	= myValue.substring(0,cutPos);
+		document.smsform.b_counter.value	= "Noch " + (maxusablelength - charLen1) + " Zeichen verfügbar (" + anzSms + " SMS).";
+	}
+
+	if (window.captureEvents)
+	{	window.captureEvents(Event.KEYUP);
+		window.onkeyup = Counter(160,153,6,0,16);
+		window.captureEvents(Event.CHANGE);
+		window.onchange = Counter(160,153,6,0,16);
+	}
+
+
+	function popUpDetails (URL, id, height, width)
+	{
+		if (!width)
+		{	if (!height)
+				height	= 460;
+
+			scrollbar	= "scrollbars=no,";
+			width		= 600;
+
+			if (height > 600)
+			{	scrollbar	= "scrollbars=yes,";
+				width		= 650;
+			}
+		}
+		else
+		{	if (!height)
+				height	= 500;
+
+			scrollbar	= "scrollbars=no,";
+		}
+
+		window.open(URL,"" + id,scrollbar + "width=" + width + ",height=" + height + ",resizable=1,left=200,top=50,toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0");
+	}
+// -->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+	newwin1		= 0;
+	newwin2		= 0;
+	newwin3		= 0;
+	newwin4		= 0;
+	newwin5		= 0;
+	newwin6		= 0;
+	newwin7		= 0;
+	newwin8		= 0;
+	newwin9		= 0;
+	newwin10	= 0;
+	newwin11	= 0;
+	newwin12	= 0;
+	newwin13	= 0;
+	newwin14	= 0;
+	newwin15	= 0;
+	newwin16	= 0;
+	newwin17	= 0;
+	newwin18	= 0;
+	newwin19	= 0;
+	newwin20	= 0;
+	newwin21	= 0;
+	newwin22	= 0;
+	newwin23	= 0;
+
+	function unload ()
+	{
+		if (newwin1  != 0)	newwin1.close();
+		if (newwin2  != 0)	newwin2.close();
+		if (newwin3  != 0)	newwin3.close();
+		if (newwin4  != 0)	newwin4.close();
+		if (newwin5  != 0)	newwin5.close();
+		if (newwin6  != 0)	newwin6.close();
+		if (newwin7  != 0)	newwin7.close();
+		if (newwin8  != 0)	newwin8.close();
+		if (newwin9  != 0)	newwin9.close();
+		if (newwin10 != 0)	newwin10.close();
+		if (newwin11 != 0)	newwin11.close();
+		if (newwin12 != 0)	newwin12.close();
+		if (newwin13 != 0)	newwin13.close();
+		if (newwin14 != 0)	newwin14.close();
+		if (newwin15 != 0)	newwin15.close();
+		if (newwin16 != 0)	newwin16.close();
+		if (newwin17 != 0)	newwin17.close();
+		if (newwin18 != 0)	newwin18.close();
+		if (newwin19 != 0)	newwin19.close();
+		if (newwin20 != 0)	newwin20.close();
+		if (newwin21 != 0)	newwin21.close();
+		if (newwin22 != 0)	newwin22.close();
+		if (newwin23 != 0)	newwin23.close();
+	}
+
+	function adressBuchEMAIL (formtarget, target1)
+	{
+		newwin1 = window.open("https://www.arcor.de/office/ab/adr_popup.jsp" + "?view=0" + "&aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=","Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin1.focus();
+	}
+
+	function adressBuchSMS (formtarget, target1)
+	{
+		newwin2 = window.open("https://www.arcor.de/office/ab/adr_popup.jsp" + "?view=1" + "&aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=","Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin2.focus();
+	}
+
+	function adressBuchMMS (formtarget, target1)
+	{
+		newwin3 = window.open("https://www.arcor.de/office/ab/adr_popup.jsp" + "?view=1" + "&aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=","Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin3.focus();
+	}
+
+	function adressBuchFAX (formtarget, target1, target2)
+	{
+		newwin4 = window.open("https://www.arcor.de/office/ab/adr_popup.jsp" + "?view=2" + "&aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=" + target2,"Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin4.focus();
+	}
+
+	function adressBuchBRIEF (formtarget, target1, target2, target3, target4, target5, target6)
+	{
+		newwin5 = window.open("https://www.arcor.de/office/ab/adr_popup_pk.jsp?aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=" + target2 + "&inputFeld3=" + target3 + "&inputFeld4=" + target4 + "&inputFeld5=" + target5 + "&inputFeld6=" + target6,"Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin5.focus();
+	}
+
+	function adressBuchPOSTKARTE (formtarget, target1, target2, target3)
+	{
+		newwin6 = window.open("https://www.arcor.de/office/ab/adr_popup_pk.jsp?aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=" + target2 + "&inputFeld3=" + target3,"Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin6.focus();
+	}
+
+	function adressBuchSTAMPCARD (formtarget, target1, target2, target3)
+	{
+		newwin7 = window.open("https://www.arcor.de/office/ab/adr_popup_pk.jsp?aufrufFormular=" + formtarget + "&inputFeld1=" + target1 + "&inputFeld2=" + target2 + "&inputFeld3=" + target3,"Adressbuch","width=650,height=590,left=10,top=10,resizable=1");
+		newwin7.focus();
+	}
+
+	function adressBuchSIP ()
+	{
+		newwin8 = window.open("https://www.arcor.de/office/ab/adr_popup_sip.jsp","Adressbuch","width=600,height=590,left=10,top=10,resizable=1");
+		newwin8.focus();
+	}
+
+	function anlage_anhaengen (formtarget)
+	{
+		newwin9 = window.open("https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Anlagendatei","Anlageanhaengen","width=450,height=400,left=10,top=10");
+		newwin9.focus();
+	}
+
+	function anlage_abhaengen (formtarget)
+	{
+		newwin10 = window.open("https://www.arcor.de/ums/ums_pop_datei_abhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Anlagendatei" + "&delete=" + eval('document.' + formtarget).anlagen.selectedIndex + "&datei=" + escape(eval('document.' + formtarget).anlagen.options[eval('document.' + formtarget).anlagen.selectedIndex].value),"Anlageabhaengen","width=450,height=300,left=10,top=10");
+		newwin10.focus();
+	}
+
+	function mmssound_anhaengen (formtarget)
+	{
+		newwin11 = window.open("https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Sounddatei","Soundanhaengen","width=450,height=400,left=10,top=10");
+		newwin11.focus();
+	}
+
+	function mmssound_abhaengen (formtarget)
+	{
+		newwin12 = window.open("https://www.arcor.de/ums/ums_pop_datei_abhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Sounddatei" + "&delete=0" + "&datei=" + escape(eval('document.' + formtarget).anlagen.value),"Soundabhaengen","width=450,height=300,left=10,top=10");
+		newwin12.focus();
+	}
+
+	function mmsbild_anhaengen (formtarget)
+	{
+		newwin13 = window.open("https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=MMSbild","Bildanhaengen","width=450,height=400,left=10,top=10");
+		newwin13.focus();
+	}
+
+	function mmsbild_abhaengen (formtarget)
+	{
+		newwin14 = window.open("https://www.arcor.de/ums/ums_pop_datei_abhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=MMSbild","Bildabhaengen","width=450,height=360,left=10,top=10");
+		newwin14.focus();
+	}
+
+	function postcard_anhaengen (formtarget)
+	{
+		newwin15 = window.open("https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Postkartenbild","Postkartenbildanhaengen","width=450,height=400,left=10,top=10");
+		newwin15.focus();
+	}
+
+	function postcard_abhaengen (formtarget)
+	{
+		newwin16 = window.open("https://www.arcor.de/ums/ums_pop_datei_abhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Postkartenbild","Postcardbildabhaengen","width=450,height=360,left=10,top=10");
+		newwin16.focus();
+	}
+
+	function stampcard_anhaengen (formtarget)
+	{
+		newwin17 = window.open("https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Stampcardbild","Stampcardbildanhaengen","width=450,height=400,left=10,top=10");
+		newwin17.focus();
+	}
+
+	function stampcard_abhaengen (formtarget)
+	{
+		newwin18 = window.open("https://www.arcor.de/ums/ums_pop_datei_abhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Stampcardbild","Stampcardbildabhaengen","width=450,height=360,left=10,top=10");
+		newwin18.focus();
+	}
+
+	function briefmarke_anhaengen (formtarget)
+	{
+		newwin19 = window.open("https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Briefmarkenbild","Briefmarkeanhaengen","width=450,height=600,left=10,top=10");
+		newwin19.focus();
+	}
+
+	function briefmarke_abhaengen (formtarget)
+	{
+		newwin20 = window.open("https://www.arcor.de/ums/ums_pop_datei_abhaengen.jsp?aufrufFormular=" + formtarget + "&whichtype=Briefmarkenbild","Briefmarkeabhaengen","width=450,height=360,left=10,top=10");
+		newwin20.focus();
+	}
+
+	function briefmarke_aus_fotoalbum (formtarget_hs, formtarget_pu)
+	{
+		newwin21 = window.open("https://www.arcor.de/palb/thumbs_briefmarke.jsp?albumID=" + eval('document.' + formtarget_pu).albumID.value + "&aufrufFormular=" + formtarget_hs + "&opener=2","Briefmarkeausfotoalbum","scrollbars=yes,width=630,height=660,resizable=1,left=10,top=10,toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0");
+		newwin21.focus();
+		window.location.href = "https://www.arcor.de/ums/ums_pop_datei_anhaengen.jsp?aufrufFormular=" + formtarget_hs + "&whichtype=Briefmarkenbild";
+	}
+
+	function spamBlocker (formtarget, feld, modus)
+	{
+		newwin22 = window.open("https://www.arcor.de/ums/ums_pop_spamblocker.jsp?formular=" + formtarget + "&feld=" + feld + "&modus=" + modus,"SpamBlocker","width=450,height=300");
+		newwin22.focus();
+	}
+
+	function popUpAuslandsvorwahlen (modus, formtarget, target1)
+	{
+		//modus = europa | welt
+		newwin23 = window.open("https://www.arcor.de/ums/ums_pop_smsglobal.jsp?modus=" + modus + "&aufrufFormular=" + formtarget + "&inputFeld1=" + target1,"Auslandsvorwahlen","scrollbars=yes,width=600,height=600,resizable=1,left=10,top=10,toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0");
+		newwin23.focus();
+	}
+
+	function herunterladen (formtarget)
+	{
+		eval('document.' + formtarget).part.value = eval('document.' + formtarget).anlagen.selectedIndex + 1;
+		eval('document.' + formtarget).submit();
+	}
+// -->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+	var		submitUndWegCnt = 0;
+
+	function submitUndWeg ()
+	{
+		if (submitUndWegCnt == 0)
+		{	submitUndWegCnt++;
+			return true;
+		}
+
+		return false;
+	}
+
+
+	function submitUndWegUpload (formtarget)
+	{
+		if (eval('document.' + formtarget).file.value)
+		{	if (eval('document.' + formtarget).file.value != null)
+			{	if (eval('document.' + formtarget).file.value != '')
+				{	return submitUndWeg();
+				}
+			}
+		}
+
+		return false;
+	}
+//-->
+</script>
+<script language="JavaScript" type="text/javascript">
+	function confirmdelSmsEmpfang()
+	{
+		if (!confirm('Wollen Sie die Freischaltung Ihrer PIA Telefon- und FAX-Nummer wirklich loeschen? (Fuer eine spaetere erneute Freischaltung benoetigen Sie 5 PIA-SMS.)'))
+			return false;
+
+		return submitUndWeg();
+	}
+</script>
+<script language="JavaScript" type="text/javascript">
+	function confirmdelMobilnummer()
+	{
+		if (!confirm('Wollen Sie die Freischaltung dieser Mobilnummer wirklich loeschen? (Fuer eine spaetere erneute Freischaltung benoetigen Sie 5 PIA-SMS.)'))
+			return false;
+
+		return submitUndWeg();
+	}
+</script>
+<script language="JavaScript" type="text/javascript">
+	function confirmchgMobilnummer()
+	{
+		if (!confirm('Wollen Sie diese Mobilnummer wirklich aendern? (Sie benoetigen dafuer 5 PIA-SMS.)'))
+			return false;
+
+		return submitUndWeg();
+	}
+</script>
+<script type="text/javascript">var gujadLink = NG_UFIX+'/adserver/';
+  var siteName  = 'arcor.de';
+  if (window.location.search.indexOf('gujad=1') > -1) {
+     gujadLink = 'http://test.adsatellite.guj.de/satellite_dev.php/get-file-content/1/' + siteName + '/';
+  }
+  document.write('<scr'+'ipt type="text/javascript" src="'+ gujadLink +'gujAd.js"></scr'+'ipt>');
+  document.write('<link rel="stylesheet" type="text/css" media="screen" href="'+ gujadLink +'gujAd.css" />');
+</script>
+<script src="https://i.arcor.de/scripts/jquery/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script src="https://i.arcor.de/scripts/r/functions.js" type="text/javascript"></script>
+<script>GujAd.getClient().setZone(zoneMapping('mail'));</script>
+<link media="print" type="text/css" href="https://i.arcor.de/styles/r/print.css" rel="stylesheet" />
+<link type="text/css" href="https://i.arcor.de/styles/r/styles.css" rel="stylesheet" />
+<meta name="bclevel1" content="E-Mail &amp; SMS" />
+<meta name="bcurl1" content="/ums/ums_index.jsp" />
+<meta name="bclevel2" content="SMS" />
+<meta name="bcurl2" content="/ums/ums_neu_sms.jsp" />
+</head>
+<body onload="Counter(160,153,6,0,16);" onunload="unload();">
+<div style="position: absolute; top: -10em;">
+    <!-- SZM VERSION="1.5" -->
+    <script type="text/javascript">
+<!--
+var IVW="https://arcor.ivwbox.de/cgi-bin/ivw/CP/6103;";
+document.write("<img id=\"ivwPixel\" src=\""+IVW+"?r="+escape(document.referrer)+"&d="+(Math.random()*100000)+"\" width=\"1\" height=\"1\" alt=\"\" />");
+function reloadIvwPixelImage()
+{
+	document.getElementById("ivwPixel").src = IVW+"?r="+escape(document.referrer)+"&d="+(Math.random()*100000);
+}
+//-->
+</script>
+    <noscript>
+        <img src="https://arcor.ivwbox.de/cgi-bin/ivw/CP/6103;" width="1" height="1" alt="" />
+    </noscript>
+    <!-- /SZM -->
+</div>
+<div id="adWrapper">
+    <div id="superbanner_1" class="gujAd superbanner">
+        <script type="text/javascript">GujAd.push('superbanner_1');</script>
+    </div>
+</div>
+<div id="pWrapper" class="AIP">
+<div id="pHeader">
+    <div id="pHead">
+        <div id="arcorLogo">
+            <a href="/index.html"><img alt="Arcor" height="34" width="130" src="https://i.arcor.de/i/r/skin/logo.gif" /></a>
+        </div>
+        <div id="pMetaNav">
+            <ul>
+                <li class="first"> <a href="/hilfe/rss" target="_blank" onclick="openPopuphilfe(trackLink(this.href,'arcor-click-hilfe-rss')); return false;">RSS</a> </li>
+                <li> <a href="/content/newsletter_anmeldung/">Newsletter</a> </li>
+                <li> <a href="/hilfe/neu/index.php" target="_blank" onclick="openPopuphilfe(trackLink(this.href,'arcor-click-hilfe')); return false;">Hilfe</a> </li>
+                <li> <a href="/kontakt/index.jsp?bereich=%2Fums%2Fums_neu_sms.jsp">Kontakt</a> </li>
+            </ul>
+        </div>
+        <div id="pSearch">
+            <form method="get" action="/content/arcor_search.jsp" name="websuche">
+                <div id="webview" name="webview" style="margin-left:25px;display: block ;">
+                    <input id="websearch" type="text" name="Keywords" class="googlesearch" value="" onfocus="this.className='googlesearch_blank'" />&nbsp;
+                    <a href="javascript:document.websuche.submit()" class="button">Suchen</a>
+                    <br />
+                </div>
+                <div id="phoneview" name="phoneview" style="display: none;">
+                    <input id="telesearchname" type="text" name="telesearchname" class="telesearch_blank" value="" onfocus="this.className='telesearch_blank'" />
+                    <input id="telesearchort" type="text" name="telesearchort" class="telesearch_blank" value="" onfocus="this.className='telesearch_blank'" />&nbsp;
+                    <a href="javascript:document.websuche.submit()" class="button">Suchen</a>
+                    <br />
+                </div>
+       <span class="txt9"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="web" name="scategorytype" value="web" class="radio" onclick="if(document.getElementById('websearch').value==''){document.getElementById('websearch').className='googlesearch'};
+								changeProp('webview','','style.display','block','DIV');
+								changeProp('phoneview','','style.display','none','DIV')" checked="checked" /> <label for="web">Web&nbsp;&nbsp;&nbsp;&nbsp;</label> <input type="radio" id="portal" name="scategorytype" value="portal" class="radio" onclick="document.getElementById('websearch').className='googlesearch_blank';
+								changeProp('phoneview','','style.display','none','DIV');
+								changeProp('webview','','style.display','block','DIV')" /> <label for="portal">Portal&nbsp;&nbsp;&nbsp;&nbsp;</label> <input type="radio" id="produkt" name="scategorytype" value="produkte" class="radio" onclick="document.getElementById('websearch').className='googlesearch_blank';
+								changeProp('phoneview','','style.display','none','DIV');
+								changeProp('webview','','style.display','block','DIV')" /> <label for="produkt">Produkte&nbsp;&nbsp;&nbsp;&nbsp;</label> <input type="radio" id="wiki" name="scategorytype" value="wiki" class="radio" onclick="document.getElementById('websearch').className='googlesearch_blank';
+								changeProp('phoneview','','style.display','none','DIV');
+								changeProp('webview','','style.display','block','DIV')" /> <label for="wiki">Wikipedia&nbsp;&nbsp;&nbsp;&nbsp;</label> <input type="radio" id="telefonbuch" name="scategorytype" value="telefonbuch" class="radio" onclick="if(document.getElementById('telesearchname').value==''){
+								document.getElementById('telesearchname').className='telesearch_name'};
+								if(document.getElementById('telesearchort').value==''){document.getElementById('telesearchort').className='telesearch_ort'};
+								document.getElementById('webview').display='none';
+								document.getElementById('phoneview').display='block';
+								changeProp('phoneview','','style.display','block','DIV');
+								changeProp('webview','','style.display','none','DIV')" /> <label for="telefonbuch">Telefonbuch&nbsp;&nbsp;</label></span>
+                <input src="https://i.arcor.de/ic/b.gif" width="0" height="0" alt="" type="image" />
+            </form>
+        </div>
+        <div id="pTopNav">
+            <ul>
+                <li style="width:76px;" class="blue first"> <a onfocus="this.blur();" href="/content/">Themen</a> </li>
+                <li style="width:110px;" class="blue-selected"> <a onfocus="this.blur();" href="/ums/ums_index.jsp">E-Mail &amp; SMS</a> </li>
+                <li style="width:74px;" class="blue"> <a onfocus="this.blur();" href="/j1/onlinedienste/onlinedienste.jsp">Dienste</a> </li>
+                <li style="width:147px;" class="red"> <a onmouseout="SwapClass(document.getElementById('shopDropNav'),'hide')" onmouseover="SwapClass(document.getElementById('shopDropNav'),'show')" onfocus="this.blur();" target="_blank" href="http://www.arcor.de/shop/">Shop</a> </li>
+                <li style="width:138px;" class="red"> <a target="_blank" onfocus="this.blur();" href="http://www.vodafone.de/business.html">Gesch&auml;ftskunden</a> </li>
+                <li onmouseout="SwapClass(document.getElementById('pDropNav'),'hide')" onmouseover="SwapClass(document.getElementById('pDropNav'),'show')" style="width:121px;" class="red last"> <a style="cursor:default;" onfocus="this.blur();" href="#">Kundenservice</a> </li>
+            </ul>
+        </div>
+        <div onmouseover="SwapClass(this,'show')" onmouseout="SwapClass(this,'hide')" class="hide" id="shopDropNav">
+            <div class="navDropDown">
+                <ul>
+                    <li> <a target="_blank" href="http://www.arcor.de/shop/angebot-der-woche.html">Angebot der Woche</a> </li>
+                    <li> <a target="_blank" href="http://www.arcor.de/shop/dsl.html">DSL</a> </li>
+                    <li> <a target="_blank" href="http://www.arcor.de/shop/lte.html">LTE</a> </li>
+                    <li> <a target="_blank" href="http://www.arcor.de/shop/handy-smartphone.html">Handy &amp; Smartphone</a> </li>
+                    <li> <a target="_blank" href="http://www.arcor.de/shop/surfstick-tablet.html">Surfstick &amp; Tablet</a> </li>
+                </ul>
+            </div>
+        </div>
+        <div onmouseover="SwapClass(this,'show')" onmouseout="SwapClass(this,'hide')" class="hide" id="pDropNav">
+            <div class="navDropDown">
+                <ul>
+                    <li> <a target="_blank" href="/home/intern_track.php?path=%2Fpksc%2Findex_pub.jsp&amp;name=topnavi-ksc-pk&amp;kat=pia-ums-versand-sms">Privatkunden</a> </li>
+                    <li> <a target="_blank" href="/home/intern_track.php?path=%2Fgksc%2Fhome.jsp&amp;name=topnavi-ksc-gk&amp;kat=pia-ums-versand-sms">Gesch&auml;ftskunden</a> </li>
+                </ul>
+            </div>
+        </div>
+        <div id="logInOut">
+            <a href="/login/logout.jsp?s=pia">Logout</a>
+        </div>
+    </div>
+    <div id="pSubNav">
+        <ul>
+            <li class="first"><a href="/ums/ums_neu_email.jsp">E-Mail</a></li>
+            <li class="selected"><a href="/ums/ums_neu_sms.jsp">SMS</a></li>
+            <li><a href="/ums/ums_neu_fax.jsp">Fax</a></li>
+            <li><a href="/ums/ums_neu_postkarte_1.jsp">Postkarte</a></li>
+            <li><a href="/ums/ums_neu_brief.jsp">Postbrief</a></li>
+            <li><a href="/ums/ums_neu_sms_global.jsp">Global-SMS</a></li>
+            <li><a href="/ecards/ecards_start.jsp">E-Cards</a></li>
+            <li><a href="/ums/ums_ordner_verwaltung.jsp">Ordner</a></li>
+            <li><a href="/ums/ums_option_filter_verwaltung.jsp">Einstellungen</a></li>
+            <li><a href="/ums/ums_hinweis_pineinrichten.jsp">Unified Messaging</a></li>
+            <li><a href="/ums/ums_mps_info.jsp">Zusatzleistungen</a></li>
+        </ul>
+    </div>
+    <div id="pShaddow">
+        <p>&nbsp;</p>
+    </div>
+</div>
+<div id="pBreadcrumb">
+    <ul>
+        <li><a href="/index.html">Startseite</a></li>
+        <li><a href="/ums/ums_index.jsp">E-Mail &amp; SMS</a></li>
+        <li>SMS</li>
+    </ul>
+</div>
+<div id="pBody">
+    <form name="smsform" onsubmit="return submitUndWeg();" method="post" action="https://www.arcor.de/ums/ums_neu_sms.jsp">
+        <div class="grid_2col">
+            <div class="contentArea">
+                <div class="box5">
+                    <div class="boxTop">
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="boxContent">
+                        <h4>Quicklinks</h4>
+                        <div class="clearFix" align="center">
+                            <div class="left" style="width:15px;">
+                                &nbsp;
+                            </div>
+                            <div class="left" style="width:70px;">
+                                <a href="https://www.arcor.de/ums/ums_ordner.jsp?ordnername=Posteingang"><img src="https://i.arcor.de/i/r/common/b_posteingang.gif" width="59" height="48" alt="Posteingang" /></a>
+                            </div>
+                            <div class="left" style="width:70px;">
+                                <a href="https://www.arcor.de/ums/ums_neu_email.jsp"><img src="https://i.arcor.de/i/r/common/b_email.gif" width="47" height="48" alt="E-Mail" /></a>
+                            </div>
+                            <div class="left" style="width:70px;">
+                                <a href="https://www.arcor.de/ums/ums_neu_sms.jsp"><img src="https://i.arcor.de/i/r/common/b_sms.gif" width="47" height="48" alt="SMS" /></a>
+                            </div>
+                            <div class="left" style="width:70px;">
+                                <a href="https://www.arcor.de/ecards/ecards_start.jsp"><img src="https://i.arcor.de/i/r/common/b_ecards.gif" width="47" height="48" alt="E-Cards" /></a>
+                            </div>
+                            <div class="left" style="width:70px;">
+                                <a href="https://www.arcor.de/ecards/myecard"><img src="https://i.arcor.de/i/r/common/b_myecard_ic.gif" width="51" height="48" alt="MyE-Card" /></a>
+                            </div>
+                            <div class="left" style="width:70px;">
+                                <a href="https://www.arcor.de/ums/ums_option_filter_genspam.jsp"><img src="https://i.arcor.de/i/r/common/b_spam.gif" width="47" height="48" alt="Spam" /></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="boxBottom">
+                        <p>&nbsp;</p>
+                    </div>
+                </div>
+                <div class="spacer" style="height:11px;"></div>
+            </div>
+            <div class="teaserArea">
+                <div id="plista_widget_sidebar" class="teasBox mB10"></div>
+            </div>
+        </div>
+        <div class="grid_1col">
+            <div class="contentArea">
+                <table class="bgGrey3" width="100%" border="0" cellspacing="0" cellpadding="8">
+                    <tbody>
+                    <tr>
+                        <td width="50%" valign="top" style="border-right:2px solid #fff;"><b>Verf&uuml;gbare PIA SMS</b></td>
+                        <td width="50%">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                <tr valign="top">
+                                    <td colspan="2" class="txtRed" nowrap="nowrap">Sie haben derzeit keine SMS zur Verf&uuml;gung!</td>
+                                    <td align="right" nowrap="nowrap">&nbsp;<a tabindex="2" href="https://www.arcor.de/mps/ums/umsproducts2.jsp?target=%2Fums%2Fums_neu_sms.jsp">SMS kaufen</a></td>
+                                </tr>
+                                </tbody>
+                            </table></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="bgRed1" style="margin-top:2px;" width="100%" border="0" cellspacing="8" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td><b>Global-SMS, SMS-Versand in alle ausl&auml;ndischen Netze!</b></td>
+                        <td align="right"><input tabindex="3" type="submit" class="button red" name="zumservice" value="Jetzt zum Service" title="Jetzt zum Service" /></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="bgGrey2" style="margin-top:2px;" width="100%" border="0" cellspacing="8" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td width="33%"><b>Absender</b></td>
+                        <td width="40%">&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Meine E-Mail-Adresse:</td>
+                        <td><select tabindex="4" name="emailAdressen" style="width:300px;" onclick="Counter(160,153,6,0,16);" onchange="Counter(160,153,6,0,16);"> <option value="mail@arcor.de" selected="">mail@arcor.de</option> </select></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Meine validierte Mobilnummer:</td>
+                        <td>45455646</td>
+                        <td><input tabindex="5" type="checkbox" name="useOwnMobile" class="check" onclick="javascript:window.document.smsform.submit();" onchange="javascript:window.document.smsform.submit();" />&nbsp;als Absender verwenden</td>
+                    </tr>
+                    <tr>
+                        <td>Datum:</td>
+                        <td colspan="2">13.10.2013</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="bgGrey2" style="margin-top:2px;" width="100%" border="0" cellspacing="8" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td width="33%"><b>Empf&auml;nger</b></td>
+                        <td width="40%">&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr valign="top">
+                        <td>Mobiltelefon-Nr.:</td>
+                        <td><input tabindex="6" type="text" name="empfaengerAn" value="" style="width:300px;" /></td>
+                        <td><a tabindex="7" href="javascript:adressBuchSMS('smsform','empfaengerAn')">Adressbuch</a></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="txtGrey" colspan="2">Eingabeformat Beispiel: 0049172..., +49172... oder 0172...<br /> Ausl&auml;ndische Vorwahlen (z.B. 0043.. und +43..) sind nicht erlaubt.<br /> Mehrere Rufnummern (max. 10) bitte durch Komma trennen.</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="bgGrey2" style="margin-top:2px;" width="100%" border="0" cellspacing="8" cellpadding="0">
+                    <tbody>
+                    <tr valign="top">
+                        <td width="33%"><b>Nachricht</b></td>
+                        <td width="40%"><textarea tabindex="8" name="nachricht_dummy" cols="38" rows="5" style="width:300px;" onclick="Counter(160,153,6,0,16);" onchange="Counter(160,153,6,0,16);" onkeydown="Counter(160,153,6,0,16);" onkeyup="Counter(160,153,6,0,16);" onkeypress="Counter(160,153,6,0,16);" disabled="">Sie haben derzeit keine SMS zur Verf&uuml;gung. Sie k&ouml;nnen oben rechts auf dieser Seite SMS kaufen.</textarea></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>Zu Ihrer Information:</td>
+                        <td><input tabindex="9" type="text" name="b_counter" value="Noch 144 Zeichen verf&uuml;gbar (1 SMS)." style="width:300px;" onfocus="this.form.b_counter.blur();" disabled="" /></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td><b>Eine Kopie dieser SMS</b></td>
+                        <td><input tabindex="10" type="checkbox" name="gesendetkopiesms" checked="" class="check" />&nbsp;&nbsp;im Ordner Gesendet ablegen</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="2"> <input tabindex="13" type="reset" class="button" style="width:116px;" name="zuruecksetzen" value="Zur&uuml;cksetzen" title="Zur&uuml;cksetzen" /> </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mT10">
+                    <a tabindex="14" href="#" class="button top">Nach oben</a>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="firstVisitOfPage" value="foo" />
+        <input type="hidden" name="nachricht" value="Sie haben derzeit keine SMS zur Verf&uuml;gung. Sie k&ouml;nnen oben rechts auf dieser Seite SMS kaufen." />
+        <input type="hidden" name="ordnername" value="Posteingang" />
+        <input type="hidden" name="part" value="0" />
+    </form>
+</div>
+<div class="spacer">
+    <img alt="" height="1" width="1" src="/pixel/cgi-bin/pia-ums-versand-sms?t=1381666045" />
+</div>
+<div id="pFooter">
+    <ul>
+        <li class="first"> <a href="/sitemap/index.html">Sitemap</a> </li>
+        <li> <a href="/rd/doc.onlinedienst">AGB</a> </li>
+        <li> <a href="/imp/impressum.php">Impressum</a> </li>
+        <li> <a href="/rd/doc.datenschutz">Datenschutz</a> </li>
+        <li> <a href="/portal/jugendschutz">Jugendschutz</a> </li>
+        <li> <a target="_blank" href="/home/externsig.php?url=http%3A%2F%2Fwww.vodafone-affiliate.de&amp;sig=08963cbb616fd493271887fe6f0192fc&amp;name=arcor-click-partner&amp;kat=navbottom">Partnerprogramm</a> </li>
+        <li> <a target="_blank" href="/home/externsig.php?url=http%3A%2F%2Fwww.vodafone.de%2Funternehmen%2Findex.html&amp;sig=2ba7ccfa8eb13209ba7af83632ef1e00&amp;name=arcor-click-unternehmen&amp;kat=navbottom">Unternehmen</a> </li>
+        <li> <a target="_blank" href="/home/externsig.php?url=http%3A%2F%2Fwww.vodafone.de%2Funternehmen%2Fpresse.html&amp;sig=b61aeb9962b7d96086c635930a0b281e&amp;name=arcor-click-presse&amp;kat=navbottom">Presse</a> </li>
+        <li> <a target="_blank" href="/home/externsig.php?url=http%3A%2F%2Fwww.vodafone.de%2Funternehmen%2Fjobs.html&amp;sig=2d245938d9768fc0ebfb95a416cf092a&amp;name=arcor-click-jobs&amp;kat=navbottom">Jobs</a> </li>
+    </ul>
+</div>
+<!-- OMNITURE PART 1: HEADER - BEGIN -->
+<!-- SiteCatalyst code version: H.20.3.
+Copyright 1997-2009 Omniture, Inc. More info available at
+http://www.omniture.com -->
+<script language="JavaScript" type="text/javascript"><!--
+var s_account="vodafonegroupdearcorprod";//--></script>
+<script language="JavaScript" type="text/javascript" src="https://www.arcor.de/scripts/s_code.js"></script>
+<!-- OMNITURE PART 1: HEADER - END -->
+<script language="JavaScript" type="text/javascript"><!--
+if(typeof(setupOmniturePageName)=="function"){setupOmniturePageName(s);}
+s.server="www.arcor.de";
+s.prop5="E-Mail &amp; Mehr";
+s.prop6="DE";
+s.prop7="logged in";
+s.eVar15="ae989aae6e7a44735da68ce537fe0756";
+//--></script>
+<!-- OMNITURE PART 2 - START -->
+<script language="JavaScript" type="text/javascript"><!--
+var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+<script language="JavaScript" type="text/javascript"><!--
+if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')//--></script>
+<noscript>
+    <img src="https://vodafonegroup.122.2o7.net/b/ss/vodafonegroupdearcorprod/1/H.20.3--NS/0" height="1" width="1" border="0" alt="" />
+</noscript>
+<!-- End SiteCatalyst code version: H.20.3. -->
+<!-- OMNITURE PART 2 - END -->
+<div id="sky">
+    <div id="skyscraper_1" class="gujAd skyscraper">
+        <script type="text/javascript">GujAd.push('skyscraper_1');</script>
+    </div>
+</div>
+</div>
+<div class="hidden">
+    <div id="temp_superbanner_1">
+        <script type="text/javascript">GujAd.delayedInlineLoad('superbanner_1');</script>
+    </div>
+    <div id="temp_skyscraper_1">
+        <script type="text/javascript">GujAd.delayedInlineLoad('skyscraper_1');</script>
+    </div>
+    <div id="temp_rectangle_1">
+        <script type="text/javascript">GujAd.delayedInlineLoad('rectangle_1');</script>
+    </div>
+    <div id="temp_maxiad_1">
+        <script type="text/javascript">GujAd.delayedInlineLoad('maxiad_1');</script>
+    </div>
+    <div id="temp_performance_21">
+        <script type="text/javascript">GujAd.delayedInlineLoad('performance_21');</script>
+    </div>
+    <script type="text/javascript">GujAd.finalizeInlineLoading();</script>
+</div>
+</body>
+</html>

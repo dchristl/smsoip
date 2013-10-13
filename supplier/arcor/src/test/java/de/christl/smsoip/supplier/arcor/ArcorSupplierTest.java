@@ -59,13 +59,33 @@ public class ArcorSupplierTest {
     }
 
     @Test
-    public void testParseBalanceResponse() throws Exception {
+    public void testParseBalanceAvailable() throws Exception {
 
         InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("balance.html");
         PowerMockito.doCallRealMethod().when(supplier).parseBalanceResponse(resourceAsStream);
         when(app.getTextByResourceId(any(OptionProvider.class), anyInt())).thenReturn("%1$s FreeSMS\n%2$s Bought");
         SMSActionResult smsActionResult = supplier.parseBalanceResponse(resourceAsStream);
         assertEquals("3 FreeSMS\n0 Bought", smsActionResult.getMessage());
+
+    }
+
+    @Test
+    public void testParseNoBalanceAvailable() throws Exception {
+        InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("no_balance.html");
+        PowerMockito.doCallRealMethod().when(supplier).parseBalanceResponse(resourceAsStream);
+        when(app.getTextByResourceId(any(OptionProvider.class), anyInt())).thenReturn("%1$s FreeSMS\n%2$s Bought");
+        SMSActionResult smsActionResult = supplier.parseBalanceResponse(resourceAsStream);
+        assertEquals("Sie haben derzeit keine SMS zur Verfügung!", smsActionResult.getMessage());
+
+    }
+
+    @Test
+    public void testParseSendResponseSuccess() throws Exception {
+        InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("send_success.html");
+        PowerMockito.doCallRealMethod().when(supplier).parseSendResponse(resourceAsStream);
+        when(app.getTextByResourceId(any(OptionProvider.class), anyInt())).thenReturn("%1$s FreeSMS\n%2$s Bought");
+        SMSActionResult smsActionResult = supplier.parseSendResponse(resourceAsStream);
+        assertEquals("Es wurde 1 SMS an die Empfängernummer (+4564546465) gesendet! Die SMS wurde im Gesendet-Ordner gespeichert!", smsActionResult.getMessage());
 
     }
 }

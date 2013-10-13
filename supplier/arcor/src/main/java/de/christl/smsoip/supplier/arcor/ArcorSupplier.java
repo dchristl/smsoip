@@ -47,6 +47,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
     private static final Map<String, String> REQUEST_MAP = new HashMap<String, String>() {{
         put("Content-Type", "application/x-www-form-urlencoded");
     }};
+    private static final int WITH_PHONE_NUMBER = 1;
     private OptionProvider provider;
 
     public static final String ENCODING = "ISO-8859-1";
@@ -54,7 +55,8 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
     private static final String HOST = "https://www.arcor.de";
     private static final String LOGIN_URL = HOST + "/login/login.jsp";
     private static final String LOGIN_BODY = "user_name=%s&password=%s&login=Login";
-    private static final String BALANCE_URL = HOST + "/ums/ums_neu_sms.jsp";
+    private static final String BALANCE_SEND_URL = HOST + "/ums/ums_neu_sms.jsp";
+    private static final String SEND_BODY = "empfaengerAn=%s&nachricht=%s&senden=Senden";
     private String sessionId;
 
 
@@ -103,7 +105,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
             }
         }
 
-        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_URL, UrlConnectionFactory.METHOD_GET);
+        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_SEND_URL, UrlConnectionFactory.METHOD_GET);
         factory.setCookies(Collections.<String>singletonList(sessionId));
         InputStream is = factory.getConnnection().getInputStream();
 
@@ -116,8 +118,16 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         }
         Document parse = Jsoup.parse(is, ENCODING, "");
 
-        Elements contentTableContent = parse.select("table.bgGrey3 > tbody > tr >td:eq(1) b");
-        if (contentTableContent.size() != 4) {
+        Elements contentTableContent = parse.select("table.bgGrey3 > tbody > tr >td:eq(1)");
+        if (contentTableContent.size() == 0) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        Elements noSMS = contentTableContent.select("td.txtRed");
+        if (noSMS.size() == 1) {
+            return SMSActionResult.UNKNOWN_ERROR(noSMS.text());
+        }
+        Elements content = contentTableContent.select("b");
+        if (content.size() != 4) {
             return SMSActionResult.UNKNOWN_ERROR(parse.text());
         }
 
@@ -125,15 +135,66 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         String balanceText = provider.getTextByResourceId(R.string.balance);
 
 
-        String freeSMS = contentTableContent.get(0).text();
-        String boughtSMS = contentTableContent.get(2).text();
+        String freeSMS = content.get(0).text();
+        String boughtSMS = content.get(2).text();
         String message = String.format(balanceText, freeSMS, boughtSMS);
         return SMSActionResult.NO_ERROR(message);
     }
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException, NumberFormatException {
-        return null;
+        String userName = provider.getUserName();
+        SMSActionResult result = checkCredentials(userName, provider.getPassword());
+        if (!result.isSuccess()) {
+            return FireSMSResultList.getAllInOneResult(result, receivers);
+        }
+        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_SEND_URL);
+        factory.setRequestProperties(REQUEST_MAP);
+        factory.setCookies(Collections.<String>singletonList(sessionId));
+        StringBuilder receiverString = new StringBuilder();
+        for (Receiver receiver : receivers) {
+            String receiverNumber = receiver.getReceiverNumber();
+            receiverString.append(receiverNumber).append("%2C");
+        }
+        String body = String.format(SEND_BODY, receiverString, URLEncoder.encode(smsText, ENCODING));
+        if (provider.getSettings().getBoolean(ArcorOptionProvider.PROVIDER_SAVE_IN_SENT, false)) {
+            body += "&gesendetkopiesms=on";
+        }
+        if (findSendMethod(spinnerText) == WITH_PHONE_NUMBER) {
+            body += "&useOwnMobile=on";
+        } else {
+            String mail = userName.contains("@") ? userName : userName + "@arcor.de";
+            body += "&emailAdressen=" + mail;
+        }
+        InputStream is = factory.writeBody(body).getInputStream();
+        return FireSMSResultList.getAllInOneResult(parseSendResponse(is), receivers);
+    }
+
+    SMSActionResult parseSendResponse(InputStream is) throws IOException {
+        if (is == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        Document parse = Jsoup.parse(is, ENCODING, "");
+        Elements select = parse.select("div.hint");
+        if (select.size() == 0) {
+            return SMSActionResult.UNKNOWN_ERROR();
+        }
+        String message = select.text();
+        if (message.contains("gesendet!")) {
+            return SMSActionResult.NO_ERROR(message);
+        }
+        return SMSActionResult.UNKNOWN_ERROR(message);
+    }
+
+    private int findSendMethod(String spinnerText) {
+        String[] arrayByResourceId = provider.getArrayByResourceId(R.array.array_spinner);
+        for (int i = 0, arrayByResourceIdLength = arrayByResourceId.length; i < arrayByResourceIdLength; i++) {
+            String sendOption = arrayByResourceId[i];
+            if (sendOption.equals(spinnerText)) {
+                return i;
+            }
+        }
+        return WITH_PHONE_NUMBER;
     }
 
     @Override
