@@ -154,6 +154,9 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         StringBuilder receiverString = new StringBuilder();
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
+            if (!receiverNumber.startsWith("0049")) {
+                return FireSMSResultList.getAllInOneResult(SMSActionResult.UNKNOWN_ERROR(provider.getTextByResourceId(R.string.sending_to_foreign_not_supported)), receivers);
+            }
             receiverString.append(receiverNumber).append("%2C");
         }
         String body = String.format(SEND_BODY, receiverString, URLEncoder.encode(smsText, ENCODING));
@@ -175,15 +178,16 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
             return SMSActionResult.NETWORK_ERROR();
         }
         Document parse = Jsoup.parse(is, ENCODING, "");
-        Elements select = parse.select("div.hint");
+        Elements select = parse.select("div.error");
+        if (select.size() != 0) {
+            return SMSActionResult.UNKNOWN_ERROR(select.text());
+        }
+        select = parse.select(("div.hint"));
         if (select.size() == 0) {
-            return SMSActionResult.UNKNOWN_ERROR();
+
+            return SMSActionResult.UNKNOWN_ERROR(select.text());
         }
-        String message = select.text();
-        if (message.contains("gesendet!")) {
-            return SMSActionResult.NO_ERROR(message);
-        }
-        return SMSActionResult.UNKNOWN_ERROR(message);
+        return SMSActionResult.NO_ERROR(select.text());
     }
 
     private int findSendMethod(String spinnerText) {

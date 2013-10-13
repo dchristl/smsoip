@@ -23,6 +23,7 @@
         Mail Accounts.
     </string>
     <string name="balance">%1$s Freie \n%2$s Gekaufte</string>
+    <string name="sending_to_foreign_not_supported">Das Senden an Empfänger außerhalb von Deutschland wird derzeit nicht unterstützt!</string>
     <string-array name="array_spinner">
         <item>Ohne Absenderkennung</item>
         <item>Mit Absenderkennung</item>

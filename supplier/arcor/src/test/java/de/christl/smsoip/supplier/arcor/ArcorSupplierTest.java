@@ -83,9 +83,17 @@ public class ArcorSupplierTest {
     public void testParseSendResponseSuccess() throws Exception {
         InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("send_success.html");
         PowerMockito.doCallRealMethod().when(supplier).parseSendResponse(resourceAsStream);
-        when(app.getTextByResourceId(any(OptionProvider.class), anyInt())).thenReturn("%1$s FreeSMS\n%2$s Bought");
         SMSActionResult smsActionResult = supplier.parseSendResponse(resourceAsStream);
         assertEquals("Es wurde 1 SMS an die Empfängernummer (+4564546465) gesendet! Die SMS wurde im Gesendet-Ordner gespeichert!", smsActionResult.getMessage());
+
+    }
+
+    @Test
+    public void testParseSendResponseErrorNoCredits() throws Exception {
+        InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("send_error_no_credits.html");
+        PowerMockito.doCallRealMethod().when(supplier).parseSendResponse(resourceAsStream);
+        SMSActionResult smsActionResult = supplier.parseSendResponse(resourceAsStream);
+        assertEquals("Sie haben derzeit keine SMS zur Verfügung.", smsActionResult.getMessage());
 
     }
 }
