@@ -18,10 +18,21 @@
 
 package de.christl.smsoip.supplier.arcor;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.SMSActionResult;
 import de.christl.smsoip.option.OptionProvider;
@@ -33,7 +44,19 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 public class ArcorSupplier implements ExtendedSMSSupplier {
 
 
+    private static final Map<String, String> REQUEST_MAP = new HashMap<String, String>() {{
+        put("Content-Type", "application/x-www-form-urlencoded");
+    }};
     private OptionProvider provider;
+
+    public static final String ENCODING = "ISO-8859-1";
+
+    private static final String HOST = "https://www.arcor.de";
+    private static final String LOGIN_URL = HOST + "/login/login.jsp";
+    private static final String LOGIN_BODY = "user_name=%s&password=%s&login=Login";
+    private static final String BALANCE_URL = HOST + "/ums/ums_neu_sms.jsp";
+    private String sessionId;
+
 
     public ArcorSupplier() {
         this.provider = new ArcorOptionProvider();
@@ -41,17 +64,71 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        return null;
+        sessionId = null;
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
+        factory.setRequestProperties(REQUEST_MAP);
+        String body = String.format(LOGIN_BODY, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING));
+        HttpURLConnection httpURLConnection = factory.writeBody(body);
+        Map<String, List<String>> headerFields = httpURLConnection.getHeaderFields();
+        if (headerFields == null || headerFields.size() == 0) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+
+        String arcorloginstatus = UrlConnectionFactory.findCookieByName(headerFields, "ARCORLOGINSTATUS");
+        if (arcorloginstatus == null || !arcorloginstatus.contains("true")) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        sessionId = UrlConnectionFactory.findCookieByName(headerFields, "SessionID");
+        if (sessionId == null) {
+            return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        return SMSActionResult.LOGIN_SUCCESSFUL();
     }
 
     @Override
     public SMSActionResult refreshInfoTextOnRefreshButtonPressed() throws IOException, NumberFormatException {
-        return null;
+        return refreshInformations(false);
     }
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException, NumberFormatException {
-        return null;
+        return refreshInformations(true);
+    }
+
+    private SMSActionResult refreshInformations(boolean noLoginBefore) throws IOException {
+        if (!noLoginBefore) {   //dont do a extra login if message is sent short time before
+            SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
+            if (!result.isSuccess()) {
+                return result;
+            }
+        }
+
+        UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_URL, UrlConnectionFactory.METHOD_GET);
+        factory.setCookies(Collections.<String>singletonList(sessionId));
+        InputStream is = factory.getConnnection().getInputStream();
+
+        return parseBalanceResponse(is);
+    }
+
+    SMSActionResult parseBalanceResponse(InputStream is) throws IOException {
+        if (is == null) {
+            return SMSActionResult.NETWORK_ERROR();
+        }
+        Document parse = Jsoup.parse(is, ENCODING, "");
+
+        Elements contentTableContent = parse.select("table.bgGrey3 > tbody > tr >td:eq(1) b");
+        if (contentTableContent.size() != 4) {
+            return SMSActionResult.UNKNOWN_ERROR(parse.text());
+        }
+
+
+        String balanceText = provider.getTextByResourceId(R.string.balance);
+
+
+        String freeSMS = contentTableContent.get(0).text();
+        String boughtSMS = contentTableContent.get(2).text();
+        String message = String.format(balanceText, freeSMS, boughtSMS);
+        return SMSActionResult.NO_ERROR(message);
     }
 
     @Override

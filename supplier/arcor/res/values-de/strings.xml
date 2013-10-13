@@ -22,6 +22,7 @@
     <string name="save_in_sent_long">Speichert gesendete SMS zusätzlich im \"Gesendete\" - Ordner des
         Mail Accounts.
     </string>
+    <string name="balance">%1$s Freie \n%2$s Gekaufte</string>
     <string-array name="array_spinner">
         <item>Ohne Absenderkennung</item>
         <item>Mit Absenderkennung</item>

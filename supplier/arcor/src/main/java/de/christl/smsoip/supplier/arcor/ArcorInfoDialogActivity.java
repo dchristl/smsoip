@@ -26,6 +26,6 @@ import de.christl.smsoip.supplier.activities.InfoDialogActivity;
 public class ArcorInfoDialogActivity extends InfoDialogActivity {
     @Override
     protected String getSupplierName() {
-        return "";
+        return "de.christl.smsoip.supplier.arcor.ArcorSupplier";
     }
 }

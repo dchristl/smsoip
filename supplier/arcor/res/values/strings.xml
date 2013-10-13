@@ -21,6 +21,7 @@
 
     <string name="save_in_sent">Save messages in "sent" folder</string>
     <string name="save_in_sent_long">Text messages will be saved in "Sent" - folder of mail account.</string>
+    <string name="balance">%1$s FreeSMS \n%2$s Bought</string>
 
     <string-array name="array_spinner">
         <item>Without source identifier</item>

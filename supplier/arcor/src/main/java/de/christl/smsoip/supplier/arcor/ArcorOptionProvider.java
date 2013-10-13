@@ -126,4 +126,9 @@ public class ArcorOptionProvider extends OptionProvider {
             return smsCount + 2;
         }
     }
+
+    @Override
+    public int getMinimalCoreVersion() {
+        return 49;
+    }
 }
