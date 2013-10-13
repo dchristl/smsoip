@@ -79,6 +79,17 @@ public class ArcorSupplierTest {
 
     }
 
+
+    @Test
+    public void testParseUnlimitedBalance() throws Exception {
+        InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("balance_unlimited.html");
+        PowerMockito.doCallRealMethod().when(supplier).parseBalanceResponse(resourceAsStream);
+        when(app.getTextByResourceId(any(OptionProvider.class), anyInt())).thenReturn("%1$s FreeSMS\n%2$s Bought");
+        SMSActionResult smsActionResult = supplier.parseBalanceResponse(resourceAsStream);
+        assertEquals("unbegrenzt viele", smsActionResult.getMessage());
+
+    }
+
     @Test
     public void testParseSendResponseSuccess() throws Exception {
         InputStream resourceAsStream = ArcorSupplierTest.class.getResourceAsStream("send_success.html");

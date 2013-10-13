@@ -127,13 +127,15 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
             return SMSActionResult.UNKNOWN_ERROR(noSMS.text());
         }
         Elements content = contentTableContent.select("b");
+
+        if (content.size() == 1) {
+            return SMSActionResult.NO_ERROR(content.text());
+        }
         if (content.size() != 4) {
-            return SMSActionResult.UNKNOWN_ERROR(parse.text());
+            return SMSActionResult.UNKNOWN_ERROR(content.text());
         }
 
-
         String balanceText = provider.getTextByResourceId(R.string.balance);
-
 
         String freeSMS = content.get(0).text();
         String boughtSMS = content.get(2).text();
@@ -167,7 +169,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
             body += "&useOwnMobile=on";
         } else {
             String mail = userName.contains("@") ? userName : userName + "@arcor.de";
-            body += "&emailAdressen=" + mail;
+            body += "&emailAdressen=" + URLEncoder.encode(mail, ENCODING);
         }
         InputStream is = factory.writeBody(body).getInputStream();
         return FireSMSResultList.getAllInOneResult(parseSendResponse(is), receivers);
@@ -179,6 +181,10 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         }
         Document parse = Jsoup.parse(is, ENCODING, "");
         Elements select = parse.select("div.error");
+        if (select.size() != 0) {
+            return SMSActionResult.UNKNOWN_ERROR(select.text());
+        }
+        select = parse.select("div.warning");
         if (select.size() != 0) {
             return SMSActionResult.UNKNOWN_ERROR(select.text());
         }
