@@ -51,6 +51,7 @@
         <module>smsflatrate</module>
         <module>okde</module>
         <module>smsglobal</module>
+        <module>arcor</module>
     </modules>
 
     <dependencies>
