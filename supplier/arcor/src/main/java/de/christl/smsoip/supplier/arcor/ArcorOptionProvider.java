@@ -115,7 +115,7 @@ public class ArcorOptionProvider extends OptionProvider {
 
     @Override
     public int getLengthDependentSMSCount(int textLength) {
-        if (textLength < 142) {
+        if (textLength < 144) {
             return 1;
         } else if (textLength < 290) {
             return 2;
@@ -125,6 +125,17 @@ public class ArcorOptionProvider extends OptionProvider {
             smsCount = textLength % 153 == 0 ? smsCount : smsCount + 1;
             return smsCount + 2;
         }
+    }
+
+
+    @Override
+    public int getMaxMessageCount() {
+        return 3;//just for marking red
+    }
+
+    @Override
+    public int getTextMessageLength() {
+        return 148;//just for marking red
     }
 
     @Override
