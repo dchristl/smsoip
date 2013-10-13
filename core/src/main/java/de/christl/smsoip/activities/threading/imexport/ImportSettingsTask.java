@@ -22,6 +22,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.acra.ACRA;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -103,7 +105,8 @@ public class ImportSettingsTask extends AsyncTask<Void, Void, Boolean> {
 
             zis.closeEntry();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            ACRA.getErrorReporter().handleSilentException(e);
             success = false;
         } finally {
             if (zis != null) {

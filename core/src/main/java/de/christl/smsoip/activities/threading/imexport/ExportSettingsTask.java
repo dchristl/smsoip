@@ -22,6 +22,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.acra.ACRA;
+
 import java.io.File;
 
 import de.christl.smsoip.R;
@@ -66,26 +68,32 @@ public class ExportSettingsTask extends AsyncTask<Void, Void, Boolean> {
             return false;
         }
 
-        File[] preferenceFiles = dataDir.listFiles();
+        boolean success = false;
+        try {
+            File[] preferenceFiles = dataDir.listFiles();
 
-        File[] imageFiles = context.getFilesDir().listFiles();
-        int size = preferenceFiles == null ? 0 : preferenceFiles.length;
-        size += imageFiles == null ? 0 : imageFiles.length;
-        File[] files = new File[size];
-        int i = 0;
-        if (preferenceFiles != null) {
-            for (File preferenceFile : preferenceFiles) {
-                files[i] = preferenceFile;
-                i++;
+            File[] imageFiles = context.getFilesDir().listFiles();
+            int size = preferenceFiles == null ? 0 : preferenceFiles.length;
+            size += imageFiles == null ? 0 : imageFiles.length;
+            File[] files = new File[size];
+            int i = 0;
+            if (preferenceFiles != null) {
+                for (File preferenceFile : preferenceFiles) {
+                    files[i] = preferenceFile;
+                    i++;
+                }
             }
-        }
-        if (imageFiles != null) {
-            for (File imageFile : imageFiles) {
-                files[i] = imageFile;
-                i++;
+            if (imageFiles != null) {
+                for (File imageFile : imageFiles) {
+                    files[i] = imageFile;
+                    i++;
+                }
             }
+            success = ImExportHelper.createZipFile(exportDir, files);
+        } catch (Exception e) {
+            ACRA.getErrorReporter().handleSilentException(e);
         }
-        return ImExportHelper.createZipFile(exportDir, files);
+        return success;
 
     }
 
