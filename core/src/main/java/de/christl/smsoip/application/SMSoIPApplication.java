@@ -191,7 +191,6 @@ public class SMSoIPApplication extends Application {
             //init already done
             return;
         }
-        long start = System.currentTimeMillis();
         SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean refreshCache = defaultSharedPreferences.getBoolean(SettingsConst.REFRESH_CACHE, false);
 
@@ -199,18 +198,15 @@ public class SMSoIPApplication extends Application {
 
         plugins = new ArrayList<SMSoIPPlugin>();
         if (cachedPlugins != null && cachedPlugins.size() > 0) {
-            Log.e("de.christl.smsoip", "INIT WITH CACHE ");
             findAllPlugins(cachedPlugins);
             readOutPlugins();
         } else {
-            Log.e("de.christl.smsoip", "INIT WITHOUT CACHE ");
             List<ApplicationInfo> allApplications = getPackageManager().getInstalledApplications(0);
             findAllPlugins(allApplications);
             readOutPlugins();
             storeProvidersInCache();
         }
         buildAdditionalAcraInformations();
-        Log.e("de.christl.smsoip", "INIT FINISHED " + (System.currentTimeMillis() - start));
     }
 
     private void findAllPlugins(List<ApplicationInfo> installedApplications) {

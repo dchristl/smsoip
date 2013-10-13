@@ -18,7 +18,12 @@
   -->
 
 <resources>
-    <string name="balance_good">Frei-SMS verfügbar</string>
-    <string name="balance_bad">Keine Frei-SMS verfügbar</string>
-    <string name="not_sent">SMS konnte nicht versendet werden.</string>
+    <string name="save_in_sent">SMS im Postausgang speichern</string>
+    <string name="save_in_sent_long">Speichert gesendete SMS zusätzlich im \"Gesendete\" - Ordner des
+        Mail Accounts.
+    </string>
+    <string-array name="array_spinner">
+        <item>Ohne Absenderkennung</item>
+        <item>Mit Absenderkennung</item>
+    </string-array>
 </resources>
