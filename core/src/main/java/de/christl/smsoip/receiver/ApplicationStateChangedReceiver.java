@@ -25,6 +25,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.acra.ACRA;
+
 import de.christl.smsoip.activities.settings.SettingsConst;
 
 /**
@@ -34,14 +36,18 @@ public class ApplicationStateChangedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String action = intent.getAction();
-        if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
-            resetCache(context);
-        } else {
-            String dataString = intent.getDataString();
-            if (dataString.contains("de.christl.smsoip")) {
+        try {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
                 resetCache(context);
+            } else {
+                String dataString = intent.getDataString();
+                if (dataString.contains("de.christl.smsoip")) {
+                    resetCache(context);
+                }
             }
+        } catch (Exception e) { //remove when stable
+            ACRA.getErrorReporter().handleSilentException(e);
         }
 
     }
