@@ -140,6 +140,6 @@ public class ArcorOptionProvider extends OptionProvider {
 
     @Override
     public int getMinimalCoreVersion() {
-        return 49;
+        return 50;
     }
 }
