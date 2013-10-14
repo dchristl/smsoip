@@ -104,9 +104,12 @@ public abstract class AllActivity extends SherlockFragmentActivity {
             showNotLoadedProvidersDialog(app.getPluginsToNew(), getString(R.string.too_new_providers));
         }
         if (app.getProviderEntries().size() == 0) {
-            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_NO_PLUGINS, "", null).build();
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, TrackerConstants.EVENT_NO_PLUGINS, getString(R.string.store_name), null).build();
             EasyTracker.getInstance(this).send(build);
             showNoProvidersDialog();
+        } else {
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_STARTUP, String.valueOf(app.getPlugins().size()), getString(R.string.store_name), null).build();
+            EasyTracker.getInstance(this).send(build);
         }
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(SettingsConst.GLOBAL_ENABLE_NETWORK_CHECK, true)) {
             boolean networkEnabled = isNetworkDisabled();

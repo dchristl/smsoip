@@ -23,16 +23,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
-
 import org.acra.ACRA;
-
-import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.autosuggest.NumberUtils;
-import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.receiver.TransparentActivity;
@@ -53,8 +47,6 @@ public class IntentHandler {
         }
         String storeName = context.getString(R.string.store_name);
         if (action.equals(Intent.ACTION_SENDTO)) {
-            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_ENTRY_POINT, Intent.ACTION_SENDTO + storeName, TrackerConstants.LABEL_POS, null).build();
-            EasyTracker.getInstance(context).send(build);
             Uri data = intent.getData();
             if (data != null) {
                 String number = data.getSchemeSpecificPart();
@@ -71,8 +63,6 @@ public class IntentHandler {
                 }
             }
         } else if (action.equals(Intent.ACTION_SEND)) {
-            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_ENTRY_POINT, Intent.ACTION_SEND + storeName, TrackerConstants.LABEL_POS, null).build();
-            EasyTracker.getInstance(context).send(build);
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 String type = intent.getType();
@@ -92,8 +82,6 @@ public class IntentHandler {
                 String scheme = data.getScheme();
                 Bundle extras = intent.getExtras();
                 if (scheme != null && scheme.equals(SMSReceiver.SMSOIP_SCHEME) && extras != null) {
-                    Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_ENTRY_POINT, Intent.ACTION_MAIN + storeName, SMSReceiver.SMSOIP_SCHEME, null).build();
-                    EasyTracker.getInstance(context).send(build);
                     String number = extras.getString(TransparentActivity.SENDER_NUMBER);
                     if (number != null && !number.equals("")) {
                         findAndSetReceiver(context, number);
@@ -107,9 +95,6 @@ public class IntentHandler {
                             supplier = provider;
                         }
                     }
-                } else {
-                    Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_ENTRY_POINT, Intent.ACTION_MAIN + storeName, TrackerConstants.EVENT_NORMAL, null).build();
-                    EasyTracker.getInstance(context).send(build);
                 }
             }
 

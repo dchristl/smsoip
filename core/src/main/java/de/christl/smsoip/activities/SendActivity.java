@@ -98,6 +98,7 @@ import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.database.Contact;
 import de.christl.smsoip.models.ErrorReporterStack;
@@ -262,7 +263,6 @@ public class SendActivity extends AllActivity {
         super.onCreate(savedInstanceState);
         app.throwlastExceptionIfAny();
 //        SMSReceiver.faker(this);
-
         //save the default color of textview
         new AppRating(this).showRateDialogIfNeeded();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);

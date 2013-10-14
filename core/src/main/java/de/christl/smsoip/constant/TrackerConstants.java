@@ -23,6 +23,7 @@ package de.christl.smsoip.constant;
  */
 public abstract class TrackerConstants {
 
+
     private TrackerConstants() {
     }
 
@@ -31,7 +32,6 @@ public abstract class TrackerConstants {
     public static final String CAT_BUTTONS = "button";
     public static final String CAT_MISC = "miscellaneous";
     public static final String CAT_STARTUP = "startup";
-    public static final String CAT_ENTRY_POINT = "entrypoint";
 
 
     public static final String EVENT_NORMAL = "normal";
@@ -40,7 +40,6 @@ public abstract class TrackerConstants {
     public static final String EVENT_DEPRECATED = "deprecated";
     public static final String EVENT_TOO_NEW = "too_new";
     public static final String EVENT_NO_PLUGINS = "no_plugins";
-    public static final String EVENT_SMS_RECEIVED = "sms_received";
     public static final String EVENT_MODE_TOGGLE = "mode_toggle";
     public static final String EVENT_CLEAR = "clear";
     public static final String EVENT_SHORTEN = "shorten";
