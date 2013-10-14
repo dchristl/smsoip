@@ -46,7 +46,7 @@
         <module>smsrevolution</module>
         <module>sms77</module>
         <module>meinbmw</module>
-        <module>sample</module>
+        <!--<module>sample</module>-->
         <module>unide</module>
         <module>smsflatrate</module>
         <module>okde</module>
