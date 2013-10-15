@@ -151,6 +151,7 @@
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
                 <action android:name="android.intent.action.PACKAGE_REPLACED"/>
                 <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.EXTERNAL_APPLICATIONS_AVAILABLE"/>
                 <data android:scheme="package"/>
             </intent-filter>
         </receiver>

@@ -38,7 +38,8 @@ public class ApplicationStateChangedReceiver extends BroadcastReceiver {
 
         try {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)) {
+            //no use of the constant for EXTERNAL_APPLICATIONS_AVAILABLE, cause available in API level 8
+            if (action.equals(Intent.ACTION_MEDIA_MOUNTED) || action.equals("android.intent.action.EXTERNAL_APPLICATIONS_AVAILABLE")) {
                 resetCache(context);
             } else {
                 String dataString = intent.getDataString();

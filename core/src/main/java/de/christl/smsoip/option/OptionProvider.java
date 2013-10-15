@@ -20,6 +20,7 @@ package de.christl.smsoip.option;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -27,15 +28,16 @@ import android.preference.Preference;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import de.christl.smsoip.activities.SendActivity;
-import de.christl.smsoip.activities.settings.ProviderPreferences;
-import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
-import de.christl.smsoip.application.SMSoIPApplication;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.ProviderPreferences;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.application.SMSoIPApplication;
 
 /**
  * A provider for all options corresponding to a supplier
