@@ -59,10 +59,12 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.google.analytics.tracking.android.Tracker;
-import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 
 import org.acra.ACRA;
 import org.apache.http.message.BasicNameValuePair;
@@ -98,7 +100,6 @@ import de.christl.smsoip.constant.FireSMSResult;
 import de.christl.smsoip.constant.FireSMSResultList;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.constant.SMSActionResult;
-import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.database.Contact;
 import de.christl.smsoip.models.ErrorReporterStack;
@@ -175,7 +176,7 @@ public class SendActivity extends AllActivity {
     private DateTimeObject dateTime;
     private AsyncTask<Boolean, SMSActionResult, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
-    private MobclixMMABannerXLAdView adView;
+    private AdView adView;
 
     private ColorStateList defaultColor;
     private BackgroundSendTask backgroundSendTask;
@@ -236,18 +237,21 @@ public class SendActivity extends AllActivity {
      * insert the advertisements
      */
     private void insertAds() {
-        LinearLayout adLayout = ((LinearLayout) findViewById(R.id.banner_adview));
+
+        View adViewTop = findViewById(R.id.banner_adviewTop);
+        View adViewBottom = findViewById(R.id.banner_adviewBottom);
+        LinearLayout adLayout = adViewTop.getVisibility() == View.VISIBLE ? ((LinearLayout) adViewTop) : (LinearLayout) adViewBottom;
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             if (adView == null) {
-                adView = new MobclixMMABannerXLAdView(this);
-                adView.setRefreshTime(10000);
-                adView.addMobclixAdViewListener(new AdViewListener(this));
+                adView = new AdView(this, AdSize.BANNER, "a14f930decd44ce");
+//                adView.setRefreshTime(10000);
+                adView.setAdListener(new AdViewListener(this));
                 adLayout.removeAllViews();
             } else {
                 ((ViewGroup) adView.getParent()).removeView(adView);
             }
             adLayout.addView(adView);
-            adView.getAd();
+            adView.loadAd(new AdRequest());
         } else {
             adLayout.setVisibility(View.GONE);
         }
@@ -405,6 +409,8 @@ public class SendActivity extends AllActivity {
         View progress = findViewById(R.id.infoTextProgressBar);
         View toggleUp = findViewById(R.id.viewToggleUp);
         View toggleDown = findViewById(R.id.viewToggleDown);
+        View adTop = findViewById(R.id.banner_adviewTop);
+        View adBottom = findViewById(R.id.banner_adviewBottom);
         switch (mode) {
             case NORMAL:
                 but1.setVisibility(View.VISIBLE);
@@ -418,6 +424,9 @@ public class SendActivity extends AllActivity {
                 progressUpper.setVisibility(View.GONE);
                 toggleDown.setVisibility(View.VISIBLE);
                 toggleUp.setVisibility(View.INVISIBLE);
+                adTop.setVisibility(View.VISIBLE);
+                adBottom.setVisibility(View.GONE);
+
                 break;
             case COMPACT:
                 infoTextUpper.setVisibility(View.VISIBLE);
@@ -431,8 +440,11 @@ public class SendActivity extends AllActivity {
                 progressUpper.setVisibility(progress.getVisibility());
                 toggleDown.setVisibility(View.INVISIBLE);
                 toggleUp.setVisibility(View.VISIBLE);
+                adTop.setVisibility(View.GONE);
+                adBottom.setVisibility(View.VISIBLE);
                 break;
         }
+        insertAds();
     }
 
     /**
@@ -1808,5 +1820,13 @@ public class SendActivity extends AllActivity {
             defaultColor = new TextView(getApplicationContext()).getTextColors();
         }
         return defaultColor;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+        super.onDestroy();
     }
 }

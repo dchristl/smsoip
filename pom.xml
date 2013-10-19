@@ -323,11 +323,6 @@
                 <version>3.0.1</version>
             </dependency>
             <dependency>
-                <groupId>com.mobclix</groupId>
-                <artifactId>mobclix</artifactId>
-                <version>4.1.0</version>
-            </dependency>
-            <dependency>
                 <groupId>com.actionbarsherlock</groupId>
                 <artifactId>actionbarsherlock</artifactId>
                 <version>4.4.0</version>

@@ -23,13 +23,16 @@
         android:fillViewport="true"
         xmlns:android="http://schemas.android.com/apk/res/android"
         >
+
     <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="0"
             android:id="@+id/rootLayout"
             >
+
         <TableRow>
+
             <de.christl.smsoip.autosuggest.NameNumberSuggestField
                     android:id="@+id/receiverField"
                     android:lines="1"
@@ -42,6 +45,7 @@
                     android:layout_span="3"
                     >
             </de.christl.smsoip.autosuggest.NameNumberSuggestField>
+
             <ImageButton
                     android:id="@+id/showChosenContacts"
                     android:layout_width="wrap_content"
@@ -50,6 +54,7 @@
                     android:layout_span="1"
                     android:contentDescription="show the chosen contacts">
             </ImageButton>
+
             <ImageButton
                     android:id="@+id/searchButton"
                     android:layout_width="wrap_content"
@@ -59,14 +64,30 @@
                     android:contentDescription="search for receivers in phonebook">
             </ImageButton>
         </TableRow>
+
         <TableRow>
+
+            <LinearLayout
+                    android:id="@+id/banner_adviewTop"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_span="5"
+                    />
+        </TableRow>
+
+
+        <TableRow>
+
             <RelativeLayout android:layout_span="5">
+
                 <TextView
                         android:id="@+id/smssigns"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         />
+
                 <TextView
                         android:id="@+id/infoTextUpper"
                         android:layout_width="wrap_content"
@@ -76,6 +97,7 @@
                         android:layout_alignParentLeft="true"
                         android:visibility="invisible"
                         />
+
                 <ProgressBar
                         android:id="@+id/infoTextProgressBarUpper"
                         android:layout_width="wrap_content"
@@ -85,9 +107,12 @@
                         />
             </RelativeLayout>
         </TableRow>
+
         <TableRow android:layout_weight="1.0">
+
             <RelativeLayout android:layout_span="5"
                     >
+
                 <de.christl.smsoip.ui.SMSInputEditText
                         android:id="@+id/textInput"
                         android:layout_width="fill_parent"
@@ -98,6 +123,7 @@
                         android:gravity="top|left"
                         >
                 </de.christl.smsoip.ui.SMSInputEditText>
+
                 <ImageView
                         android:id="@+id/viewToggleUp"
                         android:layout_width="wrap_content"
@@ -112,7 +138,9 @@
             </RelativeLayout>
 
         </TableRow>
+
         <TableRow android:layout_marginTop="-7dp">
+
             <ImageView
                     android:id="@+id/viewToggleDown"
                     android:layout_span="5"
@@ -124,8 +152,11 @@
             </ImageView>
 
         </TableRow>
+
         <TableRow android:id="@+id/tblButton1">
+
             <RelativeLayout android:layout_span="5">
+
                 <ImageButton
                         android:id="@+id/shortTextButton"
                         android:layout_width="wrap_content"
@@ -133,6 +164,7 @@
                         android:src="@drawable/btn_shorttext"
                         android:contentDescription="shorten the message text">
                 </ImageButton>
+
                 <ImageButton
                         android:id="@+id/insertSmileyButton"
                         android:layout_width="wrap_content"
@@ -141,6 +173,7 @@
                         android:layout_toRightOf="@id/shortTextButton"
                         >
                 </ImageButton>
+
                 <ImageButton
                         android:id="@+id/showHistory"
                         android:layout_width="wrap_content"
@@ -149,6 +182,7 @@
                         android:layout_toRightOf="@id/insertSmileyButton"
                         >
                 </ImageButton>
+
                 <ImageButton
                         android:id="@+id/insertSigButton"
                         android:layout_width="wrap_content"
@@ -160,8 +194,11 @@
                 </ImageButton>
             </RelativeLayout>
         </TableRow>
+
         <TableRow android:id="@+id/tblButton2">
+
             <RelativeLayout android:layout_span="5">
+
                 <ImageButton
                         android:id="@+id/clearButton"
                         android:layout_width="wrap_content"
@@ -169,6 +206,7 @@
                         android:src="@drawable/btn_clear"
                         >
                 </ImageButton>
+
                 <ImageButton
                         android:id="@+id/refreshButton"
                         android:layout_width="wrap_content"
@@ -177,6 +215,7 @@
                         android:layout_toRightOf="@id/clearButton"
                         >
                 </ImageButton>
+
                 <ImageButton
                         android:id="@+id/showInfoButton"
                         android:layout_width="wrap_content"
@@ -184,6 +223,7 @@
                         android:src="@drawable/ic_menu_info_details"
                         android:layout_alignParentRight="true"
                         />
+
                 <TextView
                         android:id="@+id/infoText"
                         android:layout_width="wrap_content"
@@ -194,6 +234,7 @@
                         android:layout_toLeftOf="@id/showInfoButton"
                         >
                 </TextView>
+
                 <ProgressBar
                         android:id="@+id/infoTextProgressBar"
                         android:layout_width="wrap_content"
@@ -204,49 +245,60 @@
                         />
             </RelativeLayout>
         </TableRow>
+
         <TableRow android:id="@+id/tblSendingTimeDescr">
-            <TextView android:id="@+id/timeShiftDescr"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:gravity="center"
-                      android:layout_span="5"
-                      android:textSize="18dp"
-                      android:text="@string/sending_time"
+
+            <TextView
+                    android:id="@+id/timeShiftDescr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_span="5"
+                    android:textSize="18dp"
+                    android:text="@string/sending_time"
                     />
         </TableRow>
         <!--START-->
-        <TableRow android:id="@+id/tblTimeShiftRow"
-                  android:layout_width="fill_parent"
-                  android:layout_height="wrap_content"
+        <TableRow
+                android:id="@+id/tblTimeShiftRow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 >
+
             <RelativeLayout
                     android:layout_span="5"
                     android:weightSum="2"
                     android:id="@+id/timeShiftLayout"
                     >
+
                 <CheckBox
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:id="@+id/pickTime"
-                          android:layout_gravity="center"
-                          android:layout_marginLeft="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pickTime"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20dp"
                         >
                 </CheckBox>
                 <!--Fake invisible button to avoid dithering on checkbox click-->
-                <Button android:layout_width="wrap_content"
+                <Button
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="invisible"
                         />
-                <TableLayout android:layout_width="fill_parent"
-                             android:layout_height="wrap_content"
-                             android:layout_toRightOf="@id/pickTime"
-                             android:stretchColumns="*"
-                             android:shrinkColumns="*"
-                             android:layout_centerInParent="true"
+
+                <TableLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/pickTime"
+                        android:stretchColumns="*"
+                        android:shrinkColumns="*"
+                        android:layout_centerInParent="true"
                         >
+
                     <TableRow
                             android:gravity="center"
                             >
+
                         <TextView
                                 android:id="@+id/timeText"
                                 android:layout_width="fill_parent"
@@ -257,6 +309,7 @@
                                 android:layout_marginLeft="-20dp"
                                 >
                         </TextView>
+
                         <Button
                                 android:id="@+id/pickDay"
                                 android:layout_width="wrap_content"
@@ -265,6 +318,7 @@
                                 android:visibility="gone"
                                 >
                         </Button>
+
                         <Button
                                 android:id="@+id/pickHour"
                                 android:layout_width="wrap_content"
@@ -280,6 +334,7 @@
         </TableRow>
         <!--END-->
         <TableRow android:id="@+id/tblSendingTypeDescr">
+
             <TextView
                     android:id="@+id/typeText"
                     android:layout_width="fill_parent"
@@ -290,7 +345,9 @@
                     android:layout_span="5"
                     />
         </TableRow>
+
         <TableRow android:id="@+id/tblSendingTypeSpinner">
+
             <Spinner
                     android:id="@+id/typeSpinner"
                     android:layout_width="wrap_content"
@@ -299,16 +356,21 @@
                     >
             </Spinner>
         </TableRow>
+
         <TableRow>
+
             <LinearLayout
-                    android:id="@+id/banner_adview"
+                    android:id="@+id/banner_adviewBottom"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
                     android:layout_span="5"
+                    android:paddingBottom="10dp"
                     />
         </TableRow>
+
         <TableRow android:id="@+id/tblFreeLayout">
+
             <LinearLayout
                     android:id="@+id/freeLayout"
                     android:layout_height="wrap_content"
@@ -319,7 +381,9 @@
 
             </LinearLayout>
         </TableRow>
+
         <TableRow>
+
             <Button
                     android:id="@+id/sendButton"
                     android:layout_width="wrap_content"

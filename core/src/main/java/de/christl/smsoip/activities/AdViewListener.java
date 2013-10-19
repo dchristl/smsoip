@@ -25,14 +25,18 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.mobclix.android.sdk.MobclixAdView;
-import com.mobclix.android.sdk.MobclixAdViewListener;
+
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+
 import de.christl.smsoip.R;
 
 /**
  * Simple listener handling visibility of ads by success/error
  */
-public class AdViewListener implements MobclixAdViewListener {
+public class AdViewListener implements AdListener {
 
     private Context context;
     private ImageView imageView;
@@ -42,18 +46,20 @@ public class AdViewListener implements MobclixAdViewListener {
     }
 
     @Override
-    public void onSuccessfulLoad(MobclixAdView mobclixAdView) {
-        mobclixAdView.setVisibility(View.VISIBLE);
+    public void onReceiveAd(Ad ad) {
+        ((AdView) ad).setVisibility(View.VISIBLE);
         if (imageView != null) {
-            ((ViewGroup) imageView.getParent()).removeView(imageView);
+            ViewGroup parent = (ViewGroup) imageView.getParent();
+            if (parent != null) {
+                parent.removeView(imageView);
+            }
             imageView.invalidate();
         }
-        mobclixAdView.setRefreshTime(10000);
     }
 
     @Override
-    public void onFailedLoad(MobclixAdView mobclixAdView, int i) {
-        mobclixAdView.setVisibility(View.VISIBLE);
+    public void onFailedToReceiveAd(Ad ad, AdRequest.ErrorCode errorCode) {
+        ((AdView) ad).setVisibility(View.VISIBLE);
         if (imageView == null) {
             imageView = new ImageView(context);
             imageView.setBackgroundResource(R.drawable.ad_layer);
@@ -72,34 +78,84 @@ public class AdViewListener implements MobclixAdViewListener {
                     }
                 }
             });
-            mobclixAdView.addView(imageView);
+            ((AdView) ad).addView(imageView);
         }
-        mobclixAdView.setRefreshTime(10000);
+    }
+
+    @Override
+    public void onPresentScreen(Ad ad) {
 
     }
 
     @Override
-    public void onAdClick(MobclixAdView mobclixAdView) {
+    public void onDismissScreen(Ad ad) {
 
     }
 
     @Override
-    public boolean onOpenAllocationLoad(MobclixAdView mobclixAdView, int i) {
-        return false;
-    }
-
-    @Override
-    public void onCustomAdTouchThrough(MobclixAdView mobclixAdView, String s) {
+    public void onLeaveApplication(Ad ad) {
 
     }
 
-    @Override
-    public String keywords() {
-        return null;
-    }
-
-    @Override
-    public String query() {
-        return null;
-    }
+//    @Override
+//    public void onSuccessfulLoad(MobclixAdView mobclixAdView) {
+//        mobclixAdView.setVisibility(View.VISIBLE);
+//        if (imageView != null) {
+//            ((ViewGroup) imageView.getParent()).removeView(imageView);
+//            imageView.invalidate();
+//        }
+//        mobclixAdView.setRefreshTime(10000);
+//    }
+//
+//    @Override
+//    public void onFailedLoad(MobclixAdView mobclixAdView, int i) {
+//        mobclixAdView.setVisibility(View.VISIBLE);
+//        if (imageView == null) {
+//            imageView = new ImageView(context);
+//            imageView.setBackgroundResource(R.drawable.ad_layer);
+//            imageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//                        String marketUrl = context.getString(R.string.adfree_market_url);
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(marketUrl));
+//                        context.startActivity(intent);
+//                    } catch (ActivityNotFoundException e) {
+//                        //Market not available on device
+//                        String alternativeMarketUrl = context.getString(R.string.adfree_alternative);
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(alternativeMarketUrl));
+//                        context.startActivity(intent);
+//                    }
+//                }
+//            });
+//            mobclixAdView.addView(imageView);
+//        }
+//        mobclixAdView.setRefreshTime(10000);
+//
+//    }
+//
+//    @Override
+//    public void onAdClick(MobclixAdView mobclixAdView) {
+//
+//    }
+//
+//    @Override
+//    public boolean onOpenAllocationLoad(MobclixAdView mobclixAdView, int i) {
+//        return false;
+//    }
+//
+//    @Override
+//    public void onCustomAdTouchThrough(MobclixAdView mobclixAdView, String s) {
+//
+//    }
+//
+//    @Override
+//    public String keywords() {
+//        return null;
+//    }
+//
+//    @Override
+//    public String query() {
+//        return null;
+//    }
 }
