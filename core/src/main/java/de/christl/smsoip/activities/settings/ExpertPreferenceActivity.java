@@ -29,7 +29,13 @@ import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.widget.EditText;
 
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.InterstitialAd;
+
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.AdViewListener;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.threading.imexport.ExportSettingsTask;
 import de.christl.smsoip.activities.threading.imexport.ImportSettingsTask;
@@ -39,7 +45,9 @@ import de.christl.smsoip.ui.ShowLastMessagesDialog;
 /**
  *
  */
-public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
+public class ExpertPreferenceActivity extends BackgroundPreferenceActivity implements AdListener {
+
+    private InterstitialAd interstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +73,27 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         root.addPreference(conversationCounter);
 
         root.addPreference(new AdPreference(this));
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
 
+            Preference bannerExchange = new Preference(this);
+            bannerExchange.setTitle(R.string.ad_exchange);
+            bannerExchange.setSummary(R.string.ad_exchange_description);
+            bannerExchange.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // Create the interstitial
+                    interstitial = new InterstitialAd(ExpertPreferenceActivity.this, AdViewListener.ADMOB_PUBLISHER_ID);
+
+                    AdRequest adRequest = new AdRequest();
+                    adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
+                    interstitial.loadAd(adRequest);
+
+                    interstitial.setAdListener(ExpertPreferenceActivity.this);
+                    return true;
+                }
+            });
+            root.addPreference(bannerExchange);
+        }
         CheckBoxPreference conversationOrderDownwards = new CheckBoxPreference(this);
         conversationOrderDownwards.setDefaultValue(true);
         conversationOrderDownwards.setKey(SettingsConst.CONVERSATION_ORDER);
@@ -176,4 +204,30 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
     }
 
 
+    @Override
+    public void onReceiveAd(Ad ad) {
+        if (ad == interstitial) {
+            interstitial.show();
+        }
+    }
+
+    @Override
+    public void onFailedToReceiveAd(Ad ad, AdRequest.ErrorCode errorCode) {
+
+    }
+
+    @Override
+    public void onPresentScreen(Ad ad) {
+
+    }
+
+    @Override
+    public void onDismissScreen(Ad ad) {
+
+    }
+
+    @Override
+    public void onLeaveApplication(Ad ad) {
+
+    }
 }

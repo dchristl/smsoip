@@ -50,14 +50,16 @@ public class AdPreference extends Preference {
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             if (adView == null) {
                 Activity activity = (Activity) getContext();
-                adView = new AdView(activity, AdSize.BANNER, "a14f930decd44ce");
+                adView = new AdView(activity, AdSize.BANNER, AdViewListener.ADMOB_PUBLISHER_ID);
 //                adView.setRefreshTime(10000);
                 adView.setAdListener(new AdViewListener(activity));
             } else {
                 ((ViewGroup) adView.getParent()).removeView(adView);
             }
             ((LinearLayout) view).addView(adView);
-            adView.loadAd(new AdRequest());
+            AdRequest adRequest = new AdRequest();
+            adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
+            adView.loadAd(adRequest);
         } else {
             view.setVisibility(View.GONE);
         }

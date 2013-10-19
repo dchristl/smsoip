@@ -243,7 +243,7 @@ public class SendActivity extends AllActivity {
         LinearLayout adLayout = adViewTop.getVisibility() == View.VISIBLE ? ((LinearLayout) adViewTop) : (LinearLayout) adViewBottom;
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             if (adView == null) {
-                adView = new AdView(this, AdSize.BANNER, "a14f930decd44ce");
+                adView = new AdView(this, AdSize.SMART_BANNER, AdViewListener.ADMOB_PUBLISHER_ID);
 //                adView.setRefreshTime(10000);
                 adView.setAdListener(new AdViewListener(this));
                 adLayout.removeAllViews();
@@ -251,7 +251,9 @@ public class SendActivity extends AllActivity {
                 ((ViewGroup) adView.getParent()).removeView(adView);
             }
             adLayout.addView(adView);
-            adView.loadAd(new AdRequest());
+            AdRequest adRequest = new AdRequest();
+            adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
+            adView.loadAd(adRequest);
         } else {
             adLayout.setVisibility(View.GONE);
         }
