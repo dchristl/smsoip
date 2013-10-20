@@ -40,7 +40,7 @@ public class GooglePlayInAppBillingDelegate {
 
     public GooglePlayInAppBillingDelegate(Activity context) {
         this.context = context;
-        mHelper = new IabHelper(context);
+        mHelper = new IabHelper(context,"");
 
         // enable debug logging (for a production application, you should set this to false).
         mHelper.enableDebugLogging(true);
