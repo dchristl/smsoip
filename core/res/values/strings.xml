@@ -281,6 +281,6 @@
     <string name="settings_will_be_imported">Settings will be imported from %s.</string>
     <string name="import_success">Settings successfully imported. SMSoIP will be restarted.</string>
     <string name="import_failure">Error during import.</string>
-    <string name="ad_exchange">Ad exchange</string>
-    <string name="ad_exchange_description">Visiting one of our full screen banners to disable the in app ads for the next 10 startups</string>
+    <string name="prefer_interstitial">Prefer full screen ads</string>
+    <string name="prefer_interstitial_description">SMSoIP will show no in app ads anymore, but shows a full screen ad after successful sending a message.</string>
 </resources>

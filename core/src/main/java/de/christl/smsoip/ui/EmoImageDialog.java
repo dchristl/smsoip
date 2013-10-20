@@ -18,6 +18,7 @@
 
 package de.christl.smsoip.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -25,7 +26,11 @@ import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.ads.AdRequest;
+import com.google.ads.InterstitialAd;
+
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.AdViewListener;
 import de.christl.smsoip.constant.FireSMSResultList;
 
 /**
@@ -34,11 +39,22 @@ import de.christl.smsoip.constant.FireSMSResultList;
 public class EmoImageDialog extends Dialog {
     private final FireSMSResultList.SendResult result;
     private final String resultMessage;
+    private InterstitialAd interstitial;
 
-    public EmoImageDialog(Context context, FireSMSResultList.SendResult fireSMSResult, String resultMessage) {
+    public EmoImageDialog(Context context, FireSMSResultList.SendResult fireSMSResult, String resultMessage, boolean showAd) {
         super(context);
         this.result = fireSMSResult;
         this.resultMessage = resultMessage;
+        if (showAd && result == FireSMSResultList.SendResult.SUCCESS) {
+
+            // Create the interstitial
+            interstitial = new InterstitialAd((Activity) context, AdViewListener.ADMOB_PUBLISHER_ID);
+
+            AdRequest adRequest = new AdRequest();
+            adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
+            interstitial.loadAd(adRequest);
+
+        }
     }
 
 
@@ -66,4 +82,24 @@ public class EmoImageDialog extends Dialog {
         text.setText(Html.fromHtml(resultMessage));
 
     }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+
+        if (interstitial != null) {
+            int counter = 0;
+            while (!interstitial.isReady() && counter < 5) {
+                try {
+                    Thread.sleep(500);
+                    counter++;
+                } catch (InterruptedException ignored) {
+                }
+            }
+            if (counter < 5) {
+                interstitial.show();
+            }
+        }
+    }
+
 }

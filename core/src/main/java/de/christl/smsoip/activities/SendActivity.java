@@ -241,7 +241,8 @@ public class SendActivity extends AllActivity {
         View adViewTop = findViewById(R.id.banner_adviewTop);
         View adViewBottom = findViewById(R.id.banner_adviewBottom);
         LinearLayout adLayout = adViewTop.getVisibility() == View.VISIBLE ? ((LinearLayout) adViewTop) : (LinearLayout) adViewBottom;
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+        SMSoIPApplication app = SMSoIPApplication.getApp();
+        if (app.isAdsEnabled() && !app.isInterstitialEnabled()) {
             if (adView == null) {
                 adView = new AdView(this, AdSize.SMART_BANNER, AdViewListener.ADMOB_PUBLISHER_ID);
 //                adView.setRefreshTime(10000);
@@ -655,7 +656,7 @@ public class SendActivity extends AllActivity {
                 Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_LAST_INFO, "", null).build();
                 EasyTracker.getInstance(SendActivity.this).send(build);
                 if (lastInfoDialogContent != null && result != null) {
-                    EmoImageDialog lastInfoDialog = new EmoImageDialog(SendActivity.this, result, lastInfoDialogContent);
+                    EmoImageDialog lastInfoDialog = new EmoImageDialog(SendActivity.this, result, lastInfoDialogContent, false);
                     lastInfoDialog.show();
                     lastInfoDialog.setCancelable(true);
                 }
@@ -1777,7 +1778,7 @@ public class SendActivity extends AllActivity {
         result = fireSMSResults.getResult();
         if (!this.isFinishing()) {
             lastInfoDialogContent = resultMessage.toString();
-            EmoImageDialog lastInfoDialog = new EmoImageDialog(this, result, lastInfoDialogContent);
+            EmoImageDialog lastInfoDialog = new EmoImageDialog(this, result, lastInfoDialogContent, SMSoIPApplication.getApp().isInterstitialEnabled());
             lastInfoDialog.show();
             ThreadingUtil.killDialogAfterAWhile(lastInfoDialog);
         }

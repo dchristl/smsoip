@@ -29,25 +29,28 @@ import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.widget.EditText;
 
-import com.google.ads.Ad;
-import com.google.ads.AdListener;
-import com.google.ads.AdRequest;
-import com.google.ads.InterstitialAd;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
+import java.util.Map;
 
 import de.christl.smsoip.R;
-import de.christl.smsoip.activities.AdViewListener;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.threading.imexport.ExportSettingsTask;
 import de.christl.smsoip.activities.threading.imexport.ImportSettingsTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
 
+import static de.christl.smsoip.constant.TrackerConstants.CAT_MISC;
+import static de.christl.smsoip.constant.TrackerConstants.EVENT_EXPORT;
+import static de.christl.smsoip.constant.TrackerConstants.EVENT_IMPORT;
+import static de.christl.smsoip.constant.TrackerConstants.EVENT_INTERSTITIAL;
+
 /**
  *
  */
-public class ExpertPreferenceActivity extends BackgroundPreferenceActivity implements AdListener {
+public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
 
-    private InterstitialAd interstitial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,25 +77,24 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity imple
 
         root.addPreference(new AdPreference(this));
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
-
-            Preference bannerExchange = new Preference(this);
-            bannerExchange.setTitle(R.string.ad_exchange);
-            bannerExchange.setSummary(R.string.ad_exchange_description);
-            bannerExchange.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            CheckBoxPreference preferInterstitialPref = new CheckBoxPreference(this);
+            preferInterstitialPref.setDefaultValue(true);
+            preferInterstitialPref.setKey(SettingsConst.PREFER_INTERSTITIAL);
+            preferInterstitialPref.setTitle(R.string.prefer_interstitial);
+            preferInterstitialPref.setSummary(R.string.prefer_interstitial_description);
+            preferInterstitialPref.setDefaultValue(false);
+            preferInterstitialPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    // Create the interstitial
-                    interstitial = new InterstitialAd(ExpertPreferenceActivity.this, AdViewListener.ADMOB_PUBLISHER_ID);
-
-                    AdRequest adRequest = new AdRequest();
-                    adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
-                    interstitial.loadAd(adRequest);
-
-                    interstitial.setAdListener(ExpertPreferenceActivity.this);
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (newValue.equals(Boolean.TRUE)) {
+                        Map<String, String> build = MapBuilder.createEvent(CAT_MISC, EVENT_INTERSTITIAL, "", null).build();
+                        EasyTracker.getInstance(ExpertPreferenceActivity.this).send(build);
+                    }
                     return true;
                 }
             });
-            root.addPreference(bannerExchange);
+
+            root.addPreference(preferInterstitialPref);
         }
         CheckBoxPreference conversationOrderDownwards = new CheckBoxPreference(this);
         conversationOrderDownwards.setDefaultValue(true);
@@ -184,6 +186,8 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity imple
             public boolean onPreferenceClick(Preference preference) {
                 ExportSettingsTask task = new ExportSettingsTask(ExpertPreferenceActivity.this);
                 task.execute();
+                Map<String, String> build = MapBuilder.createEvent(CAT_MISC, EVENT_EXPORT, "", null).build();
+                EasyTracker.getInstance(ExpertPreferenceActivity.this).send(build);
                 return true;
             }
         });
@@ -196,6 +200,8 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity imple
             public boolean onPreferenceClick(Preference preference) {
                 ImportSettingsTask task = new ImportSettingsTask(ExpertPreferenceActivity.this);
                 task.execute();
+                Map<String, String> build = MapBuilder.createEvent(CAT_MISC, EVENT_IMPORT, "", null).build();
+                EasyTracker.getInstance(ExpertPreferenceActivity.this).send(build);
                 return true;
             }
         });
@@ -203,31 +209,4 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity imple
         return root;
     }
 
-
-    @Override
-    public void onReceiveAd(Ad ad) {
-        if (ad == interstitial) {
-            interstitial.show();
-        }
-    }
-
-    @Override
-    public void onFailedToReceiveAd(Ad ad, AdRequest.ErrorCode errorCode) {
-
-    }
-
-    @Override
-    public void onPresentScreen(Ad ad) {
-
-    }
-
-    @Override
-    public void onDismissScreen(Ad ad) {
-
-    }
-
-    @Override
-    public void onLeaveApplication(Ad ad) {
-
-    }
 }

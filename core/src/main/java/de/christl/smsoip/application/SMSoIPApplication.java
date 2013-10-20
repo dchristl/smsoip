@@ -650,6 +650,14 @@ public class SMSoIPApplication extends Application {
         return builder.toString();
     }
 
+    public boolean isInterstitialEnabled() {
+        if (!adsEnabled) {
+            return false;
+        }
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return defaultSharedPreferences.getBoolean(SettingsConst.PREFER_INTERSTITIAL, false);
+    }
+
     /**
      * get a xml resource from provider
      *

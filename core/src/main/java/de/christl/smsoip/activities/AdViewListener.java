@@ -38,7 +38,7 @@ import de.christl.smsoip.R;
  */
 public class AdViewListener implements AdListener {
 
-    public static final String ADMOB_PUBLISHER_ID = "a14f930decd44ce";
+    public static final String ADMOB_PUBLISHER_ID = "ca-app-pub-6074434370638620/1583934333";
 
     private Context context;
     private ImageView imageView;

@@ -62,5 +62,6 @@ public abstract class SettingsConst {
     public static final String OUTGOING_TEXT_COLOR = "extra.outgoing.text.color";
 
     public static final String REFRESH_CACHE = "receiver.refresh.cache";
+    public static final String PREFER_INTERSTITIAL = "prefer.interstitial";
 
 }

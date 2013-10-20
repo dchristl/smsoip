@@ -47,7 +47,8 @@ public class AdPreference extends Preference {
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
+        SMSoIPApplication app = SMSoIPApplication.getApp();
+        if (app.isAdsEnabled() && !app.isInterstitialEnabled()) {
             if (adView == null) {
                 Activity activity = (Activity) getContext();
                 adView = new AdView(activity, AdSize.BANNER, AdViewListener.ADMOB_PUBLISHER_ID);
