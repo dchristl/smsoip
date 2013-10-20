@@ -295,6 +295,4 @@
     <string name="settings_will_be_imported">Einstellungen werden von %s importiert.</string>
     <string name="import_success">Einstellungen erfolgreich importiert. SMSoIP wird neu gestartet.</string>
     <string name="import_failure">Fehler beim Importieren der Einstellungen.</string>
-    <string name="prefer_interstitial">Bevorzuge Full screen Werbung</string>
-    <string name="prefer_interstitial_description">SMSoIP wird in der App werbefrei sein, blendet aber nach erfolgreichen Senden der SMS eine Vollbildwerbung ein.</string>
 </resources>

@@ -29,11 +29,6 @@ import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.widget.EditText;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
-
-import java.util.Map;
-
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.preferences.AdPreference;
 import de.christl.smsoip.activities.threading.imexport.ExportSettingsTask;
@@ -41,16 +36,10 @@ import de.christl.smsoip.activities.threading.imexport.ImportSettingsTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.ui.ShowLastMessagesDialog;
 
-import static de.christl.smsoip.constant.TrackerConstants.CAT_MISC;
-import static de.christl.smsoip.constant.TrackerConstants.EVENT_EXPORT;
-import static de.christl.smsoip.constant.TrackerConstants.EVENT_IMPORT;
-import static de.christl.smsoip.constant.TrackerConstants.EVENT_INTERSTITIAL;
-
 /**
  *
  */
 public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,26 +65,7 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         root.addPreference(conversationCounter);
 
         root.addPreference(new AdPreference(this));
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            CheckBoxPreference preferInterstitialPref = new CheckBoxPreference(this);
-            preferInterstitialPref.setDefaultValue(true);
-            preferInterstitialPref.setKey(SettingsConst.PREFER_INTERSTITIAL);
-            preferInterstitialPref.setTitle(R.string.prefer_interstitial);
-            preferInterstitialPref.setSummary(R.string.prefer_interstitial_description);
-            preferInterstitialPref.setDefaultValue(false);
-            preferInterstitialPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (newValue.equals(Boolean.TRUE)) {
-                        Map<String, String> build = MapBuilder.createEvent(CAT_MISC, EVENT_INTERSTITIAL, "", null).build();
-                        EasyTracker.getInstance(ExpertPreferenceActivity.this).send(build);
-                    }
-                    return true;
-                }
-            });
 
-            root.addPreference(preferInterstitialPref);
-        }
         CheckBoxPreference conversationOrderDownwards = new CheckBoxPreference(this);
         conversationOrderDownwards.setDefaultValue(true);
         conversationOrderDownwards.setKey(SettingsConst.CONVERSATION_ORDER);
@@ -186,8 +156,6 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 ExportSettingsTask task = new ExportSettingsTask(ExpertPreferenceActivity.this);
                 task.execute();
-                Map<String, String> build = MapBuilder.createEvent(CAT_MISC, EVENT_EXPORT, "", null).build();
-                EasyTracker.getInstance(ExpertPreferenceActivity.this).send(build);
                 return true;
             }
         });
@@ -200,13 +168,12 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 ImportSettingsTask task = new ImportSettingsTask(ExpertPreferenceActivity.this);
                 task.execute();
-                Map<String, String> build = MapBuilder.createEvent(CAT_MISC, EVENT_IMPORT, "", null).build();
-                EasyTracker.getInstance(ExpertPreferenceActivity.this).send(build);
                 return true;
             }
         });
         root.addPreference(importSettings);
         return root;
     }
+
 
 }

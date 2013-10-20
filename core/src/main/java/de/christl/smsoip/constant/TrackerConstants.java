@@ -45,9 +45,6 @@ public abstract class TrackerConstants {
     public static final String EVENT_SHORTEN = "shorten";
     public static final String EVENT_CONVERSATION = "conversation";
     public static final String EVENT_LAST_INFO = "last_info";
-    public static final String EVENT_INTERSTITIAL = "interstitial";
-    public static final String EVENT_IMPORT = "import";
-    public static final String EVENT_EXPORT = "export";
 
     public static final String LABEL_MENU = "menu";
     public static final String LABEL_ICON = "icon";

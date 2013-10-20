@@ -25,9 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.AdViewListener;
@@ -36,7 +34,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 public class AdPreference extends Preference {
 
 
-    private AdView adView;
+    private MobclixMMABannerXLAdView adView;
 
     public AdPreference(Context context) {
         super(context);
@@ -47,24 +45,20 @@ public class AdPreference extends Preference {
     @Override
     protected View onCreateView(ViewGroup parent) {
         View view = super.onCreateView(parent);
-        SMSoIPApplication app = SMSoIPApplication.getApp();
-        if (app.isAdsEnabled() && !app.isInterstitialEnabled()) {
+        if (SMSoIPApplication.getApp().isAdsEnabled()) {
             if (adView == null) {
                 Activity activity = (Activity) getContext();
-                adView = new AdView(activity, AdSize.BANNER, AdViewListener.ADMOB_PUBLISHER_ID);
-//                adView.setRefreshTime(10000);
-                adView.setAdListener(new AdViewListener(activity));
+                adView = new MobclixMMABannerXLAdView(activity);
+                adView.setRefreshTime(10000);
+                adView.addMobclixAdViewListener(new AdViewListener(getContext()));
             } else {
                 ((ViewGroup) adView.getParent()).removeView(adView);
             }
             ((LinearLayout) view).addView(adView);
-            AdRequest adRequest = new AdRequest();
-            adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
-            adView.loadAd(adRequest);
+            adView.getAd();
         } else {
             view.setVisibility(View.GONE);
         }
         return view;
     }
-
 }
