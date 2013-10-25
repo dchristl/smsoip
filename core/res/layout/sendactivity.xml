@@ -67,14 +67,17 @@
 
         <TableRow>
 
-            <LinearLayout
+            <de.christl.smsoip.activities.ads.AdLayout
+                    android:id="@+id/adLayoutUpper"
                     android:orientation="horizontal"
-                    android:id="@+id/banner_adviewTop"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
                     android:layout_gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
                     android:layout_span="5"
                     />
+
         </TableRow>
 
 
@@ -360,11 +363,11 @@
 
         <TableRow>
 
-            <LinearLayout
+            <de.christl.smsoip.activities.ads.AdLayout
+                    android:id="@+id/adLayoutLower"
                     android:orientation="horizontal"
-                    android:id="@+id/banner_adviewBottom"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
                     android:layout_gravity="center"
                     android:layout_span="5"
                     android:paddingBottom="10dp"

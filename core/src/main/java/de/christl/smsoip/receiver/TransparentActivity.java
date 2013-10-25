@@ -22,11 +22,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import org.acra.ACRA;
 
 import de.christl.smsoip.R;
+import de.christl.smsoip.autosuggest.NumberUtils;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 import de.christl.smsoip.receiver.util.NotificationUtil;
 
 /**
@@ -40,39 +44,54 @@ public class TransparentActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String contentTitle = "";
+        String senderName = "";
         String message = "";
         final Bundle extras = getIntent().getExtras();
         String number = "";
         if (extras != null) {
             number = extras.getString(SENDER_NUMBER);
-            contentTitle = extras.getString(SENDER_NAME);
+            senderName = extras.getString(SENDER_NAME);
             message = extras.getString(MESSAGE);
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(contentTitle);
-        final String finalNumber = number;
-        builder.setMessage(message)
-                .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
-                        startActivity(sendIntent);
-
-                        try {
-                            dialog.dismiss();
-                        } catch (IllegalArgumentException e) {
-                            ACRA.getErrorReporter().handleSilentException(e);
-                        }
-
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                TransparentActivity.this.finish();
-            }
-        });
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        NumberAnswerDialog dialog = new NumberAnswerDialog(this, number, senderName, message);
+//        builder.setTitle(senderName);
+//        final String finalNumber = number;
+//        builder.setMessage(message)
+//                .setPositiveButton(R.string.answer, new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        Intent sendIntent = NotificationUtil.getSchemeIntent(finalNumber);
+//                        startActivity(sendIntent);
+//
+//                        try {
+//                            dialog.dismiss();
+//                        } catch (IllegalArgumentException e) {
+//                            ACRA.getErrorReporter().handleSilentException(e);
+//                        }
+//
+//                    }
+//                });
+//        AlertDialog dialog = builder.create();
+//        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialog) {
+//                TransparentActivity.this.finish();
+//            }
+//        });
+//        byte[] bytes = AndroidInternalDatabaseHandler.loadLocalContactPhotoBytes(number, this);
+//        Bitmap bmp;
+//        final BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inInputShareable = true;
+//        options.inPurgeable = true;
+//        if (bytes == null) { //no contact picture
+//            bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_contact_picture_2, options);
+//        } else {
+//            bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+//        }
+//        int bmpResolution = NumberUtils.getBitmapResolution(this);
+//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true);
+//        imageView.setImageBitmap(scaledBitmap);
+//        imageView.setFocusable(true);
         dialog.show();
 
     }

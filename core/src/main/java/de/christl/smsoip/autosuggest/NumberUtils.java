@@ -18,18 +18,21 @@
 
 package de.christl.smsoip.autosuggest;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.widget.AutoCompleteTextView;
 import android.widget.MultiAutoCompleteTextView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SettingsConst;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * little helper for number mapping
@@ -114,5 +117,24 @@ public abstract class NumberUtils {
                 return "";
             }
         }
+    }
+
+
+    public static int getBitmapResolution(Activity activity) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        double factor = 1.0;
+        switch (metrics.densityDpi) {
+            case DisplayMetrics.DENSITY_MEDIUM:        //160
+                factor = 0.75;
+                break;
+            case DisplayMetrics.DENSITY_LOW: //120
+                factor = 0.5;
+                break;
+            default:
+            case DisplayMetrics.DENSITY_HIGH:     //240
+                break;
+        }
+        return (int) (72.0 * factor);
     }
 }

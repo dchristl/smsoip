@@ -43,7 +43,6 @@ import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -62,7 +61,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.google.analytics.tracking.android.Tracker;
-import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
 
 import org.acra.ACRA;
 import org.apache.http.message.BasicNameValuePair;
@@ -174,7 +172,6 @@ public class SendActivity extends AllActivity {
     private DateTimeObject dateTime;
     private AsyncTask<Boolean, SMSActionResult, SMSActionResult> backgroundUpdateTask;
     private Integer currentAccountIndex;
-    private MobclixMMABannerXLAdView adView;
 
     private ColorStateList defaultColor;
     private BackgroundSendTask backgroundSendTask;
@@ -228,27 +225,6 @@ public class SendActivity extends AllActivity {
         return settingActivated && defaultText;
     }
 
-    /**
-     * insert the advertisements
-     */
-    private void insertAds() {
-        View adViewTop = findViewById(R.id.banner_adviewTop);
-        View adViewBottom = findViewById(R.id.banner_adviewBottom);
-        LinearLayout adLayout = adViewTop.getVisibility() == View.VISIBLE ? ((LinearLayout) adViewTop) : (LinearLayout) adViewBottom;
-        if (SMSoIPApplication.getApp().isAdsEnabled()) {
-            if (adView == null) {
-                adView = new MobclixMMABannerXLAdView(this);
-                adView.addMobclixAdViewListener(new AdViewListener(this));
-                adLayout.removeAllViews();
-            } else {
-                ((ViewGroup) adView.getParent()).removeView(adView);
-            }
-            adLayout.addView(adView);
-            adView.getAd();
-        } else {
-            adLayout.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     /**
@@ -402,8 +378,8 @@ public class SendActivity extends AllActivity {
         View progress = findViewById(R.id.infoTextProgressBar);
         View toggleUp = findViewById(R.id.viewToggleUp);
         View toggleDown = findViewById(R.id.viewToggleDown);
-        View adTop = findViewById(R.id.banner_adviewTop);
-        View adBottom = findViewById(R.id.banner_adviewBottom);
+        View adTop = findViewById(R.id.adLayoutUpper);
+        View adBottom = findViewById(R.id.adLayoutLower);
         switch (mode) {
             case NORMAL:
                 but1.setVisibility(View.VISIBLE);
@@ -437,7 +413,6 @@ public class SendActivity extends AllActivity {
                 adBottom.setVisibility(View.VISIBLE);
                 break;
         }
-        insertAds();
     }
 
     /**
@@ -1814,12 +1789,4 @@ public class SendActivity extends AllActivity {
         return defaultColor;
     }
 
-
-    @Override
-    public void onDestroy() {
-        if (adView != null) {
-            adView.destroy();
-        }
-        super.onDestroy();
-    }
 }

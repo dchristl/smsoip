@@ -24,16 +24,22 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
-import de.christl.smsoip.R;
-import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
+import android.widget.TextView;
 
 import java.util.List;
+
+import de.christl.smsoip.R;
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.autosuggest.NumberUtils;
+import de.christl.smsoip.database.AndroidInternalDatabaseHandler;
 
 /**
  * Overview of current chosen contacts
@@ -41,28 +47,10 @@ import java.util.List;
 public class ChosenContactsDialog extends Dialog {
     private List<Receiver> receiverList;
     private int bmpResolution;
-//    private List<Bitmap> bitmaps;
 
     public ChosenContactsDialog(Context context, List<Receiver> receiverList) {
         super(context);
-//        bitmaps = new ArrayList<Bitmap>(receiverList.size());
-        this.receiverList = receiverList;
-        setTitle(R.string.pick_for_disabling);
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        double factor = 1.0;
-        switch (metrics.densityDpi) {
-            case DisplayMetrics.DENSITY_MEDIUM:        //160
-                factor = 0.75;
-                break;
-            case DisplayMetrics.DENSITY_LOW: //120
-                factor = 0.5;
-                break;
-            default:
-            case DisplayMetrics.DENSITY_HIGH:     //240
-                break;
-        }
-        bmpResolution = (int) (72.0 * factor);
+        bmpResolution = NumberUtils.getBitmapResolution((Activity) context);
     }
 
     @Override
