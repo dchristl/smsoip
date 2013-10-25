@@ -80,10 +80,6 @@
             <artifactId>jsoup</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.mobclix</groupId>
-            <artifactId>mobclix</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.actionbarsherlock</groupId>
             <artifactId>actionbarsherlock</artifactId>
             <type>apklib</type>

@@ -34,7 +34,6 @@
     <modules>
         <module>install-admob</module>
         <module>install-analytics</module>
-        <module>install-mobclix</module>
     </modules>
     <!--Helper POM for installing admob to local repo-->
     <build>
