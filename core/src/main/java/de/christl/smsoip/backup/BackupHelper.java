@@ -18,6 +18,10 @@
 
 package de.christl.smsoip.backup;
 
+import android.app.backup.BackupManager;
+import android.app.backup.RestoreObserver;
+import android.os.Build;
+
 import de.christl.smsoip.application.SMSoIPApplication;
 
 /**
@@ -25,36 +29,21 @@ import de.christl.smsoip.application.SMSoIPApplication;
  */
 public class BackupHelper {
 
-    private static Boolean backupManagerAvailable = null;
-
-    private static void initAvailability() {
-        if (backupManagerAvailable == null) {
-            try {
-                WrappedBackupAgent.checkAvailable();
-                backupManagerAvailable = true;
-            } catch (Throwable t) {
-                backupManagerAvailable = false;
-            }
-        }
-    }
 
     public static void dataChanged() {
 
-        initAvailability();
 
-        if (backupManagerAvailable) {
-            WrappedBackupAgent wrapBackupManager = new WrappedBackupAgent(SMSoIPApplication.getApp());
-            wrapBackupManager.dataChanged();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            new BackupManager(SMSoIPApplication.getApp()).dataChanged();
         }
 
     }
 
 
     public static void restore() {
-        initAvailability();
-        if (backupManagerAvailable) {
-            WrappedBackupAgent wrapBackupManager = new WrappedBackupAgent(SMSoIPApplication.getApp());
-            wrapBackupManager.restore();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            new BackupManager(SMSoIPApplication.getApp()).requestRestore(new RestoreObserver() {
+            });
         }
     }
 
