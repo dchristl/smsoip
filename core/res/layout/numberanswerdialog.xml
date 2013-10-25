@@ -20,25 +20,42 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
 
     <TextView
             android:id="@+id/headline"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:drawablePadding="5dp"
-            android:singleLine="true"/>
+            android:drawableLeft="@drawable/ic_contact_picture_2"
+            android:textSize="18sp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:layout_margin="10dp"/>
 
-    <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:id="@+id/message"/>
+    <ScrollView
+            android:layout_height="150dp"
+            android:layout_width="fill_parent"
+            android:layout_margin="10dp"
+            >
+
+        <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/message"
+                android:layout_margin="10dp"
+                />
+    </ScrollView>
 
     <Button
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/answer"
-            android:text="@string/answer"/>
+            android:layout_gravity="center"
+            android:text="@string/answer"
+            android:drawableLeft="@drawable/send_button"
+            />
 </LinearLayout>

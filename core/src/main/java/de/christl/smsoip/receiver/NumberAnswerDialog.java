@@ -22,12 +22,16 @@ package de.christl.smsoip.receiver;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.acra.ACRA;
@@ -48,6 +52,7 @@ public class NumberAnswerDialog extends Dialog {
 
     public NumberAnswerDialog(Activity context, String number, String senderName, String message) {
         super(context);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.context = context;
         this.message = message;
         this.senderName = senderName == null ? number : senderName;
@@ -72,6 +77,7 @@ public class NumberAnswerDialog extends Dialog {
         int bmpResolution = NumberUtils.getBitmapResolution(context);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true);
         headline.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(scaledBitmap), null, null, null);
+        headline.setSelected(true);
         headline.setText(senderName);
         TextView messageV = (TextView) findViewById(R.id.message);
         messageV.setText(message);
@@ -90,5 +96,6 @@ public class NumberAnswerDialog extends Dialog {
 
             }
         });
+        headline.setTextColor(messageV.getCurrentTextColor());
     }
 }
