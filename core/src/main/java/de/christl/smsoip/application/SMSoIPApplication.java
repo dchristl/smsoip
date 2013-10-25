@@ -37,6 +37,9 @@ import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
@@ -66,6 +69,7 @@ import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.constant.TrackerConstants;
 import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
@@ -204,9 +208,27 @@ public class SMSoIPApplication extends Application {
             findAllPlugins(cachedPlugins);
             readOutPlugins();
         } else {
+            long start = System.currentTimeMillis();
+
             List<ApplicationInfo> allApplications = getPackageManager().getInstalledApplications(0);
             findAllPlugins(allApplications);
             readOutPlugins();
+
+            long time = (System.currentTimeMillis() - start) / 100;
+            String category;
+            if (time < 10) {
+                category = "<10";
+            } else if (time < 50) {
+                category = "<50";
+            } else if (time < 100) {
+                category = "<100";
+            } else {
+                category = ">100";
+
+            }
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_LOAD_WITHOUT_CACHE, category, String.valueOf(time), null).build();
+            EasyTracker.getInstance(this).send(build);
+
             storeProvidersInCache();
         }
         buildAdditionalAcraInformations();
@@ -231,6 +253,7 @@ public class SMSoIPApplication extends Application {
     }
 
     private List<ApplicationInfo> restoreProvidersFromCache() {
+        long start = System.currentTimeMillis();
         File file = new File(getCacheDir(), SERIALIZE_NAME);
         List<ApplicationInfo> out;
         try {
@@ -244,6 +267,20 @@ public class SMSoIPApplication extends Application {
             for (String packageName : packageNames) {
                 out.add(getPackageManager().getApplicationInfo(packageName, 0));
             }
+            long time = (System.currentTimeMillis() - start) / 100;
+            String category;
+            if (time < 10) {
+                category = "<10";
+            } else if (time < 50) {
+                category = "<50";
+            } else if (time < 100) {
+                category = "<100";
+            } else {
+                category = ">100";
+
+            }
+            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_LOAD_WITH_CACHE, category, String.valueOf(time), null).build();
+            EasyTracker.getInstance(this).send(build);
         } catch (IOException e) {
             file.delete();
             ACRA.getErrorReporter().handleSilentException(e);

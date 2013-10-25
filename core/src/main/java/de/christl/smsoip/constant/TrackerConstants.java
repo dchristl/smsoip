@@ -32,6 +32,8 @@ public abstract class TrackerConstants {
     public static final String CAT_BUTTONS = "button";
     public static final String CAT_MISC = "miscellaneous";
     public static final String CAT_STARTUP = "startup";
+    public static final String CAT_LOAD_WITH_CACHE = "with_cache";
+    public static final String CAT_LOAD_WITHOUT_CACHE = "without_cache";
 
 
     public static final String EVENT_NORMAL = "normal";
@@ -45,6 +47,7 @@ public abstract class TrackerConstants {
     public static final String EVENT_SHORTEN = "shorten";
     public static final String EVENT_CONVERSATION = "conversation";
     public static final String EVENT_LAST_INFO = "last_info";
+
 
     public static final String LABEL_MENU = "menu";
     public static final String LABEL_ICON = "icon";
