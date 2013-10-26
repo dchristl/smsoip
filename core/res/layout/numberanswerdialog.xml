@@ -36,6 +36,11 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:layout_margin="10dp"/>
 
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"/>
+
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_margin="10dp"
@@ -43,8 +48,6 @@
             android:layout_weight="1"
             android:fillViewport="true"
             >
-
-
         <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
@@ -53,12 +56,18 @@
                 />
     </ScrollView>
 
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"/>
+
     <Button
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/answer"
             android:layout_gravity="center"
             android:text="@string/answer"
+            android:layout_marginTop="10dp"
             android:drawableLeft="@drawable/send_button"
             />
 </LinearLayout>

@@ -63,11 +63,12 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
     }
 
     private void init() {
-        imageView = new ImageView(getContext());
-        imageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ad_layer));
 
-        addView(imageView);
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
+            imageView = new ImageView(getContext());
+            imageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ad_layer));
+            addView(imageView);
+            imageView.setOnClickListener(this);
             adView = new AdView((Activity) getContext(), AdSize.SMART_BANNER, "ca-app-pub-6074434370638620/1583934333");
             addView(adView);
             adView.setAdListener(this);
@@ -81,9 +82,6 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
             // Request a new ad immediately.
             refreshHandler.post(refreshRunnable);
         }
-
-
-        imageView.setOnClickListener(this);
 
     }
 
