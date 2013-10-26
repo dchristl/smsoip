@@ -50,6 +50,8 @@ public class ChosenContactsDialog extends Dialog {
 
     public ChosenContactsDialog(Context context, List<Receiver> receiverList) {
         super(context);
+        this.receiverList = receiverList;
+        setTitle(R.string.pick_for_disabling);
         bmpResolution = NumberUtils.getBitmapResolution((Activity) context);
     }
 
