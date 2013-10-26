@@ -66,7 +66,7 @@ public class SMSReceiver extends BroadcastReceiver {
 //
 //        Intent sendIntent = new Intent(context, TransparentActivity.class);
 //        sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, "038asd gshj gdh sfg hdsgfhds ghfghdjsgfhdsghfgdshfrgsdhfgdsfghdsf");
-//        sendIntent.putExtra(TransparentActivity.MESSAGE, "asjhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhhasga gedjasdg jsadgjhsad wsrskfhsd jf d");
+//        sendIntent.putExtra(TransparentActivity.MESSAGE, "asasas");
 //        sendIntent.setData(uriBuilder.build());
 //        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);

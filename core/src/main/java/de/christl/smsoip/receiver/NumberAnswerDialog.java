@@ -22,16 +22,13 @@ package de.christl.smsoip.receiver;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.acra.ACRA;
@@ -89,7 +86,7 @@ public class NumberAnswerDialog extends Dialog {
                 context.startActivity(sendIntent);
 
                 try {
-                    dismiss();
+                    cancel();
                 } catch (IllegalArgumentException e) {
                     ACRA.getErrorReporter().handleSilentException(e);
                 }

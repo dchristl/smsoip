@@ -19,6 +19,7 @@
 package de.christl.smsoip.receiver;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 /**
@@ -42,7 +43,12 @@ public class TransparentActivity extends Activity {
             message = extras.getString(MESSAGE);
         }
         NumberAnswerDialog dialog = new NumberAnswerDialog(this, number, senderName, message);
-
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                TransparentActivity.this.finish();
+            }
+        });
         dialog.show();
 
     }
