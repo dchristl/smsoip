@@ -79,6 +79,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.christl.smsoip.R;
+import de.christl.smsoip.activities.ads.AdLayout;
 import de.christl.smsoip.activities.dialogadapter.ChangeProviderArrayAdapter;
 import de.christl.smsoip.activities.send.Mode;
 import de.christl.smsoip.activities.settings.GlobalPreferences;
@@ -105,7 +106,6 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
-import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
@@ -1790,4 +1790,10 @@ public class SendActivity extends AllActivity {
         return defaultColor;
     }
 
+    @Override
+    protected void onDestroy() {
+        ((AdLayout) findViewById(R.id.adLayoutLower)).destroy();
+        ((AdLayout) findViewById(R.id.adLayoutUpper)).destroy();
+        super.onDestroy();
+    }
 }

@@ -164,4 +164,10 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
 
         }
     }
+
+    public void destroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
+    }
 }
