@@ -55,7 +55,7 @@ public class SMSReceiver extends BroadcastReceiver {
     public static int ID = 1;
     public static final String SMSOIP_SCHEME = "smsoip";
 
-
+//
 //    public static void faker(Context context) {
 //        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 //        builder.setAutoCancel(true);
@@ -66,7 +66,7 @@ public class SMSReceiver extends BroadcastReceiver {
 //
 //        Intent sendIntent = new Intent(context, TransparentActivity.class);
 //        sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, "038asd gshj gdh sfg hdsgfhds ghfghdjsgfhdsghfgdshfrgsdhfgdsfghdsf");
-//        sendIntent.putExtra(TransparentActivity.MESSAGE, "asasas");
+//        sendIntent.putExtra(TransparentActivity.MESSAGE, "asasas s ghfghdjsgfhdsghfgdshfrg");
 //        sendIntent.setData(uriBuilder.build());
 //        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);

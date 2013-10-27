@@ -105,6 +105,7 @@ import de.christl.smsoip.picker.DateTimeObject;
 import de.christl.smsoip.picker.day.RangeDayPickerDialog;
 import de.christl.smsoip.picker.time.RangeTimePicker;
 import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
+import de.christl.smsoip.receiver.SMSReceiver;
 import de.christl.smsoip.ui.CheckForDuplicatesArrayList;
 import de.christl.smsoip.ui.ChosenContactsDialog;
 import de.christl.smsoip.ui.EmoImageDialog;
