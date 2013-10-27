@@ -80,13 +80,25 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         init();
-        if (!firstAdReceived) {
-            // Request a new ad immediately.
-            refreshHandler.post(refreshRunnable);
+        if (getVisibility() == View.VISIBLE) {
+            if (!firstAdReceived) {
+                // Request a new ad immediately.
+                refreshHandler.post(refreshRunnable);
+            }
         }
 
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == View.VISIBLE) {
+            if (!firstAdReceived) {
+                // Request a new ad immediately.
+                refreshHandler.post(refreshRunnable);
+            }
+        }
+    }
 
     @Override
     protected void onDetachedFromWindow() {
@@ -160,7 +172,7 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
-        if (adView != null && imageView != null) {
+        if (adView != null && imageView != null && getVisibility() == View.VISIBLE) {
             removeAllViews();
             init();
             refreshHandler.post(refreshRunnable);
