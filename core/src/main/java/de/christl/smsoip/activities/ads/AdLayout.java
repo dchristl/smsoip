@@ -43,7 +43,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
  *
  */
 public class AdLayout extends LinearLayout implements AdListener, View.OnClickListener {
-    private boolean calculate;
+    private boolean noSmartBanner;
     private ImageView imageView;
     private AdView adView;
 
@@ -51,13 +51,11 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
     private final Handler refreshHandler = new Handler();
 
     private final Runnable refreshRunnable = new RefreshRunnable();
-    private int width = 320;
-    private boolean notInitiated = true;
 
 
     public AdLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        calculate = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/de.christl.smsoip", "calculate", false);
+        noSmartBanner = attrs.getAttributeBooleanValue("http://schemas.android.com/apk/res/de.christl.smsoip", "noSmartBanner", false);
     }
 
     public AdLayout(Context context) {
@@ -71,27 +69,17 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
             imageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ad_layer));
             addView(imageView);
             imageView.setOnClickListener(this);
-            adView = new AdView((Activity) getContext(), getBannerSize(), "ca-app-pub-6074434370638620/1583934333");
+            adView = new AdView((Activity) getContext(), noSmartBanner ? AdSize.BANNER : AdSize.SMART_BANNER, "ca-app-pub-6074434370638620/1583934333");
             addView(adView);
             adView.setAdListener(this);
         }
     }
 
-    private AdSize getBannerSize() {
-        AdSize out = AdSize.SMART_BANNER;
-        if (calculate) {
-            if (width < 468) {
-                out = AdSize.BANNER;
-            } else {
-                out = AdSize.IAB_BANNER;
-            }
-        }
-        return out;
-    }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        init();
         if (!firstAdReceived) {
             // Request a new ad immediately.
             refreshHandler.post(refreshRunnable);
@@ -176,7 +164,6 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
             removeAllViews();
             init();
             refreshHandler.post(refreshRunnable);
-            notInitiated = true;
         }
     }
 
@@ -185,16 +172,5 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
             adView.destroy();
         }
     }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (notInitiated) {
-            width = MeasureSpec.getSize(widthMeasureSpec);
-            init();
-            notInitiated = false;
-        }
-    }
-
 
 }

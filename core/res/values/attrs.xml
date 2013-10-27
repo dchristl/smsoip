@@ -19,6 +19,6 @@
 
 <resources>
     <declare-styleable name="AdLayout">
-        <attr name="calculate" format="boolean"/>
+        <attr name="noSmartBanner" format="boolean"/>
     </declare-styleable>
 </resources>

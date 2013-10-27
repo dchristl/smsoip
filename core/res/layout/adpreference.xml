@@ -25,5 +25,5 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:layout_centerInParent="true"
-        adattr:calculate="true"
+        adattr:noSmartBanner="true"
         />
