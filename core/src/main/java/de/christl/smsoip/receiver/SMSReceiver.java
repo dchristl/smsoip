@@ -55,27 +55,28 @@ public class SMSReceiver extends BroadcastReceiver {
     public static int ID = 1;
     public static final String SMSOIP_SCHEME = "smsoip";
 
-//
-//    public static void faker(Context context) {
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-//        builder.setAutoCancel(true);
-//        builder.setSmallIcon(R.drawable.bar_icon);
-//        builder.setContentTitle("ontentTitle");
-//        Uri.Builder uriBuilder = new Uri.Builder();
-//        uriBuilder.scheme(SMSOIP_SCHEME);
-//
-//        Intent sendIntent = new Intent(context, TransparentActivity.class);
-//        sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, "038asd gshj gdh sfg hdsgfhds ghfghdjsgfhdsghfgdshfrgsdhfgdsfghdsf");
-//        sendIntent.putExtra(TransparentActivity.MESSAGE, "asasas s ghfghdjsgfhdsghfgdshfrg");
-//        sendIntent.setData(uriBuilder.build());
-//        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
-//        builder.setContentIntent(contentIntent);
-//        Notification notification = builder.getNotification();
-//        String ns = Context.NOTIFICATION_SERVICE;
-//        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-//        mNotificationManager.notify(ID, notification);
-//    }
+
+    public static void faker(Context context) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder.setAutoCancel(true);
+        builder.setSmallIcon(R.drawable.bar_icon);
+        builder.setContentTitle("Number");
+        Uri.Builder uriBuilder = new Uri.Builder();
+        uriBuilder.scheme(SMSOIP_SCHEME);
+
+        Intent sendIntent = new Intent(context, TransparentActivity.class);
+        sendIntent.putExtra(TransparentActivity.SENDER_NUMBER, "038asd gshj gdh sfg hdsgfhds ghfghdjsgfhdsghfgdshfrgsdhfgdsfghdsf");
+        sendIntent.putExtra(TransparentActivity.MESSAGE, "asasas s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdssgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhdsgh s ghfghdjsgfhds Ende");
+//        sendIntent.putExtra(TransparentActivity.MESSAGE, "message asauzstz as");
+        sendIntent.setData(uriBuilder.build());
+        sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
+        builder.setContentIntent(contentIntent);
+        Notification notification = builder.getNotification();
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
+        mNotificationManager.notify(ID, notification);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {

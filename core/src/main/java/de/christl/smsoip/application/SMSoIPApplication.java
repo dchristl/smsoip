@@ -291,7 +291,6 @@ public class SMSoIPApplication extends Application {
             return null;
         } catch (PackageManager.NameNotFoundException e) {
             file.delete();
-            ACRA.getErrorReporter().handleSilentException(e);
             return null;
         }
         return out;
