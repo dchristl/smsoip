@@ -67,8 +67,21 @@ public abstract class InputPatcher {
         } else if (input.equals(RESTORE)) {
             BackupHelper.restore();
             return "Restore from Google Cloud scheduled";
-        } else if (input.equals("fakesms")) {
-            SMSReceiver.faker(SMSoIPApplication.getApp().getApplicationContext());
+        } else if (input.startsWith("fakesms ")) {
+            String[] split = input.split(" ");
+            String number = null;
+            String text = null;
+            if (split.length >= 2) {
+                number = split[1];
+            }
+            if (split.length >= 3) {
+                text = "";
+                for (int i = 2; i < split.length; i++) {
+                    String s = split[i];
+                    text += " " + s;
+                }
+            }
+            SMSReceiver.faker(SMSoIPApplication.getApp().getApplicationContext(), number, text);
             return "SMS created";
         }
         return null;

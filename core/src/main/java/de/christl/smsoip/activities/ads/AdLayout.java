@@ -165,6 +165,7 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
             if (adView != null) {
                 AdRequest adRequest = new AdRequest();
                 adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
+                adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
                 adView.loadAd(adRequest);
             }
         }
