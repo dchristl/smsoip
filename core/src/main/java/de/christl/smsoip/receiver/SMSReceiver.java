@@ -36,6 +36,7 @@ import android.util.Log;
 import org.acra.ACRA;
 
 import java.io.FileNotFoundException;
+import java.util.Random;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
@@ -76,7 +77,9 @@ public class SMSReceiver extends BroadcastReceiver {
         Notification notification = builder.getNotification();
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        mNotificationManager.notify(ID, notification);
+        Random rand = new Random();
+        int id = rand.nextInt(50);
+        mNotificationManager.notify(id, notification);
     }
 
     @Override

@@ -30,7 +30,7 @@
             android:layout_gravity="center"
             android:drawablePadding="5dp"
             android:drawableLeft="@drawable/ic_contact_picture_2"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:ellipsize="marquee"
             android:singleLine="true"
             android:marqueeRepeatLimit="marquee_forever"
@@ -51,6 +51,7 @@
             android:layout_weight="1"
             android:fillViewport="true"
             >
+
         <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
@@ -58,13 +59,15 @@
                 android:layout_margin="10dp"
                 android:paddingBottom="10dp"
                 android:singleLine="false"
+                android:textSize="18sp"
                 />
     </ScrollView>
 
     <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray"
+            />
 
     <Button
             android:layout_height="wrap_content"
