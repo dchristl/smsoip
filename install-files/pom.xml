@@ -44,7 +44,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>2.3.1</version>
+                    <version>2.5.1</version>
                     <executions>
                         <execution>
                             <id>INSTALL FILE</id>
@@ -54,6 +54,7 @@
                             <!--just bind it to own (package) phase for calling-->
                             <phase>validate</phase>
                             <configuration>
+                                <skip>true</skip>
                                 <file>${maven-install-plugin.file}</file>
                                 <groupId>${maven-install-plugin.groupId}</groupId>
                                 <artifactId>${maven-install-plugin.artifactId}</artifactId>
