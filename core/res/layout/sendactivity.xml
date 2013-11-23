@@ -127,6 +127,7 @@
                         android:hint="@string/smsText"
                         android:textSize="15dp"
                         android:gravity="top|left"
+                        android:inputType="textCapSentences"
                         >
                 </de.christl.smsoip.ui.SMSInputEditText>
 

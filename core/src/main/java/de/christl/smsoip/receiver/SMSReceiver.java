@@ -72,13 +72,13 @@ public class SMSReceiver extends BroadcastReceiver {
         sendIntent.putExtra(TransparentActivity.MESSAGE, text);
         sendIntent.setData(uriBuilder.build());
         sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
+        Random rand = new Random();
+        int id = rand.nextInt(50);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, id, sendIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
         Notification notification = builder.getNotification();
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-        Random rand = new Random();
-        int id = rand.nextInt(50);
         mNotificationManager.notify(id, notification);
     }
 
@@ -147,13 +147,13 @@ public class SMSReceiver extends BroadcastReceiver {
                     sendIntent = NotificationUtil.getSchemeIntent(messages.getOriginatingAddress());
                 }
                 sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, sendIntent, 0);
+                boolean onlyOneNotfctn = preferences.getBoolean(SettingsConst.RECEIVER_ONLY_ONE_NOTFICATION, false);
+                int id = onlyOneNotfctn ? ID : ID++;
+                PendingIntent contentIntent = PendingIntent.getActivity(context, id, sendIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 builder.setContentIntent(contentIntent);
                 Notification notification = builder.getNotification();
                 String ns = Context.NOTIFICATION_SERVICE;
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-                boolean onlyOneNotfctn = preferences.getBoolean(SettingsConst.RECEIVER_ONLY_ONE_NOTFICATION, false);
-                int id = onlyOneNotfctn ? ID : ID++;
                 try {
                     mNotificationManager.notify(id, notification);
                 } catch (SecurityException e) {

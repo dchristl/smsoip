@@ -87,6 +87,7 @@ public class NumberAnswerDialog extends Dialog {
                 context.startActivity(sendIntent);
 
                 try {
+                    dismiss();
                     cancel();
                 } catch (IllegalArgumentException e) {
                     ACRA.getErrorReporter().handleSilentException(e);
