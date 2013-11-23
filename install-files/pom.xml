@@ -54,7 +54,6 @@
                             <!--just bind it to own (package) phase for calling-->
                             <phase>validate</phase>
                             <configuration>
-                                <skip>true</skip>
                                 <file>${maven-install-plugin.file}</file>
                                 <groupId>${maven-install-plugin.groupId}</groupId>
                                 <artifactId>${maven-install-plugin.artifactId}</artifactId>
