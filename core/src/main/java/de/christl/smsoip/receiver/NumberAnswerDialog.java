@@ -85,6 +85,8 @@ public class NumberAnswerDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 Intent sendIntent = NotificationUtil.getSchemeIntent(number);
+                sendIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(sendIntent);
 
                 try {
