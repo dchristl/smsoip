@@ -19,24 +19,41 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
-    <TextView
-            android:id="@+id/headline"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:drawablePadding="5dp"
-            android:drawableLeft="@drawable/ic_contact_picture_2"
-            android:textSize="22sp"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:layout_margin="10dp"
-            android:minWidth="300dp"
-            />
+
+    <LinearLayout tools:ignore="UseCompoundDrawables"
+                  android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+            >
+
+        <ImageView
+                android:id="@+id/contactImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_contact_picture_2"
+                android:layout_margin="5dp"
+                />
+
+        <TextView
+                android:id="@+id/headline"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:textSize="22sp"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:layout_margin="10dp"
+                android:minWidth="300dp"
+                />
+    </LinearLayout>
+
 
     <View
             android:layout_width="fill_parent"
@@ -69,13 +86,22 @@
             android:background="@android:color/darker_gray"
             />
 
-    <Button
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:id="@+id/answer"
-            android:layout_gravity="center"
-            android:text="@string/answer"
-            android:layout_marginTop="10dp"
-            android:drawableLeft="@drawable/send_button"
-            />
+    <RelativeLayout
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            >
+
+        <Button
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/answer"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/answer"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/send_button"
+                android:layout_centerInParent="true"
+                />
+    </RelativeLayout>
+
 </LinearLayout>

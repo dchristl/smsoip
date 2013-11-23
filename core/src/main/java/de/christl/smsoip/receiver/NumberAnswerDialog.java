@@ -28,8 +28,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.acra.ACRA;
@@ -74,7 +74,8 @@ public class NumberAnswerDialog extends Dialog {
         }
         int bmpResolution = NumberUtils.getBitmapResolution(context);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bmp, bmpResolution, bmpResolution, true);
-        headline.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(scaledBitmap), null, null, null);
+        ImageView imageView = ((ImageView) findViewById(R.id.contactImage));
+        imageView.setImageDrawable(new BitmapDrawable(scaledBitmap));
         headline.setSelected(true);
         headline.setText(senderName);
         TextView messageV = (TextView) findViewById(R.id.message);
