@@ -30,10 +30,12 @@ import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.provider.Telephony;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -182,6 +184,9 @@ public class SMSoIPApplication extends Application {
             getContentResolver().query(sentUri, projection, null, null, null);
             if (type != null) {
                 writeToDatabaseAvailable = true;
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                writeToDatabaseAvailable = Telephony.Sms.getDefaultSmsPackage(this).equals(getPackageName());
             }
         } catch (IllegalArgumentException e) {
             writeToDatabaseAvailable = false;
