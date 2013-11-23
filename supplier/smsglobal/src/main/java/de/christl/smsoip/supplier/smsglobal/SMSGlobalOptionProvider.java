@@ -58,7 +58,7 @@ public class SMSGlobalOptionProvider extends OptionProvider {
 
     @Override
     public int getMinimalCoreVersion() {
-        return 49;
+        return 52;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class SMSGlobalOptionProvider extends OptionProvider {
                         String spanContent = dest.toString();
                         boolean onlyDigits = true;
                         for (int z = 0; z < spanContent.length(); z++) {
-                            char c = spanContent.charAt(i);
+                            char c = spanContent.charAt(z);
                             if (!Character.isDigit(c)) {
                                 onlyDigits = false;
                                 break;
@@ -184,6 +184,7 @@ public class SMSGlobalOptionProvider extends OptionProvider {
             senderText.setText(textBeforeActivityKilled);
         }
     }
+
 
     public void saveLastSender() {
         if (senderText != null) {
