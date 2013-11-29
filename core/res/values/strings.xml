@@ -103,7 +103,6 @@
     <string name="write_to_database">Write to internal messages outbox</string>
     <string name="write_to_database_description">Write successful messages to your in-device message outbox.
     </string>
-    <string name="not_supported_on_device">Not supported on this device</string>
     <string name="pick_for_disabling">Tap for removing</string>
     <string name="receiver_added_twice">Receiver number added twice!</string>
     <string name="account_list">Account management</string>

@@ -304,28 +304,29 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         enableInfoOnStartup.setSummary(R.string.enable_info_update_description);
         root.addPreference(enableInfoOnStartup);
         boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
-        CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
-        writeToDataBase.setKey(SettingsConst.GLOBAL_WRITE_TO_DATABASE);
-        writeToDataBase.setDefaultValue(writeToDatabaseAvailable);
-        writeToDataBase.setEnabled(writeToDatabaseAvailable);
-        writeToDataBase.setTitle(R.string.write_to_database);
-        writeToDataBase.setSummary(writeToDatabaseAvailable ? R.string.write_to_database_description : R.string.not_supported_on_device);
-        root.addPreference(writeToDataBase);
-        final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
-        enableProviderOutput.setKey(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT);
-        enableProviderOutput.setDefaultValue(false);
-        enableProviderOutput.setEnabled(writeToDatabaseAvailable && getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false));
-        enableProviderOutput.setTitle(R.string.enable_provider_output);
-        enableProviderOutput.setSummary(writeToDatabaseAvailable ? R.string.enable_provider_output_description : R.string.not_supported_on_device);
-        root.addPreference(enableProviderOutput);
+        if (writeToDatabaseAvailable) {
+            CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
+            writeToDataBase.setKey(SettingsConst.GLOBAL_WRITE_TO_DATABASE);
+            writeToDataBase.setDefaultValue(true);
+            writeToDataBase.setTitle(R.string.write_to_database);
+            writeToDataBase.setSummary(R.string.write_to_database_description);
+            root.addPreference(writeToDataBase);
+            final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
+            enableProviderOutput.setKey(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT);
+            enableProviderOutput.setDefaultValue(false);
+            enableProviderOutput.setEnabled(getPreferenceManager().getSharedPreferences().getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false));
+            enableProviderOutput.setTitle(R.string.enable_provider_output);
+            enableProviderOutput.setSummary(R.string.enable_provider_output_description);
+            root.addPreference(enableProviderOutput);
 
-        writeToDataBase.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                enableProviderOutput.setEnabled(((Boolean) newValue));
-                return true;
-            }
-        });
+            writeToDataBase.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    enableProviderOutput.setEnabled(((Boolean) newValue));
+                    return true;
+                }
+            });
+        }
     }
 
     private void startImagePicker() {

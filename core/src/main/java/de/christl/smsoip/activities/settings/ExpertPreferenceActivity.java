@@ -96,58 +96,60 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
             root.addPreference(saveTemplateSingle);
         }
 
-        DigitsKeyListener keyListener = DigitsKeyListener.getInstance("0123456789ABCDEFabcdef");
-        EditTextPreference incomingColor = new EditTextPreference(this);
-        EditText incomingEditText = incomingColor.getEditText();
-        incomingEditText.setKeyListener(keyListener);
-        FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(8);
-        incomingEditText.setFilters(FilterArray);
-        incomingColor.setDialogTitle(R.string.incoming_color);
-        incomingColor.setKey(SettingsConst.INCOMING_COLOR);
-        incomingColor.setTitle(R.string.incoming_color);
-        incomingColor.setDefaultValue(ShowLastMessagesDialog.INCOMING_DEFAULT_COLOR);
-        incomingColor.setSummary(R.string.incoming_color_description);
-        root.addPreference(incomingColor);
+        boolean readFromDatabaseAvailable = SMSoIPApplication.getApp().isReadFromDatabaseAvailable();
 
-        EditTextPreference incomingTextColor = new EditTextPreference(this);
-        EditText incomingTextColorEditText = incomingTextColor.getEditText();
-        incomingTextColorEditText.setKeyListener(keyListener);
-        FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(8);
-        incomingTextColorEditText.setFilters(FilterArray);
-        incomingTextColor.setDialogTitle(R.string.incoming_text_color);
-        incomingTextColor.setKey(SettingsConst.INCOMING_TEXT_COLOR);
-        incomingTextColor.setTitle(R.string.incoming_text_color);
-        incomingTextColor.setDefaultValue(ShowLastMessagesDialog.INCOMING_DEFAULT_TEXT_COLOR);
-        incomingTextColor.setSummary(R.string.incoming_text_color_description);
-        root.addPreference(incomingTextColor);
+        if (readFromDatabaseAvailable) {
+            DigitsKeyListener keyListener = DigitsKeyListener.getInstance("0123456789ABCDEFabcdef");
+            EditTextPreference incomingColor = new EditTextPreference(this);
+            EditText incomingEditText = incomingColor.getEditText();
+            incomingEditText.setKeyListener(keyListener);
+            FilterArray = new InputFilter[1];
+            FilterArray[0] = new InputFilter.LengthFilter(8);
+            incomingEditText.setFilters(FilterArray);
+            incomingColor.setDialogTitle(R.string.incoming_color);
+            incomingColor.setKey(SettingsConst.INCOMING_COLOR);
+            incomingColor.setTitle(R.string.incoming_color);
+            incomingColor.setDefaultValue(ShowLastMessagesDialog.INCOMING_DEFAULT_COLOR);
+            incomingColor.setSummary(R.string.incoming_color_description);
+            root.addPreference(incomingColor);
 
-        EditTextPreference outgoingColor = new EditTextPreference(this);
-        EditText outgoingEditText = outgoingColor.getEditText();
-        outgoingEditText.setKeyListener(keyListener);
-        outgoingEditText.setFilters(FilterArray);
-        outgoingColor.setDialogTitle(R.string.outgoing_color);
-        outgoingColor.setKey(SettingsConst.OUTGOING_COLOR);
-        outgoingColor.setTitle(R.string.outgoing_color);
-        outgoingColor.setDefaultValue(ShowLastMessagesDialog.OUTGOING_DEFAULT_COLOR);
-        outgoingColor.setSummary(R.string.outgoing_color_description);
-        root.addPreference(outgoingColor);
+            EditTextPreference incomingTextColor = new EditTextPreference(this);
+            EditText incomingTextColorEditText = incomingTextColor.getEditText();
+            incomingTextColorEditText.setKeyListener(keyListener);
+            FilterArray = new InputFilter[1];
+            FilterArray[0] = new InputFilter.LengthFilter(8);
+            incomingTextColorEditText.setFilters(FilterArray);
+            incomingTextColor.setDialogTitle(R.string.incoming_text_color);
+            incomingTextColor.setKey(SettingsConst.INCOMING_TEXT_COLOR);
+            incomingTextColor.setTitle(R.string.incoming_text_color);
+            incomingTextColor.setDefaultValue(ShowLastMessagesDialog.INCOMING_DEFAULT_TEXT_COLOR);
+            incomingTextColor.setSummary(R.string.incoming_text_color_description);
+            root.addPreference(incomingTextColor);
 
+            EditTextPreference outgoingColor = new EditTextPreference(this);
+            EditText outgoingEditText = outgoingColor.getEditText();
+            outgoingEditText.setKeyListener(keyListener);
+            outgoingEditText.setFilters(FilterArray);
+            outgoingColor.setDialogTitle(R.string.outgoing_color);
+            outgoingColor.setKey(SettingsConst.OUTGOING_COLOR);
+            outgoingColor.setTitle(R.string.outgoing_color);
+            outgoingColor.setDefaultValue(ShowLastMessagesDialog.OUTGOING_DEFAULT_COLOR);
+            outgoingColor.setSummary(R.string.outgoing_color_description);
+            root.addPreference(outgoingColor);
 
-        EditTextPreference outgoingTextColor = new EditTextPreference(this);
-        EditText outgoingTextColorEditText = outgoingTextColor.getEditText();
-        outgoingTextColorEditText.setKeyListener(keyListener);
-        FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(8);
-        outgoingTextColorEditText.setFilters(FilterArray);
-        outgoingTextColor.setDialogTitle(R.string.outgoing_text_color);
-        outgoingTextColor.setKey(SettingsConst.OUTGOING_TEXT_COLOR);
-        outgoingTextColor.setTitle(R.string.outgoing_text_color);
-        outgoingTextColor.setDefaultValue(ShowLastMessagesDialog.OUTGOING_DEFAULT_TEXT_COLOR);
-        outgoingTextColor.setSummary(R.string.outgoing_text_color_description);
-        root.addPreference(outgoingTextColor);
-
+            EditTextPreference outgoingTextColor = new EditTextPreference(this);
+            EditText outgoingTextColorEditText = outgoingTextColor.getEditText();
+            outgoingTextColorEditText.setKeyListener(keyListener);
+            FilterArray = new InputFilter[1];
+            FilterArray[0] = new InputFilter.LengthFilter(8);
+            outgoingTextColorEditText.setFilters(FilterArray);
+            outgoingTextColor.setDialogTitle(R.string.outgoing_text_color);
+            outgoingTextColor.setKey(SettingsConst.OUTGOING_TEXT_COLOR);
+            outgoingTextColor.setTitle(R.string.outgoing_text_color);
+            outgoingTextColor.setDefaultValue(ShowLastMessagesDialog.OUTGOING_DEFAULT_TEXT_COLOR);
+            outgoingTextColor.setSummary(R.string.outgoing_text_color_description);
+            root.addPreference(outgoingTextColor);
+        }
         Preference exportSettings = new Preference(this);
         exportSettings.setTitle(R.string.export_settings);
         exportSettings.setSummary(R.string.export_settings_description);

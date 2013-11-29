@@ -35,7 +35,6 @@ import android.os.Process;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.provider.Telephony;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -101,6 +100,7 @@ public class SMSoIPApplication extends Application {
     private HashMap<String, SMSoIPPlugin> pluginsToNew = new HashMap<String, SMSoIPPlugin>();
     private ArrayList<SMSoIPPlugin> plugins;
     private boolean writeToDatabaseAvailable = false;
+    private boolean readFromDatabaseAvailable = false;
     private boolean adsEnabled = true;
     private static WeakReference<Activity> currentActivity;
     private boolean pickActionAvailable = true;
@@ -136,7 +136,7 @@ public class SMSoIPApplication extends Application {
         try {
             super.onCreate();
             app = this;
-            setWriteToDBAvailable();
+            setDBChecks();
             checkHash();
             checkForContactAvailability();
         } catch (Exception e) {
@@ -144,6 +144,7 @@ public class SMSoIPApplication extends Application {
             appInitException = e;
         }
     }
+
 
     public void throwlastExceptionIfAny() {
         if (appInitException != null) {
@@ -174,7 +175,7 @@ public class SMSoIPApplication extends Application {
     /**
      * check if internal db is available
      */
-    private void setWriteToDBAvailable() {
+    private void setDBChecks() {
         try {
             Uri sentUri = Uri.parse("content://sms/sent");
             String type = getContentResolver().getType(sentUri);
@@ -184,6 +185,7 @@ public class SMSoIPApplication extends Application {
             getContentResolver().query(sentUri, projection, null, null, null);
             if (type != null) {
                 writeToDatabaseAvailable = true;
+                readFromDatabaseAvailable = true;
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 writeToDatabaseAvailable = false;
@@ -193,8 +195,10 @@ public class SMSoIPApplication extends Application {
             }
         } catch (IllegalArgumentException e) {
             writeToDatabaseAvailable = false;
+            readFromDatabaseAvailable = false;
         } catch (SQLiteException e) {
             writeToDatabaseAvailable = false;
+            readFromDatabaseAvailable = false;
         }
     }
 
@@ -517,12 +521,21 @@ public class SMSoIPApplication extends Application {
     }
 
     /**
-     * is db availabele
+     * possible to write into db
      *
      * @return
      */
     public boolean isWriteToDatabaseAvailable() {
         return writeToDatabaseAvailable;
+    }
+
+    /**
+     * possible to read from devices db
+     *
+     * @return
+     */
+    public boolean isReadFromDatabaseAvailable() {
+        return readFromDatabaseAvailable;
     }
 
     /**

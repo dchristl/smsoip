@@ -736,7 +736,7 @@ public class SendActivity extends AllActivity {
      */
     private void setLastMessagesButton() {
         View showHistoryButton = findViewById(R.id.showHistory);
-        showHistoryButton.setVisibility(SMSoIPApplication.getApp().isWriteToDatabaseAvailable() ? View.VISIBLE : View.GONE);
+        showHistoryButton.setVisibility(SMSoIPApplication.getApp().isReadFromDatabaseAvailable() ? View.VISIBLE : View.GONE);
         showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

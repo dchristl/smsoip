@@ -105,7 +105,6 @@
     <string name="write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
     <string name="write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes.
     </string>
-    <string name="not_supported_on_device">Auf diesem Gerät nicht unterstützt</string>
     <string name="pick_for_disabling">Klick zum Entfernen</string>
     <string name="receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
     <string name="account_list">Account-Verwaltung</string>
