@@ -230,48 +230,50 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
             edit.commit();
         }
         boolean imagePickerAvailable = SMSoIPApplication.getApp().isImagePickerAvailable();
-        PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
-        backgroundImageIntent.setTitle(R.string.background_image);
-        backgroundImageIntent.setEnabled(imagePickerAvailable);
-        backgroundImageIntent.setSummary(imagePickerAvailable ? R.string.background_image_description : R.string.not_supported_on_device);
-        backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (BitmapProcessor.isBackgroundImageSet()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(GlobalPreferences.this);
-                    builder.setTitle(R.string.background_image);
-                    builder.setMessage(R.string.background_image_dialog);
-                    builder.setPositiveButton(R.string.background_image_dialog_pick, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startImagePicker();
-                            try {
-                                dialog.dismiss();
-                            } catch (IllegalArgumentException e) {
-                                ACRA.getErrorReporter().handleSilentException(e);
+        if (imagePickerAvailable) {
+            PreferenceScreen backgroundImageIntent = getPreferenceManager().createPreferenceScreen(this);
+            backgroundImageIntent.setTitle(R.string.background_image);
+            backgroundImageIntent.setSummary(R.string.background_image_description);
+            backgroundImageIntent.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    if (BitmapProcessor.isBackgroundImageSet()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(GlobalPreferences.this);
+                        builder.setTitle(R.string.background_image);
+                        builder.setMessage(R.string.background_image_dialog);
+                        builder.setPositiveButton(R.string.background_image_dialog_pick, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startImagePicker();
+                                try {
+                                    dialog.dismiss();
+                                } catch (IllegalArgumentException e) {
+                                    ACRA.getErrorReporter().handleSilentException(e);
+                                }
                             }
-                        }
-                    });
-                    builder.setNegativeButton(R.string.background_image_dialog_reset, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            writeImageUriAndUpdateBackground(null);
-                            try {
-                                dialog.dismiss();
-                            } catch (IllegalArgumentException e) {
-                                ACRA.getErrorReporter().handleSilentException(e);
+                        });
+                        builder.setNegativeButton(R.string.background_image_dialog_reset, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                writeImageUriAndUpdateBackground(null);
+                                try {
+                                    dialog.dismiss();
+                                } catch (IllegalArgumentException e) {
+                                    ACRA.getErrorReporter().handleSilentException(e);
+                                }
                             }
-                        }
-                    });
-                    builder.show();
-                } else {
-                    startImagePicker();
-                }
+                        });
+                        builder.show();
+                    } else {
+                        startImagePicker();
+                    }
 
-                return true;
-            }
-        });
-        root.addPreference(backgroundImageIntent);
+                    return true;
+                }
+            });
+            root.addPreference(backgroundImageIntent);
+        }
+
     }
 
     private void addBehaviourSettings(PreferenceScreen root) {
