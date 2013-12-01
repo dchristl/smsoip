@@ -99,8 +99,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String response = UrlConnectionFactory.inputStream2DebugString(inputStream, ENCODING);
-        System.out.println("response = " + response);
-        if (!response.contains("overview.aspx")) {
+        if (!response.contains("pageRedirect")) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
         String tmpSessionId = UrlConnectionFactory.findCookieByName(headerFields, COOKIE_NAME.toUpperCase());
