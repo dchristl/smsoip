@@ -18,15 +18,6 @@
 
 package de.christl.smsoip.supplier.freenet;
 
-import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.connection.UrlConnectionFactory;
-import de.christl.smsoip.constant.FireSMSResult;
-import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.SMSActionResult;
-import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.picker.DateTimeObject;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
-import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -42,6 +33,16 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResult;
+import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.picker.DateTimeObject;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
+import de.christl.smsoip.provider.versioned.TimeShiftSupplier;
 
 /**
  * Class for handling sms by freenet
@@ -93,29 +94,37 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         return processRefreshReturn(con.getInputStream());
     }
 
+    /**
+     * [{"Files":{"MAXVOLUME":"524288000","USEDVOLUME":"0","USEDTRANSFER":"0","MAXTRANSFER":"2097152000"},
+     * "Sms":{"used":2,"deposit":60,"voucher":0},"Fax":{"used":1,"deposit":25,"voucher":0},"imapUser":"",
+     * "Mail":{"usedQuota":"1953","maxQuota":"1024000"}},
+     * {"INBOX":{"status":"* STATUS \"INBOX\" (MESSAGES 0 RECENT 0 UIDNEXT 40 UNSEEN 0)","uidnext":"40","all":0,"unseen":0,"recent":0}}]
+     *
+     * @param is
+     * @return
+     * @throws IOException
+     */
     private SMSActionResult processRefreshReturn(InputStream is) throws IOException {
         String message = UrlConnectionFactory.inputStream2DebugString(is, ENCODING);
-        String out = provider.getTextByResourceId(R.string.refresh_informations);
-        Pattern p = Pattern.compile("SMS.*?\\}"); //get the SMS JSON object
-        Matcher m = p.matcher(message);
-        while (m.find()) {
-            String messageJSONObject = message.substring(m.start(), m.end());
-            p = Pattern.compile("[0-9]+");
-            m = p.matcher(messageJSONObject);
-            Integer allSMS = null;
-            while (m.find()) {
-                if (allSMS == null) {
-                    allSMS = Integer.parseInt(messageJSONObject.substring(m.start(), m.end()));
-                } else {
-                    break;
-                }
-            }
-            if (allSMS != null) {
-                return SMSActionResult.NO_ERROR(String.format(out, allSMS));
-            }
 
+        Pattern p = Pattern.compile("Sms.*?used\":([0-9]+).*?deposit\":([0-9]+)?,"); //get the SMS JSON object
+        Matcher m = p.matcher(message);
+        int usedSMS = -1;
+        int depositSMS = -1;
+        while (m.find()) {
+            String used = m.group(1);
+            String deposit = m.group(2);
+            try {
+                usedSMS = Integer.parseInt(used);
+                depositSMS = Integer.parseInt(deposit);
+            } catch (NumberFormatException e) {
+                return SMSActionResult.UNKNOWN_ERROR();
+            }
+            break;
         }
-        return SMSActionResult.UNKNOWN_ERROR();
+        String out = provider.getTextByResourceId(R.string.refresh_informations);
+        return SMSActionResult.NO_ERROR(String.format(out, depositSMS - usedSMS));
+
     }
 
 

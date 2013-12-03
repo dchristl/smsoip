@@ -28,16 +28,23 @@ import android.preference.Preference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import de.christl.smsoip.activities.SendActivity;
-import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
-import de.christl.smsoip.option.OptionProvider;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+
+import de.christl.smsoip.activities.SendActivity;
+import de.christl.smsoip.activities.settings.preferences.model.AccountModel;
+import de.christl.smsoip.option.OptionProvider;
 
 /**
  * Class for Freenet options
@@ -342,5 +349,10 @@ public class FreenetOptionProvider extends OptionProvider {
 
     private int getLastSender() {
         return getSettings().getInt(SENDER_LAST_NUMBER_PREFIX + getUserName(), Spinner.INVALID_POSITION);
+    }
+
+    @Override
+    public int getMinimalCoreVersion() {
+        return 52;
     }
 }
