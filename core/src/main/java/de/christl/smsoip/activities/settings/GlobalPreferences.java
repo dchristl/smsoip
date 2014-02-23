@@ -42,6 +42,7 @@ import org.acra.ACRA;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.christl.smsoip.R;
@@ -50,6 +51,7 @@ import de.christl.smsoip.activities.settings.preferences.FontSizePreference;
 import de.christl.smsoip.activities.threading.ProcessImageAndSetBackgroundTask;
 import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.application.SMSoIPPlugin;
+import de.christl.smsoip.autosuggest.NumberUtils;
 import de.christl.smsoip.constant.LogConst;
 import de.christl.smsoip.models.ErrorReporterStack;
 import de.christl.smsoip.util.BitmapProcessor;
@@ -367,7 +369,7 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         defaultAreaCode.setDialogTitle(R.string.area_code);
         defaultAreaCode.setKey(SettingsConst.GLOBAL_AREA_CODE);
         defaultAreaCode.setTitle(R.string.area_code);
-        defaultAreaCode.setDefaultValue("49");
+        defaultAreaCode.setDefaultValue(NumberUtils.getLanguagePrefixAsString(Locale.getDefault()));
         defaultAreaCode.setSummary(R.string.area_code_description);
         defaultAreaCode.setOnPreferenceChangeListener(getListener());
         root.addPreference(defaultAreaCode);
