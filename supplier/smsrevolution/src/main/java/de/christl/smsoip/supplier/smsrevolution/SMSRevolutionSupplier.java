@@ -48,7 +48,7 @@ import java.util.List;
 public class SMSRevolutionSupplier implements TimeShiftSupplier, ExtendedSMSSupplier {
     SMSRevolutionOptionProvider provider;
 
-    private static final String ENCODING = "ISO-8859-1";
+    private static final String ENCODING = "UTF-8";
 
     private static final String LOGIN_BALANCE_URL = "http://www.sms-revolution.ch/API/httpkonto.php?return=xml&";
     private static final String SEND_URL = "http://www.sms-revolution.ch/API/httpsms.php?return=xml&action=send&";
