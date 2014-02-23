@@ -55,10 +55,10 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
     private FreenetOptionProvider provider;
 
     private static final String LOGIN_URL = "https://auth.freenet.de/portal/login.php";
-    private static final String HOME_URL = "http://webmail.freenet.de/login/index.html";
-    private static final String REFRESH_URL = "http://webmail.freenet.de/Global/Action/StatusBarGet";
-    private static final String SEND_URL = "http://webmail.freenet.de/Sms/Action/Send?myAction=send&";
-    private static final String BALANCE_URL = "http://webmail.freenet.de/Sms/View/Send";
+    private static final String HOME_URL = "https://webmail.freenet.de/login/index.html";
+    private static final String REFRESH_URL = "https://webmail.freenet.de/Global/Action/StatusBarGet";
+    private static final String SEND_URL = "https://webmail.freenet.de/Sms/Action/Send?myAction=send&";
+    private static final String BALANCE_URL = "https://webmail.freenet.de/Sms/View/Send";
     private List<String> sessionCookies;
     private static final String ENCODING = "ISO-8859-1";
     private static final int DEFAULT_WO_SI = 0;
@@ -178,6 +178,7 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
         factory = new UrlConnectionFactory(HOME_URL);
         factory.setCookies(sessionCookies);
         HttpURLConnection httpURLConnection1 = factory.create();
+        String s = UrlConnectionFactory.inputStream2DebugString(httpURLConnection1.getInputStream());
         Map<String, List<String>> homeHeaderFields = httpURLConnection1.getHeaderFields();
         if (homeHeaderFields == null) {
             return SMSActionResult.NETWORK_ERROR();
