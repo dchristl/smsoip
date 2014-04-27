@@ -149,8 +149,8 @@
 
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>1.4</version>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
                 <executions>
                     <execution>
                         <phase>install</phase>
@@ -214,6 +214,13 @@
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>2.0.6</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -267,11 +274,6 @@
             <artifactId>powermock-api-mockito</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -301,12 +303,12 @@
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.4</version>
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.4</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
@@ -334,11 +336,6 @@
                         <artifactId>android</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.xerial</groupId>
-                <artifactId>sqlite-jdbc</artifactId>
-                <version>3.7.2</version>
             </dependency>
             <dependency>
                 <groupId>ch.acra</groupId>

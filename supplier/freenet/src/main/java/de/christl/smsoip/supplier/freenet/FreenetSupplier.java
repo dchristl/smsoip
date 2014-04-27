@@ -99,6 +99,11 @@ public class FreenetSupplier implements ExtendedSMSSupplier, TimeShiftSupplier {
      * "Sms":{"used":2,"deposit":60,"voucher":0},"Fax":{"used":1,"deposit":25,"voucher":0},"imapUser":"",
      * "Mail":{"usedQuota":"1953","maxQuota":"1024000"}},
      * {"INBOX":{"status":"* STATUS \"INBOX\" (MESSAGES 0 RECENT 0 UIDNEXT 40 UNSEEN 0)","uidnext":"40","all":0,"unseen":0,"recent":0}}]
+     * <p/>
+     * <p/>
+     * [{"Files":{"MAXVOLUME":"524288000","USEDVOLUME":"0","USEDTRANSFER":"0","MAXTRANSFER":"2097152000"},
+     * "Sms":{"used":0,"deposit":-1,"voucher":0},"Fax":{"used":0,"deposit":-1,"voucher":0},"imapUser":"",
+     * "Mail":{"usedQuota":"1957","maxQuota":"512000"}},{"INBOX":{"status":"* STATUS \"INBOX\" (MESSAGES 0 RECENT 0 UIDNEXT 40 UNSEEN 0)","uidnext":"40","all":0,"unseen":0,"recent":0}}]
      *
      * @param is
      * @return
