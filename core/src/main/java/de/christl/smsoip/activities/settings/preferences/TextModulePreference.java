@@ -19,6 +19,7 @@
 package de.christl.smsoip.activities.settings.preferences;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
@@ -149,7 +150,10 @@ public class TextModulePreference extends DialogPreference {
                     setTitle(newKey);
                 }
                 try {
-                    getDialog().dismiss();
+                    Dialog dialog = getDialog();
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
                 } catch (IllegalArgumentException e) {
                     ACRA.getErrorReporter().handleSilentException(e);
                 }

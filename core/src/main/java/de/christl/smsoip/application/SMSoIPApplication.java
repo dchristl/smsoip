@@ -264,7 +264,7 @@ public class SMSoIPApplication extends Application {
         }
     }
 
-    private List<ApplicationInfo> restoreProvidersFromCache() {
+    private synchronized List<ApplicationInfo> restoreProvidersFromCache() {
         long start = System.currentTimeMillis();
         File file = new File(getCacheDir(), SERIALIZE_NAME);
         List<ApplicationInfo> out;

@@ -74,11 +74,11 @@ public class BackgroundSendTask extends AsyncTask<Void, BreakingProgressDialogFa
                 sendActivity.refreshInformationText(false);
             }
             try {
-                if (progressDialog != null) {
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.cancel();
                 }
             } catch (Exception e) {
-                ACRA.getErrorReporter().handleSilentException(new IllegalArgumentException("Error dismissing dialog<" + dialog + ">", e));
+                ACRA.getErrorReporter().handleSilentException(new IllegalArgumentException("Error dismissing dialog<" + progressDialog + ">", e));
             }
             sendActivity.showReturnMessage(fireSMSResults);
         }
