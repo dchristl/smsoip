@@ -54,6 +54,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     private static final String ENCODING = "ISO-8859-1";
 
     private static final String LOGIN_URL = "https://directbox.com/portal/index.aspx";
+
     private static final String BALANCE_URL = "https://directbox.com/portal/services/WidgetService.asmx/WidgetLoad";
     private static final String NUMBER_AND_SEND_URL = "https://directbox.com/portal/sites/messaging/shortmessage.aspx";
     private static final String COOKIE_NAME = "ASP.NET_SessionId";
@@ -73,16 +74,7 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
     @Override
     public synchronized SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
         sessionId = new ArrayList<String>();
-        StringBuilder bodyString = new StringBuilder();
-        if (userName != null && !userName.contains("@")) {
-            userName = userName + "@directbox.com";
-        }
-        bodyString.append(SendConstants.USER_NAME_FIELD_ID).append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&");
-        bodyString.append(SendConstants.PASSWORD_FIELD_ID).append(URLEncoder.encode(password == null ? "" : password, ENCODING)).append("&");
-        bodyString.append(SendConstants.VIEWSTATE_LOGIN_PARAM).append("&");
-        bodyString.append(SendConstants.EVENT_VALIDATION_LOGIN__PARAM).append("&");
-        bodyString.append(SendConstants.ASYNCPOST_PARAM).append("&");
-        bodyString.append(SendConstants.LOGIN_BUTTON_PARAM);
+        StringBuilder bodyString = buildBodyString(userName, password);
 
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
         Map<String, String> requestProperties = new HashMap<String, String>(1);
@@ -108,6 +100,35 @@ public class DirectboxSupplier implements TimeShiftSupplier, ExtendedSMSSupplier
         }
         sessionId.add(tmpSessionId.replaceAll(";.*", ""));
         return SMSActionResult.LOGIN_SUCCESSFUL();
+    }
+
+    private StringBuilder buildBodyString(String userName, String password) throws IOException {
+        StringBuilder bodyString = new StringBuilder();
+        if (userName != null && !userName.contains("@")) {
+            userName = userName + "@directbox.com";
+        }
+
+        //fetch the parameters for viewstate and eventvalidation
+        UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL, UrlConnectionFactory.METHOD_GET);
+        InputStream inputStream = factory.create().getInputStream();
+        if (inputStream == null) {
+            throw new IOException("Network error");
+        }
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+        Elements viewstate = parse.select("input#__VIEWSTATE");
+        String viewStateContent = viewstate.attr("value");
+        viewStateContent = URLEncoder.encode(viewStateContent, ENCODING);
+        Elements eventValidationElement = parse.select("input#__EVENTVALIDATION");
+        String eventValidationContent = eventValidationElement.attr("value");
+        eventValidationContent = URLEncoder.encode(eventValidationContent, ENCODING);
+
+        bodyString.append(SendConstants.USER_NAME_FIELD_ID).append(URLEncoder.encode(userName == null ? "" : userName, ENCODING)).append("&");
+        bodyString.append(SendConstants.PASSWORD_FIELD_ID).append(URLEncoder.encode(password == null ? "" : password, ENCODING)).append("&");
+        bodyString.append(SendConstants.VIEWSTATE_LOGIN_PARAM).append(viewStateContent).append("&");
+        bodyString.append(SendConstants.EVENT_VALIDATION_LOGIN__PARAM).append(eventValidationContent).append("&");
+        bodyString.append(SendConstants.ASYNCPOST_PARAM).append("&");
+        bodyString.append(SendConstants.LOGIN_BUTTON_PARAM);
+        return bodyString;
     }
 
     @Override

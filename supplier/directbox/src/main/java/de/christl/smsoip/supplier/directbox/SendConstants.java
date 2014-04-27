@@ -22,15 +22,12 @@ package de.christl.smsoip.supplier.directbox;
 public abstract class SendConstants {
 
     //LOGIN
-    private static final String EVENT_VALIDATION_LOGIN_CONTENT = "%2FwEdAAX7x9TmKuYXAftJrr6ShgMe7Cei4VMSxDnA7M6xNDq29FJ82ToNKYgtPNqy7%2BKNm%2FAA%2FBSYkh%2BzZu6MMKeqqn2e%2Fu3fZyhfw%2Bs64gQr7QeRMLQBfVbjWrGPieQaIw17QbLWj7%2F4";
-    private static final String VIEW_STATE_LOGIN_CONTENT = "%2FwEPDwUKMTQ5OTMzMTM0Nw9kFgJmD2QWAgIDD2QWAgIBD2QWCAIFDxQrAAIUKwADDxYCHhdFbmFibGVBamF4U2tpblJlbmRlcmluZ2hkZGRkZAIHDw8WAh4HVmlzaWJsZWhkZAILD2QWAgIBD2QWAmYPFgIfAWhkAg0PZBYCAgEPZBYCZg9kFgJmD2QWAgIBD2QWAgICD2QWAmYPZBYCAgEPZBYIAgEPDxYCHwFoZGQCBQ8PFgIeC05hdmlnYXRlVXJsBSEvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWNvdmVyLmFzcHhkZAIHDw8WAh8CBSIvcG9ydGFsL3JlZ2lzdHJhdGlvbi9yZWdpc3Rlci5hc3B4ZGQCCQ8PFgIfAWhkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQUXY3RsMDAkUmFkV2luZG93TWFuYWdlcjGl4vENeGhMLYJtkse7moJZvVO4cw%3D%3D";
-
     public static final String USER_NAME_FIELD_ID = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24tbIdentity=";
     public static final String PASSWORD_FIELD_ID = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24tbPassword=";
     public static final String LOGIN_BUTTON_PARAM = "ctl00%24ContentPlaceHolder%24ctl00%24LoginPanel1%24btnLogin=Anmelden";
     public static final String ASYNCPOST_PARAM = "__ASYNCPOST=true";
-    public static final String EVENT_VALIDATION_LOGIN__PARAM = "__EVENTVALIDATION=" + EVENT_VALIDATION_LOGIN_CONTENT;
-    public static final String VIEWSTATE_LOGIN_PARAM = "__VIEWSTATE=" + VIEW_STATE_LOGIN_CONTENT;
+    public static final String EVENT_VALIDATION_LOGIN__PARAM = "__EVENTVALIDATION=";
+    public static final String VIEWSTATE_LOGIN_PARAM = "__VIEWSTATE=";
     public static final String X_WWW_FORM_URL_ENCODING_WITH_UTF8 = "application/x-www-form-urlencoded";
 
 
