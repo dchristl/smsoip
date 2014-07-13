@@ -18,13 +18,6 @@
 
 package de.christl.smsoip.supplier.goodmails;
 
-import de.christl.smsoip.activities.Receiver;
-import de.christl.smsoip.connection.UrlConnectionFactory;
-import de.christl.smsoip.constant.FireSMSResult;
-import de.christl.smsoip.constant.FireSMSResultList;
-import de.christl.smsoip.constant.SMSActionResult;
-import de.christl.smsoip.option.OptionProvider;
-import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -35,8 +28,17 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.christl.smsoip.activities.Receiver;
+import de.christl.smsoip.connection.UrlConnectionFactory;
+import de.christl.smsoip.constant.FireSMSResult;
+import de.christl.smsoip.constant.FireSMSResultList;
+import de.christl.smsoip.constant.SMSActionResult;
+import de.christl.smsoip.option.OptionProvider;
+import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 /**
  *
@@ -45,8 +47,11 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
 
     private static final String LOGIN_URL = "http://www.goodmails.de/index.php?action=login";
-    public static final String HOME_PAGE = "http://www.goodmails.de/index.php?action=userfrontpage";
+    public static final String HOME_PAGE = "http://goodmails.de/sms.php?action=compose&type=2";
     private static final String TARGET_URL = "http://www.goodmails.de/sms.php?action=sendSMS";
+    private static final String PRE_SEND = "http://www.goodmails.de/sms.php?action=compose&type=";
+    private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/34.0.1847.116 Chrome/34.0.1847.116 Safari/537.36";
+
     private String sidURLString;
     private static final String ENCODING = "UTF-8";
 
@@ -69,11 +74,21 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         }
         int sendIndex = findSendMethod(spinnerText);
 
+        Map<String, String> requestProperties = new HashMap<String, String>(1);
+        requestProperties.put("Content-Type", "application/x-www-form-urlencoded");
+        requestProperties.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        requestProperties.put("Host", "goodmails.de");
+
+
         FireSMSResultList out = new FireSMSResultList();
+
         for (Receiver receiver : receivers) {
             UrlConnectionFactory factory = new UrlConnectionFactory(TARGET_URL + "&" + sidURLString);
+            factory.setTargetAgent(USER_AGENT);
+//            String token = getToken(sendIndex);
+            factory.setRequestProperties(requestProperties);
             try {
-                String headerFields = "&to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, ENCODING);
+                String headerFields = "to=" + receiver.getReceiverNumber() + "&smsText=" + URLEncoder.encode(smsText, ENCODING);
                 switch (sendIndex) {
                     case 0: //free
                         headerFields += "&type=freesms";
@@ -106,6 +121,24 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
         return out;
     }
 
+    private String getToken(int sendIndex) throws IOException {
+        String url = PRE_SEND + (sendIndex + 1) + "&" + sidURLString;
+        UrlConnectionFactory factory = new UrlConnectionFactory(url);
+        factory.setTargetAgent(USER_AGENT);
+        InputStream inputStream = factory.getConnnection().getInputStream();
+        Document parse = Jsoup.parse(inputStream, ENCODING, "");
+        Elements select = parse.select("input[name=token]");
+        if (select.size() > 0) {
+            String value = select.first().attr("value");
+            if (!value.equals("")) {
+                return value;
+
+            }
+        }
+        return null;
+
+    }
+
 
     @Override
     public SMSActionResult refreshInfoTextAfterMessageSuccessfulSent() throws IOException {
@@ -127,13 +160,14 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
         String tmpUrl = HOME_PAGE + "&" + sidURLString;
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
+        factory.setTargetAgent(USER_AGENT);
         HttpURLConnection urlConnection = factory.create();
         Document parse = Jsoup.parse(urlConnection.getInputStream(), ENCODING, "");
-        Elements select = parse.select("div.mainMenu ul li span:containsOwn(Credits)");
+        Elements select = parse.select("div#remainingbalance");
         if (select.size() != 1) {
             return SMSActionResult.UNKNOWN_ERROR();
         }
-        return SMSActionResult.NO_ERROR(select.text());
+        return SMSActionResult.NO_ERROR("Credits: " + select.text());
     }
 
     private SMSActionResult processResult(InputStream s) throws IOException {
@@ -164,7 +198,7 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
                 URLEncoder.encode(password == null ? "" : password, ENCODING) + "&email_domain=goodmails.de&language=deutsch&do=login";
 
         UrlConnectionFactory factory = new UrlConnectionFactory(tmpUrl);
-
+        factory.setTargetAgent(USER_AGENT);
         HttpURLConnection httpURLConnection = factory.create();
         InputStream inputStream = httpURLConnection.getInputStream();//fire
         if (inputStream == null) {
