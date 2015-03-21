@@ -1,0 +1,6 @@
+target
+.idea
+*.iml
+gen
+gen-external-apklibs
+*.patch
