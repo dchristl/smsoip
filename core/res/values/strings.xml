@@ -100,8 +100,8 @@
         removed!
     </string>
     <string name="no_phone_type_label">other</string>
-    <string name="write_to_database">Write to internal messages outbox</string>
-    <string name="write_to_database_description">Write successful messages to your in-device message outbox.
+    <string name="write_to_database">Keep successful messages</string>
+    <string name="write_to_database_description_internal">Write successful messages to your in-device message outbox.
     </string>
     <string name="pick_for_disabling">Tap for removing</string>
     <string name="receiver_added_twice">Receiver number added twice!</string>
@@ -280,4 +280,5 @@
     <string name="settings_will_be_imported">Settings will be imported from %s.</string>
     <string name="import_success">Settings successfully imported. SMSoIP will be restarted.</string>
     <string name="import_failure">Error during import.</string>
+    <string name="write_to_database_description_external">Write to internal SMSoIP messages outbox</string>
 </resources>

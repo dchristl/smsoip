@@ -307,13 +307,18 @@ public class GlobalPreferences extends BackgroundPreferenceActivity {
         enableInfoOnStartup.setTitle(R.string.enable_info_update);
         enableInfoOnStartup.setSummary(R.string.enable_info_update_description);
         root.addPreference(enableInfoOnStartup);
-        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable() || SMSoIPApplication.getApp().isUseOwnDatabase();
         if (writeToDatabaseAvailable) {
             CheckBoxPreference writeToDataBase = new CheckBoxPreference(this);
             writeToDataBase.setKey(SettingsConst.GLOBAL_WRITE_TO_DATABASE);
             writeToDataBase.setDefaultValue(true);
             writeToDataBase.setTitle(R.string.write_to_database);
-            writeToDataBase.setSummary(R.string.write_to_database_description);
+            if (SMSoIPApplication.getApp().isUseOwnDatabase()) {
+                writeToDataBase.setSummary(R.string.write_to_database_description_external);
+            } else {
+                writeToDataBase.setSummary(R.string.write_to_database_description_internal);
+            }
+
             root.addPreference(writeToDataBase);
             final CheckBoxPreference enableProviderOutput = new CheckBoxPreference(this);
             enableProviderOutput.setKey(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT);

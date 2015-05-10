@@ -68,9 +68,6 @@ public class GoodmailsSupplier implements ExtendedSMSSupplier {
 
     @Override
     public FireSMSResultList fireSMS(String smsText, List<Receiver> receivers, String spinnerText) throws IOException {
-        if (true) {
-            return FireSMSResultList.getAllInOneResult(SMSActionResult.NO_ERROR(), receivers);
-        }
         SMSActionResult result = checkCredentials(provider.getUserName(), provider.getPassword());
         if (!result.isSuccess()) {
             return FireSMSResultList.getAllInOneResult(result, receivers);

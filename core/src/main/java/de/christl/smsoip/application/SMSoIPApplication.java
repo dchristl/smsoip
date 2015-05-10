@@ -190,16 +190,17 @@ public class SMSoIPApplication extends Application {
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 useOwnDatabase = true;
-
-                //NPE on KitKat devices without phone capability
-//                writeToDatabaseAvailable = Telephony.Sms.getDefaultSmsPackage(this).equals(getPackageName());
+                writeToDatabaseAvailable = false;
+                readFromDatabaseAvailable = false;
             }
         } catch (IllegalArgumentException e) {
             writeToDatabaseAvailable = false;
             readFromDatabaseAvailable = false;
+            useOwnDatabase = true;
         } catch (SQLiteException e) {
             writeToDatabaseAvailable = false;
             readFromDatabaseAvailable = false;
+            useOwnDatabase = true;
         }
     }
 

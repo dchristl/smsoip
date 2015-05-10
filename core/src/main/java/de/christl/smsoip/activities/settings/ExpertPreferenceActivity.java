@@ -72,11 +72,11 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
         conversationOrderDownwards.setTitle(R.string.conversation_order_down);
         conversationOrderDownwards.setSummary(R.string.conversation_order_down_description);
         root.addPreference(conversationOrderDownwards);
-        boolean writeToDatabaseAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable();
+        boolean outputAvailable = SMSoIPApplication.getApp().isWriteToDatabaseAvailable() || SMSoIPApplication.getApp().isUseOwnDatabase();
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-        boolean writeEnabled = writeToDatabaseAvailable && sharedPreferences.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && sharedPreferences.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false);
+        boolean writeEnabled = outputAvailable && sharedPreferences.getBoolean(SettingsConst.GLOBAL_WRITE_TO_DATABASE, false) && sharedPreferences.getBoolean(SettingsConst.GLOBAL_ENABLE_PROVIDER_OUPUT, false);
 
-        if (writeToDatabaseAvailable) {
+        if (outputAvailable) {
             EditTextPreference saveTemplateMulti = new EditTextPreference(this);
             saveTemplateMulti.setDialogTitle(R.string.output_template_multi);
             saveTemplateMulti.setKey(SettingsConst.OUTPUT_TEMPLATE_MULTI);

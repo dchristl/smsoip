@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) Danny Christl 2012.
   ~     This file is part of SMSoIP.
   ~
@@ -29,7 +28,7 @@
     <string name="receiverField">Name oder Nummer</string>
     <string name="smsText">Nachricht</string>
     <string name="chooseType">Sendetyp</string>
-    <string formatted="false" name="smssigns">%s Zeichen (%s SMS)</string>
+    <string name="smssigns" formatted="false">%s Zeichen (%s SMS)</string>
     <string name="pickNumber">Nummer für %1$s auswählen:</string>
     <string name="noNumber">Keine Nummer für %1$s gefunden</string>
     <string name="smscomitted">SMS wird gesendet</string>
@@ -102,8 +101,10 @@
         Empfänger wurden entfernt!
     </string>
     <string name="no_phone_type_label">Andere</string>
-    <string name="write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
-    <string name="write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes.
+    <string name="write_to_database">Behalte erfolgreiche SMS</string>
+    <string name="write_to_database_description_internal">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes.
+    </string>
+    <string name="write_to_database_description_external">Schreibt erfolgreiche Nachrichten in die SMSoIP-Datenbank.
     </string>
     <string name="pick_for_disabling">Klick zum Entfernen</string>
     <string name="receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
