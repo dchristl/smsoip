@@ -1,5 +1,0 @@
-===Please use the Translation Tool:===
-
- # Go to [http://smsoip.funpic.de/ Translation Tool] and use the simple frontend for translating strings
-
-Updated/new translations will be added as soon as possible.

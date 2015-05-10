@@ -22,5 +22,5 @@
          provider = new FreenetOptionProvider();
      }
 </code>
- * Have a look at the javadoc adn the [http://wiki.smsoip.googlecode.com/git/resources/SequenceDiagrams.pdf sequence diagrams] for further informations
+ * Have a look at the javadoc adn the [sequence diagrams](https://raw.githubusercontent.com/dchristl/smsoip/master/wiki/resources/SequenceDiagrams.pdf) for further informations
  * Please pack the code and send a mail with the attached file to me. Please use as subject: _Plugin SMSoIP_. You can find my mail address in the members area of this project. I will add it to app as soon as possible or contact you for commit rights to repository.
