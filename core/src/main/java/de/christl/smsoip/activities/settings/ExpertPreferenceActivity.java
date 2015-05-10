@@ -96,7 +96,7 @@ public class ExpertPreferenceActivity extends BackgroundPreferenceActivity {
             root.addPreference(saveTemplateSingle);
         }
 
-        boolean readFromDatabaseAvailable = SMSoIPApplication.getApp().isReadFromDatabaseAvailable();
+        boolean readFromDatabaseAvailable = SMSoIPApplication.getApp().isReadFromDatabaseAvailable() || SMSoIPApplication.getApp().isUseOwnDatabase();;
 
         if (readFromDatabaseAvailable) {
             DigitsKeyListener keyListener = DigitsKeyListener.getInstance("0123456789ABCDEFabcdef");

@@ -5,3 +5,4 @@ The preferred way to get SMSoIP is to download in Play store. You will be notifi
 [![Play Store](http://www.android.com/images/brand/android_app_on_play_logo_large.png)](https://play.google.com/store/apps/details?id=de.christl.smsoip)
 
 
+![Ad graphics](https://raw.githubusercontent.com/dchristl/smsoip/master/wiki/resources/icons/functional_graphic.png)

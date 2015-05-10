@@ -712,21 +712,21 @@ public class SendActivity extends AllActivity {
 
         Button sendButton = (Button) findViewById(R.id.sendButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                if (!preSendCheck()) {
-                    return;
-                }
-                cancelUpdateTask();
+                                          public void onClick(View view) {
+                                              if (!preSendCheck()) {
+                                                  return;
+                                              }
+                                              cancelUpdateTask();
 
-                Dialog progressDialog = new SendMessageDialog(SendActivity.this);
-                progressDialog.show();
-                if (backgroundSendTask != null) {//should not happen because unbreakable
-                    backgroundSendTask.cancel(true);
-                }
-                backgroundSendTask = new BackgroundSendTask(SendActivity.this, progressDialog);
-                backgroundSendTask.execute();
-            }
-        }
+                                              Dialog progressDialog = new SendMessageDialog(SendActivity.this);
+                                              progressDialog.show();
+                                              if (backgroundSendTask != null) {//should not happen because unbreakable
+                                                  backgroundSendTask.cancel(true);
+                                              }
+                                              backgroundSendTask = new BackgroundSendTask(SendActivity.this, progressDialog);
+                                              backgroundSendTask.execute();
+                                          }
+                                      }
 
         );
     }
@@ -736,7 +736,8 @@ public class SendActivity extends AllActivity {
      */
     private void setLastMessagesButton() {
         View showHistoryButton = findViewById(R.id.showHistory);
-        showHistoryButton.setVisibility(SMSoIPApplication.getApp().isReadFromDatabaseAvailable() ? View.VISIBLE : View.GONE);
+        boolean visible = SMSoIPApplication.getApp().isReadFromDatabaseAvailable() || SMSoIPApplication.getApp().isUseOwnDatabase();
+        showHistoryButton.setVisibility(visible ? View.VISIBLE : View.GONE);
         showHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
