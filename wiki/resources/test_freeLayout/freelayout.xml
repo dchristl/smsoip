@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        >
+    <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="0"
+            >
+        <TableRow>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_span="5"
+                    android:textSize="18dp"
+                    />
+        </TableRow>
+        <TableRow>
+            <LinearLayout android:layout_span="5" android:gravity="center" android:weightSum="3"
+                          android:paddingLeft="20dp" android:paddingRight="20dp">
+                <LinearLayout android:layout_weight="1" android:layout_width="wrap_content"
+                              android:layout_height="wrap_content" android:gravity="center">
+                    <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+                    </CheckBox>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="wrap_content" android:gravity="center"
+                              android:layout_height="wrap_content" android:layout_weight="2">
+                    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:text="@string/text_now"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginLeft="20dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_weight="2"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:visibility="visible"&ndash;&gt;-->
+                    <!--&lt;!&ndash;>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</TextView>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_marginLeft="20dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_toRightOf="@id/pickTime"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:visibility="invisible"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+                    <!--&lt;!&ndash;>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</Button>&ndash;&gt;-->
+                    <!--<Button-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_toRightOf="@id/pickDay"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:layout_weight="1"-->
+                    <!-->-->
+                    <!--</Button>-->
+                </LinearLayout>
+
+            </LinearLayout>
+        </TableRow>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center" android:weightSum="3"
+                          android:paddingLeft="20dp" android:paddingRight="20dp"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        >
+                </CheckBox>
+
+                <LinearLayout android:layout_width="wrap_content" android:gravity="center"
+                              android:layout_height="wrap_content" android:layout_weight="2">
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <TableRow>
+            <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    >
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_span="5"
+                        android:textSize="18dp"
+                        />
+                <LinearLayout android:gravity="center" android:weightSum="3"
+                              android:paddingLeft="20dp" android:paddingRight="20dp"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content">
+                    <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+                    </CheckBox>
+                    <LinearLayout android:layout_width="wrap_content" android:gravity="center"
+                                  android:layout_height="wrap_content" android:layout_weight="2">
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </TableRow>
+
+    </TableLayout>
+</ScrollView>

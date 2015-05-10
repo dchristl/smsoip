@@ -1,0 +1,15 @@
+- smsoip_inverted_sample öffnen
+- Text schreiben (Microsoft New Tai Lue Bold, 120)
+- zweite Ebene auswählen (leer)
+- Rechteckige Auswahl um Text
+- Auswahl -> Rand (5)
+- Bearbeiten -> mit Vordergrundfarbe füllen
+- Auswahl -> Nichts
+- Ebene (Schrift) nach unten vereinen
+- Ebene drehen (35 Grad) und zentrieren
+- Radiergummi auf Confetti stellen (Pinsel oben rechts) und über Schrift fahren
+- Ebene (Schrift) -> rechte Maustaste -> Auswahl aus Alphakanal
+- Entfernen
+- Ebene (Hintergrund) wählen und Kopieren
+- in SMSoIP.png einfügen
+- klein skalieren (114x114,48x48)

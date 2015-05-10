@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string-array name="array_spinner">
+        <item>Ohne Absenderkennung (1 Credit/SMS)</item>
+        <item>Mit Absenderkennung (2 Credits/SMS)</item>
+    </string-array>
+    <string name="refresh_informations">Verbleibende Credits: %1$d</string>
+    <string name="login_failed">Zugangsdaten fehlerhaft. Der Benutzername muss die Telefonnummer im internationalen
+        Format sein, z.B. \'00491721234567\'
+    </string>
+    <string name="return_10">Empfängernummer nicht korrekt</string>
+    <string name="return_20">Absender ID ist nicht korrekt</string>
+    <string name="return_30">Nachrichtentext nicht korrekt</string>
+    <string name="return_31">Nachrichtentyp ist nicht korrekt</string>
+    <string name="return_40">Nachrichtenroute ist nicht korrekt</string>
+    <string name="return_50">Zugangsdaten fehlerhaft</string>
+    <string name="return_60">Nicht genügend Credits vorhanden</string>
+    <string name="return_70">Netz wird von Route nicht unterstützt</string>
+    <string name="return_71">Feature auf dieser Route nicht möglich</string>
+    <string name="return_80">Übertragung an SMS-C nicht möglich</string>
+    <string name="return_90">Versand möglich</string>
+    <string name="return_100">SMS wurde erfolgreich für %1$s Credits versendet</string>
+    <string name="unknown_error">Unbekannter Fehlercode: %1$d</string>
+</resources>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Danny Christl 2012.
+  ~     This file is part of SMSoIP.
+  ~
+  ~     SMSoIP is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     SMSoIP is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with SMSoIP.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="send">Senden</string>
+    <string name="changeProvider">Anbieter</string>
+    <string name="chooseProvider">Anbieter auswählen</string>
+    <string name="provider_settings">Anbietereinstellungen</string>
+    <string name="program_settings">Programmeinstellungen</string>
+    <string name="exit">Beenden</string>
+    <string name="username">Benutzername</string>
+    <string name="password">Passwort</string>
+    <string name="receiverField">Name oder Nummer</string>
+    <string name="smsText">Nachricht</string>
+    <string name="chooseType">Sendetyp</string>
+    <string formatted="false" name="smssigns">%s Zeichen (%s SMS)</string>
+    <string name="pickNumber">Nummer für %1$s auswählen:</string>
+    <string name="noNumber">Keine Nummer für %1$s gefunden</string>
+    <string name="smscomitted">SMS wird gesendet</string>
+    <string name="ok">OK</string>
+    <string name="wantClear">Alle eingegebenen Daten werden gelöscht!</string>
+    <string name="error">Fehler</string>
+    <string name="success">Erfolg</string>
+    <string name="noNetwork">Netzwerkfehler</string>
+    <string name="unknown_error">Unbekannter Fehler</string>
+    <string name="loginFailed">Zugangsdaten fehlerhaft!</string>
+    <string name="user_cancelled">Abbruch durch Nutzer</string>
+    <string name="loginSuccessful">Login erfolgreich</string>
+    <string name="notyetrefreshed">Noch nicht aktualisiert</string>
+    <string name="tap">(Tippe)</string>
+    <string name="description">Senden von SMS über diverse Anbieter</string>
+    <string name="noNumberInput">Keine Nummer eingegeben!</string>
+    <string name="noTextInput">Kein Text eingegeben!</string>
+    <string name="noNetworkAvailable">Netzwerk nicht aktiviert!</string>
+    <string name="timeOutReached">Timeout erreicht! Bitte später noch einmal versuchen</string>
+    <string name="press_back_again">Erneut drücken zum Beenden</string>
+    <string name="checkCredentials">Zugangsdaten werden überprüft.</string>
+    <string name="noCredentials">Zugangsdaten unvollständig</string>
+    <string name="openNetworkSettings">Netzwerkeinstellungen</string>
+    <string name="activateWLAN">W-LAN aktivieren</string>
+    <string name="no_providers">Es ist kein Plugin installiert.\nSMSoIP benötigt mindestens ein Plugin, um zu
+        funktionieren.\nDu wirst zur Plugin-Seite weitergeleitet.
+    </string>
+    <string name="default_provider">Standardanbieter</string>
+    <string name="default_provider_description">Der Standardanbieter der automatisch beim Starten der App
+        ausgewählt ist.
+    </string>
+    <string name="no_default_Provider">Keiner (jedesmal fragen)</string>
+    <string name="visit_project_page">Homepage besuchen</string>
+    <string name="visit_project_page_description">Besuche die Homepage von SMSoIP für weitere Anleitungen.</string>
+    <string name="visit_plugin_page">Plugins suchen</string>
+    <string name="donate_plugin_page">Werbung entfernen</string>
+    <string name="donate_plugin_page_description">Entferne die Werbung und unterstütze die Weiterentwicklung durch
+        Kauf des Donate Plugins.
+    </string>
+    <string name="area_code">Standardländercode</string>
+    <string name="area_code_description">Standardvorwahlcode für dein Land (z.B. 49 für Deutschland oder 43 für
+        Österreich). Wird automatisch zur Telefonnummer hinzugefügt, falls es benötigt wird.
+    </string>
+    <string name="reset_area_code">Falscher Ländercode. Wird zurückgesetzt auf "%1$s"</string>
+    <string name="deprecated_providers">Einige Plugins konnten nicht geladen werden. Bitte überprüfe, ob die jeweils
+        neueste Version des Plugins und von SMSoIP installiert ist. Danach noch einmal probieren.
+    </string>
+    <string name="too_new_providers">Folgende Plugins sind zu neu und konnten nicht geladen werden. Bitte
+        SMSoIP updaten:
+    </string>
+    <string name="enable_network_check">Netzwerküberprüfung aktivieren</string>
+    <string name="enable_network_check_description">Überprüft beim Start der Applikation, ob ein Netzwerk verfügbar
+        ist. Falls nicht, zeigt es weitere Optionen, wie das Aktivieren des W-LANs.
+    </string>
+    <string name="enable_info_update">Auto Aktualisierung</string>
+    <string name="enable_info_update_description">Beim Starten der App werden die Anbieterinformationen, wie
+        kostenlose SMS automatisch aktualisiert.
+    </string>
+    <string name="enable_provider_output">Anbieterausgabe aktivieren</string>
+    <string name="enable_provider_output_description">Nachrichten im SMS-Ausgang werden mit einem Indikator
+        versehen (z.B. \'SMSoIP (GMX)\').
+    </string>
+    <string name="name_heading">Name</string>
+    <string name="number_heading">Nummer</string>
+    <string name="unknown">Unbekannt</string>
+    <string name="max_receivers_reached">Maximale Anzahl von %1$s Empfänger erreicht. Empfänger
+        konnte nicht hinzugefügt werden.
+    </string>
+    <string name="too_much_receivers">Die maximale Anzahl der Empfänger ist %1$s. Überschüssige
+        Empfänger wurden entfernt!
+    </string>
+    <string name="no_phone_type_label">Andere</string>
+    <string name="write_to_database">Schreibe SMS in ausgehende Nachrichten</string>
+    <string name="write_to_database_description">Schreibt erfolgreiche Nachrichten in den SMS-Ausgang des Gerätes.
+    </string>
+    <string name="pick_for_disabling">Klick zum Entfernen</string>
+    <string name="receiver_added_twice">Empfängernummer doppelt hinzugefügt!</string>
+    <string name="account_list">Account-Verwaltung</string>
+    <string name="account_list_description">Verwalte mehrere Accounts des Anbieters. Aktueller Standardaccount ist:
+        &lt;%1$s&gt;.
+    </string>
+    <string name="account_add_account">Account hinzufügen</string>
+    <string name="account_no_account">Nicht gesetzt</string>
+    <string name="changeAccount">Account</string>
+    <string name="chooseAccount">Account auswählen</string>
+    <string name="partial_success">Teilweiser Erfolg</string>
+    <string name="changelog_title">Was ist neu</string>
+    <string name="welcome_title">Willkommen bei SMSoIP</string>
+    <string name="lastConversation">Konversationen</string>
+    <string name="clickToAdd">(Klick, um als Empfänger hinzuzufügen)</string>
+    <string name="crash_toast_text">Uuups! Das sollte nicht passieren, bitte sende einen Fehlerbericht an den
+        Entwickler!
+    </string>
+    <string name="crash_notif_ticker_text">Unerwarteter Fehler in SMSoIP, bitte sende den Fehlerbericht…</string>
+    <string name="crash_notif_title">SMSoIP wurde beendet…</string>
+    <string name="crash_notif_text">Bitte klicke hier, um das Problem zu beheben.</string>
+
+    <string name="crash_dialog_title">SMSoIP wurde beendet</string>
+    <string name="crash_dialog_text">Ein unerwarteter Fehler hat dazu geführt, dass die App beendet wurde. Bitte stelle
+        sicher, dass SMSoIP und alle installierten Plugins auf dem neuesten Stand sind. Wenn dies weiterhin zum Fehler
+        führt, hilf bitte mit diesen zu beheben, indem du den Fehlerreport an den Entwickler schickst. Alles was du
+        tun musst ist \'OK\' klicken. Es werden keinerlei privaten Daten übertragen.
+    </string>
+    <string name="crash_dialog_comment_prompt">Zusätzlich kannst du auch Kommentare und wenn du kontaktiert werden
+        möchtest auch deine E-Mail-Adresse zum Problem hinzufügen:
+    </string>
+    <string name="crash_dialog_ok_toast">Danke für deine Unterstützung! Der Fehler wird so schnell wie möglich
+        behoben.
+    </string>
+    <string name="now">Sofort</string>
+    <string name="sending_time">Sendezeitpunkt</string>
+    <string name="time_in_past">Sendezeitpunkt ist in der Vergangenheit!</string>
+    <string name="enable_compact_mode">Kompaktmodus</string>
+    <string name="enable_compact_mode_description">Benutze den kompakten Modus standardmäßig bereits beim Start.
+    </string>
+    <string name="sms_receiver_settings">Meldungseinstellung bei empf. SMS</string>
+    <string name="react_on_incoming_sms">SMS-Benachrichtigung</string>
+    <string name="react_on_incoming_sms_description">Einstellungen für die Überwachung empfangener Nachrichten und
+        Hinweis in der Benachrichtigungsleiste.
+    </string>
+    <string name="receiver_activated">Aktiviere Überwachung</string>
+    <string name="receiver_activated_description">Aktiviere die Benachrichtigung durch SMSoIP bei
+        empfangenen SMS. Damit kann direkt auf die Nachricht mit SMSoIP geantwortet werden.
+    </string>
+    <string name="only_one_notfication">Nur einmal benachrichtigen</string>
+    <string name="only_one_notfication_description">Bei mehreren eingehenden SMS gleichzeitig
+        wird nur einmal benachrichtigt. Es kann dann nur auf die zuletzt eingegangene SMS geantwortet werden.
+    </string>
+    <string name="choose_ringtone">Benachrichtigungston</string>
+    <string name="choose_ringtone_description">Wähle den Ton für die Benachrichtigung.</string>
+    <string name="inputs_corrected">Die Empfängereingabe war falsch und wurde automatisch korrigiert! Überprüfe auf
+        Korrektheit und sende noch einmal.
+    </string>
+    <string name="receiver_vibrate_activated">Vibration</string>
+    <string name="receiver_vibrate_activated_description">Aktiviere oder deaktiviere die Vibration bei
+        Benachrichtigungen.
+    </string>
+    <string name="receiver_led_activated">LED</string>
+    <string name="receiver_led_activated_description">Aktiviere oder deaktiviere das Benachrichtigungslicht.</string>
+    <string name="category_base">Grundeinstellungen</string>
+    <string name="category_layout">Aussehen</string>
+    <string name="category_behaviour">Verhalten</string>
+    <string name="category_stuff">Sonstiges/Hilfe</string>
+    <string name="font_size">Schriftgröße ändern</string>
+    <string name="font_size_description">Ändere die Schriftgröße des Nachrichtentextes.</string>
+    <string name="font_size_dialog_description">Hinweis: Klicke auf den Beispieltext, um auf die
+        Standardeinstellungen zurückzusetzen.
+    </string>
+    <string name="youtube_video">Erklärungsvideo anschauen</string>
+    <string name="youtube_video_description">Öffne Youtube, um ein kurzes Erklärungsvideo zu SMSoIP auf Youtube
+        anzuschauen.
+    </string>
+    <string name="background_image">Hintergrundbild setzen</string>
+    <string name="background_image_description">Tausche das Hintergrundbild von SMSoIP durch ein Bild aus der
+        Galerie aus.
+    </string>
+    <string name="background_image_dialog">Wähle ein Bild aus der Foto-Galerie oder setze den Bildschirmhintergrund
+        zurück.
+    </string>
+    <string name="background_image_dialog_pick">Galerie</string>
+    <string name="background_image_dialog_reset">Standard</string>
+    <string name="background_will_be_set">Hintergrundbild wird verarbeitet und gesetzt.</string>
+    <string name="background_set_error">Fehler beim Setzen des Hintergrundes aufgetreten.</string>
+    <string name="no_conversation">Keine Konversation</string>
+    <string name="module_preference">Textbausteine</string>
+    <string name="module_preference_description">Verwalte deine Textbausteine für schnellere Texteingabe.
+    </string>
+    <string name="key">Schlüssel</string>
+    <string name="value">Ersetzung</string>
+    <string name="delete">Entfernen</string>
+    <string name="add_module">Textbaustein hinzufügen</string>
+    <string name="add_contact">Kontakt hinzufügen</string>
+    <string name="key_too_short">Der Schlüssel muss mindestens aus zwei Zeichen bestehen.</string>
+    <string name="key_already_exist">Der Schlüssel existiert bereits.</string>
+    <string name="empty_value">Keinen Wert eingegeben.</string>
+    <string name="modules_explanation">Was sind Textbausteine?</string>
+    <string name="modules_explanation_description">Zeigt eine kleine Erklärung wofür Textbausteine da sind und wie
+        man sie benutzt.
+    </string>
+    <string name="modules_explanation_description_full">Textbausteine bestehen aus einem Schlüssel (Shortcut) und
+        einer Ersetzung. Diese helfen dabei häufig wiederkehrende Texte schneller einzugeben.\nIn SMSoIP werden die
+        Textbausteine für schnellere Eingaben in das Nachrichtenfeld genutzt und können auf drei Arten gestartet
+        werden:\n-durch Eingabe des Schlüssels, gefolgt von einem Leerzeichen\n-durch Eingabe des Schlüssels, gefolgt
+        von der Enter-Taste des Keyboards oder\n-durch Drücken des Pfeil-Knopfes rechts unterhalb des
+        Nachrichtenfeldes.\nDie besten Ergebnisse bei der Texteingabe erzielst du, indem du als Schlüssel ein kurze
+        Buchstabenfolge benutzt, die aber kein normales Wort ist, damit die Textbausteine nicht mit der normalen
+        Texteingabe kollidieren.
+    </string>
+    <string name="homepage">https://sites.google.com/site/smsoip/homepage-of-smsoip-deutsche-version</string>
+    <string name="notification_url">http://smsoip.funpic.de/messages/de/info.xml</string>
+    <string name="contact_developer">Entwickler kontaktieren</string>
+    <string name="contact_developer_description">Verbesserungsvorschläge, Fehler gefunden oder dein Anbieter ist
+        nicht verfügbar? Sende mir eine E-Mail.
+    </string>
+    <string name="rate_app_message">Du benutzt nun SMSoIP schon einige Zeit.\nWenn dir die App gefällt und du einen
+        Moment Zeit hast, wäre es schön, wenn du SMSoIP und/oder dein benutztes Plugin im Store
+        bewertest.\nVielen Dank für deine Unterstützung!
+    </string>
+    <string name="rate_app_title">Zufrieden mit SMSoIP?</string>
+    <string name="rate_no_thanks">Nein, Danke</string>
+    <string name="rate_yes">Bewerten</string>
+    <string name="rate_remind_me_later">Später</string>
+
+    <string name="nothing_to_shorten">Kein Text zum Kürzen eingegeben.</string>
+    <string name="nothing_to_clear">Keine Eingabe zum Löschen.</string>
+    <string name="no_text_modules">Keine Textmodule gepflegt.</string>
+    <string name="hintAddReceivers">Hinweis: Füge Empfänger hinzu, um weitere Konversationen anzuzeigen!</string>
+    <string name="button_visibiliy">Buttonsichtbarkeit (ActionBar)</string>
+    <string name="button_visibiliy_description">Buttons für Anbieter- oder Benutzerwechsel anzeigen/ausblenden. Das
+        Wechseln ist zusätzlich durch Tippen auf das Anbieterlogo oder den Benutzernamen möglich.
+    </string>
+    <string name="no_user_name">%s darf nicht leer sein!</string>
+    <string name="account_already_defined">%s bereits vorhanden!</string>
+    <string name="phonebook_preference">SMSoIP Kontakte</string>
+    <string name="phonebook_preference_description">Verwalte die Kontakte des internen SMSoIP-Telefonbuchs.
+    </string>
+    <string name="contact_name">Name</string>
+    <string name="contact_numbers">Telefonnummern</string>
+    <string name="answer">Antworten</string>
+    <string name="mark_as_read">Als gelens markieren</string>
+    <string name="show_message_dialog">Nachrichtendialog anzeigen</string>
+    <string name="show_message_dialog_description">Zeigt einen Dialog mit der Nachricht, wenn die Benachrichtigung
+        geklickt wird.
+    </string>
+    <string name="expert_preferences">Experteneinstellungen</string>
+    <string name="expert_preferences_description">Experimentelle Einstellungen für fortgeschrittene Nutzer.</string>
+    <string name="conversation_count">Anzahl der SMS in der Konversation</string>
+    <string name="conversation_count_description">Anzahl der SMS, die in einer Konversation angezeigt werden. Bei Null
+        werden alle Nachrichten geladen.
+    </string>
+    <string name="conversation_order_down">Sortiere Konversationen abwärts</string>
+    <string name="conversation_order_down_description">Ältere Nachrichten stehen am Anfang und Neuere am Ende. Es wird
+        automatisch bis zum Ende gescrollt.
+    </string>
+    <string name="output_template_multi">Vorlage für Anbieterausgabe (Multi-Accounts)</string>
+    <string name="output_template_single">Vorlage für Anbieterausgabe (Single Account)</string>
+    <string name="output_template_multi_description" formatted="false">Die Anbieterausgabe beim Speichern der SMS in der
+        internen
+        Datenbank wenn mehr als ein Account verfügbar ist.
+        Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
+    </string>
+    <string name="output_template_single_description" formatted="false">Die Anbieterausgabe beim Speichern der SMS in
+        der internen
+        Datenbank wenn nur ein Account verfügbar ist.
+        Benutze %a für den App-Namen, %u für den verwendeten Benutzer und %p für das verwendete Plugin.
+    </string>
+    <string name="incoming_color">Hintergrundfarbe für empfangene Nachrichten</string>
+    <string name="incoming_color_description">Hexadezimale Farbe für die Sprechblase (Eingang) im Konversationendialog.</string>
+    <string name="incoming_text_color">Textfarbe für empfangene Nachrichten</string>
+    <string name="incoming_text_color_description">Hexadezimale Farbe für den Text (Eingang) im Konversationendialog.</string>
+    <string name="outgoing_color">Hintergrundfarbe für gesendete Nachrichten</string>
+    <string name="outgoing_color_description">Hexadezimale Farbe für die Sprechblase (Ausgang) im Konversationendialog.</string>
+    <string name="outgoing_text_color">Textfarbe für gesendete Nachrichten</string>
+    <string name="outgoing_text_color_description">Hexadezimale Farbe für den Text (Ausgang) im Konversationendialog.</string>
+    <string name="export_settings">Einstellungen exportieren</string>
+    <string name="export_settings_description">Exportiert alle Einstellungen auf SD-Karte/externen Speicher für den späteren Import (z.B. nach Neuinstallation)</string>
+    <string name="import_settings">Einstellungen importieren</string>
+    <string name="import_settings_description">Importiert die Einstellungen von der SD-Karte/dem externen Speicher</string>
+    <string name="settings_will_be_exported">Einstellungen werden exportiert nach %s</string>
+    <string name="export_success">Einstellungen erfolgreich exportiert.</string>
+    <string name="export_failure">Fehler beim Exportieren der Eisntellungen.</string>
+    <string name="settings_will_be_imported">Einstellungen werden von %s importiert.</string>
+    <string name="import_success">Einstellungen erfolgreich importiert. SMSoIP wird neu gestartet.</string>
+    <string name="import_failure">Fehler beim Importieren der Einstellungen.</string>
+</resources>
