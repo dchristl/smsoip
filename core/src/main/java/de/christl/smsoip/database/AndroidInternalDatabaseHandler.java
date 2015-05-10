@@ -24,6 +24,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
@@ -34,17 +35,22 @@ import org.acra.ErrorReporter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.Receiver;
 import de.christl.smsoip.activities.settings.SettingsConst;
+import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.models.Message;
 import de.christl.smsoip.picker.DateTimeObject;
 
@@ -246,6 +252,25 @@ public abstract class AndroidInternalDatabaseHandler {
         if (cursor != null) {
             cursor.close();
         }
+        if (SMSoIPApplication.getApp().isUseOwnDatabase()) {
+            SQLiteDatabase messageDB = new MessagesSQLiteHelper(context).getReadableDatabase();
+            String where = MessagesSQLiteHelper.NUMBER + "='" + receiverNumber + "'";
+            cursor = messageDB.query(MessagesSQLiteHelper.TABLE_NAME, MessagesSQLiteHelper.ALL_COLUMNS, where, null, null, null, MessagesSQLiteHelper.DATE + " desc" + limit);
+            while (cursor != null && cursor.moveToNext()) {
+                String message = cursor.getString(2);
+                out.add(new Message(message, true, getDateTime(cursor.getString(3))));
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+            messageDB.close();
+        }
+        Collections.sort(out, new Comparator<Message>() {
+            @Override
+            public int compare(Message lhs, Message rhs) {
+                return rhs.getDate().compareTo(lhs.getDate());//younger before
+            }
+        });
         if (defaultSharedPreferences.getBoolean(SettingsConst.CONVERSATION_ORDER, true)) {
             Collections.reverse(out);
         }
@@ -266,10 +291,21 @@ public abstract class AndroidInternalDatabaseHandler {
                 ContentValues values = new ContentValues();
                 values.put("address", receiver.getReceiverNumber());
                 values.put("body", message);
-                if (time != null) {
-                    values.put("date", time.getCalendar().getTime().getTime());
+
+                if (SMSoIPApplication.getApp().isUseOwnDatabase()) {
+                    if (time != null) {
+                        values.put("date", getDateTime(time.getCalendar().getTime()));
+                    }
+                    SQLiteDatabase messageDB = new MessagesSQLiteHelper(context).getWritableDatabase();
+                    messageDB.insert(MessagesSQLiteHelper.TABLE_NAME, null, values);
+                    messageDB.close();
+
+                } else {
+                    if (time != null) {
+                        values.put("date", time.getCalendar().getTime().getTime());
+                    }
+                    context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
                 }
-                context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
             }
         } catch (Exception e) {
             ACRA.getErrorReporter().handleSilentException(e);
@@ -408,5 +444,19 @@ public abstract class AndroidInternalDatabaseHandler {
         values.put("read", 1);
 
         context.getContentResolver().update(Uri.parse("content://sms/inbox"), values, "_id=" + id, null);
+    }
+
+    private static String getDateTime(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return dateFormat.format(date);
+    }
+
+    private static Date getDateTime(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            return new Date(0);
+        }
     }
 }

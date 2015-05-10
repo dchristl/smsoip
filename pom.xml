@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.christl</groupId>
     <artifactId>SMSoIP</artifactId>
 
-    <version>2.9.7</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
     <name>SMSoIP</name>
 
@@ -68,7 +69,7 @@
                                 <argument>-digestalg</argument>
                                 <argument>SHA1</argument>
                             </arguments>
-                            <archiveDirectory/>
+                            <archiveDirectory />
                             <includes>
                                 <include>target/*-aligned.apk</include>
                             </includes>
@@ -83,7 +84,7 @@
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.2</version>
                 <executions>
                     <execution>
                         <id>ALIGN APK</id>
@@ -115,6 +116,7 @@
                     </zipalign>
                     <proguard>
                         <skip>false</skip>
+                        <config>/home/danny/projects/smsoip/proguard.cfg</config>
                     </proguard>
                     <sdk>
                         <platform>19</platform>
@@ -133,9 +135,9 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <copy todir="${output.folder}" flatten="true" overwrite="true">
+                                <copy flatten="true" overwrite="true" todir="${output.folder}">
                                     <fileset dir="${project.basedir}">
-                                        <include name="**/*aligned.apk"/>
+                                        <include name="**/*aligned.apk" />
                                     </fileset>
                                 </copy>
                             </tasks>
@@ -227,7 +229,7 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>1.3.1</version>
                 <configuration>
-                    <newVersion>2.9.7</newVersion>
+                    <newVersion>3.0.0</newVersion>
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>
             </plugin>
@@ -293,7 +295,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -303,17 +305,17 @@
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
-                <version>1.5.4</version>
+                <version>1.6.2</version>
             </dependency>
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
-                <version>1.5.4</version>
+                <version>1.6.2</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.7.3</version>
+                <version>1.8.2</version>
             </dependency>
             <dependency>
                 <groupId>com.google.ads</groupId>
@@ -340,7 +342,7 @@
             <dependency>
                 <groupId>ch.acra</groupId>
                 <artifactId>acra</artifactId>
-                <version>4.5.0</version>
+                <version>4.6.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

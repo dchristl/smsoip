@@ -45,6 +45,7 @@ import org.acra.ACRA;
 import org.acra.ErrorReporter;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.acra.sender.HttpSender;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,10 +76,9 @@ import de.christl.smsoip.option.OptionProvider;
 import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
 
 @ReportsCrashes(/*formKey = "dGpSOGUxUHFabl9qUUc4NWdSNlBpZ3c6MQ",*/ mode = ReportingInteractionMode.NOTIFICATION,
-        formKey = "",
         formUri = "https://smsoip.cloudant.com/acra-smsoip/_design/acra-storage/_update/report",
-        reportType = org.acra.sender.HttpSender.Type.JSON,
-        httpMethod = org.acra.sender.HttpSender.Method.PUT,
+        reportType = HttpSender.Type.JSON,
+        httpMethod = HttpSender.Method.POST,
         formUriBasicAuthLogin = "thereflifeepenturealcang",
         formUriBasicAuthPassword = "iwj0RjQheBUlWU845dpOprTQ",
         resToastText = R.string.crash_toast_text,
@@ -107,6 +107,7 @@ public class SMSoIPApplication extends Application {
     private Exception appInitException;
 
     private Boolean isImagePickerAvailable;
+    private boolean useOwnDatabase = false;
 
     /**
      * helper for setting background to current activity
@@ -188,7 +189,7 @@ public class SMSoIPApplication extends Application {
                 readFromDatabaseAvailable = true;
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                writeToDatabaseAvailable = false;
+                useOwnDatabase = true;
 
                 //NPE on KitKat devices without phone capability
 //                writeToDatabaseAvailable = Telephony.Sms.getDefaultSmsPackage(this).equals(getPackageName());
@@ -200,6 +201,10 @@ public class SMSoIPApplication extends Application {
             writeToDatabaseAvailable = false;
             readFromDatabaseAvailable = false;
         }
+    }
+
+    public boolean isUseOwnDatabase() {
+        return useOwnDatabase;
     }
 
     /**
