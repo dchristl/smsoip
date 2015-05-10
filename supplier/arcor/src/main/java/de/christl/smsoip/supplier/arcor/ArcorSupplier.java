@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +57,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
     private static final String LOGIN_BODY = "user_name=%s&password=%s&login=Login";
     private static final String BALANCE_SEND_URL = HOST + "/ums/ums_neu_sms.jsp";
     private static final String SEND_BODY = "empfaengerAn=%s&nachricht=%s&senden=Senden&firstVisitOfPage=foo&ordnername=Posteingang&part=0";
-    private String sessionId;
+    private List<String> headerCookies;
 
 
     public ArcorSupplier() {
@@ -66,7 +66,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
 
     @Override
     public SMSActionResult checkCredentials(String userName, String password) throws IOException, NumberFormatException {
-        sessionId = null;
+        headerCookies = new ArrayList<String>();
         UrlConnectionFactory factory = new UrlConnectionFactory(LOGIN_URL);
         factory.setRequestProperties(REQUEST_MAP);
         String body = String.format(LOGIN_BODY, URLEncoder.encode(userName, ENCODING), URLEncoder.encode(password, ENCODING));
@@ -80,9 +80,15 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         if (arcorloginstatus == null || !arcorloginstatus.contains("true")) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
         }
-        sessionId = UrlConnectionFactory.findCookieByName(headerFields, "SessionID");
+        String sessionId = UrlConnectionFactory.findCookieByName(headerFields, "SessionID");
         if (sessionId == null) {
             return SMSActionResult.LOGIN_FAILED_ERROR();
+        }
+        for (Map.Entry<String, List<String>> stringListEntry : headerFields.entrySet()) {
+            String cookieList = stringListEntry.getKey();
+            if (cookieList != null && cookieList.equalsIgnoreCase("set-cookie")) {
+                headerCookies = stringListEntry.getValue();
+            }
         }
         return SMSActionResult.LOGIN_SUCCESSFUL();
     }
@@ -106,7 +112,8 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         }
 
         UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_SEND_URL, UrlConnectionFactory.METHOD_GET);
-        factory.setCookies(Collections.<String>singletonList(sessionId));
+        factory.setCookies(headerCookies);
+
         InputStream is = factory.getConnnection().getInputStream();
 
         return parseBalanceResponse(is);
@@ -152,7 +159,7 @@ public class ArcorSupplier implements ExtendedSMSSupplier {
         }
         UrlConnectionFactory factory = new UrlConnectionFactory(BALANCE_SEND_URL);
         factory.setRequestProperties(REQUEST_MAP);
-        factory.setCookies(Collections.<String>singletonList(sessionId));
+        factory.setCookies(headerCookies);
         StringBuilder receiverString = new StringBuilder();
         for (Receiver receiver : receivers) {
             String receiverNumber = receiver.getReceiverNumber();
