@@ -29,6 +29,15 @@ Want to help improving SMSoIP?:
 
 * Write your own plugin: [How to write a plugin](wiki/HowToWriteAPlugin.md)
 * Report issues, wishes or improvements to Issues section
-* Need a Cherry-SMS-Account? Create a new account by this link.
 * Share your account with me for development of new providers
 * Donate to support further development (e.g. buying account of provider). Everyone donates with at least 1,99€ gets the Donate Version (Contact me after donating)
+
+[![PayPal](https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KKH87ZMQP7SJJ)
+
+
+[![Youtube](http://img.youtube.com/vi/tcr87tEPUao/0.jpg)](https://www.youtube.com/watch?v=tcr87tEPUao)
+
+![Animation Phone](https://raw.githubusercontent.com/dchristl/smsoip/master/wiki/animation.gif)
+
+![Animation Talet](https://raw.githubusercontent.com/dchristl/smsoip/master/wiki/animation_tablet.gif)
+
