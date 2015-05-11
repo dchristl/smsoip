@@ -18,7 +18,6 @@
 
 package de.christl.smsoip.activities.ads;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -30,11 +29,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.google.ads.Ad;
-import com.google.ads.AdListener;
-import com.google.ads.AdRequest;
-import com.google.ads.AdSize;
-import com.google.ads.AdView;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.application.SMSoIPApplication;
@@ -42,7 +40,7 @@ import de.christl.smsoip.application.SMSoIPApplication;
 /**
  *
  */
-public class AdLayout extends LinearLayout implements AdListener, View.OnClickListener {
+public class AdLayout extends LinearLayout implements View.OnClickListener {
     private boolean noSmartBanner;
     private ImageView imageView;
     private AdView adView;
@@ -63,15 +61,17 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
     }
 
     private void init() {
-
         if (SMSoIPApplication.getApp().isAdsEnabled()) {
             imageView = new ImageView(getContext());
             imageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ad_layer));
             addView(imageView);
+
             imageView.setOnClickListener(this);
-            adView = new AdView((Activity) getContext(), noSmartBanner ? AdSize.BANNER : AdSize.SMART_BANNER, "ca-app-pub-6074434370638620/1583934333");
+            adView = new AdView(getContext());
+            adView.setAdSize(noSmartBanner ? AdSize.BANNER : AdSize.SMART_BANNER);
+            adView.setAdUnitId("ca-app-pub-6074434370638620/1583934333");
             addView(adView);
-            adView.setAdListener(this);
+            adView.setAdListener(new CustomListener());
         }
     }
 
@@ -107,41 +107,6 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
         refreshHandler.removeCallbacks(refreshRunnable);
     }
 
-    @Override
-    public void onReceiveAd(Ad ad) {
-        firstAdReceived = true;
-        // Hide the custom image and show the AdView.
-        imageView.setVisibility(View.GONE);
-        adView.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void onFailedToReceiveAd(Ad ad, AdRequest.ErrorCode code) {
-        if (!firstAdReceived) {
-            // Hide the AdView and show the custom image.
-            adView.setVisibility(View.GONE);
-            imageView.setVisibility(View.VISIBLE);
-
-            refreshHandler.removeCallbacks(refreshRunnable);
-            refreshHandler.postDelayed(refreshRunnable, 10 * 1000);
-        }
-    }
-
-    @Override
-    public void onPresentScreen(Ad ad) {
-
-    }
-
-    @Override
-    public void onDismissScreen(Ad ad) {
-
-    }
-
-    @Override
-    public void onLeaveApplication(Ad ad) {
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -163,10 +128,10 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
         public void run() {
             // Load an ad with an ad request.
             if (adView != null) {
-                AdRequest adRequest = new AdRequest();
+                AdRequest.Builder adRequest = new AdRequest.Builder();
                 adRequest.addTestDevice("E3234EBC64876258C233EAA63EE49966");
-                adRequest.addTestDevice(AdRequest.TEST_EMULATOR);
-                adView.loadAd(adRequest);
+                adRequest.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+                adView.loadAd(adRequest.build());
             }
         }
     }
@@ -186,4 +151,27 @@ public class AdLayout extends LinearLayout implements AdListener, View.OnClickLi
         }
     }
 
+    private class CustomListener extends AdListener {
+        @Override
+        public void onAdFailedToLoad(int errorCode) {
+            super.onAdFailedToLoad(errorCode);
+            if (!firstAdReceived) {
+                // Hide the AdView and show the custom image.
+                adView.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
+
+                refreshHandler.removeCallbacks(refreshRunnable);
+                refreshHandler.postDelayed(refreshRunnable, 10 * 1000);
+            }
+        }
+
+        @Override
+        public void onAdLoaded() {
+            super.onAdLoaded();
+            firstAdReceived = true;
+            // Hide the custom image and show the AdView.
+            imageView.setVisibility(View.GONE);
+            adView.setVisibility(View.VISIBLE);
+        }
+    }
 }

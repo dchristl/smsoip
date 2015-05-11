@@ -22,8 +22,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.acra.ACRA;
 
@@ -31,17 +31,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.AllActivity;
 import de.christl.smsoip.activities.threading.ThreadingUtil;
+import de.christl.smsoip.application.SMSoIPApplication;
 import de.christl.smsoip.backup.BackupHelper;
-
-import static de.christl.smsoip.constant.TrackerConstants.CAT_BUTTONS;
-import static de.christl.smsoip.constant.TrackerConstants.EVENT_IMPORT;
+import de.christl.smsoip.constant.TrackerConstants;
 
 /**
  *
@@ -78,8 +76,9 @@ public class ImportSettingsTask extends AsyncTask<Void, Void, Boolean> {
         }
 
         boolean success = extractZipFile(dataDir, exportDir);
-        Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_IMPORT, String.valueOf(success), null).build();
-        EasyTracker.getInstance(context).send(build);
+        Tracker tracker = SMSoIPApplication.getApp().getTracker();
+        HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder().setCategory(TrackerConstants.CAT_BUTTONS).setAction(TrackerConstants.EVENT_IMPORT).setLabel(String.valueOf(success));
+        tracker.send(builder.build());
         return success;
     }
 

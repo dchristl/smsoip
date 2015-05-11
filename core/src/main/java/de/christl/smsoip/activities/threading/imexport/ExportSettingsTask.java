@@ -22,18 +22,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 
 import org.acra.ACRA;
 
 import java.io.File;
-import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.activities.threading.ThreadingUtil;
+import de.christl.smsoip.application.SMSoIPApplication;
+import de.christl.smsoip.constant.TrackerConstants;
 
-import static de.christl.smsoip.constant.TrackerConstants.CAT_BUTTONS;
 import static de.christl.smsoip.constant.TrackerConstants.EVENT_EXPORT;
 
 /**
@@ -99,8 +98,10 @@ public class ExportSettingsTask extends AsyncTask<Void, Void, Boolean> {
         } catch (Exception e) {
             ACRA.getErrorReporter().handleSilentException(e);
         }
-        Map<String, String> build = MapBuilder.createEvent(CAT_BUTTONS, EVENT_EXPORT, String.valueOf(success), null).build();
-        EasyTracker.getInstance(context).send(build);
+
+        HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(TrackerConstants.CAT_BUTTONS).setAction(EVENT_EXPORT).setLabel(String.valueOf(success));
+        SMSoIPApplication.getApp().getTracker().send(eventBuilder.build());
+
         return success;
 
     }

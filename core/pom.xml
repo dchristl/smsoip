@@ -68,12 +68,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.ads</groupId>
-            <artifactId>admob</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google</groupId>
-            <artifactId>analytics</artifactId>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>play-services</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>

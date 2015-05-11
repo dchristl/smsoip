@@ -38,8 +38,9 @@ import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
@@ -91,6 +92,8 @@ import de.christl.smsoip.provider.versioned.ExtendedSMSSupplier;
         resDialogOkToast = R.string.crash_dialog_ok_toast)
 public class SMSoIPApplication extends Application {
 
+
+    private Tracker tracker;
     private static final String SERIALIZE_NAME = "loadCache.ser";
     private static SMSoIPApplication app;
     public static final String PLUGIN_CLASS_PREFIX = "de.christl.smsoip.supplier";
@@ -244,12 +247,23 @@ public class SMSoIPApplication extends Application {
                 category = ">100";
 
             }
-            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_LOAD_WITHOUT_CACHE, category, String.valueOf(time), null).build();
-            EasyTracker.getInstance(this).send(build);
+            Tracker tracker = getTracker();
+            HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder().setCategory(category).setAction(TrackerConstants.CAT_LOAD_WITHOUT_CACHE).setLabel(String.valueOf(time));
+            tracker.send(builder.build());
 
             storeProvidersInCache();
         }
         buildAdditionalAcraInformations();
+    }
+
+
+    public synchronized Tracker getTracker() {
+        if (tracker == null) {
+            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+            tracker = analytics.newTracker(R.string.ga_trackingId);
+            tracker.enableAdvertisingIdCollection(true);
+        }
+        return tracker;
     }
 
     private void findAllPlugins(List<ApplicationInfo> installedApplications) {
@@ -297,8 +311,9 @@ public class SMSoIPApplication extends Application {
                 category = ">100";
 
             }
-            Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_LOAD_WITH_CACHE, category, String.valueOf(time), null).build();
-            EasyTracker.getInstance(this).send(build);
+            Tracker tracker = getTracker();
+            HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder().setCategory(category).setAction(TrackerConstants.CAT_LOAD_WITH_CACHE).setLabel(String.valueOf(time));
+            tracker.send(builder.build());
         } catch (IOException e) {
             file.delete();
             ACRA.getErrorReporter().handleSilentException(e);

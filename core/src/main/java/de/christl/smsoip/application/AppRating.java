@@ -26,12 +26,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 
 import org.acra.ACRA;
-
-import java.util.Map;
 
 import de.christl.smsoip.R;
 import de.christl.smsoip.backup.BackupHelper;
@@ -79,8 +76,8 @@ public class AppRating {
         builder.setPositiveButton(R.string.rate_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_POS, null).build();
-                EasyTracker.getInstance(context).send(build);
+                HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(TrackerConstants.CAT_MISC).setAction(TrackerConstants.EVENT_RATING).setLabel(TrackerConstants.LABEL_POS);
+                SMSoIPApplication.getApp().getTracker().send(eventBuilder.build());
                 try {
                     String uri = context.getString(R.string.market_rate_url);
                     context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
@@ -104,8 +101,8 @@ public class AppRating {
         builder.setNegativeButton(R.string.rate_no_thanks, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_NEG, null).build();
-                EasyTracker.getInstance(context).send(build);
+                HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(TrackerConstants.CAT_MISC).setAction(TrackerConstants.EVENT_RATING).setLabel(TrackerConstants.LABEL_NEG);
+                SMSoIPApplication.getApp().getTracker().send(eventBuilder.build());
                 if (editor != null) {
                     editor.putBoolean(RATING_DISABLED, true);
                     editor.commit();
@@ -122,8 +119,8 @@ public class AppRating {
         builder.setNeutralButton(R.string.rate_remind_me_later, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_CANCEL, null).build();
-                EasyTracker.getInstance(context).send(build);
+                HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(TrackerConstants.CAT_MISC).setAction(TrackerConstants.EVENT_RATING).setLabel(TrackerConstants.LABEL_CANCEL);
+                SMSoIPApplication.getApp().getTracker().send(eventBuilder.build());
                 if (editor != null) {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();
@@ -139,8 +136,9 @@ public class AppRating {
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Map<String, String> build = MapBuilder.createEvent(TrackerConstants.CAT_MISC, TrackerConstants.EVENT_RATING, TrackerConstants.LABEL_CANCEL, null).build();
-                EasyTracker.getInstance(context).send(build);
+                HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder().setCategory(TrackerConstants.CAT_MISC).setAction(TrackerConstants.EVENT_RATING).setLabel(TrackerConstants.LABEL_CANCEL);
+                SMSoIPApplication.getApp().getTracker().send(eventBuilder.build());
+
                 if (editor != null) {
                     editor.remove(LAUNCH_COUNT);
                     editor.commit();

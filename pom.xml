@@ -318,14 +318,9 @@
                 <version>1.8.2</version>
             </dependency>
             <dependency>
-                <groupId>com.google.ads</groupId>
-                <artifactId>admob</artifactId>
-                <version>6.4.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google</groupId>
-                <artifactId>analytics</artifactId>
-                <version>3.0.1</version>
+                <groupId>com.google.android.gms</groupId>
+                <artifactId>play-services</artifactId>
+                <version>7.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.actionbarsherlock</groupId>
