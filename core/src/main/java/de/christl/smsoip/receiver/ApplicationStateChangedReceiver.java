@@ -43,7 +43,7 @@ public class ApplicationStateChangedReceiver extends BroadcastReceiver {
                 resetCache(context);
             } else {
                 String dataString = intent.getDataString();
-                if (dataString.contains("de.christl.smsoip")) {
+                if (dataString != null && dataString.contains("de.christl.smsoip")) {
                     resetCache(context);
                 }
             }
